@@ -37,6 +37,12 @@ class ScriptManager: ObservableObject {
     }
   }
   
+  private func updateConsoleOutput(with message: String) {
+    DispatchQueue.main.async {
+      self.consoleOutput += "\n\(message)"
+    }
+  }
+  
   func runScript() {
     guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
     let scriptDirectory = URL(fileURLWithPath: scriptPath).deletingLastPathComponent().path
@@ -45,7 +51,7 @@ class ScriptManager: ObservableObject {
     process = Process()
     let pipe = Pipe()
     
-    // find config.json, change line `auto_launch_browser": "Local",` to `auto_launch_browser": "Disable",`
+    disableLaunchBrowserInConfigJson()  // not detrimental if fails, but stops webui from launching in browser on startup
     
     process?.executableURL = URL(fileURLWithPath: "/bin/zsh")
     process?.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName) --autolaunch"]
@@ -55,7 +61,7 @@ class ScriptManager: ObservableObject {
     pipe.fileHandleForReading.readabilityHandler = { [weak self] fileHandle in
       if let output = String(data: fileHandle.availableData, encoding: .utf8) {
         DispatchQueue.main.async {
-          self?.consoleOutput += output
+          self?.updateConsoleOutput(with: output)
         }
       }
     }
@@ -63,7 +69,7 @@ class ScriptManager: ObservableObject {
     do {
       try process?.run()
     } catch {
-      consoleOutput += "Failed to start script: \(error.localizedDescription)"
+      updateConsoleOutput(with: "Failed to start script: \(error.localizedDescription)")
     }
   }
   
@@ -79,7 +85,7 @@ class ScriptManager: ObservableObject {
       let outputData = self?.outputPipe?.fileHandleForReading.availableData
       if let output = String(data: outputData ?? Data(), encoding: .utf8), !output.isEmpty {
         DispatchQueue.main.async {
-          self?.consoleOutput += output
+          self?.updateConsoleOutput(with: output)
         }
       }
       
@@ -109,37 +115,33 @@ class ScriptManager: ObservableObject {
   
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {
-      consoleOutput += "\nError: ConfigFileManager is not initialized."
+      updateConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
     
     configManager.disableLaunchBrowser { [weak self] result in
-      DispatchQueue.main.async {
-        switch result {
-        case .success(let originalLine):
-          self?.originalLaunchBrowserLine = originalLine
-          self?.consoleOutput += "\nBrowser launch disabled in config.json."
-        case .failure(let error):
-          self?.consoleOutput += "\nFailed to modify config.json: \(error.localizedDescription)"
-        }
+      switch result {
+      case .success(let originalLine):
+        self?.originalLaunchBrowserLine = originalLine
+        self?.updateConsoleOutput(with: "Browser launch disabled in config.json.")
+      case .failure(let error):
+        self?.updateConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
       }
     }
   }
   
   func restoreLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
-      consoleOutput += "\nError: Pre-conditions not met for restoring config.json."
+      updateConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
       return
     }
     
     configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
-      DispatchQueue.main.async {
-        switch result {
-        case .success():
-          self?.consoleOutput += "\nBrowser launch setting restored in config.json."
-        case .failure(let error):
-          self?.consoleOutput += "\nFailed to restore config.json: \(error.localizedDescription)"
-        }
+      switch result {
+      case .success():
+        self?.updateConsoleOutput(with: "Browser launch setting restored in config.json.")
+      case .failure(let error):
+        self?.updateConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
       }
     }
   }
