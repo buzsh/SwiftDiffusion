@@ -6,46 +6,44 @@
 //
 
 import SwiftUI
-import Combine // do we need?
+
+import SwiftUI
 
 struct ContentView: View {
-  @State private var scriptPath = ""
-  @State private var consoleOutput = ""
-  @State private var process: Process?
-  @State private var outputPipe: Pipe?
-  @State private var errorPipe: Pipe?
+  @ObservedObject var scriptManager = ScriptManager.shared
+  @State private var scriptPathInput: String = ""
   
   var body: some View {
     VStack {
       HStack {
-        TextField("Path to webui.sh", text: $scriptPath)
+        TextField("Path to webui.sh", text: $scriptPathInput)
           .textFieldStyle(RoundedBorderTextFieldStyle())
         Button("Browse...") {
           browseFile()
         }
       }.padding()
       
-      TextEditor(text: $consoleOutput)
+      TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
         .border(Color.gray, width: 1)
         .padding()
       
       HStack {
-        Button("Stop") {
-          stopScript()
+        Button("Terminate") {
+          scriptManager.terminateScript()
         }
+        Spacer()
         Button("Start") {
-          runScript()
+          scriptManager.scriptPath = scriptPathInput
+          scriptManager.runScript()
         }
       }.padding()
     }
     .padding()
-    /*
-    .onChange(of: consoleOutput) { _ in
-      scrollToBottom()
+    .onAppear {
+      scriptPathInput = scriptManager.scriptPath ?? ""
     }
-     */
   }
   
   private func browseFile() {
@@ -56,71 +54,15 @@ struct ContentView: View {
     panel.begin { (response) in
       if response == .OK {
         if let url = panel.urls.first {
-          self.scriptPath = url.path
+          // Update the script path in the UI and scriptManager
+          self.scriptPathInput = url.path
+          self.scriptManager.scriptPath = url.path
         }
       }
-    }
-  }
-  
-  private func runScript() {
-    guard !scriptPath.isEmpty else { return }
-    let scriptDirectory = URL(fileURLWithPath: scriptPath).deletingLastPathComponent().path
-    let scriptName = URL(fileURLWithPath: scriptPath).lastPathComponent
-    
-    let process = Process()
-    let pipe = Pipe()
-    
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    // cd to webui.sh script directory before executing it
-    // A1111 will check for dependencies in execution origin
-    process.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName)"]
-    process.standardOutput = pipe
-    process.standardError = pipe
-    
-    pipe.fileHandleForReading.readabilityHandler = { fileHandle in
-      if let output = String(data: fileHandle.availableData, encoding: .utf8) {
-        DispatchQueue.main.async {
-          self.consoleOutput += output
-        }
-      }
-    }
-    
-    do {
-      try process.run()
-      self.process = process
-    } catch {
-      consoleOutput += "Failed to start script: \(error.localizedDescription)"
-    }
-  }
-  
-  private func stopScript() {
-    guard let process = process else { return }
-
-    process.terminate()
-    
-    // Safely clear the pipe's readabilityHandler to prevent hanging
-    clearPipeHandlers()
-    
-    DispatchQueue.main.async {
-      // Append console terminated message
-      self.consoleOutput += "\nProcess terminated."
-    }
-  }
-  
-  private func clearPipeHandlers() {
-    outputPipe?.fileHandleForReading.readabilityHandler = nil
-    errorPipe?.fileHandleForReading.readabilityHandler = nil
-    self.process = nil
-    self.outputPipe = nil
-    self.errorPipe = nil
-  }
-  
-  private func handleError(_ error: Error) {
-    DispatchQueue.main.async {
-      self.consoleOutput += "\nError: \(error.localizedDescription)"
     }
   }
 }
+
 
 #Preview {
   ContentView()
