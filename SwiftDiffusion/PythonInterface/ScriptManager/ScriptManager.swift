@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum ScriptResult {
+  case success(String) // Capture success message if needed
+  case failure(Error)
+}
+
 class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var process: Process?
@@ -52,12 +57,28 @@ class ScriptManager: ObservableObject {
     }
   }
   
-  func terminateScript() {
-    process?.terminate()
-    clearPipeHandlers()
-    DispatchQueue.main.async { [weak self] in
-      self?.consoleOutput += "\nProcess terminated."
+  func terminateScript(completion: @escaping (ScriptResult) -> Void) {
+    guard let process = process else {
+      completion(.failure(NSError(domain: "ScriptManagerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Process not running."])))
+      return
     }
+    
+    process.terminationHandler = { [weak self] _ in
+      guard let self = self else { return }
+      
+      // Assuming successful termination if exit code is 0
+      if process.terminationStatus == 0 {
+        // Optionally parse self.consoleOutput for a success message
+        completion(.success("Script terminated successfully."))
+      } else {
+        // Handle error scenario, potentially parsing self.consoleOutput for error details
+        completion(.failure(NSError(domain: "ScriptManagerError", code: Int(process.terminationStatus), userInfo: [NSLocalizedDescriptionKey: "Script terminated with errors."])))
+      }
+
+      self.clearPipeHandlers()
+    }
+    
+    process.terminate()
   }
   
   private func clearPipeHandlers() {
