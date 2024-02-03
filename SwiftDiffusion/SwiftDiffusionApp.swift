@@ -23,6 +23,13 @@ struct SwiftDiffusionApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
   func applicationWillTerminate(_ notification: Notification) {
-    ScriptManager.shared.terminateScript()
+    ScriptManager.shared.terminateScript { result in
+        switch result {
+        case .success(let message):
+            print(message)
+        case .failure(let error):
+            print("Error: \(error.localizedDescription)")
+        }
+    }
   }
 }
