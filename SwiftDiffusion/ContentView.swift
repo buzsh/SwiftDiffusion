@@ -100,11 +100,6 @@ struct ContentView: View {
     // Safely clear the pipe's readabilityHandler to prevent hanging
     clearPipeHandlers()
     
-    // Clean up
-    self.process = nil
-    self.outputPipe = nil
-    self.errorPipe = nil
-    
     DispatchQueue.main.async {
       // Append console terminated message
       self.consoleOutput += "\nProcess terminated."
@@ -114,6 +109,9 @@ struct ContentView: View {
   private func clearPipeHandlers() {
     outputPipe?.fileHandleForReading.readabilityHandler = nil
     errorPipe?.fileHandleForReading.readabilityHandler = nil
+    self.process = nil
+    self.outputPipe = nil
+    self.errorPipe = nil
   }
   
   private func handleError(_ error: Error) {
