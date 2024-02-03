@@ -8,7 +8,7 @@
 import Foundation
 
 enum ScriptResult {
-  case success(String) // Capture success message if needed
+  case success(String)
   case failure(Error)
 }
 
@@ -17,6 +17,9 @@ class ScriptManager: ObservableObject {
   private var process: Process?
   private var outputPipe: Pipe?
   private var errorPipe: Pipe?
+  
+  private let configManager: ConfigFileManager?
+  private var originalLaunchBrowserLine: String?
   
   @Published var consoleOutput: String = ""
   var scriptPath: String? {
@@ -27,6 +30,11 @@ class ScriptManager: ObservableObject {
   
   init() {
     self.scriptPath = UserDefaults.standard.string(forKey: "scriptPath")
+    if let scriptPath = self.scriptPath {
+      self.configManager = ConfigFileManager(scriptPath: scriptPath)
+    } else {
+      self.configManager = nil
+    }
   }
   
   func runScript() {
@@ -37,8 +45,10 @@ class ScriptManager: ObservableObject {
     process = Process()
     let pipe = Pipe()
     
+    // find config.json, change line `auto_launch_browser": "Local",` to `auto_launch_browser": "Disable",`
+    
     process?.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    process?.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName)"]
+    process?.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName) --autolaunch"]
     process?.standardOutput = pipe
     process?.standardError = pipe
     
@@ -63,23 +73,31 @@ class ScriptManager: ObservableObject {
       return
     }
     
-    process.terminationHandler = { [weak self] _ in
-      guard let self = self else { return }
-      
-      // Assuming successful termination if exit code is 0
-      if process.terminationStatus == 0 {
-        // Optionally parse self.consoleOutput for a success message
-        completion(.success("Script terminated successfully."))
-      } else {
-        // Handle error scenario, potentially parsing self.consoleOutput for error details
-        completion(.failure(NSError(domain: "ScriptManagerError", code: Int(process.terminationStatus), userInfo: [NSLocalizedDescriptionKey: "Script terminated with errors."])))
+    // Set the termination handler
+    process.terminationHandler = { [weak self] process in
+      // Ensure we capture any final output
+      let outputData = self?.outputPipe?.fileHandleForReading.availableData
+      if let output = String(data: outputData ?? Data(), encoding: .utf8), !output.isEmpty {
+        DispatchQueue.main.async {
+          self?.consoleOutput += output
+        }
       }
-
-      self.clearPipeHandlers()
+      
+      DispatchQueue.main.async {
+        if process.terminationStatus == 0 {
+          completion(.success("Script terminated successfully."))
+        } else {
+          completion(.failure(NSError(domain: "ScriptManagerError", code: Int(process.terminationStatus), userInfo: [NSLocalizedDescriptionKey: "Script terminated with errors."])))
+        }
+        // Clear handlers and pipes after capturing final output
+        self?.clearPipeHandlers()
+      }
     }
     
+    // Terminate the process
     process.terminate()
   }
+  
   
   private func clearPipeHandlers() {
     outputPipe?.fileHandleForReading.readabilityHandler = nil
@@ -88,4 +106,42 @@ class ScriptManager: ObservableObject {
     outputPipe = nil
     errorPipe = nil
   }
+  
+  func disableLaunchBrowserInConfigJson() {
+    guard let configManager = self.configManager else {
+      consoleOutput += "\nError: ConfigFileManager is not initialized."
+      return
+    }
+    
+    configManager.disableLaunchBrowser { [weak self] result in
+      DispatchQueue.main.async {
+        switch result {
+        case .success(let originalLine):
+          self?.originalLaunchBrowserLine = originalLine
+          self?.consoleOutput += "\nBrowser launch disabled in config.json."
+        case .failure(let error):
+          self?.consoleOutput += "\nFailed to modify config.json: \(error.localizedDescription)"
+        }
+      }
+    }
+  }
+  
+  func restoreLaunchBrowserInConfigJson() {
+    guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
+      consoleOutput += "\nError: Pre-conditions not met for restoring config.json."
+      return
+    }
+    
+    configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
+      DispatchQueue.main.async {
+        switch result {
+        case .success():
+          self?.consoleOutput += "\nBrowser launch setting restored in config.json."
+        case .failure(let error):
+          self?.consoleOutput += "\nFailed to restore config.json: \(error.localizedDescription)"
+        }
+      }
+    }
+  }
+  
 }
