@@ -7,7 +7,24 @@
 
 import SwiftUI
 
-import SwiftUI
+extension ScriptState {
+  var statusColor: Color {
+    switch self {
+    case .readyToStart: return Color.gray
+    case .launching: return Color.yellow
+    case .active(_): return Color.green
+    case .isTerminating: return Color.yellow
+    case .terminated: return Color.red
+    }
+  }
+  var isActive: Bool {
+    if case .active(_) = self {
+      return true
+    } else {
+      return false
+    }
+  }
+}
 
 struct ContentView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
@@ -30,6 +47,29 @@ struct ContentView: View {
         .padding()
       
       HStack {
+        Circle()
+          .fill(scriptManager.scriptState.statusColor)
+          .frame(width: 10, height: 10)
+          .padding(.trailing, 2)
+        
+        Text(scriptManager.scriptStateText)
+          .font(.system(.body, design: .monospaced))
+          .onAppear {
+            scriptPathInput = scriptManager.scriptPath ?? ""
+            print("Current script state: \(scriptManager.scriptStateText)")
+          }
+        
+        if scriptManager.scriptState.isActive, let url = scriptManager.parsedURL {
+          Button(action: {
+            NSWorkspace.shared.open(url)
+          }) {
+            Image(systemName: "globe")
+          }
+          .buttonStyle(.plain)
+          .padding(.leading, 2)
+        }
+        
+        Spacer()
         Button("Terminate") {
           ScriptManager.shared.terminateScript { result in
             switch result {
@@ -40,7 +80,6 @@ struct ContentView: View {
             }
           }
         }
-        Spacer()
         Button("Start") {
           scriptManager.scriptPath = scriptPathInput
           scriptManager.runScript()
