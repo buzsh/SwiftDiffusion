@@ -24,7 +24,7 @@ struct ContentView: View {
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
-        .border(Color.gray, width: 1)
+        .border(Color.gray.opacity(0.3), width: 1)
         .padding()
       
       HStack {
