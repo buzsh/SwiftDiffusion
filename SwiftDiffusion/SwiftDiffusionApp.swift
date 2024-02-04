@@ -16,6 +16,7 @@ struct SwiftDiffusionApp: App {
     WindowGroup {
       ContentView()
     }
+    .windowToolbarStyle(DefaultWindowToolbarStyle())
   }
 }
 

@@ -88,6 +88,16 @@ struct ContentView: View {
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
     }
+    .navigationTitle("Swift Diffusion")
+    .toolbar {
+      ToolbarItem(placement: .automatic) {
+        Button(action: {
+          print("Toolbar item tapped")
+        }) {
+          //Image(systemName: "gear")
+        }
+      }
+    }
   }
   
   private func browseFile() {
