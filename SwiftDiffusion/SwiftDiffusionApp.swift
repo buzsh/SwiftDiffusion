@@ -34,10 +34,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       DispatchQueue.main.async {
         switch result {
         case .success:
-          // Proceed to quit the app
           NSApp.terminate(nil)
         case .failure:
-          // Show an alert and ask the user if they still want to quit
           let alert = NSAlert()
           alert.messageText = "Failed to terminate script. Do you still want to continue?"
           alert.informativeText = "Choosing 'Quit App' will force the application to quit."
@@ -46,10 +44,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
           let response = alert.runModal()
           
           if response == .alertSecondButtonReturn {
-            // Force quit the app
             NSApp.terminate(nil)
           }
-          // If the user cancels, do not quit the app; possibly reset the state or wait for further user action
+          // else, do nothing
         }
       }
     }

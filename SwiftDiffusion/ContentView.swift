@@ -112,7 +112,6 @@ struct ContentView: View {
     panel.begin { (response) in
       if response == .OK {
         if let url = panel.urls.first {
-          // Update the script path in the UI and scriptManager
           self.scriptPathInput = url.path
           self.scriptManager.scriptPath = url.path
         }

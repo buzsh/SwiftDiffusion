@@ -73,8 +73,7 @@ class ScriptManager: ObservableObject {
   /// Starts the execution of the Automatic1111 Python script.
   func runScript() {
     self.scriptState = .launching
-    print("Script starting...") // Debugging log
-    // Reset the service URL each time the script runs to ensure fresh capture
+    print("Script starting...")
     self.serviceURL = nil
     
     guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
@@ -99,19 +98,16 @@ class ScriptManager: ObservableObject {
       guard !data.isEmpty else { return }
       let output = String(data: data, encoding: .utf8) ?? ""
       
-      // Use the flag to determine if output should be trimmed
       let finalOutput = self?.shouldTrimOutput == true ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
       
       DispatchQueue.main.async {
         self?.consoleOutput += "\n\(finalOutput)"
-        // Parse for URL if not already found
         if self?.serviceURL == nil, finalOutput.contains("Running on local URL") {
           self?.parseForServiceURL(from: finalOutput)
         }
       }
     }
     
-    // Assign the handler to both output and error pipes
     outputPipe.fileHandleForReading.readabilityHandler = outputHandler
     errorPipe.fileHandleForReading.readabilityHandler = outputHandler
     
@@ -149,7 +145,7 @@ class ScriptManager: ObservableObject {
             self.scriptState = .terminated
             self.parsedURL = nil
             self.updateConsoleOutput(with: "Service terminated.")
-            // Start the countdown to change state to .readyToStart
+            // after 3s, change back to ready
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
               self.scriptState = .readyToStart
             }
@@ -253,10 +249,10 @@ extension ScriptManager {
     let task = URLSession.shared.dataTask(with: url) { _, response, error in
       DispatchQueue.main.async {
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-          // The page loaded successfully, script is likely still running
+          // page loaded successfully, script is likely still running
           completion(true)
         } else {
-          // The request failed, script is likely terminated
+          // request failed, script is likely terminated
           completion(false)
         }
       }
@@ -284,9 +280,9 @@ extension ScriptManager {
     
     do {
       try process.run()
-      process.waitUntilExit() // Wait for the process to exit
+      process.waitUntilExit() // wait for process to exit
       
-      // Optionally, read and log the output
+      // read and log the output
       let data = pipe.fileHandleForReading.readDataToEndOfFile()
       let output = String(data: data, encoding: .utf8) ?? ""
       DispatchQueue.main.async {
