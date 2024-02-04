@@ -16,16 +16,18 @@ struct ContentView: View {
       HStack {
         TextField("Path to webui.sh", text: $scriptPathInput)
           .textFieldStyle(RoundedBorderTextFieldStyle())
+          .font(.system(.body, design: .monospaced))
         Button("Browse...") {
           browseFile()
         }
-      }.padding()
+      }.padding(.horizontal)
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
         .border(Color.gray.opacity(0.3), width: 1)
-        .padding()
+        .padding(.vertical, 10)
+        .padding(.horizontal)
       
       HStack {
         Circle()
@@ -51,7 +53,7 @@ struct ContentView: View {
         }
         
         Spacer()
-
+        
         Button(action: {
           scriptManager.terminatePythonProcesses {
             print("All Python processes terminated.")
@@ -80,7 +82,7 @@ struct ContentView: View {
         }
         .disabled(!scriptManager.scriptState.isStartable)
       }
-      .padding()
+      .padding(.horizontal)
     }
     .padding()
     .onAppear {
