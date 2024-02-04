@@ -67,7 +67,7 @@ class ScriptManager: ObservableObject {
   /// - Parameter message: The message to be added to the console output.
   private func updateConsoleOutput(with message: String) {
     DispatchQueue.main.async {
-      self.consoleOutput += "\n\(message)"
+      self.consoleOutput += "\n\(message)\n"
     }
   }
   /// Starts the execution of the Automatic1111 Python script.
@@ -290,16 +290,13 @@ extension ScriptManager {
       let data = pipe.fileHandleForReading.readDataToEndOfFile()
       let output = String(data: data, encoding: .utf8) ?? ""
       DispatchQueue.main.async {
-        let errorMsg = "Terminate Python Output: \(output)"
-        print(errorMsg)
-        self.updateConsoleOutput(with: errorMsg)
+        print("Terminate Python Output: \(output)")
+        self.updateConsoleOutput(with: "All Python-related processes have been killed.")
         completion?()
       }
     } catch {
       DispatchQueue.main.async {
-        let errorMsg = "Failed to terminate Python processes: \(error)"
-        print(errorMsg)
-        self.updateConsoleOutput(with: errorMsg)
+        print("Failed to terminate Python processes: \(error)")
         completion?()
       }
     }
