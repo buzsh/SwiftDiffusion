@@ -22,15 +22,10 @@ struct SwiftDiffusionApp: App {
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-  private func applicationShouldTerminate(_ sender: NSApplication) {
-    ScriptManager.shared.terminateScript { result in
-      switch result {
-      case .success:
-        print("Script successfully terminated.")
-      case .failure:
-        print("Failed to terminated script.")
-      }
-    }
+  func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    ScriptManager.shared.terminateImmediately()
+    
+    return .terminateNow
   }
   
   func handleQuit() {
