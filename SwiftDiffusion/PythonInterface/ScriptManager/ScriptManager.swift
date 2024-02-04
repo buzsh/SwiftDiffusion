@@ -29,7 +29,7 @@ extension ScriptManager {
       return "Launching service..."
     case .active:
       if let urlString = self.parsedURL?.absoluteString {
-        return "Active (\(urlString))"
+        return "Active (\(urlString.replacingOccurrences(of: "http://", with: "")))"
       } else {
         return "Active"
       }
@@ -132,6 +132,8 @@ class ScriptManager: ObservableObject {
     }
   }
   
+  /// Terminates the script execution.
+  /// - Parameter completion: A closure that is called with the result of the termination attempt.
   func terminateScript(completion: @escaping (ScriptResult) -> Void) {
     self.scriptState = .isTerminating
     
@@ -155,6 +157,10 @@ class ScriptManager: ObservableObject {
             self.scriptState = .terminated
             self.parsedURL = nil
             self.updateConsoleOutput(with: "Service terminated.")
+            // Start the countdown to change state to .readyToStart
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+              self.scriptState = .readyToStart
+            }
           } else {
             completion(.failure(NSError(domain: "ScriptManagerError", code: 1, userInfo: [NSLocalizedDescriptionKey: "The script's web service is still accessible after attempting to terminate the script."])))
           }
@@ -163,6 +169,19 @@ class ScriptManager: ObservableObject {
     }
   }
   
+  /// Terminates the script execution immediately.
+  func terminateImmediately() {
+    if let process = self.process, process.isRunning {
+      process.terminate()
+      restoreLaunchBrowserInConfigJson()
+      clearPipeHandlers()
+    }
+    
+    DispatchQueue.main.async {
+      self.scriptState = .terminated
+      self.parsedURL = nil
+    }
+  }
   
   private func clearPipeHandlers() {
     outputPipe?.fileHandleForReading.readabilityHandler = nil
@@ -252,5 +271,45 @@ extension ScriptManager {
     }
     
     task.resume()
+  }
+}
+
+
+extension ScriptManager {
+  /// Terminates all running Python processes.
+  /// - Parameter completion: An optional closure to call after the operation completes.
+  func terminatePythonProcesses(completion: (() -> Void)? = nil) {
+    terminateImmediately()
+    
+    let process = Process()
+    let pipe = Pipe()
+    
+    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+    process.arguments = ["-c", "killall Python"]
+    
+    process.standardOutput = pipe
+    process.standardError = pipe
+    
+    do {
+      try process.run()
+      process.waitUntilExit() // Wait for the process to exit
+      
+      // Optionally, read and log the output
+      let data = pipe.fileHandleForReading.readDataToEndOfFile()
+      let output = String(data: data, encoding: .utf8) ?? ""
+      DispatchQueue.main.async {
+        let errorMsg = "Terminate Python Output: \(output)"
+        print(errorMsg)
+        self.updateConsoleOutput(with: errorMsg)
+        completion?()
+      }
+    } catch {
+      DispatchQueue.main.async {
+        let errorMsg = "Failed to terminate Python processes: \(error)"
+        print(errorMsg)
+        self.updateConsoleOutput(with: errorMsg)
+        completion?()
+      }
+    }
   }
 }
