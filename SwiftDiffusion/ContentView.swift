@@ -44,13 +44,24 @@ struct ContentView: View {
           Button(action: {
             NSWorkspace.shared.open(url)
           }) {
-            Image(systemName: "globe")
+            Image(systemName: "network")
           }
           .buttonStyle(.plain)
           .padding(.leading, 2)
         }
         
         Spacer()
+
+        Button(action: {
+          scriptManager.terminatePythonProcesses {
+            print("All Python processes terminated.")
+          }
+        }) {
+          Image(systemName: "xmark.octagon")
+        }
+        .buttonStyle(.plain)
+        .padding(.leading, 2)
+        
         Button("Terminate") {
           ScriptManager.shared.terminateScript { result in
             switch result {
@@ -61,11 +72,15 @@ struct ContentView: View {
             }
           }
         }
+        .disabled(!scriptManager.scriptState.isTerminatable)
+        
         Button("Start") {
           scriptManager.scriptPath = scriptPathInput
           scriptManager.runScript()
         }
-      }.padding()
+        .disabled(!scriptManager.scriptState.isStartable)
+      }
+      .padding()
     }
     .padding()
     .onAppear {
