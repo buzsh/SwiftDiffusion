@@ -7,25 +7,6 @@
 
 import SwiftUI
 
-extension ScriptState {
-  var statusColor: Color {
-    switch self {
-    case .readyToStart: return Color.gray
-    case .launching: return Color.yellow
-    case .active(_): return Color.green
-    case .isTerminating: return Color.yellow
-    case .terminated: return Color.red
-    }
-  }
-  var isActive: Bool {
-    if case .active(_) = self {
-      return true
-    } else {
-      return false
-    }
-  }
-}
-
 struct ContentView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @State private var scriptPathInput: String = ""

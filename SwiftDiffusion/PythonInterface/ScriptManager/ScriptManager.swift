@@ -12,14 +12,6 @@ enum ScriptResult {
   case failure(Error)
 }
 
-enum ScriptState {
-  case readyToStart
-  case launching
-  case active(String)
-  case isTerminating
-  case terminated
-}
-
 extension ScriptManager {
   var scriptStateText: String {
     switch scriptState {

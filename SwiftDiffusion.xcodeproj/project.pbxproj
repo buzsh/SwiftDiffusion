@@ -13,6 +13,7 @@
 		2996D09B2B6ED5B100B487D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */; };
 		2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */; };
 		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
+		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftDiffusion.entitlements; sourceTree = "<group>"; };
 		2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
 		2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
+		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */,
+				2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */,
 				2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */,
 			);
 			path = ScriptManager;
@@ -164,6 +167,7 @@
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
+				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
