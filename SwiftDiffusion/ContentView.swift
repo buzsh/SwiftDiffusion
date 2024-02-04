@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+struct Constants {
+  static let horizontalPadding = CGFloat(8)
+}
+
 struct ContentView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @State private var scriptPathInput: String = ""
@@ -20,14 +24,14 @@ struct ContentView: View {
         Button("Browse...") {
           browseFile()
         }
-      }.padding(.horizontal)
+      }.padding(.horizontal, Constants.horizontalPadding)
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
         .border(Color.gray.opacity(0.3), width: 1)
         .padding(.vertical, 10)
-        .padding(.horizontal)
+        .padding(.horizontal, Constants.horizontalPadding)
       
       HStack {
         Circle()
@@ -82,7 +86,7 @@ struct ContentView: View {
         }
         .disabled(!scriptManager.scriptState.isStartable)
       }
-      .padding(.horizontal)
+      .padding(.horizontal, Constants.horizontalPadding)
     }
     .padding()
     .onAppear {
