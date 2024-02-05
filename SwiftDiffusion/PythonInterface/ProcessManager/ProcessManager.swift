@@ -42,7 +42,9 @@ class ProcessManager {
     
     do {
       try process?.run()
+      Debug.log("Process started successfully.")
     } catch {
+      Debug.log("Failed to start process: \(error.localizedDescription)")
       DispatchQueue.main.async {
         self.outputHandler?("Failed to start script: \(error.localizedDescription)")
       }
@@ -53,7 +55,14 @@ class ProcessManager {
   private func setupOutputHandlers() {
     let handler: (FileHandle) -> Void = { [weak self] fileHandle in
       let data = fileHandle.availableData
-      guard !data.isEmpty, let output = String(data: data, encoding: .utf8) else { return }
+      if data.isEmpty {
+        Debug.log("No data received from file handle.")
+        return
+      }
+      guard let output = String(data: data, encoding: .utf8) else {
+        Debug.log("Failed to decode output data.")
+        return
+      }
       DispatchQueue.main.async {
         self?.outputHandler?(output)
       }

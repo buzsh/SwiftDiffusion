@@ -56,24 +56,24 @@ class ScriptManager: ObservableObject {
       self.updateConsoleOutput(with: message)
     }
   }
-  
-  /// Starts the execution of the Automatic1111 Python script.
-  func runScript() {
+  /// Sets variables for new run script state.
+  func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
     scriptState = .launching
     serviceURL = nil
+  }
+  
+  func runScript() {
+    newRunScriptState()
+    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) else { return }
     
-    guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
-    let scriptDirectory = URL(fileURLWithPath: scriptPath).deletingLastPathComponent().path
-    let scriptName = URL(fileURLWithPath: scriptPath).lastPathComponent
+    disableLaunchBrowserInConfigJson()
     
     process = Process()
     let outputPipe = Pipe()
     let errorPipe = Pipe()
     self.outputPipe = outputPipe
     self.errorPipe = errorPipe
-    
-    disableLaunchBrowserInConfigJson()  // not detrimental if fails, but stops webui from launching in browser on startup
     
     process?.executableURL = URL(fileURLWithPath: "/bin/zsh")
     process?.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName)"]
@@ -85,11 +85,11 @@ class ScriptManager: ObservableObject {
       guard !data.isEmpty else { return }
       let output = String(data: data, encoding: .utf8) ?? ""
       
-      let finalOutput = self?.shouldTrimOutput == true ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
+      let filteredOutput = self?.shouldTrimOutput == true ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
       
       DispatchQueue.main.async {
-        self?.consoleOutput += "\n\(finalOutput)"
-        self?.parseForServiceURL(from: finalOutput)
+        self?.consoleOutput += "\n\(filteredOutput)"
+        self?.parseForServiceURL(from: filteredOutput)
       }
     }
     
@@ -104,6 +104,7 @@ class ScriptManager: ObservableObject {
       }
     }
   }
+
   
   /// Terminates the script execution.
   /// - Parameter completion: A closure that is called with the result of the termination attempt.
