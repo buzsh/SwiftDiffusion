@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
 extension Constants {
   static let horizontalPadding = CGFloat(8)
@@ -23,9 +22,10 @@ struct ContentView: View {
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(.body, design: .monospaced))
         Button("Browse...") {
-          browseFile()
+          browseForWebuiShell()
         }
-      }.padding(.horizontal, Constants.horizontalPadding)
+      }
+      .padding(.horizontal, Constants.horizontalPadding)
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
@@ -104,28 +104,16 @@ struct ContentView: View {
       }
     }
   }
-  
-  private func browseFile() {
-    let panel = NSOpenPanel()
-    panel.allowsMultipleSelection = false
-    panel.canChooseDirectories = false
-    
-    if let shellScriptType = UTType(filenameExtension: "sh") {
-      panel.allowedContentTypes = [shellScriptType]
-    } else {
-      print("Failed to find UTType for .sh files")
-      return
-    }
-    
-    panel.begin { (response) in
-      if response == .OK, let url = panel.urls.first, url.pathExtension == "sh" {
-        self.scriptPathInput = url.path
-        self.scriptManager.scriptPath = url.path
-      } else {
-        print("Error: Selected file is not a .sh script.")
+  /// Allows the user to browse for `webui.sh` and sets the associated path variables
+  func browseForWebuiShell() {
+    Task {
+      if let path = await FilePickerService.browseForShellFile() {
+        self.scriptPathInput = path
+        self.scriptManager.scriptPath = path
       }
     }
   }
+  
 }
 
 
