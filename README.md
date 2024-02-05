@@ -25,6 +25,8 @@ api: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/API
 
 </details>
 
+-----
+
 <details>
 
 <summary><h2>CoreML</h2></summary>
