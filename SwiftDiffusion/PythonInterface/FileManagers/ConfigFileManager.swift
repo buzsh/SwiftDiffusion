@@ -9,6 +9,7 @@ import Foundation
 
 extension Constants {
   struct ConfigFile {
+    static let pathToConfigJson = "/config.json"
     static let autoLaunchBrowserPattern = "\"auto_launch_browser\":\\s*\"[^\"]*\""
     static let autoLaunchBrowserDisabled = "\"auto_launch_browser\": \"Disable\""
     static let autoLaunchBrowserDisabledPattern = "\"auto_launch_browser\":\\s*\"Disable\""
@@ -22,7 +23,7 @@ struct ConfigFileManager {
     guard let scriptDirectory = URL(string: scriptPath)?.deletingLastPathComponent().absoluteString.removingPercentEncoding else {
       return nil
     }
-    return scriptDirectory.appending("/config.json")
+    return scriptDirectory.appending(Constants.ConfigFile.pathToConfigJson)
   }
   
   func disableLaunchBrowser(completion: @escaping (Result<String, Error>) -> Void) {
