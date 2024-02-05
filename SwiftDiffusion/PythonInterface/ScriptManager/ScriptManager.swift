@@ -67,9 +67,17 @@ class ScriptManager: ObservableObject {
   /// - Parameter message: The message to be added to the console output.
   private func updateConsoleOutput(with message: String) {
     DispatchQueue.main.async {
-      self.consoleOutput += "\n\(message)\n"
+      self.consoleOutput += "\(message)\n"
     }
   }
+  /// Updates the console output with a new debug message.
+  /// - Parameter message: The debug message to be added to the console output.
+  private func updateDebugConsoleOutput(with message: String) {
+    Debug.perform {
+      self.updateConsoleOutput(with: message)
+    }
+  }
+  
   /// Starts the execution of the Automatic1111 Python script.
   func runScript() {
     self.scriptState = .launching
@@ -181,33 +189,38 @@ class ScriptManager: ObservableObject {
   
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {
-      updateConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
+      updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
+    
+    
     
     configManager.disableLaunchBrowser { [weak self] result in
       switch result {
       case .success(let originalLine):
         self?.originalLaunchBrowserLine = originalLine
-        self?.updateConsoleOutput(with: "Browser launch disabled in config.json.")
+        self?.updateDebugConsoleOutput(with: "[config.json] >> \(originalLine)")
+        self?.updateDebugConsoleOutput(with: "[config.json] << \(Constants.ConfigFile.autoLaunchBrowserDisabled)")
+        self?.updateDebugConsoleOutput(with: "[config.json] successfully modified")
       case .failure(let error):
-        self?.updateConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
+        self?.updateDebugConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
       }
     }
   }
   
   func restoreLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
-      updateConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
+      updateDebugConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
       return
     }
     
     configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
       switch result {
       case .success():
-        self?.updateConsoleOutput(with: "Browser launch setting restored in config.json.")
+        self?.updateDebugConsoleOutput(with: "[config.json] << \(originalLine)")
+        self?.updateDebugConsoleOutput(with: "[config.json] successfully restored")
       case .failure(let error):
-        self?.updateConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
+        self?.updateDebugConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
       }
     }
   }
