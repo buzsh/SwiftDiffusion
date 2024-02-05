@@ -82,13 +82,13 @@ class ScriptManager: ObservableObject {
     parsedURL = nil
   }
   
-  func runScript() {
+  func run() {
     newRunScriptState()
     guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) else { return }
     
     disableLaunchBrowserInConfigJson()
     
-    pythonProcess = PythonProcess() // Initialize PythonProcess
+    pythonProcess = PythonProcess()
     pythonProcess?.delegate = self
     pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
   }
@@ -99,24 +99,18 @@ class ScriptManager: ObservableObject {
   func terminateScript(completion: @escaping (ScriptResult) -> Void) {
     updateScriptState(.isTerminating)
     pythonProcess?.terminate()
-    // No need for the async block used previously, as termination logic is now encapsulated within PythonProcess
-    
-    // Handle post-termination logic here
+
+    // Handle post-termination logic
     restoreLaunchBrowserInConfigJson()
     completion(.success("Script terminated successfully."))
-    
     updateScriptState(.terminated)
   }
   
   /// Terminates the script execution immediately.
   func terminateImmediately() {
-    pythonProcess?.terminate() // Terminate the script using PythonProcess
-    restoreLaunchBrowserInConfigJson() // Restore any configurations if needed
-    
-    // Since the termination logic is encapsulated, no need to clear handlers here
-    DispatchQueue.main.async {
-      self.updateScriptState(.terminated)
-    }
+    pythonProcess?.terminate()
+    restoreLaunchBrowserInConfigJson()
+    updateScriptState(.terminated)
   }
   
   func disableLaunchBrowserInConfigJson() {
@@ -178,67 +172,4 @@ class ScriptManager: ObservableObject {
     }
   }
   
-}
-
-
-extension ScriptManager {
-  
-  func checkScriptServiceAvailability(completion: @escaping (Bool) -> Void) {
-    guard let url = serviceURL else {
-      Debug.log("Service URL not available.")
-      completion(false)
-      return
-    }
-    
-    let task = URLSession.shared.dataTask(with: url) { _, response, error in
-      DispatchQueue.main.async {
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-          // page loaded successfully, script is likely still running
-          completion(true)
-        } else {
-          // request failed, script is likely terminated
-          completion(false)
-        }
-      }
-    }
-    
-    task.resume()
-  }
-}
-
-
-extension ScriptManager {
-  /// Terminates all running Python processes.
-  /// - Parameter completion: An optional closure to call after the operation completes.
-  func terminatePythonProcesses(completion: (() -> Void)? = nil) {
-    terminateImmediately()
-    
-    let process = Process()
-    let pipe = Pipe()
-    
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    process.arguments = ["-c", "killall Python"]
-    
-    process.standardOutput = pipe
-    process.standardError = pipe
-    
-    do {
-      try process.run()
-      process.waitUntilExit() // wait for process to exit
-      
-      // read and log the output
-      let data = pipe.fileHandleForReading.readDataToEndOfFile()
-      let output = String(data: data, encoding: .utf8) ?? ""
-      DispatchQueue.main.async {
-        Debug.log("Terminate Python Output: \(output)")
-        self.updateConsoleOutput(with: "All Python-related processes have been killed.")
-        completion?()
-      }
-    } catch {
-      DispatchQueue.main.async {
-        Debug.log("Failed to terminate Python processes: \(error)")
-        completion?()
-      }
-    }
-  }
 }

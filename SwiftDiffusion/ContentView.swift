@@ -60,7 +60,7 @@ struct ContentView: View {
         Spacer()
         
         Button(action: {
-          scriptManager.terminatePythonProcesses {
+          scriptManager.terminateAllPythonProcesses {
             Debug.log("All Python processes terminated.")
           }
         }) {
@@ -83,7 +83,7 @@ struct ContentView: View {
         
         Button("Start") {
           scriptManager.scriptPath = scriptPathInput
-          scriptManager.runScript()
+          scriptManager.run()
         }
         .disabled(!scriptManager.scriptState.isStartable)
       }
