@@ -44,7 +44,7 @@ struct ContentView: View {
           .font(.system(.body, design: .monospaced))
           .onAppear {
             scriptPathInput = scriptManager.scriptPath ?? ""
-            print("Current script state: \(scriptManager.scriptStateText)")
+            Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
         
         if scriptManager.scriptState.isActive, let url = scriptManager.parsedURL {
@@ -61,7 +61,7 @@ struct ContentView: View {
         
         Button(action: {
           scriptManager.terminatePythonProcesses {
-            print("All Python processes terminated.")
+            Debug.log("All Python processes terminated.")
           }
         }) {
           Image(systemName: "xmark.octagon")
@@ -73,9 +73,9 @@ struct ContentView: View {
           ScriptManager.shared.terminateScript { result in
             switch result {
             case .success(let message):
-              print(message)
+              Debug.log(message)
             case .failure(let error):
-              print("Error: \(error.localizedDescription)")
+              Debug.log("Error: \(error.localizedDescription)")
             }
           }
         }
@@ -97,7 +97,7 @@ struct ContentView: View {
     .toolbar {
       ToolbarItem(placement: .automatic) {
         Button(action: {
-          print("Toolbar item tapped")
+          Debug.log("Toolbar item selected")
         }) {
           Image(systemName: "gear")
         }

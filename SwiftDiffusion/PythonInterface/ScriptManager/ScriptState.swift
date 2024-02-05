@@ -15,6 +15,28 @@ enum ScriptState {
   case terminated
 }
 
+extension ScriptManager {
+  var scriptStateText: String {
+    switch scriptState {
+    case .readyToStart:
+      return "Ready to start"
+    case .launching:
+      return "Launching service..."
+    case .active:
+      if let urlString = self.parsedURL?.absoluteString {
+        return "Active (\(urlString.replacingOccurrences(of: "http://", with: "")))"
+      } else {
+        Debug.log("Unable to get absoluteString of '\(String(describing: self.parsedURL))'")
+        return "Active"
+      }
+    case .isTerminating:
+      return "Terminating..."
+    case .terminated:
+      return "Terminated"
+    }
+  }
+}
+
 extension ScriptState {
   var statusColor: Color {
     switch self {

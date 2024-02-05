@@ -12,27 +12,6 @@ enum ScriptResult {
   case failure(Error)
 }
 
-extension ScriptManager {
-  var scriptStateText: String {
-    switch scriptState {
-    case .readyToStart:
-      return "Ready to start"
-    case .launching:
-      return "Launching service..."
-    case .active:
-      if let urlString = self.parsedURL?.absoluteString {
-        return "Active (\(urlString.replacingOccurrences(of: "http://", with: "")))"
-      } else {
-        return "Active"
-      }
-    case .isTerminating:
-      return "Terminating..."
-    case .terminated:
-      return "Terminated"
-    }
-  }
-}
-
 class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var process: Process?
@@ -67,13 +46,21 @@ class ScriptManager: ObservableObject {
   /// - Parameter message: The message to be added to the console output.
   private func updateConsoleOutput(with message: String) {
     DispatchQueue.main.async {
-      self.consoleOutput += "\n\(message)\n"
+      self.consoleOutput += "\(message)\n"
     }
   }
+  /// Updates the console output with a new debug message.
+  /// - Parameter message: The debug message to be added to the console output.
+  private func updateDebugConsoleOutput(with message: String) {
+    Debug.perform {
+      self.updateConsoleOutput(with: message)
+    }
+  }
+  
   /// Starts the execution of the Automatic1111 Python script.
   func runScript() {
     self.scriptState = .launching
-    print("Script starting...")
+    Debug.log("webui.sh script starting...")
     self.serviceURL = nil
     
     guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
@@ -181,33 +168,38 @@ class ScriptManager: ObservableObject {
   
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {
-      updateConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
+      updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
+    
+    
     
     configManager.disableLaunchBrowser { [weak self] result in
       switch result {
       case .success(let originalLine):
         self?.originalLaunchBrowserLine = originalLine
-        self?.updateConsoleOutput(with: "Browser launch disabled in config.json.")
+        self?.updateDebugConsoleOutput(with: "[config.json] >> \(originalLine)")
+        self?.updateDebugConsoleOutput(with: "[config.json] << \(Constants.ConfigFile.autoLaunchBrowserDisabled)")
+        self?.updateDebugConsoleOutput(with: "[config.json] successfully modified")
       case .failure(let error):
-        self?.updateConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
+        self?.updateDebugConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
       }
     }
   }
   
   func restoreLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
-      updateConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
+      updateDebugConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
       return
     }
     
     configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
       switch result {
       case .success():
-        self?.updateConsoleOutput(with: "Browser launch setting restored in config.json.")
+        self?.updateDebugConsoleOutput(with: "[config.json] << \(originalLine)")
+        self?.updateDebugConsoleOutput(with: "[config.json] successfully restored")
       case .failure(let error):
-        self?.updateConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
+        self?.updateDebugConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
       }
     }
   }
@@ -223,13 +215,13 @@ class ScriptManager: ObservableObject {
         self.parsedURL = URL(string: url)
         DispatchQueue.main.async {
           self.scriptState = .active(url)
-          print("URL successfully parsed and state updated to active: \(url)")
+          Debug.log("URL successfully parsed and state updated to active: \(url)")
         }
       } else {
-        print("No URL match found.")
+        Debug.log("No URL match found.")
       }
     } catch {
-      print("Regex error: \(error)")
+      Debug.log("Regex error: \(error)")
     }
   }
   
@@ -241,7 +233,7 @@ extension ScriptManager {
   
   func checkScriptServiceAvailability(completion: @escaping (Bool) -> Void) {
     guard let url = serviceURL else {
-      print("Service URL not available.")
+      Debug.log("Service URL not available.")
       completion(false)
       return
     }
@@ -286,13 +278,13 @@ extension ScriptManager {
       let data = pipe.fileHandleForReading.readDataToEndOfFile()
       let output = String(data: data, encoding: .utf8) ?? ""
       DispatchQueue.main.async {
-        print("Terminate Python Output: \(output)")
+        Debug.log("Terminate Python Output: \(output)")
         self.updateConsoleOutput(with: "All Python-related processes have been killed.")
         completion?()
       }
     } catch {
       DispatchQueue.main.async {
-        print("Failed to terminate Python processes: \(error)")
+        Debug.log("Failed to terminate Python processes: \(error)")
         completion?()
       }
     }
