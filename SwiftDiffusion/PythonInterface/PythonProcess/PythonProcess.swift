@@ -8,9 +8,6 @@
 import Foundation
 
 extension Constants.CommandLine {
-  static let zshPath = "/bin/zsh"
-  static let zshUrl = URL(fileURLWithPath: zshPath)
-  
   static var defaultCommand: (String, String) -> String = { dir, name in
       return "cd \(dir); ./\(name)"
   }
