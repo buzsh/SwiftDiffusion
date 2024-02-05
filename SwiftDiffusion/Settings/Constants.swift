@@ -12,6 +12,7 @@ struct Constants {
   struct CommandLine {}
   struct Delays {}
   struct FileTypes {}
+  struct Layout {}
   struct Keys {}
   
 }

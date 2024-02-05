@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-extension Constants {
-  static let horizontalPadding = CGFloat(8)
+extension Constants.Layout {
+  static let horizontalPadding: CGFloat = 8
 }
 
 struct ContentView: View {
@@ -25,14 +25,14 @@ struct ContentView: View {
           browseForWebuiShell()
         }
       }
-      .padding(.horizontal, Constants.horizontalPadding)
+      .padding(.horizontal, Constants.Layout.horizontalPadding)
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
         .border(Color.gray.opacity(0.3), width: 1)
         .padding(.vertical, 10)
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.horizontal, Constants.Layout.horizontalPadding)
       
       HStack {
         Circle()
@@ -87,7 +87,7 @@ struct ContentView: View {
         }
         .disabled(!scriptManager.scriptState.isStartable)
       }
-      .padding(.horizontal, Constants.horizontalPadding)
+      .padding(.horizontal, Constants.Layout.horizontalPadding)
     }
     .padding()
     .onAppear {
