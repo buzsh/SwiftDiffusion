@@ -9,6 +9,13 @@ import Foundation
 import AppKit
 import UniformTypeIdentifiers
 
+extension Constants {
+  struct FileTypes {
+    static let shellExtension = "sh"
+    static let shellScriptType = UTType(filenameExtension: shellExtension)
+  }
+}
+
 struct FilePickerService {
   /// Presents an open panel dialog allowing the user to select a shell script file.
   ///
@@ -22,19 +29,19 @@ struct FilePickerService {
       panel.allowsMultipleSelection = false
       panel.canChooseDirectories = false
       
-      if let shellScriptType = UTType(filenameExtension: "sh") {
+      if let shellScriptType = Constants.FileTypes.shellScriptType {
         panel.allowedContentTypes = [shellScriptType]
       } else {
-        print("Failed to find UTType for .sh files")
+        print("Failed to find UTType for .\(Constants.FileTypes.shellExtension) files")
         continuation.resume(returning: nil)
         return
       }
       
       panel.begin { response in
-        if response == .OK, let url = panel.urls.first, url.pathExtension == "sh" {
+        if response == .OK, let url = panel.urls.first, url.pathExtension == Constants.FileTypes.shellExtension {
           continuation.resume(returning: url.path)
         } else {
-          print("Error: Selected file is not a .sh script.")
+          print("Error: Selected file is not a .\(Constants.FileTypes.shellExtension) script.")
           continuation.resume(returning: nil)
         }
       }
