@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Constants {
+extension Constants {
   static let horizontalPadding = CGFloat(8)
 }
 
@@ -92,13 +92,13 @@ struct ContentView: View {
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
     }
-    .navigationTitle("Swift Diffusion")
+    .navigationTitle("SwiftDiffusion")
     .toolbar {
       ToolbarItem(placement: .automatic) {
         Button(action: {
           print("Toolbar item tapped")
         }) {
-          //Image(systemName: "gear")
+          Image(systemName: "gear")
         }
       }
     }
