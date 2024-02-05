@@ -59,9 +59,9 @@ class ScriptManager: ObservableObject {
   
   /// Starts the execution of the Automatic1111 Python script.
   func runScript() {
-    self.scriptState = .launching
-    Debug.log("webui.sh script starting...")
-    self.serviceURL = nil
+    Debug.log("Starting ./webui.sh")
+    scriptState = .launching
+    serviceURL = nil
     
     guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
     let scriptDirectory = URL(fileURLWithPath: scriptPath).deletingLastPathComponent().path
@@ -89,9 +89,7 @@ class ScriptManager: ObservableObject {
       
       DispatchQueue.main.async {
         self?.consoleOutput += "\n\(finalOutput)"
-        if self?.serviceURL == nil, finalOutput.contains("Running on local URL") {
-          self?.parseForServiceURL(from: finalOutput)
-        }
+        self?.parseForServiceURL(from: finalOutput)
       }
     }
     
@@ -171,9 +169,7 @@ class ScriptManager: ObservableObject {
       updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
-    
-    
-    
+
     configManager.disableLaunchBrowser { [weak self] result in
       switch result {
       case .success(let originalLine):
@@ -205,23 +201,25 @@ class ScriptManager: ObservableObject {
   }
   
   private func parseForServiceURL(from output: String) {
-    let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
-    do {
-      let regex = try NSRegularExpression(pattern: pattern)
-      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-      if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
-        let urlRange = Range(match.range(at: 1), in: output)!
-        let url = String(output[urlRange])
-        self.parsedURL = URL(string: url)
-        DispatchQueue.main.async {
-          self.scriptState = .active(url)
-          Debug.log("URL successfully parsed and state updated to active: \(url)")
+    if serviceURL == nil, output.contains("Running on local URL") {
+      let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
+      do {
+        let regex = try NSRegularExpression(pattern: pattern)
+        let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
+        if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
+          let urlRange = Range(match.range(at: 1), in: output)!
+          let url = String(output[urlRange])
+          self.parsedURL = URL(string: url)
+          DispatchQueue.main.async {
+            self.scriptState = .active(url)
+            Debug.log("URL successfully parsed and state updated to active: \(url)")
+          }
+        } else {
+          Debug.log("No URL match found.")
         }
-      } else {
-        Debug.log("No URL match found.")
+      } catch {
+        Debug.log("Regex error: \(error)")
       }
-    } catch {
-      Debug.log("Regex error: \(error)")
     }
   }
   
