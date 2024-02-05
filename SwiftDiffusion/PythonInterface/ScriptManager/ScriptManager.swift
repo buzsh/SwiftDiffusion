@@ -12,27 +12,6 @@ enum ScriptResult {
   case failure(Error)
 }
 
-extension ScriptManager {
-  var scriptStateText: String {
-    switch scriptState {
-    case .readyToStart:
-      return "Ready to start"
-    case .launching:
-      return "Launching service..."
-    case .active:
-      if let urlString = self.parsedURL?.absoluteString {
-        return "Active (\(urlString.replacingOccurrences(of: "http://", with: "")))"
-      } else {
-        return "Active"
-      }
-    case .isTerminating:
-      return "Terminating..."
-    case .terminated:
-      return "Terminated"
-    }
-  }
-}
-
 class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var process: Process?
