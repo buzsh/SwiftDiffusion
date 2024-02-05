@@ -7,6 +7,10 @@
 
 import Foundation
 
+extension Constants.CommandLine {
+  static let killallPython = "killall Python"
+}
+
 extension ScriptManager {
   /// Terminates all running Python processes.
   /// - Parameter completion: An optional closure to call after the operation completes.
@@ -16,9 +20,8 @@ extension ScriptManager {
     let process = Process()
     let pipe = Pipe()
     
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    process.arguments = ["-c", "killall Python"]
-    
+    process.executableURL = Constants.CommandLine.zshUrl
+    process.arguments = ["-c", Constants.CommandLine.killallPython]
     process.standardOutput = pipe
     process.standardError = pipe
     
