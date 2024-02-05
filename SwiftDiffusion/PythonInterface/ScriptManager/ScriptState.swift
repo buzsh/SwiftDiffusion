@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ScriptState {
+enum ScriptState: Equatable {
   case readyToStart
   case launching
   case active(String)

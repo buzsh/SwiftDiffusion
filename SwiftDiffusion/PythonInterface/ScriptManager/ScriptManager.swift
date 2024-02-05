@@ -12,11 +12,9 @@ enum ScriptResult {
   case failure(Error)
 }
 
-class ScriptManager: ObservableObject {
+class ScriptManager: ObservableObject, PythonProcessDelegate {
   static let shared = ScriptManager()
-  private var process: Process?
-  private var outputPipe: Pipe?
-  private var errorPipe: Pipe?
+  private var pythonProcess: PythonProcess?
   
   private(set) var serviceURL: URL?
   @Published var parsedURL: URL? = nil
@@ -42,6 +40,17 @@ class ScriptManager: ObservableObject {
       self.configManager = nil
     }
   }
+  
+  func updateScriptState(_ state: ScriptState) {
+    scriptState = state
+    
+    if state == .terminated {
+      DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        self.scriptState = .readyToStart
+      }
+    }
+  }
+  
   /// Updates the console output with a new message.
   /// - Parameter message: The message to be added to the console output.
   private func updateConsoleOutput(with message: String) {
@@ -59,8 +68,9 @@ class ScriptManager: ObservableObject {
   /// Sets variables for new run script state.
   func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
-    scriptState = .launching
+    updateScriptState(.launching)
     serviceURL = nil
+    parsedURL = nil
   }
   
   func runScript() {
@@ -69,100 +79,35 @@ class ScriptManager: ObservableObject {
     
     disableLaunchBrowserInConfigJson()
     
-    process = Process()
-    let outputPipe = Pipe()
-    let errorPipe = Pipe()
-    self.outputPipe = outputPipe
-    self.errorPipe = errorPipe
-    
-    process?.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    process?.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName)"]
-    process?.standardOutput = outputPipe
-    process?.standardError = errorPipe
-    
-    let outputHandler: (FileHandle) -> Void = { [weak self] fileHandle in
-      let data = fileHandle.availableData
-      guard !data.isEmpty else { return }
-      let output = String(data: data, encoding: .utf8) ?? ""
-      
-      let filteredOutput = self?.shouldTrimOutput == true ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
-      
-      DispatchQueue.main.async {
-        self?.consoleOutput += "\n\(filteredOutput)"
-        self?.parseForServiceURL(from: filteredOutput)
-      }
-    }
-    
-    outputPipe.fileHandleForReading.readabilityHandler = outputHandler
-    errorPipe.fileHandleForReading.readabilityHandler = outputHandler
-    
-    do {
-      try process?.run()
-    } catch {
-      DispatchQueue.main.async {
-        self.updateConsoleOutput(with: "Failed to start script: \(error.localizedDescription)")
-      }
-    }
+    pythonProcess = PythonProcess() // Initialize PythonProcess
+    pythonProcess?.delegate = self
+    pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
   }
-
+  
   
   /// Terminates the script execution.
   /// - Parameter completion: A closure that is called with the result of the termination attempt.
   func terminateScript(completion: @escaping (ScriptResult) -> Void) {
-    self.scriptState = .isTerminating
+    updateScriptState(.isTerminating)
+    pythonProcess?.terminate()
+    // No need for the async block used previously, as termination logic is now encapsulated within PythonProcess
     
-    DispatchQueue.global(qos: .background).async {
-      self.restoreLaunchBrowserInConfigJson()
-      
-      guard let process = self.process else {
-        DispatchQueue.main.async {
-          completion(.failure(NSError(domain: "ScriptManagerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No process is currently running."])))
-        }
-        return
-      }
-      
-      process.terminate()
-      self.clearPipeHandlers()
-      
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        self.checkScriptServiceAvailability { isRunning in
-          if !isRunning {
-            completion(.success("Script terminated successfully and the service is no longer accessible."))
-            self.scriptState = .terminated
-            self.parsedURL = nil
-            self.updateConsoleOutput(with: "Service terminated.")
-            // after 3s, change back to ready
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-              self.scriptState = .readyToStart
-            }
-          } else {
-            completion(.failure(NSError(domain: "ScriptManagerError", code: 1, userInfo: [NSLocalizedDescriptionKey: "The script's web service is still accessible after attempting to terminate the script."])))
-          }
-        }
-      }
-    }
+    // Handle post-termination logic here
+    restoreLaunchBrowserInConfigJson()
+    completion(.success("Script terminated successfully."))
+    
+    updateScriptState(.terminated)
   }
   
   /// Terminates the script execution immediately.
   func terminateImmediately() {
-    if let process = self.process, process.isRunning {
-      process.terminate()
-      restoreLaunchBrowserInConfigJson()
-      clearPipeHandlers()
-    }
+    pythonProcess?.terminate() // Terminate the script using PythonProcess
+    restoreLaunchBrowserInConfigJson() // Restore any configurations if needed
     
+    // Since the termination logic is encapsulated, no need to clear handlers here
     DispatchQueue.main.async {
-      self.scriptState = .terminated
-      self.parsedURL = nil
+      self.updateScriptState(.terminated)
     }
-  }
-  
-  private func clearPipeHandlers() {
-    outputPipe?.fileHandleForReading.readabilityHandler = nil
-    errorPipe?.fileHandleForReading.readabilityHandler = nil
-    process = nil
-    outputPipe = nil
-    errorPipe = nil
   }
   
   func disableLaunchBrowserInConfigJson() {
@@ -212,7 +157,7 @@ class ScriptManager: ObservableObject {
           let url = String(output[urlRange])
           self.parsedURL = URL(string: url)
           DispatchQueue.main.async {
-            self.scriptState = .active(url)
+            self.updateScriptState(.active(url)) //self.scriptState = .active(url)
             Debug.log("URL successfully parsed and state updated to active: \(url)")
           }
         } else {
@@ -220,6 +165,40 @@ class ScriptManager: ObservableObject {
         }
       } catch {
         Debug.log("Regex error: \(error)")
+      }
+    }
+  }
+  
+  // MARK: - PythonProcessDelegate methods
+  
+  func setupPythonProcess() {
+    let pythonProcess = PythonProcess()
+    pythonProcess.delegate = self
+    // Assuming you have a method or property to determine the script path and name
+    if let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) {
+      pythonProcess.runScript(at: scriptDirectory, scriptName: scriptName)
+    }
+  }
+  
+  func pythonProcessDidUpdateOutput(output: String) {
+    let filteredOutput = shouldTrimOutput ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
+    DispatchQueue.main.async {
+      self.consoleOutput += "\n\(filteredOutput)"
+      self.parseForServiceURL(from: filteredOutput)
+    }
+  }
+  
+  func pythonProcessDidFinishRunning(with result: ScriptResult) {
+    switch result {
+    case .success(let message):
+      DispatchQueue.main.async {
+        self.updateScriptState(.terminated)
+        self.updateConsoleOutput(with: message)
+      }
+    case .failure(let error):
+      DispatchQueue.main.async {
+        self.updateConsoleOutput(with: "Script failed: \(error.localizedDescription)")
+        self.updateScriptState(.readyToStart)
       }
     }
   }
