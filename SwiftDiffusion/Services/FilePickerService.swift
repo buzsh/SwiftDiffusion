@@ -10,7 +10,6 @@ import AppKit
 import UniformTypeIdentifiers
 
 struct FilePickerService {
-  
   /// Presents an open panel dialog allowing the user to select a shell script file.
   ///
   /// This function asynchronously displays a file picker dialog configured to allow the selection of files with the `.sh` extension only. It ensures that the user cannot choose directories or multiple files. If the user selects a file and confirms, the function returns the path to the selected file. If the user cancels the dialog or selects a file of an incorrect type, the function returns `nil`.
