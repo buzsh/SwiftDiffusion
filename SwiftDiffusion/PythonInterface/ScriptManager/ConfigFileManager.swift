@@ -7,6 +7,14 @@
 
 import Foundation
 
+extension Constants {
+  struct ConfigFile {
+    static let autoLaunchBrowserPattern = "\"auto_launch_browser\":\\s*\"[^\"]*\""
+    static let autoLaunchBrowserDisabled = "\"auto_launch_browser\": \"Disable\""
+    static let autoLaunchBrowserDisabledPattern = "\"auto_launch_browser\":\\s*\"Disable\""
+  }
+}
+
 struct ConfigFileManager {
   let scriptPath: String
   
@@ -25,10 +33,10 @@ struct ConfigFileManager {
     
     do {
       var configContent = try String(contentsOfFile: configFilePath, encoding: .utf8)
-      let pattern = "\"auto_launch_browser\":\\s*\"[^\"]*\""
+      let pattern = Constants.ConfigFile.autoLaunchBrowserPattern
       if let range = configContent.range(of: pattern, options: .regularExpression) {
         let originalLine = String(configContent[range])
-        configContent = configContent.replacingOccurrences(of: pattern, with: "\"auto_launch_browser\": \"Disable\"", options: .regularExpression)
+        configContent = configContent.replacingOccurrences(of: pattern, with: Constants.ConfigFile.autoLaunchBrowserDisabled, options: .regularExpression)
         try configContent.write(toFile: configFilePath, atomically: true, encoding: .utf8)
         completion(.success(originalLine))
       } else {
@@ -47,7 +55,7 @@ struct ConfigFileManager {
     
     do {
       var configContent = try String(contentsOfFile: configFilePath, encoding: .utf8)
-      let pattern = "\"auto_launch_browser\":\\s*\"Disable\""
+      let pattern = Constants.ConfigFile.autoLaunchBrowserDisabledPattern
       if configContent.range(of: pattern, options: .regularExpression) != nil {
         configContent = configContent.replacingOccurrences(of: pattern, with: originalLine, options: .regularExpression)
         try configContent.write(toFile: configFilePath, atomically: true, encoding: .utf8)
