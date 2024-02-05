@@ -38,11 +38,13 @@ struct FilePickerService {
       }
       
       panel.begin { response in
-        if response == .OK, let url = panel.urls.first, url.pathExtension == Constants.FileTypes.shellExtension {
-          continuation.resume(returning: url.path)
-        } else {
-          Debug.log("Error: Selected file is not a .\(Constants.FileTypes.shellExtension) script.")
-          continuation.resume(returning: nil)
+        if response == .OK, let url = panel.urls.first {
+          if url.pathExtension == Constants.FileTypes.shellExtension {
+            continuation.resume(returning: url.path)
+          } else {
+            Debug.log("Error: Selected file is not a .\(Constants.FileTypes.shellExtension) shell script file.\n > \(url)")
+            continuation.resume(returning: nil)
+          }
         }
       }
     }
