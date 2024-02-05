@@ -47,7 +47,7 @@ struct ContentView: View {
             Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
         
-        if scriptManager.scriptState.isActive, let url = scriptManager.parsedURL {
+        if scriptManager.scriptState.isActive, let url = scriptManager.serviceUrl {
           Button(action: {
             NSWorkspace.shared.open(url)
           }) {

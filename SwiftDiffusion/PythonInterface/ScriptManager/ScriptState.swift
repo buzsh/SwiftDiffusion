@@ -23,10 +23,10 @@ extension ScriptManager {
     case .launching:
       return "Launching service..."
     case .active:
-      if let urlString = self.parsedURL?.absoluteString {
+      if let urlString = self.serviceUrl?.absoluteString {
         return "Active (\(urlString.replacingOccurrences(of: "http://", with: "")))"
       } else {
-        Debug.log("Unable to get absoluteString of '\(String(describing: self.parsedURL))'")
+        Debug.log("Unable to get absoluteString of '\(String(describing: self.serviceUrl))'")
         return "Active"
       }
     case .isTerminating:

@@ -10,7 +10,7 @@ import Foundation
 extension ScriptManager {
   
   func checkScriptServiceAvailability(completion: @escaping (Bool) -> Void) {
-    guard let url = serviceURL else {
+    guard let url = serviceUrl else {
       Debug.log("Service URL not available.")
       completion(false)
       return

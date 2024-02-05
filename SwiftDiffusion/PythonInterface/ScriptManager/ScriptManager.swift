@@ -25,8 +25,7 @@ class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
   
-  private(set) var serviceURL: URL?
-  @Published var parsedURL: URL? = nil
+  @Published var serviceUrl: URL? = nil
   
   private let configManager: ConfigFileManager?
   private var originalLaunchBrowserLine: String?
@@ -78,8 +77,7 @@ class ScriptManager: ObservableObject {
   func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
     updateScriptState(.launching)
-    serviceURL = nil
-    parsedURL = nil
+    serviceUrl = nil
   }
   
   func run() {
@@ -149,8 +147,8 @@ class ScriptManager: ObservableObject {
     }
   }
   
-  func parseForServiceURL(from output: String) {
-    if serviceURL == nil, output.contains("Running on local URL") {
+  func parseServiceUrl(from output: String) {
+    if serviceUrl == nil, output.contains("Running on local URL") {
       let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
       do {
         let regex = try NSRegularExpression(pattern: pattern)
@@ -158,7 +156,7 @@ class ScriptManager: ObservableObject {
         if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
           let urlRange = Range(match.range(at: 1), in: output)!
           let url = String(output[urlRange])
-          self.parsedURL = URL(string: url)
+          self.serviceUrl = URL(string: url)
           DispatchQueue.main.async {
             self.updateScriptState(.active(url))
             Debug.log("URL successfully parsed and state updated to active: \(url)")

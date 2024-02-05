@@ -20,7 +20,7 @@ extension ScriptManager: PythonProcessDelegate {
     let filteredOutput = shouldTrimOutput ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
     DispatchQueue.main.async {
       self.consoleOutput += "\n\(filteredOutput)"
-      self.parseForServiceURL(from: filteredOutput)
+      self.parseServiceUrl(from: filteredOutput)
     }
   }
   
