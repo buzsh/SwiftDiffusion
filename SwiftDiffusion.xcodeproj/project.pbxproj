@@ -16,6 +16,7 @@
 		297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */; };
 		297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196642B719C32000F7960 /* ScriptManager+ServiceAvailability.swift */; };
 		297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */; };
+		2971966B2B71A5AC000F7960 /* Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971966A2B71A5AC000F7960 /* Delay.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 		297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+PythonProcess.swift"; sourceTree = "<group>"; };
 		297196642B719C32000F7960 /* ScriptManager+ServiceAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+ServiceAvailability.swift"; sourceTree = "<group>"; };
 		297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+TerminateAll.swift"; sourceTree = "<group>"; };
+		2971966A2B71A5AC000F7960 /* Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delay.swift; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
 		2996D0952B6ED5B000B487D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -108,6 +110,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		297196692B71A5A2000F7960 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				2971966A2B71A5AC000F7960 /* Delay.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		2996D0872B6ED5B000B487D5 = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +142,7 @@
 				297196512B715380000F7960 /* Services */,
 				297196472B715061000F7960 /* Views */,
 				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
+				297196692B71A5A2000F7960 /* Utilities */,
 				2971964A2B715184000F7960 /* Settings */,
 				2996D0972B6ED5B100B487D5 /* Assets.xcassets */,
 				2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */,
@@ -248,6 +259,7 @@
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
+				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
