@@ -12,7 +12,7 @@ class Debug: ObservableObject {
   @Published var isActive = true
   
   // Instance method for logging
-  func logInstance<T>(_ value: T) {
+  private func logInstance<T>(_ value: T) {
     if isActive {
       print(value)
     }
@@ -24,7 +24,7 @@ class Debug: ObservableObject {
   }
   
   // Instance method to conditionally perform an action
-  func perform(action: () -> Void) {
+  private func perform(action: () -> Void) {
     if isActive {
       action()
     }
