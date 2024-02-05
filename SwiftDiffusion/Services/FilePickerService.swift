@@ -32,7 +32,7 @@ struct FilePickerService {
       if let shellScriptType = Constants.FileTypes.shellScriptType {
         panel.allowedContentTypes = [shellScriptType]
       } else {
-        print("Failed to find UTType for .\(Constants.FileTypes.shellExtension) files")
+        Debug.log("Failed to find UTType for .\(Constants.FileTypes.shellExtension) files")
         continuation.resume(returning: nil)
         return
       }
@@ -41,7 +41,7 @@ struct FilePickerService {
         if response == .OK, let url = panel.urls.first, url.pathExtension == Constants.FileTypes.shellExtension {
           continuation.resume(returning: url.path)
         } else {
-          print("Error: Selected file is not a .\(Constants.FileTypes.shellExtension) script.")
+          Debug.log("Error: Selected file is not a .\(Constants.FileTypes.shellExtension) script.")
           continuation.resume(returning: nil)
         }
       }

@@ -81,7 +81,7 @@ class ScriptManager: ObservableObject {
   /// Starts the execution of the Automatic1111 Python script.
   func runScript() {
     self.scriptState = .launching
-    print("Script starting...")
+    Debug.log("webui.sh script starting...")
     self.serviceURL = nil
     
     guard let scriptPath = scriptPath, !scriptPath.isEmpty else { return }
@@ -236,13 +236,13 @@ class ScriptManager: ObservableObject {
         self.parsedURL = URL(string: url)
         DispatchQueue.main.async {
           self.scriptState = .active(url)
-          print("URL successfully parsed and state updated to active: \(url)")
+          Debug.log("URL successfully parsed and state updated to active: \(url)")
         }
       } else {
-        print("No URL match found.")
+        Debug.log("No URL match found.")
       }
     } catch {
-      print("Regex error: \(error)")
+      Debug.log("Regex error: \(error)")
     }
   }
   
@@ -254,7 +254,7 @@ extension ScriptManager {
   
   func checkScriptServiceAvailability(completion: @escaping (Bool) -> Void) {
     guard let url = serviceURL else {
-      print("Service URL not available.")
+      Debug.log("Service URL not available.")
       completion(false)
       return
     }
@@ -299,13 +299,13 @@ extension ScriptManager {
       let data = pipe.fileHandleForReading.readDataToEndOfFile()
       let output = String(data: data, encoding: .utf8) ?? ""
       DispatchQueue.main.async {
-        print("Terminate Python Output: \(output)")
+        Debug.log("Terminate Python Output: \(output)")
         self.updateConsoleOutput(with: "All Python-related processes have been killed.")
         completion?()
       }
     } catch {
       DispatchQueue.main.async {
-        print("Failed to terminate Python processes: \(error)")
+        Debug.log("Failed to terminate Python processes: \(error)")
         completion?()
       }
     }
