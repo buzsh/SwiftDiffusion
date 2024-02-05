@@ -9,6 +9,14 @@ import Foundation
 
 struct Constants {
   
-  //
+  struct CommandLine {}
+  struct Delays {}
+  struct FileTypes {}
+  struct Keys {}
   
+}
+
+extension Constants.CommandLine {
+  static let zshPath = "/bin/zsh"
+  static let zshUrl = URL(fileURLWithPath: zshPath)
 }
