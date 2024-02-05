@@ -12,7 +12,7 @@ enum ScriptResult {
   case failure(Error)
 }
 
-class ScriptManager: ObservableObject, PythonProcessDelegate {
+class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
   
@@ -53,7 +53,7 @@ class ScriptManager: ObservableObject, PythonProcessDelegate {
   
   /// Updates the console output with a new message.
   /// - Parameter message: The message to be added to the console output.
-  private func updateConsoleOutput(with message: String) {
+  func updateConsoleOutput(with message: String) {
     DispatchQueue.main.async {
       self.consoleOutput += "\(message)\n"
     }
@@ -146,7 +146,7 @@ class ScriptManager: ObservableObject, PythonProcessDelegate {
     }
   }
   
-  private func parseForServiceURL(from output: String) {
+  func parseForServiceURL(from output: String) {
     if serviceURL == nil, output.contains("Running on local URL") {
       let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
       do {
@@ -157,7 +157,7 @@ class ScriptManager: ObservableObject, PythonProcessDelegate {
           let url = String(output[urlRange])
           self.parsedURL = URL(string: url)
           DispatchQueue.main.async {
-            self.updateScriptState(.active(url)) //self.scriptState = .active(url)
+            self.updateScriptState(.active(url))
             Debug.log("URL successfully parsed and state updated to active: \(url)")
           }
         } else {
@@ -168,41 +168,6 @@ class ScriptManager: ObservableObject, PythonProcessDelegate {
       }
     }
   }
-  
-  // MARK: - PythonProcessDelegate methods
-  
-  func setupPythonProcess() {
-    let pythonProcess = PythonProcess()
-    pythonProcess.delegate = self
-    // Assuming you have a method or property to determine the script path and name
-    if let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) {
-      pythonProcess.runScript(at: scriptDirectory, scriptName: scriptName)
-    }
-  }
-  
-  func pythonProcessDidUpdateOutput(output: String) {
-    let filteredOutput = shouldTrimOutput ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
-    DispatchQueue.main.async {
-      self.consoleOutput += "\n\(filteredOutput)"
-      self.parseForServiceURL(from: filteredOutput)
-    }
-  }
-  
-  func pythonProcessDidFinishRunning(with result: ScriptResult) {
-    switch result {
-    case .success(let message):
-      DispatchQueue.main.async {
-        self.updateScriptState(.terminated)
-        self.updateConsoleOutput(with: message)
-      }
-    case .failure(let error):
-      DispatchQueue.main.async {
-        self.updateConsoleOutput(with: "Script failed: \(error.localizedDescription)")
-        self.updateScriptState(.readyToStart)
-      }
-    }
-  }
-  
   
 }
 
