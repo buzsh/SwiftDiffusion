@@ -6,121 +6,116 @@
 //
 
 import SwiftUI
-import Combine // do we need?
+
+extension Constants {
+  static let horizontalPadding = CGFloat(8)
+}
 
 struct ContentView: View {
-  @State private var scriptPath = ""
-  @State private var consoleOutput = ""
-  @State private var process: Process?
-  @State private var outputPipe: Pipe?
-  @State private var errorPipe: Pipe?
+  @ObservedObject var scriptManager = ScriptManager.shared
+  @State private var scriptPathInput: String = ""
   
   var body: some View {
     VStack {
       HStack {
-        TextField("Path to webui.sh", text: $scriptPath)
+        TextField("Path to webui.sh", text: $scriptPathInput)
           .textFieldStyle(RoundedBorderTextFieldStyle())
+          .font(.system(.body, design: .monospaced))
         Button("Browse...") {
-          browseFile()
+          browseForWebuiShell()
         }
-      }.padding()
+      }
+      .padding(.horizontal, Constants.horizontalPadding)
       
-      TextEditor(text: $consoleOutput)
+      TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
-        .border(Color.gray, width: 1)
-        .padding()
+        .border(Color.gray.opacity(0.3), width: 1)
+        .padding(.vertical, 10)
+        .padding(.horizontal, Constants.horizontalPadding)
       
       HStack {
-        Button("Stop") {
-          stopScript()
+        Circle()
+          .fill(scriptManager.scriptState.statusColor)
+          .frame(width: 10, height: 10)
+          .padding(.trailing, 2)
+        
+        Text(scriptManager.scriptStateText)
+          .font(.system(.body, design: .monospaced))
+          .onAppear {
+            scriptPathInput = scriptManager.scriptPath ?? ""
+            Debug.log("Current script state: \(scriptManager.scriptStateText)")
+          }
+        
+        if scriptManager.scriptState.isActive, let url = scriptManager.serviceUrl {
+          Button(action: {
+            NSWorkspace.shared.open(url)
+          }) {
+            Image(systemName: "network")
+          }
+          .buttonStyle(.plain)
+          .padding(.leading, 2)
         }
+        
+        Spacer()
+        
+        Button(action: {
+          scriptManager.terminateAllPythonProcesses {
+            Debug.log("All Python processes terminated.")
+          }
+        }) {
+          Image(systemName: "xmark.octagon")
+        }
+        .buttonStyle(.plain)
+        .padding(.leading, 2)
+        
+        Button("Terminate") {
+          ScriptManager.shared.terminateScript { result in
+            switch result {
+            case .success(let message):
+              Debug.log(message)
+            case .failure(let error):
+              Debug.log("Error: \(error.localizedDescription)")
+            }
+          }
+        }
+        .disabled(!scriptManager.scriptState.isTerminatable)
+        
         Button("Start") {
-          runScript()
+          scriptManager.scriptPath = scriptPathInput
+          scriptManager.run()
         }
-      }.padding()
+        .disabled(!scriptManager.scriptState.isStartable)
+      }
+      .padding(.horizontal, Constants.horizontalPadding)
     }
     .padding()
-    /*
-    .onChange(of: consoleOutput) { _ in
-      scrollToBottom()
+    .onAppear {
+      scriptPathInput = scriptManager.scriptPath ?? ""
     }
-     */
-  }
-  
-  private func browseFile() {
-    let panel = NSOpenPanel()
-    panel.allowsMultipleSelection = false
-    panel.canChooseDirectories = false
-    panel.allowedFileTypes = ["sh"]
-    panel.begin { (response) in
-      if response == .OK {
-        if let url = panel.urls.first {
-          self.scriptPath = url.path
+    .navigationTitle("SwiftDiffusion")
+    .toolbar {
+      ToolbarItem(placement: .automatic) {
+        Button(action: {
+          Debug.log("Toolbar item selected")
+        }) {
+          Image(systemName: "gear")
         }
       }
     }
   }
-  
-  private func runScript() {
-    guard !scriptPath.isEmpty else { return }
-    let scriptDirectory = URL(fileURLWithPath: scriptPath).deletingLastPathComponent().path
-    let scriptName = URL(fileURLWithPath: scriptPath).lastPathComponent
-    
-    let process = Process()
-    let pipe = Pipe()
-    
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    // cd to webui.sh script directory before executing it
-    // A1111 will check for dependencies in execution origin
-    process.arguments = ["-c", "cd \(scriptDirectory); ./\(scriptName)"]
-    process.standardOutput = pipe
-    process.standardError = pipe
-    
-    pipe.fileHandleForReading.readabilityHandler = { fileHandle in
-      if let output = String(data: fileHandle.availableData, encoding: .utf8) {
-        DispatchQueue.main.async {
-          self.consoleOutput += output
-        }
+  /// Allows the user to browse for `webui.sh` and sets the associated path variables
+  func browseForWebuiShell() {
+    Task {
+      if let path = await FilePickerService.browseForShellFile() {
+        self.scriptPathInput = path
+        self.scriptManager.scriptPath = path
       }
     }
-    
-    do {
-      try process.run()
-      self.process = process
-    } catch {
-      consoleOutput += "Failed to start script: \(error.localizedDescription)"
-    }
   }
   
-  private func stopScript() {
-    guard let process = process else { return }
-
-    process.terminate()
-    
-    // Safely clear the pipe's readabilityHandler to prevent hanging
-    clearPipeHandlers()
-    
-    DispatchQueue.main.async {
-      // Append console terminated message
-      self.consoleOutput += "\nProcess terminated."
-    }
-  }
-  
-  private func clearPipeHandlers() {
-    outputPipe?.fileHandleForReading.readabilityHandler = nil
-    errorPipe?.fileHandleForReading.readabilityHandler = nil
-    self.process = nil
-    self.outputPipe = nil
-    self.errorPipe = nil
-  }
-  
-  private func handleError(_ error: Error) {
-    DispatchQueue.main.async {
-      self.consoleOutput += "\nError: \(error.localizedDescription)"
-    }
-  }
 }
+
 
 #Preview {
   ContentView()

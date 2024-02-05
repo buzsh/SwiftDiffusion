@@ -7,19 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		297196492B7150B5000F7960 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196482B7150B5000F7960 /* ConsoleView.swift */; };
+		2971964C2B715191000F7960 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964B2B715191000F7960 /* Constants.swift */; };
+		297196532B71538C000F7960 /* FilePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196522B71538C000F7960 /* FilePickerService.swift */; };
+		297196552B715A58000F7960 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196542B715A58000F7960 /* Debug.swift */; };
+		2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */; };
+		297196612B718BB1000F7960 /* PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196602B718BB1000F7960 /* PythonProcess.swift */; };
+		297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */; };
+		297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196642B719C32000F7960 /* ScriptManager+ServiceAvailability.swift */; };
+		297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */; };
+		2971966B2B71A5AC000F7960 /* Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971966A2B71A5AC000F7960 /* Delay.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
 		2996D09B2B6ED5B100B487D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */; };
+		2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */; };
+		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
+		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		297196482B7150B5000F7960 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
+		2971964B2B715191000F7960 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		297196522B71538C000F7960 /* FilePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerService.swift; sourceTree = "<group>"; };
+		297196542B715A58000F7960 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptSetupHelper.swift; sourceTree = "<group>"; };
+		297196602B718BB1000F7960 /* PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PythonProcess.swift; sourceTree = "<group>"; };
+		297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+PythonProcess.swift"; sourceTree = "<group>"; };
+		297196642B719C32000F7960 /* ScriptManager+ServiceAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+ServiceAvailability.swift"; sourceTree = "<group>"; };
+		297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+TerminateAll.swift"; sourceTree = "<group>"; };
+		2971966A2B71A5AC000F7960 /* Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delay.swift; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
 		2996D0952B6ED5B000B487D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2996D0972B6ED5B100B487D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftDiffusion.entitlements; sourceTree = "<group>"; };
+		2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
+		2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
+		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +59,65 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		297196472B715061000F7960 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				297196482B7150B5000F7960 /* ConsoleView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2971964A2B715184000F7960 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				2971964B2B715191000F7960 /* Constants.swift */,
+				297196542B715A58000F7960 /* Debug.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		297196512B715380000F7960 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				297196522B71538C000F7960 /* FilePickerService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		2971965A2B7174AD000F7960 /* FileManagers */ = {
+			isa = PBXGroup;
+			children = (
+				2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */,
+			);
+			path = FileManagers;
+			sourceTree = "<group>";
+		};
+		2971965B2B717672000F7960 /* PythonProcess */ = {
+			isa = PBXGroup;
+			children = (
+				297196602B718BB1000F7960 /* PythonProcess.swift */,
+				297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */,
+				297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */,
+			);
+			path = PythonProcess;
+			sourceTree = "<group>";
+		};
+		297196682B71A03D000F7960 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				297196642B719C32000F7960 /* ScriptManager+ServiceAvailability.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		297196692B71A5A2000F7960 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				2971966A2B71A5AC000F7960 /* Delay.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		2996D0872B6ED5B000B487D5 = {
 			isa = PBXGroup;
 			children = (
@@ -54,6 +139,11 @@
 			children = (
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
+				297196512B715380000F7960 /* Services */,
+				297196472B715061000F7960 /* Views */,
+				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
+				297196692B71A5A2000F7960 /* Utilities */,
+				2971964A2B715184000F7960 /* Settings */,
 				2996D0972B6ED5B100B487D5 /* Assets.xcassets */,
 				2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */,
 				2996D0992B6ED5B100B487D5 /* Preview Content */,
@@ -67,6 +157,27 @@
 				2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		2996D0A42B6EE44E00B487D5 /* PythonInterface */ = {
+			isa = PBXGroup;
+			children = (
+				2971965B2B717672000F7960 /* PythonProcess */,
+				2971965A2B7174AD000F7960 /* FileManagers */,
+				2996D0A52B6EE45E00B487D5 /* ScriptManager */,
+			);
+			path = PythonInterface;
+			sourceTree = "<group>";
+		};
+		2996D0A52B6EE45E00B487D5 /* ScriptManager */ = {
+			isa = PBXGroup;
+			children = (
+				297196682B71A03D000F7960 /* Extensions */,
+				2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */,
+				2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */,
+				2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */,
+			);
+			path = ScriptManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +252,19 @@
 			files = (
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
+				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
+				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
+				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
+				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
+				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
+				297196552B715A58000F7960 /* Debug.swift in Sources */,
+				2971964C2B715191000F7960 /* Constants.swift in Sources */,
+				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
+				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
+				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
+				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
+				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
+				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
