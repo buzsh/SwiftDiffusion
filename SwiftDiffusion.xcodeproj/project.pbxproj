@@ -11,7 +11,6 @@
 		2971964C2B715191000F7960 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964B2B715191000F7960 /* Constants.swift */; };
 		297196532B71538C000F7960 /* FilePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196522B71538C000F7960 /* FilePickerService.swift */; };
 		297196552B715A58000F7960 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196542B715A58000F7960 /* Debug.swift */; };
-		2971965D2B717687000F7960 /* ProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971965C2B717687000F7960 /* ProcessManager.swift */; };
 		2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */; };
 		297196612B718BB1000F7960 /* PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196602B718BB1000F7960 /* PythonProcess.swift */; };
 		297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */; };
@@ -29,7 +28,6 @@
 		2971964B2B715191000F7960 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		297196522B71538C000F7960 /* FilePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerService.swift; sourceTree = "<group>"; };
 		297196542B715A58000F7960 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
-		2971965C2B717687000F7960 /* ProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessManager.swift; sourceTree = "<group>"; };
 		2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptSetupHelper.swift; sourceTree = "<group>"; };
 		297196602B718BB1000F7960 /* PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PythonProcess.swift; sourceTree = "<group>"; };
 		297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+PythonProcess.swift"; sourceTree = "<group>"; };
@@ -91,7 +89,6 @@
 		2971965B2B717672000F7960 /* PythonProcess */ = {
 			isa = PBXGroup;
 			children = (
-				2971965C2B717687000F7960 /* ProcessManager.swift */,
 				297196602B718BB1000F7960 /* PythonProcess.swift */,
 				297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */,
 			);
@@ -232,7 +229,6 @@
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
-				2971965D2B717687000F7960 /* ProcessManager.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
