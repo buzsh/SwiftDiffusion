@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		297196492B7150B5000F7960 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196482B7150B5000F7960 /* ConsoleView.swift */; };
 		2971964C2B715191000F7960 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964B2B715191000F7960 /* Constants.swift */; };
-		297196502B7151FE000F7960 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964F2B7151FE000F7960 /* FileManager.swift */; };
 		297196532B71538C000F7960 /* FilePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196522B71538C000F7960 /* FilePickerService.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
@@ -23,7 +22,6 @@
 /* Begin PBXFileReference section */
 		297196482B7150B5000F7960 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
 		2971964B2B715191000F7960 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		2971964F2B7151FE000F7960 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		297196522B71538C000F7960 /* FilePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerService.swift; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
@@ -63,22 +61,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		2971964D2B7151E2000F7960 /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				2971964E2B7151F0000F7960 /* FileManager */,
-			);
-			path = Managers;
-			sourceTree = "<group>";
-		};
-		2971964E2B7151F0000F7960 /* FileManager */ = {
-			isa = PBXGroup;
-			children = (
-				2971964F2B7151FE000F7960 /* FileManager.swift */,
-			);
-			path = FileManager;
-			sourceTree = "<group>";
-		};
 		297196512B715380000F7960 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -110,7 +92,6 @@
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				297196512B715380000F7960 /* Services */,
 				297196472B715061000F7960 /* Views */,
-				2971964D2B7151E2000F7960 /* Managers */,
 				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
 				2971964A2B715184000F7960 /* Settings */,
 				2996D0972B6ED5B100B487D5 /* Assets.xcassets */,
@@ -224,7 +205,6 @@
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
-				297196502B7151FE000F7960 /* FileManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
