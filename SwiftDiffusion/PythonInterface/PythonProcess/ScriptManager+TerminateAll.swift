@@ -15,8 +15,6 @@ extension ScriptManager {
   /// Terminates all running Python processes.
   /// - Parameter completion: An optional closure to call after the operation completes.
   func terminateAllPythonProcesses(completion: (() -> Void)? = nil) {
-    terminateImmediately()
-    
     let process = Process()
     let pipe = Pipe()
     
@@ -36,6 +34,7 @@ extension ScriptManager {
         Debug.log("Terminate Python Output: \(output)")
         self.updateConsoleOutput(with: "All Python-related processes have been killed.")
         completion?()
+        self.terminateImmediately()
       }
     } catch {
       DispatchQueue.main.async {

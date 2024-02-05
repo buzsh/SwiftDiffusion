@@ -18,7 +18,6 @@ extension Constants.Keys {
 
 extension Constants.Delays {
   static let secondsBetweenTerminatedAndReadyState: Double = 2
-  static let scriptStateChangeDelay: DispatchTime = .now() + secondsBetweenTerminatedAndReadyState
 }
 
 class ScriptManager: ObservableObject {
@@ -50,10 +49,10 @@ class ScriptManager: ObservableObject {
   }
   
   func updateScriptState(_ state: ScriptState) {
-    scriptState = state
+    self.scriptState = state
     
     if state == .terminated {
-      DispatchQueue.main.asyncAfter(deadline: Constants.Delays.scriptStateChangeDelay) {
+      Delay.by(Constants.Delays.secondsBetweenTerminatedAndReadyState) {
         self.scriptState = .readyToStart
       }
     }
