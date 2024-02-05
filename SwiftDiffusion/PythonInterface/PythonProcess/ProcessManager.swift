@@ -7,13 +7,6 @@
 
 import Foundation
 
-extension Constants {
-  struct CommandLine {
-    static let zshPath = "/bin/zsh"
-    static let zshUrl = URL(fileURLWithPath: zshPath)
-  }
-}
-
 /// Manages execution of external processes.
 class ProcessManager {
   private var process: Process?

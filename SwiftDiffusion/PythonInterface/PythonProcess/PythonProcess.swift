@@ -7,11 +7,19 @@
 
 import Foundation
 
+extension Constants {
+  struct CommandLine {
+    static let zshPath = "/bin/zsh"
+    static let zshUrl = URL(fileURLWithPath: zshPath)
+  }
+}
+
 protocol PythonProcessDelegate: AnyObject {
   func pythonProcessDidUpdateOutput(output: String)
   func pythonProcessDidFinishRunning(with result: ScriptResult)
 }
 
+/// Manages execution of external Python processes.
 class PythonProcess {
   private var process: Process?
   private var outputPipe: Pipe?
@@ -19,8 +27,16 @@ class PythonProcess {
   
   weak var delegate: PythonProcessDelegate?
   
+  /// Initializes a new PythonProcess.
   init() { }
   
+  /// Sets up and starts a process with given script directory, name and optional overriding arguments..
+  /// - Parameters:
+  ///   - scriptDirectory: The directory where the script is located.
+  ///   - scriptName: The name of the script to be executed.
+  ///   - arguments: Override with custom arguments.
+  ///
+  /// - important: If overriding default arguments, you must include: `cd \(scriptDirectory); ./\(scriptName)`
   func runScript(at path: String, scriptName: String, arguments: [String] = []) {
     let process = Process()
     let outputPipe = Pipe()
@@ -30,7 +46,7 @@ class PythonProcess {
     self.outputPipe = outputPipe
     self.errorPipe = errorPipe
     
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+    process.executableURL = Constants.CommandLine.zshUrl
     let scriptDirectory = path
     let command = arguments.isEmpty ? "cd \(scriptDirectory); ./\(scriptName)" : arguments.joined(separator: " ")
     process.arguments = ["-c", command]
@@ -46,6 +62,7 @@ class PythonProcess {
     }
   }
   
+  /// Sets up handlers for process output and error streams.
   private func setupOutputHandling() {
     outputPipe?.fileHandleForReading.readabilityHandler = { [weak self] fileHandle in
       let data = fileHandle.availableData
@@ -64,8 +81,22 @@ class PythonProcess {
     }
   }
   
+  /// Terminate the PythonProcess.
   func terminate() {
     process?.terminate()
+    clearProcessAndPipes()
+  }
+  
+  private func clearProcessAndPipes() {
+    outputPipe?.fileHandleForReading.readabilityHandler = nil
+    errorPipe?.fileHandleForReading.readabilityHandler = nil
+    process = nil
+    outputPipe = nil
+    errorPipe = nil
+  }
+  
+  deinit {
+    clearProcessAndPipes()
   }
   
 }

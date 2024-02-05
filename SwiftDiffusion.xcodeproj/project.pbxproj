@@ -14,6 +14,7 @@
 		2971965D2B717687000F7960 /* ProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971965C2B717687000F7960 /* ProcessManager.swift */; };
 		2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */; };
 		297196612B718BB1000F7960 /* PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196602B718BB1000F7960 /* PythonProcess.swift */; };
+		297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 		2971965C2B717687000F7960 /* ProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessManager.swift; sourceTree = "<group>"; };
 		2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptSetupHelper.swift; sourceTree = "<group>"; };
 		297196602B718BB1000F7960 /* PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PythonProcess.swift; sourceTree = "<group>"; };
+		297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+PythonProcess.swift"; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
 		2996D0952B6ED5B000B487D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -86,13 +88,14 @@
 			path = FileManagers;
 			sourceTree = "<group>";
 		};
-		2971965B2B717672000F7960 /* ProcessManager */ = {
+		2971965B2B717672000F7960 /* PythonProcess */ = {
 			isa = PBXGroup;
 			children = (
 				2971965C2B717687000F7960 /* ProcessManager.swift */,
 				297196602B718BB1000F7960 /* PythonProcess.swift */,
+				297196622B719205000F7960 /* ScriptManager+PythonProcess.swift */,
 			);
-			path = ProcessManager;
+			path = PythonProcess;
 			sourceTree = "<group>";
 		};
 		2996D0872B6ED5B000B487D5 = {
@@ -138,7 +141,7 @@
 		2996D0A42B6EE44E00B487D5 /* PythonInterface */ = {
 			isa = PBXGroup;
 			children = (
-				2971965B2B717672000F7960 /* ProcessManager */,
+				2971965B2B717672000F7960 /* PythonProcess */,
 				2971965A2B7174AD000F7960 /* FileManagers */,
 				2996D0A52B6EE45E00B487D5 /* ScriptManager */,
 			);
@@ -237,6 +240,7 @@
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
+				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
