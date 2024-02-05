@@ -120,8 +120,8 @@
 		2996D0A52B6EE45E00B487D5 /* ScriptManager */ = {
 			isa = PBXGroup;
 			children = (
-				2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */,
 				2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */,
+				2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */,
 				2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */,
 			);
 			path = ScriptManager;
