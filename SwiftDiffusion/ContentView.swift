@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 extension Constants {
   static let horizontalPadding = CGFloat(8)
@@ -108,13 +109,20 @@ struct ContentView: View {
     let panel = NSOpenPanel()
     panel.allowsMultipleSelection = false
     panel.canChooseDirectories = false
-    panel.allowedFileTypes = ["sh"]
+    
+    if let shellScriptType = UTType(filenameExtension: "sh") {
+      panel.allowedContentTypes = [shellScriptType]
+    } else {
+      print("Failed to find UTType for .sh files")
+      return
+    }
+    
     panel.begin { (response) in
-      if response == .OK {
-        if let url = panel.urls.first {
-          self.scriptPathInput = url.path
-          self.scriptManager.scriptPath = url.path
-        }
+      if response == .OK, let url = panel.urls.first, url.pathExtension == "sh" {
+        self.scriptPathInput = url.path
+        self.scriptManager.scriptPath = url.path
+      } else {
+        print("Error: Selected file is not a .sh script.")
       }
     }
   }
