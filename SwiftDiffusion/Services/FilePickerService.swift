@@ -9,11 +9,9 @@ import Foundation
 import AppKit
 import UniformTypeIdentifiers
 
-extension Constants {
-  struct FileTypes {
-    static let shellExtension = "sh"
-    static let shellScriptType = UTType(filenameExtension: shellExtension)
-  }
+extension Constants.FileTypes {
+  static let shellExtension = "sh"
+  static let shellScriptType = UTType(filenameExtension: shellExtension)
 }
 
 struct FilePickerService {

@@ -12,6 +12,15 @@ enum ScriptResult {
   case failure(Error)
 }
 
+extension Constants.Keys {
+  static let scriptPath = "scriptPath"
+}
+
+extension Constants.Delays {
+  static let secondsBetweenTerminatedAndReadyState: Double = 2
+  static let scriptStateChangeDelay: DispatchTime = .now() + secondsBetweenTerminatedAndReadyState
+}
+
 class ScriptManager: ObservableObject {
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
@@ -28,12 +37,12 @@ class ScriptManager: ObservableObject {
   @Published var consoleOutput: String = ""
   var scriptPath: String? {
     didSet {
-      UserDefaults.standard.set(scriptPath, forKey: "scriptPath")
+      UserDefaults.standard.set(scriptPath, forKey: Constants.Keys.scriptPath)
     }
   }
   /// Initializes a new instance of `ScriptManager`.
   init() {
-    self.scriptPath = UserDefaults.standard.string(forKey: "scriptPath")
+    self.scriptPath = UserDefaults.standard.string(forKey: Constants.Keys.scriptPath)
     if let scriptPath = self.scriptPath {
       self.configManager = ConfigFileManager(scriptPath: scriptPath)
     } else {
@@ -45,7 +54,7 @@ class ScriptManager: ObservableObject {
     scriptState = state
     
     if state == .terminated {
-      DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+      DispatchQueue.main.asyncAfter(deadline: Constants.Delays.scriptStateChangeDelay) {
         self.scriptState = .readyToStart
       }
     }

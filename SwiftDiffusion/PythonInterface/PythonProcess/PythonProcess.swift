@@ -7,10 +7,12 @@
 
 import Foundation
 
-extension Constants {
-  struct CommandLine {
-    static let zshPath = "/bin/zsh"
-    static let zshUrl = URL(fileURLWithPath: zshPath)
+extension Constants.CommandLine {
+  static let zshPath = "/bin/zsh"
+  static let zshUrl = URL(fileURLWithPath: zshPath)
+  
+  static var defaultCommand: (String, String) -> String = { dir, name in
+      return "cd \(dir); ./\(name)"
   }
 }
 
@@ -48,7 +50,7 @@ class PythonProcess {
     
     process.executableURL = Constants.CommandLine.zshUrl
     let scriptDirectory = path
-    let command = arguments.isEmpty ? "cd \(scriptDirectory); ./\(scriptName)" : arguments.joined(separator: " ")
+    let command = arguments.isEmpty ? Constants.CommandLine.defaultCommand(scriptDirectory, scriptName) : arguments.joined(separator: " ")
     process.arguments = ["-c", command]
     process.standardOutput = outputPipe
     process.standardError = errorPipe
