@@ -13,6 +13,8 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   @StateObject var scriptManager = ScriptManager.shared
   @AppStorage("scriptPathInput") var scriptPathInput: String = ""
+  @AppStorage("fileOutputDir") var fileOutputDir: String = ""
+  
   @StateObject private var mainViewModel = MainViewModel()
   
   var body: some Scene {

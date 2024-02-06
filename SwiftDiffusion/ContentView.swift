@@ -12,12 +12,13 @@ extension Constants.Layout {
 }
 
 enum ViewManager {
-  case main, console
+  case main, console, settings
   
   var title: String {
     switch self {
     case .main: return "Home"
     case .console: return "Console"
+    case .settings: return "Settings"
     }
   }
 }
@@ -32,6 +33,7 @@ struct ContentView: View {
   // Console
   @ObservedObject var scriptManager: ScriptManager
   @Binding var scriptPathInput: String
+  @Binding var fileOutputDir: String
   // Views
   @State private var selectedView: ViewManager = .main
   // Detail
@@ -53,12 +55,14 @@ struct ContentView: View {
       .listStyle(SidebarListStyle())
       
     } content: {
-      // Detail view for selected item
+      // MainView (prompt controller, console, etc.)
       switch selectedView {
       case .main:
         MainView(prompt: mainViewModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
+      case .settings:
+        SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView

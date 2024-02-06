@@ -47,4 +47,22 @@ struct FilePickerService {
       }
     }
   }
+  
+  @MainActor
+  static func browseForDirectory() async -> String? {
+    return await withCheckedContinuation { continuation in
+      let panel = NSOpenPanel()
+      panel.allowsMultipleSelection = false
+      panel.canChooseDirectories = true
+      panel.canChooseFiles = false
+      
+      panel.begin { response in
+        if response == .OK, let url = panel.urls.first {
+          continuation.resume(returning: url.path)
+        } else {
+          continuation.resume(returning: nil)
+        }
+      }
+    }
+  }
 }
