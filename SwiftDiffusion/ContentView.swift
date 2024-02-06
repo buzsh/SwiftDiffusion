@@ -40,6 +40,8 @@ struct ContentView: View {
   @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
   @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   
+  @State private var showingSettingsView = false
+  
   
   var body: some View {
     NavigationSplitView {
@@ -71,12 +73,12 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
       fileHierarchy.rootPath = fileOutputDir
-      fileHierarchy.refresh() // Manually refresh the hierarchy with the new path
+      fileHierarchy.refresh()
       scriptPathInput = scriptManager.scriptPath ?? ""
     }
-    .onChange(of: fileOutputDir) { newPath in
-      fileHierarchy.rootPath = newPath
-      fileHierarchy.refresh() // Refresh the hierarchy when the directory changes
+    .onChange(of: fileOutputDir) {
+      fileHierarchy.rootPath = fileOutputDir
+      fileHierarchy.refresh()
     }
     .navigationTitle(selectedView.title)
     .toolbar {
@@ -91,11 +93,14 @@ struct ContentView: View {
       ToolbarItem(placement: .automatic) {
         Button(action: {
           Debug.log("Toolbar item selected")
-          selectedView = .settings
+          showingSettingsView = true //selectedView = .settings
         }) {
           Image(systemName: "gear")
         }
       }
+    }
+    .sheet(isPresented: $showingSettingsView) {
+      SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
@@ -352,7 +357,7 @@ class ThumbnailLoader: ObservableObject {
   
   func loadThumbnail(for node: FileNode) {
     DispatchQueue.global(qos: .userInitiated).async {
-      let fileURL = URL(fileURLWithPath: node.fullPath)
+      //let fileURL = URL(fileURLWithPath: node.fullPath)
       guard let image = NSImage(contentsOfFile: node.fullPath) else {
         DispatchQueue.main.async {
           self.thumbnailImage = NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
