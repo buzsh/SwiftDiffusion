@@ -22,76 +22,49 @@ struct MainView: View {
   let minSecondColumnWidth: CGFloat = 160
   
   var body: some View {
-    GeometryReader { geometry in
-      HStack(spacing: 0) {
-        // Column 1
-        VStack {
-          ScrollView {
-            Form {
-              PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
-              PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
-              
-              Text("Model")
-                .textCase(.uppercase)
-                .font(.system(size: 11, weight: .bold, design: .rounded))
-                .opacity(0.8)
-                .padding(.horizontal, 8)
-              Menu {
-                Section("CoreML") {
-                  Button("First") {  }
-                  Button("Second") {  }
-                }
-                
-                Section("Python") {
-                  Button("First") {  }
-                  Button("Second") {  }
-                }
-                
-              } label: {
-                Label("Menu", systemImage: "ellipsis.circle")
-              }
-            }
-            .padding(.vertical, Constants.Layout.listViewPadding)
-            .padding(.leading, Constants.Layout.listViewPadding)
-            .padding(.trailing, Constants.Layout.listViewResizableBarPadding)
-            Spacer()
-          }
-          
-          Divider()
-            .padding(.horizontal, 20)
-          
-          VStack {
-            Button("Generate") { }
-          }
-          .padding(.bottom, 6)
-        }
-        .frame(width: columnWidth)
-        
-        // Adjustable bar
-        Divider()
-          .frame(width: 10)
-          .background(Color.primary.opacity(0.0001))
-          .padding(.vertical, 14)
-          .gesture(
-            DragGesture()
-              .onChanged { value in
-                let maxColumnWidth = geometry.size.width - minSecondColumnWidth - 10
-                let dragAdjustedWidth = columnWidth + value.translation.width
-                columnWidth = min(max(dragAdjustedWidth, minColumnWidth), maxColumnWidth)
-              }
-          )
-        
-        // Column 2
-        VStack {
-          Text("Resizable column 2")
-          Spacer()
-        }
-        .padding()
-        .frame(minWidth: minSecondColumnWidth, maxWidth: .infinity)
-        .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
-      }
+    HSplitView {
+      leftPane
+      rightPane
     }
-    .frame(minWidth: 300)
+    .frame(minWidth: 600, idealWidth: 800, maxHeight: .infinity) // Adjust these values as needed
+  }
+  
+  private var leftPane: some View {
+    ScrollView {
+      Form {
+        PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
+        PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+        
+        Text("Model")
+          .textCase(.uppercase)
+          .font(.system(size: 11, weight: .bold, design: .rounded))
+          .opacity(0.8)
+          .padding(.horizontal, 8)
+        Menu {
+          Section(header: Text("CoreML")) {
+            Button("First") { }
+            Button("Second") { }
+          }
+          Section(header: Text("Python")) {
+            Button("First") { }
+            Button("Second") { }
+          }
+        } label: {
+          Label("Choose Model", systemImage: "ellipsis.circle")
+        }
+      }
+      .padding()
+    }
+  }
+  
+  private var rightPane: some View {
+    VStack {
+      Text("Resizable column 2")
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    .padding()
+    //.background(Color(NSColor.windowBackgroundColor)) // Use NSColor for macOS
+    .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
   }
 }
 

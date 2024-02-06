@@ -36,7 +36,30 @@ struct ContentView: View {
   @State private var selectedView: ViewManager = .main
   
   var body: some View {
-    VStack {
+    NavigationView {
+      // Sidebar
+      List {
+        NavigationLink(destination: MainView(prompt: mainViewModel)) {
+          Label("Prompt", systemImage: "text.bubble")
+        }
+        NavigationLink(destination: ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)) {
+          Label("Console", systemImage: "terminal")
+        }
+      }
+      .navigationSplitViewColumnWidth(min: 200, ideal: 350)
+      .listStyle(SidebarListStyle())
+      .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
+      .toolbar {
+        ToolbarItem(placement: .automatic) {
+          Button(action: {
+            Debug.log("Sidebar item selected")
+          }) {
+            Image(systemName: "gear")
+          }
+        }
+      }
+      
+      // Default View
       switch selectedView {
       case .main:
         MainView(prompt: mainViewModel)
@@ -70,19 +93,7 @@ struct ContentView: View {
 }
 
 /*
-#Preview {
+ #Preview {
   ContentView()
-}
-*/
-
-/*
- /// Allows the user to browse for `webui.sh` and sets the associated path variables
- func browseForWebuiShell() {
- Task {
- if let path = await FilePickerService.browseForShellFile() {
- self.scriptPathInput = path
- self.scriptManager.scriptPath = path
- }
- }
  }
  */
