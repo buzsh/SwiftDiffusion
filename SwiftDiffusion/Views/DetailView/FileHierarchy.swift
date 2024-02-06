@@ -46,7 +46,7 @@ class FileHierarchy: ObservableObject {
       }
     } catch {
       DispatchQueue.main.async {
-        Debug.log(error)
+        Debug.log("[FileHierarchy.loadFiles(from: \(directory))]: \(error)")
       }
     }
     return nodes
