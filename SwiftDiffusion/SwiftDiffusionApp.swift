@@ -18,6 +18,8 @@ struct SwiftDiffusionApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView(mainViewModel: mainViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
+        .frame(minWidth: 600, idealWidth: 800, maxWidth: .infinity,
+               minHeight: 400, idealHeight: 600, maxHeight: .infinity)
     }
     .windowToolbarStyle(DefaultWindowToolbarStyle())
   }
