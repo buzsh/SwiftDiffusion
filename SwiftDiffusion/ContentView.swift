@@ -67,17 +67,20 @@ struct ContentView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
         } else if NSImage(named: "DiffusionPlaceholder") != nil {
           Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
         } else {
           // fallback dark gray box
           Rectangle()
             .foregroundColor(.gray)
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
         }
         
         // OutlineView
@@ -134,6 +137,19 @@ extension FileNode: Equatable {
   }
 }
 
+extension FileNode {
+  var isImage: Bool {
+    // Add more image file extensions as needed
+    let imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff"]
+    return imageExtensions.contains((fullPath as NSString).pathExtension.lowercased())
+  }
+  
+  var iconName: String {
+    isLeaf ? (isImage ? "" : "doc") : "folder"
+  }
+}
+
+
 class FileHierarchy: ObservableObject {
   @Published var rootNodes: [FileNode]
   
@@ -175,15 +191,36 @@ struct FileOutlineView: View {
   var body: some View {
     List(fileHierarchy, children: \.children) { node in
       HStack {
+        // Display thumbnail or icon
+        if node.isLeaf, node.isImage {
+          Image(nsImage: thumbnailForImage(at: node.fullPath))
+            .resizable()
+            .scaledToFit()
+            .frame(width: 20, height: 20)
+        } else {
+          Image(systemName: node.iconName)
+        }
+        
         Text(node.name)
         Spacer()
       }
-      .padding(5) // Add some padding to make the highlight more visible
-      .background(self.selectedNode == node ? Color.blue : Color.clear) // Highlight if selected
-      .cornerRadius(5) // Rounded corners for the highlight
+      .padding(5)
+      .background(self.selectedNode == node ? Color.blue : Color.clear)
+      .cornerRadius(5)
       .onTapGesture {
         self.selectNode(node)
       }
+    }
+  }
+  
+  private func thumbnailForImage(at path: String) -> NSImage {
+    // Attempt to load the image at 'path' and resize it to create a thumbnail
+    // This is a simple and naive approach; consider performance optimizations
+    if let image = NSImage(contentsOfFile: path) {
+      return image.resizedToMaintainAspectRatio(targetHeight: 20)//image.resized(to: thumbnailSize)
+    } else {
+      // Fallback to an SF Symbol
+      return NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
     }
   }
   
@@ -193,5 +230,29 @@ struct FileOutlineView: View {
     if let image = NSImage(contentsOfFile: node.fullPath) {
       self.selectedImage = image
     }
+  }
+}
+
+extension NSImage {
+  func resized(to newSize: NSSize) -> NSImage {
+    let img = NSImage(size: newSize)
+    img.lockFocus()
+    self.draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height), from: NSRect(x: 0, y: 0, width: self.size.width, height: self.size.height), operation: .copy, fraction: 1.0)
+    img.unlockFocus()
+    return img
+  }
+}
+
+extension NSImage {
+  func resizedToMaintainAspectRatio(targetHeight: CGFloat) -> NSImage {
+    let imageSize = self.size
+    let heightRatio = targetHeight / imageSize.height
+    let newSize = NSSize(width: imageSize.width * heightRatio, height: targetHeight)
+    
+    let img = NSImage(size: newSize)
+    img.lockFocus()
+    self.draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height), from: NSRect.zero, operation: .copy, fraction: 1.0)
+    img.unlockFocus()
+    return img
   }
 }
