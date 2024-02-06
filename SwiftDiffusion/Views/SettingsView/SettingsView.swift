@@ -19,7 +19,7 @@ struct SettingsView: View {
         .font(.system(.body, design: .monospaced))
       
       HStack {
-        TextField("Path to webui.sh", text: $scriptPathInput)
+        TextField("path/to/webui.sh", text: $scriptPathInput)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(.body, design: .monospaced))
         Button("Browse...") {
@@ -32,14 +32,14 @@ struct SettingsView: View {
         .font(.system(.body, design: .monospaced))
       
       HStack {
-        TextField("Path to webui.sh", text: $fileOutputDir)
+        TextField("path/to/outputs", text: $fileOutputDir)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(.body, design: .monospaced))
         Button("Browse...") {
           browseForOutputDirectory()
         }
       }
-      
+      Spacer()
     }
     .padding(14)
   }

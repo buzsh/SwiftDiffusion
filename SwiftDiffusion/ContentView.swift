@@ -37,7 +37,7 @@ struct ContentView: View {
   // Views
   @State private var selectedView: ViewManager = .main
   // Detail
-  @StateObject private var fileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
+  @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
   @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   
   
@@ -70,7 +70,13 @@ struct ContentView: View {
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
+      fileHierarchy.rootPath = fileOutputDir
+      fileHierarchy.refresh() // Manually refresh the hierarchy with the new path
       scriptPathInput = scriptManager.scriptPath ?? ""
+    }
+    .onChange(of: fileOutputDir) { newPath in
+      fileHierarchy.rootPath = newPath
+      fileHierarchy.refresh() // Refresh the hierarchy when the directory changes
     }
     .navigationTitle(selectedView.title)
     .toolbar {
@@ -85,6 +91,7 @@ struct ContentView: View {
       ToolbarItem(placement: .automatic) {
         Button(action: {
           Debug.log("Toolbar item selected")
+          selectedView = .settings
         }) {
           Image(systemName: "gear")
         }
@@ -168,12 +175,12 @@ extension FileNode {
 
 
 class FileHierarchy: ObservableObject {
-  @Published var rootNodes: [FileNode]
-  private var rootPath: String
+  @Published var rootNodes: [FileNode] = []
+  var rootPath: String
   
   init(rootPath: String) {
     self.rootPath = rootPath
-    self.rootNodes = FileHierarchy.loadFiles(from: rootPath)
+    self.refresh() // Call refresh here to initially populate rootNodes
   }
   
   func refresh() {
