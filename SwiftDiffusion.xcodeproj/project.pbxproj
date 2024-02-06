@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3332B7278FD001D14B9 /* SettingsView.swift */; };
 		2952BAD72B71AEFA002FC885 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD62B71AEFA002FC885 /* MainView.swift */; };
 		2952BAD92B71B79F002FC885 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* MainViewModel.swift */; };
 		2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2916F3332B7278FD001D14B9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2952BAD62B71AEFA002FC885 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		2952BAD82B71B79F002FC885 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
@@ -67,6 +69,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2916F3322B7278D4001D14B9 /* SettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				2916F3332B7278FD001D14B9 /* SettingsView.swift */,
+			);
+			path = SettingsView;
+			sourceTree = "<group>";
+		};
 		2952BADF2B71F64F002FC885 /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +88,7 @@
 		297196472B715061000F7960 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2916F3322B7278D4001D14B9 /* SettingsView */,
 				2952BADF2B71F64F002FC885 /* CustomViews */,
 				297196482B7150B5000F7960 /* ConsoleView.swift */,
 				2952BAD62B71AEFA002FC885 /* MainView.swift */,
@@ -275,6 +286,7 @@
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
+				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
