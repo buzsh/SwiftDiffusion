@@ -11,10 +11,13 @@ import SwiftUI
 @main
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  @StateObject var scriptManager = ScriptManager.shared
+  @AppStorage("scriptPathInput") var scriptPathInput: String = ""
+  @StateObject private var mainViewModel = MainViewModel()
   
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(mainViewModel: mainViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
     }
     .windowToolbarStyle(DefaultWindowToolbarStyle())
   }

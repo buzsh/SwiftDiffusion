@@ -1,0 +1,56 @@
+//
+//  PromptEditorView.swift
+//  SwiftDiffusion
+//
+//  Created by Justin Bush on 2/5/24.
+//
+
+import SwiftUI
+
+struct PromptEditorView: View {
+  var label: String
+  @Binding var text: String
+  @FocusState private var isFocused: Bool
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      HStack {
+        Text(label)
+          .textCase(.uppercase)
+          .font(.system(size: 11, weight: .bold, design: .rounded))
+          .opacity(0.8)
+        Spacer()
+        if wordCount > 0 {
+          Text("\(wordCount)")
+            .opacity(0.5)
+            //.font(.system(.body, design: .monospaced))
+            .font(.system(size: 12, design: .monospaced))
+        }
+      }
+      .padding(.horizontal, 8)
+      
+      TextEditor(text: $text)
+        .frame(minHeight: 80, maxHeight: 80)
+        .font(.system(.body, design: .monospaced))
+        .padding(4)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(
+          RoundedRectangle(cornerRadius: 10)
+            .stroke(isFocused ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
+        )
+        .focused($isFocused)
+    }
+    .padding(2)
+  }
+  
+  var wordCount: Int {
+    let words = text.split { $0.isWhitespace || $0.isNewline }
+    return words.count
+  }
+}
+
+#Preview("Prompt Editor View") {
+  @State var promptText: String = "some, positive, prompt, text"
+  return PromptEditorView(label: "Positive Prompt", text: $promptText)
+    .frame(width: 400, height: 600)
+}

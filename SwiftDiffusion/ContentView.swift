@@ -8,93 +8,56 @@
 import SwiftUI
 
 extension Constants.Layout {
-  static let horizontalPadding: CGFloat = 8
+  static let verticalPadding: CGFloat = 8
+}
+
+enum ViewManager {
+  case main, console
+  
+  var title: String {
+    switch self {
+    case .main: return "Home"
+    case .console: return "Console"
+    }
+  }
+}
+
+extension ViewManager: Hashable, Identifiable {
+  var id: Self { self }
 }
 
 struct ContentView: View {
-  @ObservedObject var scriptManager = ScriptManager.shared
-  @State private var scriptPathInput: String = ""
+  // Main
+  @ObservedObject var mainViewModel: MainViewModel
+  // Console
+  @ObservedObject var scriptManager: ScriptManager
+  @Binding var scriptPathInput: String
+  // Views
+  @State private var selectedView: ViewManager = .main
   
   var body: some View {
     VStack {
-      HStack {
-        TextField("Path to webui.sh", text: $scriptPathInput)
-          .textFieldStyle(RoundedBorderTextFieldStyle())
-          .font(.system(.body, design: .monospaced))
-        Button("Browse...") {
-          browseForWebuiShell()
-        }
+      switch selectedView {
+      case .main:
+        MainView(prompt: mainViewModel)
+      case .console:
+        ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       }
-      .padding(.horizontal, Constants.Layout.horizontalPadding)
-      
-      TextEditor(text: $scriptManager.consoleOutput)
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        .font(.system(.body, design: .monospaced))
-        .border(Color.gray.opacity(0.3), width: 1)
-        .padding(.vertical, 10)
-        .padding(.horizontal, Constants.Layout.horizontalPadding)
-      
-      HStack {
-        Circle()
-          .fill(scriptManager.scriptState.statusColor)
-          .frame(width: 10, height: 10)
-          .padding(.trailing, 2)
-        
-        Text(scriptManager.scriptStateText)
-          .font(.system(.body, design: .monospaced))
-          .onAppear {
-            scriptPathInput = scriptManager.scriptPath ?? ""
-            Debug.log("Current script state: \(scriptManager.scriptStateText)")
-          }
-        
-        if scriptManager.scriptState.isActive, let url = scriptManager.serviceUrl {
-          Button(action: {
-            NSWorkspace.shared.open(url)
-          }) {
-            Image(systemName: "network")
-          }
-          .buttonStyle(.plain)
-          .padding(.leading, 2)
-        }
-        
-        Spacer()
-        
-        Button(action: {
-          scriptManager.terminateAllPythonProcesses {
-            Debug.log("All Python processes terminated.")
-          }
-        }) {
-          Image(systemName: "xmark.octagon")
-        }
-        .buttonStyle(.plain)
-        .padding(.leading, 2)
-        
-        Button("Terminate") {
-          ScriptManager.shared.terminateScript { result in
-            switch result {
-            case .success(let message):
-              Debug.log(message)
-            case .failure(let error):
-              Debug.log("Error: \(error.localizedDescription)")
-            }
-          }
-        }
-        .disabled(!scriptManager.scriptState.isTerminatable)
-        
-        Button("Start") {
-          scriptManager.scriptPath = scriptPathInput
-          scriptManager.run()
-        }
-        .disabled(!scriptManager.scriptState.isStartable)
-      }
-      .padding(.horizontal, Constants.Layout.horizontalPadding)
     }
     .padding()
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
     }
-    .navigationTitle("SwiftDiffusion")
+    .navigationTitle(selectedView.title)
     .toolbar {
+      ToolbarItemGroup(placement: .automatic) {
+        Picker("Options", selection: $selectedView) {
+          Text("Prompt").tag(ViewManager.main)
+          Text("Console").tag(ViewManager.console)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+      }
+      
       ToolbarItem(placement: .automatic) {
         Button(action: {
           Debug.log("Toolbar item selected")
@@ -104,19 +67,23 @@ struct ContentView: View {
       }
     }
   }
-  /// Allows the user to browse for `webui.sh` and sets the associated path variables
-  func browseForWebuiShell() {
-    Task {
-      if let path = await FilePickerService.browseForShellFile() {
-        self.scriptPathInput = path
-        self.scriptManager.scriptPath = path
-      }
-    }
-  }
   
 }
 
-
+/*
 #Preview {
   ContentView()
 }
+*/
+
+/*
+ /// Allows the user to browse for `webui.sh` and sets the associated path variables
+ func browseForWebuiShell() {
+ Task {
+ if let path = await FilePickerService.browseForShellFile() {
+ self.scriptPathInput = path
+ self.scriptManager.scriptPath = path
+ }
+ }
+ }
+ */
