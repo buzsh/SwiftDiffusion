@@ -1,5 +1,5 @@
 //
-//  MainViewModel.swift
+//  PromptViewModel.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/5/24.
@@ -7,7 +7,7 @@
 
 import Combine
 
-class MainViewModel: ObservableObject {
+class PromptViewModel: ObservableObject {
   @Published var positivePrompt: String = ""
   @Published var negativePrompt: String = ""
 }

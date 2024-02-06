@@ -15,11 +15,11 @@ struct SwiftDiffusionApp: App {
   @AppStorage("scriptPathInput") var scriptPathInput: String = ""
   @AppStorage("fileOutputDir") var fileOutputDir: String = ""
   
-  @StateObject private var mainViewModel = MainViewModel()
+  @StateObject private var promptViewModel = PromptViewModel()
   
   var body: some Scene {
     WindowGroup {
-      ContentView(mainViewModel: mainViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      ContentView(promptViewModel: promptViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
         .frame(minWidth: 600, idealWidth: 800, maxWidth: .infinity,
                minHeight: 400, idealHeight: 600, maxHeight: .infinity)
     }
