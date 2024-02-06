@@ -193,10 +193,7 @@ struct FileOutlineView: View {
       HStack {
         // Display thumbnail or icon
         if node.isLeaf, node.isImage {
-          Image(nsImage: thumbnailForImage(at: node.fullPath))
-            .resizable()
-            .scaledToFit()
-            .frame(width: 20, height: 20)
+          FileRowView(node: node)
         } else {
           Image(systemName: node.iconName)
         }
@@ -254,5 +251,55 @@ extension NSImage {
     self.draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height), from: NSRect.zero, operation: .copy, fraction: 1.0)
     img.unlockFocus()
     return img
+  }
+}
+
+struct FileRowView: View {
+  let node: FileNode
+  @StateObject private var thumbnailLoader = ThumbnailLoader()
+  
+  var body: some View {
+    HStack {
+      if let thumbnailImage = thumbnailLoader.thumbnailImage {
+        Image(nsImage: thumbnailImage)
+          .resizable()
+          .scaledToFit()
+          .frame(width: 20, height: 20)
+      } else {
+        // Placeholder or loading indicator
+        ProgressView()
+          .frame(width: 20, height: 20)
+      }
+      Text(node.name)
+      Spacer()
+    }
+    .onAppear {
+      thumbnailLoader.loadThumbnail(for: node)
+    }
+  }
+}
+
+
+import SwiftUI
+import Combine
+
+class ThumbnailLoader: ObservableObject {
+  @Published var thumbnailImage: NSImage?
+  private var cancellables = Set<AnyCancellable>()
+  
+  func loadThumbnail(for node: FileNode) {
+    DispatchQueue.global(qos: .userInitiated).async {
+      guard let image = NSImage(contentsOfFile: node.fullPath) else {
+        DispatchQueue.main.async {
+          self.thumbnailImage = NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
+        }
+        return
+      }
+      
+      let thumbnail = image.resizedToMaintainAspectRatio(targetHeight: 40) // Adjust targetHeight as needed
+      DispatchQueue.main.async {
+        self.thumbnailImage = thumbnail
+      }
+    }
   }
 }
