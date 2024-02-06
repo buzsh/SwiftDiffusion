@@ -9,7 +9,7 @@ import Foundation
 
 extension Constants.CommandLine {
   static var defaultCommand: (String, String) -> String = { dir, name in
-      return "cd \(dir); ./\(name)" // --api --api-log --no-half
+      return "cd \(dir); ./\(name) --api --api-log" // --api --api-log --no-half
   }
 }
 

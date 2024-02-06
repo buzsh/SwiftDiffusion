@@ -36,6 +36,7 @@
 		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
+		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */,
+				29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +291,9 @@
 			dependencies = (
 			);
 			name = SwiftDiffusion;
+			packageProductDependencies = (
+				29F6D5ED2B72BCBA00613242 /* CompactSlider */,
+			);
 			productName = SwiftDiffusion;
 			productReference = 2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */;
 			productType = "com.apple.product-type.application";
@@ -317,6 +322,9 @@
 				Base,
 			);
 			mainGroup = 2996D0872B6ED5B000B487D5;
+			packageReferences = (
+				29F6D5EC2B72BCBA00613242 /* XCRemoteSwiftPackageReference "CompactSlider" */,
+			);
 			productRefGroup = 2996D0912B6ED5B000B487D5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -569,6 +577,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		29F6D5EC2B72BCBA00613242 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buh/CompactSlider.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		29F6D5ED2B72BCBA00613242 /* CompactSlider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29F6D5EC2B72BCBA00613242 /* XCRemoteSwiftPackageReference "CompactSlider" */;
+			productName = CompactSlider;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2996D0882B6ED5B000B487D5 /* Project object */;
 }
