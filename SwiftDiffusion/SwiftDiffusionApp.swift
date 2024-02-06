@@ -28,7 +28,7 @@ struct SwiftDiffusionApp: App {
 }
 
 
-
+// MARK: - AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate {
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
     ScriptManager.shared.terminateImmediately()

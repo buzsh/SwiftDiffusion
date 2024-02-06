@@ -8,6 +8,11 @@
 import SwiftUI
 
 extension NSImage {
+  /// Resizes the NSImage while maintaining its original aspect ratio to match the target height.
+  ///
+  /// - Parameters:
+  ///   - targetHeight: The desired height for the resized image.
+  /// - Returns: A new NSImage instance that has been resized while maintaining the original aspect ratio.
   func resizedToMaintainAspectRatio(targetHeight: CGFloat) -> NSImage {
     let imageSize = self.size
     let heightRatio = targetHeight / imageSize.height
