@@ -38,8 +38,8 @@ struct DetailView: View {
       .frame(minHeight: 200, idealHeight: 400)
       
       FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage, onSelectImage: { imagePath in
-        lastSelectedImagePath = imagePath // Use this line instead
-      })
+        lastSelectedImagePath = imagePath
+      }, lastSelectedImagePath: lastSelectedImagePath)
       .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
       .frame(minHeight: 140, idealHeight: 200)
     }

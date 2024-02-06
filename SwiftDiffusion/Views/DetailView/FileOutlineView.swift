@@ -12,6 +12,7 @@ struct FileOutlineView: View {
   @Binding var selectedImage: NSImage?
   @State private var selectedNode: FileNode?
   var onSelectImage: (String) -> Void
+  var lastSelectedImagePath: String
   
   var body: some View {
     VStack(spacing: 0) {
@@ -60,10 +61,18 @@ struct FileOutlineView: View {
         .onTapGesture {
           self.selectNode(node)
         }
+        .onAppear {
+          if node.fullPath == lastSelectedImagePath {
+            self.selectedNode = node
+          }
+        }
       }
     }
   }
   
+  private func isSelected(_ node: FileNode) -> Bool {
+    node.fullPath == lastSelectedImagePath
+  }
   
   private func thumbnailForImage(at path: String) -> NSImage {
     if let image = NSImage(contentsOfFile: path) {
