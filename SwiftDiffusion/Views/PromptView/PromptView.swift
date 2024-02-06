@@ -69,10 +69,8 @@ struct PromptView: View {
           VStack(alignment: .leading) {
             PromptRowHeading(title: "Sampling")
             Menu {
-              Section(header: Text("CoreML Sampling Methods")) {
-                Button("DPM-Solver++") { }
-                Button("PLMS") { }
-              }
+              Button("DPM-Solver++") { }
+              Button("PLMS") { }
             } label: {
               Label("Choose Sampling Method", systemImage: "ellipsis.circle")
             }
