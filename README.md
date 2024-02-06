@@ -3,17 +3,17 @@ SwiftUI Stable Diffusion implementation using CoreML and Python (Automatic1111) 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="1129" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/1f97c4f5-5dc6-4c6e-9db1-40d2c53aa243">
-    <source media="(prefers-color-scheme: light)" width="1129" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/e0815d64-e812-49fe-8dca-bba0eb7e5e65">
-    <img src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a47a84f2-22e4-4c49-ba90-edacfcc9a44b">
+    <source media="(prefers-color-scheme: dark)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/105d13ce-80cc-4b65-92ed-f4758b69c2c3">
+    <source media="(prefers-color-scheme: light)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ca9aa1fe-fd14-4f28-a81a-c53eafc18190">
+    <img width="1071" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/105d13ce-80cc-4b65-92ed-f4758b69c2c3">
   </picture>
 </p>
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="884" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a47a84f2-22e4-4c49-ba90-edacfcc9a44b">
-    <source media="(prefers-color-scheme: light)" width="884" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ce81623a-2ef7-4966-b77f-5c8946755745">
-    <img src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a47a84f2-22e4-4c49-ba90-edacfcc9a44b">
+    <source media="(prefers-color-scheme: dark)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59a79363-17bf-4ee6-9d79-1b730ee2758b">
+    <source media="(prefers-color-scheme: light)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/416a84e1-8375-439c-8820-14743516e971">
+    <img width="1071" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59a79363-17bf-4ee6-9d79-1b730ee2758b">
   </picture>
 </p>
 
