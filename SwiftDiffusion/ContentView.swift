@@ -61,6 +61,7 @@ struct ContentView: View {
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       }
     } detail: {
+      // Image, FileSelect DetailView
       DetailView(selectedImage: $selectedImage, fileHierarchyObject: fileHierarchy)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
@@ -99,7 +100,7 @@ import SwiftUI
 
 struct DetailView: View {
   @Binding var selectedImage: NSImage?
-  var fileHierarchyObject: FileHierarchy // Changed to non-binding, direct use
+  var fileHierarchyObject: FileHierarchy
   
   var body: some View {
     VSplitView {
@@ -133,7 +134,7 @@ struct DetailView: View {
 struct FileNode: Identifiable {
   let id: UUID = UUID()
   let name: String
-  let fullPath: String // Add fullPath to keep track of the item's path
+  let fullPath: String
   var children: [FileNode]? = nil
   
   var isLeaf: Bool {
@@ -149,7 +150,6 @@ extension FileNode: Equatable {
 
 extension FileNode {
   var isImage: Bool {
-    // Add more image file extensions as needed
     let imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff"]
     return imageExtensions.contains((fullPath as NSString).pathExtension.lowercased())
   }
@@ -178,7 +178,7 @@ class FileHierarchy: ObservableObject {
     do {
       let items = try fileManager.contentsOfDirectory(atPath: directory)
       return items.compactMap { item -> FileNode? in
-        // Skip .DS_Store files
+        
         if item == ".DS_Store" { return nil }
         
         let itemPath = (directory as NSString).appendingPathComponent(item)
@@ -202,7 +202,7 @@ import SwiftUI
 struct FileOutlineView: View {
   @ObservedObject var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
-  @State private var selectedNode: FileNode? // Track the selected node
+  @State private var selectedNode: FileNode?
   
   var body: some View {
     VStack(spacing: 0) {
@@ -211,7 +211,7 @@ struct FileOutlineView: View {
         Button(action: {
           self.fileHierarchyObject.refresh()
         }) {
-          Image(systemName: "arrow.clockwise") // SF Symbol for refresh
+          Image(systemName: "arrow.clockwise")
         }
         .buttonStyle(BorderlessButtonStyle())
       }
@@ -219,28 +219,25 @@ struct FileOutlineView: View {
       .background(.bar)
       
       Divider()
-        .overlay(Color.black.opacity(0.8))
+        .overlay(Color.black.opacity(0.1))
       
       List(self.fileHierarchyObject.rootNodes, children: \.children) { node in
         HStack {
           if node.isLeaf {
             if node.isImage {
-              // For image files, use FileRowView which includes the image and text
               FileRowView(node: node)
             } else {
-              // For non-image files, show an icon and the filename
               Image(systemName: node.iconName)
               Text(node.name)
             }
           } else {
-            // For directories, just show the folder icon and the name
             Image(systemName: node.iconName)
             Text(node.name)
           }
           Spacer()
         }
         .padding(5)
-        .background(self.selectedNode == node ? Color.blue : Color.clear) // Conditional background color
+        .background(self.selectedNode == node ? Color.blue : Color.clear)
         .cornerRadius(5)
         .onTapGesture {
           self.selectNode(node)
@@ -251,12 +248,9 @@ struct FileOutlineView: View {
   
   
   private func thumbnailForImage(at path: String) -> NSImage {
-    // Attempt to load the image at 'path' and resize it to create a thumbnail
-    // This is a simple and naive approach; consider performance optimizations
     if let image = NSImage(contentsOfFile: path) {
       return image.resizedToMaintainAspectRatio(targetHeight: 20)//image.resized(to: thumbnailSize)
     } else {
-      // Fallback to an SF Symbol
       return NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
     }
   }
@@ -319,8 +313,8 @@ struct FileRowView: View {
       if let size = thumbnailLoader.imageSize {
         let width = Int(size.width)
         let height = Int(size.height)
-        let dimensionString = "\(width)x\(height)" // Directly concatenate the integer values
-        let fileSizeString = thumbnailLoader.fileSize // File size string
+        let dimensionString = "\(width)x\(height)"
+        let fileSizeString = thumbnailLoader.fileSize
         
         Text("\(fileSizeString)  •  \(dimensionString)")
           .font(.caption)
@@ -340,8 +334,8 @@ import SwiftUI
 
 class ThumbnailLoader: ObservableObject {
   @Published var thumbnailImage: NSImage?
-  @Published var imageSize: CGSize? // Store the image size
-  @Published var fileSize: String = "" // Store the formatted file size as a string
+  @Published var imageSize: CGSize?
+  @Published var fileSize: String = ""
   
   func loadThumbnail(for node: FileNode) {
     DispatchQueue.global(qos: .userInitiated).async {
@@ -353,7 +347,7 @@ class ThumbnailLoader: ObservableObject {
         return
       }
       
-      let thumbnail = image.resizedToMaintainAspectRatio(targetHeight: 40) // Adjust targetHeight as needed
+      let thumbnail = image.resizedToMaintainAspectRatio(targetHeight: 40)
       
       // Fetch and format file size
       let fileSizeAttributes = try? FileManager.default.attributesOfItem(atPath: node.fullPath)
