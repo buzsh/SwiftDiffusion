@@ -44,7 +44,6 @@ struct ContentView: View {
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       }
     }
-    .padding()
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
     }

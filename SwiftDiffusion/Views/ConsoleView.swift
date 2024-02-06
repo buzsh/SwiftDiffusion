@@ -85,6 +85,7 @@ struct ConsoleView: View {
       }
       .padding(.horizontal, Constants.Layout.verticalPadding)
     }
+    .padding(14)
   }
     
   /// Allows the user to browse for `webui.sh` and sets the associated path variables

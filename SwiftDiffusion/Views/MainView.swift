@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+extension Constants.Layout {
+  static let listViewPadding: CGFloat = 12
+  static let listViewResizableBarPadding = listViewPadding - halfResizableBarWidth
+  
+  static let resizableBarWidth: CGFloat = 10
+  static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
+}
+
 struct MainView: View {
   @ObservedObject var prompt: MainViewModel
   @State private var columnWidth: CGFloat = 200
@@ -18,25 +26,29 @@ struct MainView: View {
     GeometryReader { geometry in
       HStack(spacing: 0) {
         // Column 1
-        VStack {
-          Form {
-            PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
-            PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+        ScrollView {
+          VStack {
+            Form {
+              PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
+              PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+            }
+            .padding(.vertical, Constants.Layout.listViewPadding)
+            .padding(.leading, Constants.Layout.listViewPadding)
+            .padding(.trailing, Constants.Layout.listViewResizableBarPadding)
+            Spacer()
           }
-          Spacer()
         }
         .frame(width: columnWidth)
-        .padding()
         
         // Adjustable bar
         Divider()
           .frame(width: 10)
           .background(Color.primary.opacity(0.0001))
+          .padding(.vertical, 14)
           .gesture(
             DragGesture()
               .onChanged { value in
-                // Calculate the new width while ensuring it does not exceed the limits
-                let maxColumnWidth = geometry.size.width - minSecondColumnWidth - 10 // Account for the divider's width
+                let maxColumnWidth = geometry.size.width - minSecondColumnWidth - 10
                 let dragAdjustedWidth = columnWidth + value.translation.width
                 columnWidth = min(max(dragAdjustedWidth, minColumnWidth), maxColumnWidth)
               }
@@ -48,11 +60,10 @@ struct MainView: View {
           Spacer()
         }
         .padding()
-        .frame(minWidth: minSecondColumnWidth, maxWidth: .infinity) // Make column 2 take up the remaining space
+        .frame(minWidth: minSecondColumnWidth, maxWidth: .infinity)
       }
     }
-    // Optional: Set a minimum width for the GeometryReader if needed
-    .frame(minWidth: 300) // Adjust based on your app's minimum acceptable width
+    .frame(minWidth: 300)
   }
 }
 
