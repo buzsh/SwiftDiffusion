@@ -41,7 +41,7 @@ class ThumbnailLoader: ObservableObject {
         }
       }
     } catch {
-      print("Error fetching file size: \(error)")
+      Debug.log("[ThumbnailLoader] fetchAndSetFileSize(for: \(path))\n > Error fetching file size: \(error)")
     }
   }
   

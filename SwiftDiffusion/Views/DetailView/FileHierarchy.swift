@@ -46,7 +46,7 @@ class FileHierarchy: ObservableObject {
       }
     } catch {
       await MainActor.run {
-        Debug.log("[FileHierarchy.loadFiles(from: \(directory))]: \(error)")
+        Debug.log("[FileHierarchy] loadFiles(from: \(directory))\n > \(error)")
       }
     }
     return nodes
