@@ -17,6 +17,7 @@ extension Constants.Layout {
 
 struct MainView: View {
   @ObservedObject var prompt: MainViewModel
+  @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -24,9 +25,20 @@ struct MainView: View {
   var body: some View {
     HSplitView {
       leftPane
-      rightPane
+      if isRightPaneVisible {
+        rightPane
+      }
     }
-    .frame(minWidth: 600, idealWidth: 800, maxHeight: .infinity) // Adjust these values as needed
+    .frame(minWidth: 320, idealWidth: 800, maxHeight: .infinity)
+    .toolbar {
+      ToolbarItem(placement: .automatic) {
+        Button(action: {
+          isRightPaneVisible.toggle()
+        }) {
+          Image(systemName: "sidebar.squares.right")
+        }
+      }
+    }
   }
   
   private var leftPane: some View {
@@ -55,6 +67,8 @@ struct MainView: View {
       }
       .padding()
     }
+    .background(Color(NSColor.windowBackgroundColor))
+    .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
   }
   
   private var rightPane: some View {
@@ -63,8 +77,7 @@ struct MainView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .padding()
-    //.background(Color(NSColor.windowBackgroundColor)) // Use NSColor for macOS
-    .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
+    .background(Color(NSColor.windowBackgroundColor))
   }
 }
 

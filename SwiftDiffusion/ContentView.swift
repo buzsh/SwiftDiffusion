@@ -36,37 +36,35 @@ struct ContentView: View {
   @State private var selectedView: ViewManager = .main
   
   var body: some View {
-    NavigationView {
+    NavigationSplitView {
       // Sidebar
       List {
-        NavigationLink(destination: MainView(prompt: mainViewModel)) {
+        NavigationLink(value: ViewManager.main) {
           Label("Prompt", systemImage: "text.bubble")
         }
-        NavigationLink(destination: ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)) {
+        NavigationLink(value: ViewManager.console) {
           Label("Console", systemImage: "terminal")
         }
       }
-      .navigationSplitViewColumnWidth(min: 200, ideal: 350)
       .listStyle(SidebarListStyle())
-      .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
-      .toolbar {
-        ToolbarItem(placement: .automatic) {
-          Button(action: {
-            Debug.log("Sidebar item selected")
-          }) {
-            Image(systemName: "gear")
-          }
-        }
-      }
       
-      // Default View
+    } content: {
+      // Detail view for selected item
       switch selectedView {
       case .main:
         MainView(prompt: mainViewModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       }
+    } detail: {
+      // Placeholder detail view when nothing is selected
+      VStack {
+        Text("image here")
+        Text("image file list below")
+      }
+      .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
     }
+    .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
     }
@@ -94,6 +92,6 @@ struct ContentView: View {
 
 /*
  #Preview {
-  ContentView()
+ ContentView()
  }
  */
