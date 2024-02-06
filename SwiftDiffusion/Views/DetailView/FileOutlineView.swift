@@ -73,7 +73,7 @@ struct FileOutlineView: View {
   }
   
   private func selectNode(_ node: FileNode) {
-    selectedNode = node // Update the selected node
+    selectedNode = node
     guard node.isLeaf else { return }
     if let image = NSImage(contentsOfFile: node.fullPath) {
       self.selectedImage = image
