@@ -12,11 +12,11 @@ extension Constants.Layout {
 }
 
 enum ViewManager {
-  case main, console, settings
+  case prompt, console, settings
   
   var title: String {
     switch self {
-    case .main: return "Home"
+    case .prompt: return "Prompt"
     case .console: return "Console"
     case .settings: return "Settings"
     }
@@ -37,7 +37,7 @@ struct ContentView: View {
   @Binding var scriptPathInput: String
   @Binding var fileOutputDir: String
   // Views
-  @State private var selectedView: ViewManager = .main
+  @State private var selectedView: ViewManager = .prompt
   // Detail
   @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
   @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
@@ -49,7 +49,7 @@ struct ContentView: View {
     NavigationSplitView {
       // Sidebar
       List {
-        NavigationLink(value: ViewManager.main) {
+        NavigationLink(value: ViewManager.prompt) {
           Label("Prompt", systemImage: "text.bubble")
         }
         NavigationLink(value: ViewManager.console) {
@@ -61,7 +61,7 @@ struct ContentView: View {
     } content: {
       // MainView (prompt controller, console, etc.)
       switch selectedView {
-      case .main:
+      case .prompt:
         PromptView(prompt: promptViewModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
@@ -91,7 +91,7 @@ struct ContentView: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Picker("Options", selection: $selectedView) {
-          Text("Prompt").tag(ViewManager.main)
+          Text("Prompt").tag(ViewManager.prompt)
           Text("Console").tag(ViewManager.console)
         }
         .pickerStyle(SegmentedPickerStyle())
