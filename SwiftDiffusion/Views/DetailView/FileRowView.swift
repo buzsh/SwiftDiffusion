@@ -39,8 +39,8 @@ struct FileRowView: View {
           .foregroundColor(.gray)
       }
     }
-    .onAppear {
-      thumbnailLoader.loadThumbnail(for: node)
+    .task {
+      await thumbnailLoader.loadThumbnail(for: node)
     }
   }
 }

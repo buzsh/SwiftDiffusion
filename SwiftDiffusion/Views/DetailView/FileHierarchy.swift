@@ -5,7 +5,7 @@
 //  Created by Justin Bush on 2/6/24.
 //
 
-import Foundation
+import SwiftUI
 
 class FileHierarchy: ObservableObject {
   @Published var rootNodes: [FileNode] = []
@@ -18,11 +18,11 @@ class FileHierarchy: ObservableObject {
   }
   
   func refresh() async {
-    DispatchQueue.main.async {
+    await MainActor.run {
       self.isLoading = true
     }
     let loadedFiles = await FileHierarchy.loadFiles(from: self.rootPath)
-    DispatchQueue.main.async {
+    await MainActor.run {
       self.rootNodes = loadedFiles
       self.isLoading = false
     }
@@ -45,7 +45,7 @@ class FileHierarchy: ObservableObject {
         }
       }
     } catch {
-      DispatchQueue.main.async {
+      await MainActor.run {
         Debug.log("[FileHierarchy.loadFiles(from: \(directory))]: \(error)")
       }
     }
