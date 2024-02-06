@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CompactSlider
 
 extension Constants.Layout {
   static let listViewPadding: CGFloat = 12
@@ -13,6 +14,8 @@ extension Constants.Layout {
   
   static let resizableBarWidth: CGFloat = 10
   static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
+  
+  static let promptRowPadding: CGFloat = 16
 }
 
 struct PromptView: View {
@@ -44,28 +47,125 @@ struct PromptView: View {
   private var leftPane: some View {
     ScrollView {
       Form {
+        VStack(alignment: .leading) {
+          Text("Model")
+            .textCase(.uppercase)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .opacity(0.8)
+            .padding(.horizontal, 8)
+          Menu {
+            Section(header: Text("CoreML")) {
+              Button("First") { }
+              Button("Second") { }
+            }
+            Section(header: Text("Python")) {
+              Button("First") { }
+              Button("Second") { }
+            }
+          } label: {
+            Label("Choose Model", systemImage: "ellipsis.circle")
+          }
+        }
+        .padding(.vertical, Constants.Layout.promptRowPadding)
+        
         PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
         PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+          .padding(.bottom, 6)
         
-        Text("Model")
-          .textCase(.uppercase)
-          .font(.system(size: 11, weight: .bold, design: .rounded))
-          .opacity(0.8)
-          .padding(.horizontal, 8)
-        Menu {
-          Section(header: Text("CoreML")) {
-            Button("First") { }
-            Button("Second") { }
+        VStack(alignment: .leading) {
+          Text("Dimensions")
+            .textCase(.uppercase)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .opacity(0.8)
+            .padding(.horizontal, 8)
+          HStack {
+            CompactSlider(value: $prompt.width, in: 64...2048, step: 64) {
+              Text("Width")
+              Spacer()
+              Text("\(Int(prompt.width))")
+            }
+            CompactSlider(value: $prompt.height, in: 64...2048, step: 64) {
+              Text("Height")
+              Spacer()
+              Text("\(Int(prompt.height))")
+            }
           }
-          Section(header: Text("Python")) {
-            Button("First") { }
-            Button("Second") { }
-          }
-        } label: {
-          Label("Choose Model", systemImage: "ellipsis.circle")
         }
+        .padding(.bottom, Constants.Layout.promptRowPadding)
+        
+        VStack(alignment: .leading) {
+          Text("Detail")
+            .textCase(.uppercase)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .opacity(0.8)
+            .padding(.horizontal, 8)
+          HStack {
+            CompactSlider(value: $prompt.cfgScale, in: 1...30, step: 0.5) {
+              Text("CFG Scale")
+              Spacer()
+              Text(String(format: "%.1f", prompt.cfgScale))
+            }
+            CompactSlider(value: $prompt.samplingSteps, in: 1...150, step: 1) {
+              Text("Sampling Steps")
+              Spacer()
+              Text("\(Int(prompt.samplingSteps))")
+            }
+          }
+        }
+        .padding(.bottom, Constants.Layout.promptRowPadding)
+        
+        VStack(alignment: .leading) {
+          Text("Seed")
+            .textCase(.uppercase)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .opacity(0.8)
+            .padding(.horizontal, 8)
+            .padding(.leading, 8)
+          HStack {
+            TextField("", text: $prompt.seed)
+              .textFieldStyle(RoundedBorderTextFieldStyle())
+              .font(.system(.body, design: .monospaced))
+            Button(action: {
+              Debug.log("Shuffle random seed")
+              prompt.seed = "-1"
+            }) {
+              Image(systemName: "shuffle") //"dice"
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            Button(action: {
+              Debug.log("Repeat last seed")
+            }) {
+              Image(systemName: "repeat")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+          }
+        }
+        .padding(.bottom, Constants.Layout.promptRowPadding)
+        
+        VStack(alignment: .leading) {
+          Text("Export Amount")
+            .textCase(.uppercase)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .opacity(0.8)
+            .padding(.horizontal, 8)
+          HStack {
+            CompactSlider(value: $prompt.batchCount, in: 1...100, step: 1) {
+              Text("Batch Count")
+              Spacer()
+              Text("\(Int(prompt.batchCount))")
+            }
+            CompactSlider(value: $prompt.batchSize, in: 1...8, step: 1) {
+              Text("Batch Size")
+              Spacer()
+              Text("\(Int(prompt.batchSize))")
+            }
+          }
+        }
+        .padding(.bottom, Constants.Layout.promptRowPadding)
+        
       }
-      .padding()
+      .padding(.leading, 8)
+      .padding(.trailing, 16)
     }
     .background(Color(NSColor.windowBackgroundColor))
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
@@ -87,5 +187,5 @@ struct PromptView: View {
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
   
-  return PromptView(prompt: promptModel)
+  return PromptView(prompt: promptModel).frame(width: 400, height: 600)
 }

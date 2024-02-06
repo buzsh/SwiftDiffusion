@@ -21,7 +21,7 @@ struct ConsoleView: View {
       }
                     .padding(.horizontal, Constants.Layout.verticalPadding)
                     .padding(.top, 10)
-      
+      // API test output
       if let outputImage = outputImage {
         outputImage
           .resizable()
