@@ -17,11 +17,20 @@ struct FileOutlineView: View {
       
       HStack {
         Button(action: {
-          self.fileHierarchyObject.refresh()
+          Task {
+            await self.fileHierarchyObject.refresh()
+          }
         }) {
           Image(systemName: "arrow.clockwise")
         }
         .buttonStyle(BorderlessButtonStyle())
+        
+        if fileHierarchyObject.isLoading { // Loading indicator conditionally displayed
+          ProgressView()
+            .progressViewStyle(.circular)
+            .controlSize(.small)
+            .padding(.leading, 5)
+        }
       }
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 30)
       .background(.bar)
@@ -57,7 +66,7 @@ struct FileOutlineView: View {
   
   private func thumbnailForImage(at path: String) -> NSImage {
     if let image = NSImage(contentsOfFile: path) {
-      return image.resizedToMaintainAspectRatio(targetHeight: 20)//image.resized(to: thumbnailSize)
+      return image.resizedToMaintainAspectRatio(targetHeight: 20)
     } else {
       return NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
     }
@@ -69,16 +78,6 @@ struct FileOutlineView: View {
     if let image = NSImage(contentsOfFile: node.fullPath) {
       self.selectedImage = image
     }
-  }
-}
-
-extension NSImage {
-  func resized(to newSize: NSSize) -> NSImage {
-    let img = NSImage(size: newSize)
-    img.lockFocus()
-    self.draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height), from: NSRect(x: 0, y: 0, width: self.size.width, height: self.size.height), operation: .copy, fraction: 1.0)
-    img.unlockFocus()
-    return img
   }
 }
 

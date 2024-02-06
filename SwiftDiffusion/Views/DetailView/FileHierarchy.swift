@@ -9,38 +9,47 @@ import Foundation
 
 class FileHierarchy: ObservableObject {
   @Published var rootNodes: [FileNode] = []
+  @Published var isLoading: Bool = false
   var rootPath: String
   
   init(rootPath: String) {
     self.rootPath = rootPath
-    self.refresh() // Call refresh here to initially populate rootNodes
+    Task { await self.refresh() }
   }
   
-  func refresh() {
-    self.rootNodes = FileHierarchy.loadFiles(from: self.rootPath)
+  func refresh() async {
+    DispatchQueue.main.async {
+      self.isLoading = true
+    }
+    let loadedFiles = await FileHierarchy.loadFiles(from: self.rootPath)
+    DispatchQueue.main.async {
+      self.rootNodes = loadedFiles
+      self.isLoading = false
+    }
   }
   
-  static func loadFiles(from directory: String) -> [FileNode] {
+  static func loadFiles(from directory: String) async -> [FileNode] {
+    var nodes: [FileNode] = []
     let fileManager = FileManager.default
     do {
       let items = try fileManager.contentsOfDirectory(atPath: directory)
-      return items.compactMap { item -> FileNode? in
-        
-        if item == ".DS_Store" { return nil }
-        
+      for item in items where item != ".DS_Store" {
         let itemPath = (directory as NSString).appendingPathComponent(item)
         var isDir: ObjCBool = false
         fileManager.fileExists(atPath: itemPath, isDirectory: &isDir)
         if isDir.boolValue {
-          return FileNode(name: item, fullPath: itemPath, children: loadFiles(from: itemPath))
+          let children = await loadFiles(from: itemPath) // Recursively load files
+          nodes.append(FileNode(name: item, fullPath: itemPath, children: children))
         } else {
-          return FileNode(name: item, fullPath: itemPath, children: nil)
+          nodes.append(FileNode(name: item, fullPath: itemPath, children: nil))
         }
       }
     } catch {
-      print(error)
-      return []
+      DispatchQueue.main.async {
+        Debug.log(error)
+      }
     }
+    return nodes
   }
 }
 

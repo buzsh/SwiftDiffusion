@@ -72,13 +72,17 @@ struct ContentView: View {
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
-      fileHierarchy.rootPath = fileOutputDir
-      fileHierarchy.refresh()
       scriptPathInput = scriptManager.scriptPath ?? ""
+      fileHierarchy.rootPath = fileOutputDir
+      Task {
+        await fileHierarchy.refresh()
+      }
     }
     .onChange(of: fileOutputDir) {
       fileHierarchy.rootPath = fileOutputDir
-      fileHierarchy.refresh()
+      Task {
+        await fileHierarchy.refresh()
+      }
     }
     .navigationTitle(selectedView.title)
     .toolbar {
@@ -93,7 +97,7 @@ struct ContentView: View {
       ToolbarItem(placement: .automatic) {
         Button(action: {
           Debug.log("Toolbar item selected")
-          showingSettingsView = true //selectedView = .settings
+          showingSettingsView = true
         }) {
           Image(systemName: "gear")
         }
