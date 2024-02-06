@@ -13,15 +13,12 @@ struct ConsoleView: View {
   
   var body: some View {
     VStack {
-      HStack {
-        TextField("Path to webui.sh", text: $scriptPathInput)
-          .textFieldStyle(RoundedBorderTextFieldStyle())
-          .font(.system(.body, design: .monospaced))
-        Button("Browse...") {
-          browseForWebuiShell()
-        }
+      BrowseFileRow(placeholderText: "path/to/webui.sh",
+                    textValue: $scriptPathInput) {
+        await FilePickerService.browseForShellFile()
       }
-      .padding(.horizontal, Constants.Layout.verticalPadding)
+                    .padding(.horizontal, Constants.Layout.verticalPadding)
+                    .padding(.top, 10)
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
@@ -87,20 +84,10 @@ struct ConsoleView: View {
     }
     .padding(14)
   }
-    
-  /// Allows the user to browse for `webui.sh` and sets the associated path variables
-  func browseForWebuiShell() {
-    Task {
-      if let path = await FilePickerService.browseForShellFile() {
-        self.scriptPathInput = path
-        self.scriptManager.scriptPath = path
-      }
-    }
-  }
 }
 
 /*
-#Preview {
-  ConsoleView(scriptManager: <#ScriptManager#>, scriptPathInput: <#Binding<String>#>)
-}
-*/
+ #Preview {
+ ConsoleView(scriptManager: <#ScriptManager#>, scriptPathInput: <#Binding<String>#>)
+ }
+ */
