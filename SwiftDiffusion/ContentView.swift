@@ -191,14 +191,20 @@ struct FileOutlineView: View {
   var body: some View {
     List(fileHierarchy, children: \.children) { node in
       HStack {
-        // Display thumbnail or icon
-        if node.isLeaf, node.isImage {
-          FileRowView(node: node)
+        if node.isLeaf {
+          if node.isImage {
+            // For image files, use FileRowView which includes the image and text
+            FileRowView(node: node)
+          } else {
+            // For non-image files, show an icon and the filename
+            Image(systemName: node.iconName)
+            Text(node.name)
+          }
         } else {
+          // For directories, just show the folder icon and the name
           Image(systemName: node.iconName)
+          Text(node.name)
         }
-        
-        Text(node.name)
         Spacer()
       }
       .padding(5)
