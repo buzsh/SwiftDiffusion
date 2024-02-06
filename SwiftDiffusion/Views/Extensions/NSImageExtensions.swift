@@ -5,7 +5,7 @@
 //  Created by Justin Bush on 2/6/24.
 //
 
-import Foundation
+import SwiftUI
 
 extension NSImage {
   func resizedToMaintainAspectRatio(targetHeight: CGFloat) -> NSImage {
