@@ -18,25 +18,52 @@ extension Constants.Layout {
 struct MainView: View {
   @ObservedObject var prompt: MainViewModel
   @State private var columnWidth: CGFloat = 200
-  let minColumnWidth: CGFloat = 150
-  
-  let minSecondColumnWidth: CGFloat = 150
+  let minColumnWidth: CGFloat = 160
+  let minSecondColumnWidth: CGFloat = 160
   
   var body: some View {
     GeometryReader { geometry in
       HStack(spacing: 0) {
         // Column 1
-        ScrollView {
-          VStack {
+        VStack {
+          ScrollView {
             Form {
               PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
               PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+              
+              Text("Model")
+                .textCase(.uppercase)
+                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .opacity(0.8)
+                .padding(.horizontal, 8)
+              Menu {
+                Section("CoreML") {
+                  Button("First") {  }
+                  Button("Second") {  }
+                }
+                
+                Section("Python") {
+                  Button("First") {  }
+                  Button("Second") {  }
+                }
+                
+              } label: {
+                Label("Menu", systemImage: "ellipsis.circle")
+              }
             }
             .padding(.vertical, Constants.Layout.listViewPadding)
             .padding(.leading, Constants.Layout.listViewPadding)
             .padding(.trailing, Constants.Layout.listViewResizableBarPadding)
             Spacer()
           }
+          
+          Divider()
+            .padding(.horizontal, 20)
+          
+          VStack {
+            Button("Generate") { }
+          }
+          .padding(.bottom, 6)
         }
         .frame(width: columnWidth)
         
@@ -61,6 +88,7 @@ struct MainView: View {
         }
         .padding()
         .frame(minWidth: minSecondColumnWidth, maxWidth: .infinity)
+        .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
       }
     }
     .frame(minWidth: 300)
@@ -84,5 +112,27 @@ extension NSTextView {
       drawsBackground = true
     }
     
+  }
+}
+
+
+import SwiftUI
+import AppKit
+
+struct VisualEffectBlurView: NSViewRepresentable {
+  var material: NSVisualEffectView.Material
+  var blendingMode: NSVisualEffectView.BlendingMode
+  
+  func makeNSView(context: Context) -> NSVisualEffectView {
+    let view = NSVisualEffectView()
+    view.material = material
+    view.blendingMode = blendingMode
+    view.state = .active
+    return view
+  }
+  
+  func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+    nsView.material = material
+    nsView.blendingMode = blendingMode
   }
 }

@@ -40,7 +40,7 @@ struct PromptEditorView: View {
         )
         .focused($isFocused)
     }
-    .padding(2)
+    .padding(.bottom, 10)
   }
   
   var wordCount: Int {
