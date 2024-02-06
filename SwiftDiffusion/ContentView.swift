@@ -104,25 +104,28 @@ struct DetailView: View {
   
   var body: some View {
     VSplitView {
-      if let selectedImage = selectedImage {
-        Image(nsImage: selectedImage)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(maxWidth: .infinity, maxHeight: .infinity)
-          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-      } else if NSImage(named: "DiffusionPlaceholder") != nil {
-        Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(maxWidth: .infinity, maxHeight: .infinity)
-          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-      } else {
-        Rectangle()
-          .foregroundColor(.gray)
-          .aspectRatio(contentMode: .fit)
-          .frame(maxWidth: .infinity, maxHeight: .infinity)
-          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+      VStack {
+        if let selectedImage = selectedImage {
+          Image(nsImage: selectedImage)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+        } else if NSImage(named: "DiffusionPlaceholder") != nil {
+          Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+        } else {
+          Rectangle()
+            .foregroundColor(.gray)
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+        }
       }
+      .frame(minHeight: 200, idealHeight: 400)
       
       FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage)
         .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
@@ -300,7 +303,6 @@ struct FileRowView: View {
           .scaledToFit()
           .frame(width: 20, height: 20)
       } else {
-        // Placeholder or loading indicator
         ProgressView()
           .frame(width: 20, height: 20)
       }
@@ -359,14 +361,14 @@ class ThumbnailLoader: ObservableObject {
       
       DispatchQueue.main.async {
         self.thumbnailImage = thumbnail
-        self.imageSize = image.size // Store the original image size
+        self.imageSize = image.size // original image size
       }
     }
   }
   
   private func formatFileSize(_ size: Int) -> String {
     let formatter = ByteCountFormatter()
-    formatter.allowedUnits = [.useKB, .useMB] // Adjust based on preference
+    formatter.allowedUnits = [.useKB, .useMB]
     formatter.countStyle = .file
     return formatter.string(fromByteCount: Int64(size))
   }
