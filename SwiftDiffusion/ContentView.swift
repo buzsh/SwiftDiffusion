@@ -28,6 +28,8 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
+  // Toolbar
+  @State private var showingSettingsView = false
   // Main
   @ObservedObject var mainViewModel: MainViewModel
   // Console
@@ -39,8 +41,8 @@ struct ContentView: View {
   // Detail
   @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
   @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
+  @AppStorage("lastSelectedImagePath") private var lastSelectedImagePath: String = ""
   
-  @State private var showingSettingsView = false
   
   
   var body: some View {
@@ -68,7 +70,7 @@ struct ContentView: View {
       }
     } detail: {
       // Image, FileSelect DetailView
-      DetailView(selectedImage: $selectedImage, fileHierarchyObject: fileHierarchy)
+      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
@@ -76,6 +78,7 @@ struct ContentView: View {
       fileHierarchy.rootPath = fileOutputDir
       Task {
         await fileHierarchy.refresh()
+        await loadLastSelectedImage()
       }
     }
     .onChange(of: fileOutputDir) {
@@ -105,6 +108,14 @@ struct ContentView: View {
     }
     .sheet(isPresented: $showingSettingsView) {
       SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+    }
+  }
+  
+  private func loadLastSelectedImage() async {
+    if !lastSelectedImagePath.isEmpty, let image = NSImage(contentsOfFile: lastSelectedImagePath) {
+      await MainActor.run {
+        self.selectedImage = image
+      }
     }
   }
   

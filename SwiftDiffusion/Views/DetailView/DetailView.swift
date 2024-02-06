@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct DetailView: View {
-  @Binding var selectedImage: NSImage?
   var fileHierarchyObject: FileHierarchy
+  @Binding var selectedImage: NSImage?
+  @Binding var lastSelectedImagePath: String
   
   var body: some View {
     VSplitView {
@@ -36,15 +37,17 @@ struct DetailView: View {
       }
       .frame(minHeight: 200, idealHeight: 400)
       
-      FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage)
-        .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
-        .frame(minHeight: 140, idealHeight: 200)
+      FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage, onSelectImage: { imagePath in
+        lastSelectedImagePath = imagePath
+      }, lastSelectedImagePath: lastSelectedImagePath)
+      .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
+      .frame(minHeight: 140, idealHeight: 200)
     }
   }
 }
 
 /*
-#Preview {
-  DetailView()
-}
-*/
+ #Preview {
+ DetailView()
+ }
+ */
