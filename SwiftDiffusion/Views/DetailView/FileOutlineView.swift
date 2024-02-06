@@ -11,6 +11,7 @@ struct FileOutlineView: View {
   @ObservedObject var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
   @State private var selectedNode: FileNode?
+  var onSelectImage: (String) -> Void
   
   var body: some View {
     VStack(spacing: 0) {
@@ -75,10 +76,16 @@ struct FileOutlineView: View {
   private func selectNode(_ node: FileNode) {
     selectedNode = node
     guard node.isLeaf else { return }
-    if let image = NSImage(contentsOfFile: node.fullPath) {
-      self.selectedImage = image
+    if let _ = NSImage(contentsOfFile: node.fullPath) {
+      self.selectedImage = NSImage(contentsOfFile: node.fullPath)
+      Task {
+        await MainActor.run {
+          onSelectImage(node.fullPath)
+        }
+      }
     }
   }
+  
 }
 
 extension NSImage {
