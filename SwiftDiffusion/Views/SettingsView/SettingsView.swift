@@ -16,41 +16,22 @@ struct SettingsView: View {
     VStack {
       ScrollView {
         VStack(alignment: .leading) {
-          
           Text("Settings")
             .font(.largeTitle)
-            .padding(.top, 12)
-            .padding(.bottom, 20)
+            .padding(.vertical, 20)
             .padding(.horizontal, 14)
           
-          Text("webui.sh path")
-            .padding(.horizontal, 14)
-            .font(.system(.body, design: .monospaced))
-          
-          HStack {
-            TextField("path/to/webui.sh", text: $scriptPathInput)
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-              .font(.system(.body, design: .monospaced))
-            Button("Browse...") {
-              browseForWebuiShell()
-            }
+          BrowseFileRow(labelText: "webui.sh path",
+                        placeholderText: "path/to/webui.sh",
+                        textValue: $scriptPathInput) {
+            await FilePickerService.browseForShellFile()
           }
-          .padding(.bottom, 14)
           
-          Text("image output directory")
-            .padding(.horizontal, 14)
-            .font(.system(.body, design: .monospaced))
-          
-          HStack {
-            TextField("path/to/outputs", text: $fileOutputDir)
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-              .font(.system(.body, design: .monospaced))
-            Button("Browse...") {
-              browseForOutputDirectory()
-            }
+          BrowseFileRow(labelText: "image output directory",
+                        placeholderText: "path/to/outputs",
+                        textValue: $fileOutputDir) {
+            await FilePickerService.browseForDirectory()
           }
-          Spacer()
-          
         }
       }
       HStack {
@@ -62,28 +43,40 @@ struct SettingsView: View {
     }
     .padding(14)
     .navigationTitle("Settings")
-    .frame(minWidth: 500, idealWidth: 670)
-    .frame(minHeight: 350, idealHeight: 500)
-  }
-  
-  /// Allows the user to browse for `webui.sh` and sets the associated path variables
-  func browseForWebuiShell() {
-    Task {
-      if let path = await FilePickerService.browseForShellFile() {
-        self.scriptPathInput = path
-      }
-    }
-  }
-  
-  func browseForOutputDirectory() {
-    Task {
-      if let path = await FilePickerService.browseForDirectory() {
-        self.fileOutputDir = path
-      }
-    }
+    .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 500)
   }
 }
 
 #Preview {
   SettingsView(scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+}
+
+struct BrowseFileRow: View {
+  var labelText: String?
+  var placeholderText: String
+  @Binding var textValue: String
+  var browseAction: () async -> String?
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      if let label = labelText {
+        Text(label)
+          .padding(.horizontal, 14)
+          .font(.system(.body, design: .monospaced))
+      }
+      HStack {
+        TextField(placeholderText, text: $textValue)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .font(.system(.body, design: .monospaced))
+        Button("Browse...") {
+          Task {
+            if let path = await browseAction() {
+              textValue = path
+            }
+          }
+        }
+      }
+      .padding(.bottom, 14)
+    }
+  }
 }
