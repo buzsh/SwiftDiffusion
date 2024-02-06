@@ -52,16 +52,16 @@ struct PromptView: View {
           VStack(alignment: .leading) {
             PromptRowHeading(title: "Model")
             Menu {
-              Section(header: Text("CoreML")) {
+              Section(header: Text("􀢇 CoreML")) {
                 Button("First") { }
                 Button("Second") { }
               }
-              Section(header: Text("Python")) {
+              Section(header: Text("􁻴 Python")) {
                 Button("First") { }
                 Button("Second") { }
               }
             } label: {
-              Label("Choose Model", systemImage: "ellipsis.circle")
+              Label("Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
             }
           }
           
@@ -72,7 +72,7 @@ struct PromptView: View {
               Button("DPM-Solver++") { }
               Button("PLMS") { }
             } label: {
-              Label("Choose Sampling Method", systemImage: "ellipsis.circle")
+              Label("Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline") // "perspective"
             }
           }
         }

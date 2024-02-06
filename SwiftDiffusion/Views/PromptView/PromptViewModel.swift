@@ -27,6 +27,8 @@ class PromptViewModel: ObservableObject {
   @Published var batchCount: Double = 1  // 1 - 100
   @Published var batchSize: Double = 1 // 1 - 8
   
+  @Published var clipSkip: Double = 1 // 1 - 12
+  
   // CoreML Sampling Methods:
   // ['DPM-Solver++', 'PLMS']
   
