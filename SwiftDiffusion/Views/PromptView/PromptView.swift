@@ -47,19 +47,35 @@ struct PromptView: View {
   private var leftPane: some View {
     ScrollView {
       Form {
-        VStack(alignment: .leading) {
-          PromptRowHeading(title: "Model")
-          Menu {
-            Section(header: Text("CoreML")) {
-              Button("First") { }
-              Button("Second") { }
+        HStack {
+          // Models
+          VStack(alignment: .leading) {
+            PromptRowHeading(title: "Model")
+            Menu {
+              Section(header: Text("CoreML")) {
+                Button("First") { }
+                Button("Second") { }
+              }
+              Section(header: Text("Python")) {
+                Button("First") { }
+                Button("Second") { }
+              }
+            } label: {
+              Label("Choose Model", systemImage: "ellipsis.circle")
             }
-            Section(header: Text("Python")) {
-              Button("First") { }
-              Button("Second") { }
+          }
+          
+          // Sampling
+          VStack(alignment: .leading) {
+            PromptRowHeading(title: "Sampling")
+            Menu {
+              Section(header: Text("CoreML Sampling Methods")) {
+                Button("DPM-Solver++") { }
+                Button("PLMS") { }
+              }
+            } label: {
+              Label("Choose Sampling Method", systemImage: "ellipsis.circle")
             }
-          } label: {
-            Label("Choose Model", systemImage: "ellipsis.circle")
           }
         }
         .padding(.vertical, Constants.Layout.promptRowPadding)
