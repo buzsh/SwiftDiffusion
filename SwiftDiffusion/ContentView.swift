@@ -276,8 +276,22 @@ struct FileRowView: View {
         ProgressView()
           .frame(width: 20, height: 20)
       }
+      
       Text(node.name)
+      
       Spacer()
+      
+      // Display the dimensions and file size if available
+      if let size = thumbnailLoader.imageSize {
+        let width = Int(size.width)
+        let height = Int(size.height)
+        let dimensionString = "\(width)x\(height)" // Directly concatenate the integer values
+        let fileSizeString = thumbnailLoader.fileSize // File size string
+        
+        Text("\(fileSizeString), \(dimensionString)")
+          .font(.caption)
+          .foregroundColor(.gray)
+      }
     }
     .onAppear {
       thumbnailLoader.loadThumbnail(for: node)
@@ -286,15 +300,18 @@ struct FileRowView: View {
 }
 
 
+
+import Foundation
 import SwiftUI
-import Combine
 
 class ThumbnailLoader: ObservableObject {
   @Published var thumbnailImage: NSImage?
-  private var cancellables = Set<AnyCancellable>()
+  @Published var imageSize: CGSize? // Store the image size
+  @Published var fileSize: String = "" // Store the formatted file size as a string
   
   func loadThumbnail(for node: FileNode) {
     DispatchQueue.global(qos: .userInitiated).async {
+      let fileURL = URL(fileURLWithPath: node.fullPath)
       guard let image = NSImage(contentsOfFile: node.fullPath) else {
         DispatchQueue.main.async {
           self.thumbnailImage = NSImage(systemSymbolName: "photo.fill", accessibilityDescription: nil) ?? NSImage()
@@ -303,9 +320,26 @@ class ThumbnailLoader: ObservableObject {
       }
       
       let thumbnail = image.resizedToMaintainAspectRatio(targetHeight: 40) // Adjust targetHeight as needed
+      
+      // Fetch and format file size
+      let fileSizeAttributes = try? FileManager.default.attributesOfItem(atPath: node.fullPath)
+      if let fileSize = fileSizeAttributes?[.size] as? NSNumber {
+        DispatchQueue.main.async {
+          self.fileSize = self.formatFileSize(fileSize.intValue)
+        }
+      }
+      
       DispatchQueue.main.async {
         self.thumbnailImage = thumbnail
+        self.imageSize = image.size // Store the original image size
       }
     }
+  }
+  
+  private func formatFileSize(_ size: Int) -> String {
+    let formatter = ByteCountFormatter()
+    formatter.allowedUnits = [.useKB, .useMB] // Adjust based on preference
+    formatter.countStyle = .file
+    return formatter.string(fromByteCount: Int64(size))
   }
 }
