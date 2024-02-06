@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  PromptView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/5/24.
@@ -15,8 +15,8 @@ extension Constants.Layout {
   static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
 }
 
-struct MainView: View {
-  @ObservedObject var prompt: MainViewModel
+struct PromptView: View {
+  @ObservedObject var prompt: PromptViewModel
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   let minColumnWidth: CGFloat = 160
@@ -83,9 +83,9 @@ struct MainView: View {
 
 
 #Preview("Left Prompt View") {
-  let promptModel = MainViewModel()
+  let promptModel = PromptViewModel()
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
   
-  return MainView(prompt: promptModel)
+  return PromptView(prompt: promptModel)
 }

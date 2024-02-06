@@ -31,7 +31,7 @@ struct ContentView: View {
   // Toolbar
   @State private var showingSettingsView = false
   // Main
-  @ObservedObject var mainViewModel: MainViewModel
+  @ObservedObject var promptViewModel: PromptViewModel
   // Console
   @ObservedObject var scriptManager: ScriptManager
   @Binding var scriptPathInput: String
@@ -62,7 +62,7 @@ struct ContentView: View {
       // MainView (prompt controller, console, etc.)
       switch selectedView {
       case .main:
-        MainView(prompt: mainViewModel)
+        PromptView(prompt: promptViewModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .settings:
