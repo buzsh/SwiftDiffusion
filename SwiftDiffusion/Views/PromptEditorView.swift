@@ -23,7 +23,6 @@ struct PromptEditorView: View {
         if wordCount > 0 {
           Text("\(wordCount)")
             .opacity(0.5)
-            //.font(.system(.body, design: .monospaced))
             .font(.system(size: 12, design: .monospaced))
         }
       }
@@ -53,4 +52,14 @@ struct PromptEditorView: View {
   @State var promptText: String = "some, positive, prompt, text"
   return PromptEditorView(label: "Positive Prompt", text: $promptText)
     .frame(width: 400, height: 600)
+}
+
+extension NSTextView {
+  open override var frame: CGRect {
+    didSet {
+      backgroundColor = .clear
+      drawsBackground = true
+    }
+    
+  }
 }
