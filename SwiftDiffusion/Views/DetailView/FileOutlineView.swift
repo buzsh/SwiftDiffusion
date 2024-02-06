@@ -25,7 +25,7 @@ struct FileOutlineView: View {
         }
         .buttonStyle(BorderlessButtonStyle())
         
-        if fileHierarchyObject.isLoading { // Loading indicator conditionally displayed
+        if fileHierarchyObject.isLoading {
           ProgressView()
             .progressViewStyle(.circular)
             .controlSize(.small)
