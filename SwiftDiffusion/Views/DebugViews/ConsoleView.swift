@@ -149,9 +149,3 @@ let jsonPayload: [String: Any] = [
   "steps": 20,
   "batch_size": 2
 ]
-
-/*
- #Preview {
- ConsoleView(scriptManager: <#ScriptManager#>, scriptPathInput: <#Binding<String>#>)
- }
- */
