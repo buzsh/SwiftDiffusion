@@ -35,7 +35,7 @@ struct ContentView: View {
   // Views
   @State private var selectedView: ViewManager = .main
   // Detail
-  @StateObject private var fileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs") //"/path/to/your/directory")
+  @StateObject private var fileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
   @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   
   
@@ -61,32 +61,7 @@ struct ContentView: View {
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       }
     } detail: {
-      VStack {
-        if let selectedImage = selectedImage {
-          Image(nsImage: selectedImage)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-        } else if NSImage(named: "DiffusionPlaceholder") != nil {
-          Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-        } else {
-          // fallback dark gray box
-          Rectangle()
-            .foregroundColor(.gray)
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-        }
-        
-        // OutlineView
-        FileOutlineView(fileHierarchy: $fileHierarchy.rootNodes, selectedImage: $selectedImage)
-          .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
-      }
+      DetailView(selectedImage: $selectedImage, fileHierarchyObject: fileHierarchy)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
@@ -120,6 +95,41 @@ struct ContentView: View {
  }
  */
 
+import SwiftUI
+
+struct DetailView: View {
+  @Binding var selectedImage: NSImage?
+  var fileHierarchyObject: FileHierarchy // Changed to non-binding, direct use
+  
+  var body: some View {
+    VSplitView {
+      if let selectedImage = selectedImage {
+        Image(nsImage: selectedImage)
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+      } else if NSImage(named: "DiffusionPlaceholder") != nil {
+        Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+      } else {
+        Rectangle()
+          .foregroundColor(.gray)
+          .aspectRatio(contentMode: .fit)
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+      }
+      
+      FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage)
+        .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
+        .frame(minHeight: 140, idealHeight: 200)
+    }
+  }
+}
+
 struct FileNode: Identifiable {
   let id: UUID = UUID()
   let name: String
@@ -152,9 +162,15 @@ extension FileNode {
 
 class FileHierarchy: ObservableObject {
   @Published var rootNodes: [FileNode]
+  private var rootPath: String
   
   init(rootPath: String) {
+    self.rootPath = rootPath
     self.rootNodes = FileHierarchy.loadFiles(from: rootPath)
+  }
+  
+  func refresh() {
+    self.rootNodes = FileHierarchy.loadFiles(from: self.rootPath)
   }
   
   static func loadFiles(from directory: String) -> [FileNode] {
@@ -184,37 +200,55 @@ class FileHierarchy: ObservableObject {
 import SwiftUI
 
 struct FileOutlineView: View {
-  @Binding var fileHierarchy: [FileNode]
+  @ObservedObject var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
   @State private var selectedNode: FileNode? // Track the selected node
   
   var body: some View {
-    List(fileHierarchy, children: \.children) { node in
+    VStack(spacing: 0) {
+      
       HStack {
-        if node.isLeaf {
-          if node.isImage {
-            // For image files, use FileRowView which includes the image and text
-            FileRowView(node: node)
+        Button(action: {
+          self.fileHierarchyObject.refresh()
+        }) {
+          Image(systemName: "arrow.clockwise") // SF Symbol for refresh
+        }
+        .buttonStyle(BorderlessButtonStyle())
+      }
+      .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 30)
+      .background(.bar)
+      
+      Divider()
+        .overlay(Color.black.opacity(0.8))
+      
+      List(self.fileHierarchyObject.rootNodes, children: \.children) { node in
+        HStack {
+          if node.isLeaf {
+            if node.isImage {
+              // For image files, use FileRowView which includes the image and text
+              FileRowView(node: node)
+            } else {
+              // For non-image files, show an icon and the filename
+              Image(systemName: node.iconName)
+              Text(node.name)
+            }
           } else {
-            // For non-image files, show an icon and the filename
+            // For directories, just show the folder icon and the name
             Image(systemName: node.iconName)
             Text(node.name)
           }
-        } else {
-          // For directories, just show the folder icon and the name
-          Image(systemName: node.iconName)
-          Text(node.name)
+          Spacer()
         }
-        Spacer()
-      }
-      .padding(5)
-      .background(self.selectedNode == node ? Color.blue : Color.clear)
-      .cornerRadius(5)
-      .onTapGesture {
-        self.selectNode(node)
+        .padding(5)
+        .background(self.selectedNode == node ? Color.blue : Color.clear) // Conditional background color
+        .cornerRadius(5)
+        .onTapGesture {
+          self.selectNode(node)
+        }
       }
     }
   }
+  
   
   private func thumbnailForImage(at path: String) -> NSImage {
     // Attempt to load the image at 'path' and resize it to create a thumbnail
@@ -288,7 +322,7 @@ struct FileRowView: View {
         let dimensionString = "\(width)x\(height)" // Directly concatenate the integer values
         let fileSizeString = thumbnailLoader.fileSize // File size string
         
-        Text("\(fileSizeString), \(dimensionString)")
+        Text("\(fileSizeString)  •  \(dimensionString)")
           .font(.caption)
           .foregroundColor(.gray)
       }
