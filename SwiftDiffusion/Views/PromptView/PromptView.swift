@@ -48,11 +48,7 @@ struct PromptView: View {
     ScrollView {
       Form {
         VStack(alignment: .leading) {
-          Text("Model")
-            .textCase(.uppercase)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .opacity(0.8)
-            .padding(.horizontal, 8)
+          PromptRowHeading(title: "Model")
           Menu {
             Section(header: Text("CoreML")) {
               Button("First") { }
@@ -72,54 +68,12 @@ struct PromptView: View {
         PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
           .padding(.bottom, 6)
         
-        VStack(alignment: .leading) {
-          Text("Dimensions")
-            .textCase(.uppercase)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .opacity(0.8)
-            .padding(.horizontal, 8)
-          HStack {
-            CompactSlider(value: $prompt.width, in: 64...2048, step: 64) {
-              Text("Width")
-              Spacer()
-              Text("\(Int(prompt.width))")
-            }
-            CompactSlider(value: $prompt.height, in: 64...2048, step: 64) {
-              Text("Height")
-              Spacer()
-              Text("\(Int(prompt.height))")
-            }
-          }
-        }
-        .padding(.bottom, Constants.Layout.promptRowPadding)
+        DimensionSelectionRow(width: $prompt.width, height: $prompt.height)
+        
+        DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
         
         VStack(alignment: .leading) {
-          Text("Detail")
-            .textCase(.uppercase)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .opacity(0.8)
-            .padding(.horizontal, 8)
-          HStack {
-            CompactSlider(value: $prompt.cfgScale, in: 1...30, step: 0.5) {
-              Text("CFG Scale")
-              Spacer()
-              Text(String(format: "%.1f", prompt.cfgScale))
-            }
-            CompactSlider(value: $prompt.samplingSteps, in: 1...150, step: 1) {
-              Text("Sampling Steps")
-              Spacer()
-              Text("\(Int(prompt.samplingSteps))")
-            }
-          }
-        }
-        .padding(.bottom, Constants.Layout.promptRowPadding)
-        
-        VStack(alignment: .leading) {
-          Text("Seed")
-            .textCase(.uppercase)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .opacity(0.8)
-            .padding(.horizontal, 8)
+          PromptRowHeading(title: "Seed")
             .padding(.leading, 8)
           HStack {
             TextField("", text: $prompt.seed)
@@ -142,27 +96,7 @@ struct PromptView: View {
         }
         .padding(.bottom, Constants.Layout.promptRowPadding)
         
-        VStack(alignment: .leading) {
-          Text("Export Amount")
-            .textCase(.uppercase)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .opacity(0.8)
-            .padding(.horizontal, 8)
-          HStack {
-            CompactSlider(value: $prompt.batchCount, in: 1...100, step: 1) {
-              Text("Batch Count")
-              Spacer()
-              Text("\(Int(prompt.batchCount))")
-            }
-            CompactSlider(value: $prompt.batchSize, in: 1...8, step: 1) {
-              Text("Batch Size")
-              Spacer()
-              Text("\(Int(prompt.batchSize))")
-            }
-          }
-        }
-        .padding(.bottom, Constants.Layout.promptRowPadding)
-        
+        ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
       }
       .padding(.leading, 8)
       .padding(.trailing, 16)
@@ -189,3 +123,91 @@ struct PromptView: View {
   
   return PromptView(prompt: promptModel).frame(width: 400, height: 600)
 }
+
+
+
+struct PromptRowHeading: View {
+  var title: String
+  
+  var body: some View {
+    Text(title)
+      .textCase(.uppercase)
+      .font(.system(size: 11, weight: .bold, design: .rounded))
+      .opacity(0.8)
+      .padding(.horizontal, 8)
+  }
+  
+}
+
+struct DimensionSelectionRow: View {
+  @Binding var width: Double
+  @Binding var height: Double
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      PromptRowHeading(title: "Dimensions")
+      HStack {
+        CompactSlider(value: $width, in: 64...2048, step: 64) {
+          Text("Width")
+          Spacer()
+          Text("\(Int(width))")
+        }
+        CompactSlider(value: $height, in: 64...2048, step: 64) {
+          Text("Height")
+          Spacer()
+          Text("\(Int(height))")
+        }
+      }
+    }
+    .padding(.bottom, Constants.Layout.promptRowPadding)
+  }
+}
+
+struct DetailSelectionRow: View {
+  @Binding var cfgScale: Double
+  @Binding var samplingSteps: Double
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      PromptRowHeading(title: "Detail")
+      HStack {
+        CompactSlider(value: $cfgScale, in: 1...30, step: 0.5) {
+          Text("CFG Scale")
+          Spacer()
+          Text(String(format: "%.1f", cfgScale))
+        }
+        CompactSlider(value: $samplingSteps, in: 1...150, step: 1) {
+          Text("Sampling Steps")
+          Spacer()
+          Text("\(Int(samplingSteps))")
+        }
+      }
+    }
+    .padding(.bottom, Constants.Layout.promptRowPadding)
+  }
+}
+
+struct ExportSelectionRow: View {
+  @Binding var batchCount: Double
+  @Binding var batchSize: Double
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      PromptRowHeading(title: "Export Amount")
+      HStack {
+        CompactSlider(value: $batchCount, in: 1...100, step: 1) {
+          Text("Batch Count")
+          Spacer()
+          Text("\(Int(batchCount))")
+        }
+        CompactSlider(value: $batchSize, in: 1...8, step: 1) {
+          Text("Batch Size")
+          Spacer()
+          Text("\(Int(batchSize))")
+        }
+      }
+    }
+    .padding(.bottom, Constants.Layout.promptRowPadding)
+  }
+}
+
