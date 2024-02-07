@@ -23,8 +23,8 @@ enum ModelType {
 class ModelManagerViewModel: ObservableObject {
   @Published var items: [ModelItem] = []
   
-  private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"] // Example names
-  private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"] // Example names
+  private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"]
+  private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"]
   
   func loadModels() async {
     do {
@@ -113,17 +113,24 @@ struct ModelManagerView: View {
     return viewModel.items.filter { $0.type == selectedFilter }
   }
   
+  var isScriptActive: Bool {
+    scriptManager.scriptState != .readyToStart
+  }
+  
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
         Button("Reveal in Finder") {
           openUserModelsFolder()
         }
+        .disabled(isScriptActive)
+        
         Button("Refresh") {
           Task {
             await viewModel.loadModels()
           }
-        }
+        }.disabled(isScriptActive)
+        
         Menu(filterTitle) { // Use the computed property here
           Button("Show All Models", action: { selectedFilter = nil })
           Button("􀢇 CoreML", action: { selectedFilter = .coreMl })
@@ -132,6 +139,7 @@ struct ModelManagerView: View {
         Button("Add Model") {
           Debug.log("Adding model")
         }
+        .disabled(isScriptActive)
       }
       .padding(.horizontal)
       .padding(.top, 10)
@@ -150,6 +158,7 @@ struct ModelManagerView: View {
             }) {
               Image(systemName: "trash")
             }
+            .disabled(isScriptActive)
             .buttonStyle(BorderlessButtonStyle())
           }
         }
