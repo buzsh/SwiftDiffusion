@@ -93,14 +93,27 @@ class ScriptManager: ObservableObject {
   
   /// Terminates the script execution.
   /// - Parameter completion: A closure that is called with the result of the termination attempt.
-  func terminateScript(completion: @escaping (ScriptResult) -> Void) {
-    updateScriptState(.isTerminating)
-    pythonProcess?.terminate()
+  ///
+  /// **Usage**
+  ///
+  /// ```swift
+  /// terminate() // or
+  /// terminate { result in
+  ///   switch result {
+  ///   case .success(let message):
+  ///     print(message)
+  ///   case .failure(let error):
+  ///     print("An error occurred: \(error)")
+  ///   }
+  /// }
+  func terminate(completion: @escaping (ScriptResult) -> Void = { _ in }) {
+      updateScriptState(.isTerminating)
+      pythonProcess?.terminate()
 
-    // Handle post-termination logic
-    restoreLaunchBrowserInConfigJson()
-    completion(.success("Script terminated successfully."))
-    updateScriptState(.terminated)
+      // Handle post-termination logic
+      restoreLaunchBrowserInConfigJson()
+      completion(.success("Process terminated successfully."))
+      updateScriptState(.terminated)
   }
   
   /// Terminates the script execution immediately.
@@ -108,6 +121,7 @@ class ScriptManager: ObservableObject {
     pythonProcess?.terminate()
     restoreLaunchBrowserInConfigJson()
     updateScriptState(.terminated)
+    Debug.log("Process terminated immediately.")
   }
   
   func disableLaunchBrowserInConfigJson() {
@@ -157,7 +171,7 @@ class ScriptManager: ObservableObject {
           let url = String(output[urlRange])
           self.serviceUrl = URL(string: url)
           DispatchQueue.main.async {
-            self.updateScriptState(.active(url))
+            self.updateScriptState(.active)
             Debug.log("URL successfully parsed and state updated to active: \(url)")
           }
         } else {

@@ -11,9 +11,11 @@ struct Constants {
   
   struct CommandLine {}
   struct Delays {}
+  struct FileStructure {}
   struct FileTypes {}
-  struct Layout {}
   struct Keys {}
+  struct Layout {}
+  struct PromptOptions {}
   
 }
 

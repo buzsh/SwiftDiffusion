@@ -12,12 +12,13 @@ extension Constants.Layout {
 }
 
 enum ViewManager {
-  case prompt, console, settings
+  case prompt, console, models, settings
   
   var title: String {
     switch self {
     case .prompt: return "Prompt"
     case .console: return "Console"
+    case .models: return "Models"
     case .settings: return "Settings"
     }
   }
@@ -30,7 +31,8 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   // Toolbar
   @State private var showingSettingsView = false
-  // Main
+  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
+  // Prompt
   @ObservedObject var promptViewModel: PromptViewModel
   // Console
   @ObservedObject var scriptManager: ScriptManager
@@ -59,12 +61,13 @@ struct ContentView: View {
       .listStyle(SidebarListStyle())
       
     } content: {
-      // MainView (prompt controller, console, etc.)
       switch selectedView {
       case .prompt:
-        PromptView(prompt: promptViewModel)
+        PromptView(prompt: promptViewModel, modelManager: modelManagerViewModel, scriptManager: scriptManager)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
+      case .models:
+        ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
         SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
@@ -80,6 +83,9 @@ struct ContentView: View {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
       }
+      if scriptManager.scriptState == .readyToStart {
+        modelManagerViewModel.startObservingModelDirectories()
+      }
     }
     .onChange(of: fileOutputDir) {
       fileHierarchy.rootPath = fileOutputDir
@@ -89,15 +95,65 @@ struct ContentView: View {
     }
     .navigationTitle(selectedView.title)
     .toolbar {
-      ToolbarItemGroup(placement: .automatic) {
-        Picker("Options", selection: $selectedView) {
-          Text("Prompt").tag(ViewManager.prompt)
-          Text("Console").tag(ViewManager.console)
+      ToolbarItemGroup(placement: .navigation) {
+        HStack {
+          
+          /*
+           Text(scriptManager.scriptStateText)
+           .font(.system(.body, design: .monospaced))
+           .onAppear {
+           scriptPathInput = scriptManager.scriptPath ?? ""
+           Debug.log("Current script state: \(scriptManager.scriptStateText)")
+           }
+           */
+          
+          Button(action: {
+            if scriptManager.scriptState == .readyToStart {
+              scriptManager.scriptPath = scriptPathInput
+              scriptManager.run()
+            } else {
+              scriptManager.terminate()
+            }
+          }) {
+            if scriptManager.scriptState == .readyToStart {
+              Image(systemName: "play.fill")
+            } else {
+              Image(systemName: "stop.fill")
+            }
+          }.disabled(scriptManager.scriptState.isAwaitingProcessToPlayOut)
+          
+          Circle()
+            .fill(scriptManager.scriptState.statusColor)
+            .frame(width: 10, height: 10)
+            .padding(.trailing, 2)
+          
+          if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
+            Button(action: {
+              NSWorkspace.shared.open(url)
+            }) {
+              Image(systemName: "network")
+            }
+            .buttonStyle(.plain)
+            .padding(.leading, 2)
+          }
         }
-        .pickerStyle(SegmentedPickerStyle())
       }
       
-      ToolbarItem(placement: .automatic) {
+      ToolbarItemGroup(placement: .automatic) {
+        HStack {
+          Picker("Options", selection: $selectedView) {
+            Text("Prompt").tag(ViewManager.prompt)
+            Text("Console").tag(ViewManager.console)
+            Text("Models").tag(ViewManager.models)
+          }
+          .pickerStyle(SegmentedPickerStyle())
+        }
+        Button(action: {
+          Debug.log("Toolbar item selected")
+          showingSettingsView = true
+        }) {
+          Image(systemName: "arkit")
+        }
         Button(action: {
           Debug.log("Toolbar item selected")
           showingSettingsView = true
@@ -105,6 +161,8 @@ struct ContentView: View {
           Image(systemName: "gear")
         }
       }
+      
+      
     }
     .sheet(isPresented: $showingSettingsView) {
       SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
@@ -121,8 +179,19 @@ struct ContentView: View {
   
 }
 
-/*
- #Preview {
- ContentView()
- }
- */
+
+#Preview {
+  let modelManager = ModelManagerViewModel()
+  let promptModel = PromptViewModel()
+  promptModel.positivePrompt = "sample, positive, prompt"
+  promptModel.negativePrompt = "sample, negative, prompt"
+  return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+}
+
+extension ScriptManager {
+  static func ireadyPreview() -> ScriptManager {
+    let previewManager = ScriptManager()
+    previewManager.scriptState = .readyToStart
+    return previewManager
+  }
+}

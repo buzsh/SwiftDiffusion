@@ -20,6 +20,9 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @ObservedObject var prompt: PromptViewModel
+  @ObservedObject var modelManager: ModelManagerViewModel
+  @ObservedObject var scriptManager: ScriptManager
+  
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   let minColumnWidth: CGFloat = 160
@@ -53,15 +56,31 @@ struct PromptView: View {
             PromptRowHeading(title: "Model")
             Menu {
               Section(header: Text("􀢇 CoreML")) {
-                Button("First") { }
-                Button("Second") { }
+                ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
+                  Button(item.name) {
+                    prompt.selectedModel = item
+                    Debug.log("Selected CoreML Model: \(item.name)")
+                  }
+                }
               }
               Section(header: Text("􁻴 Python")) {
-                Button("First") { }
-                Button("Second") { }
+                ForEach(modelManager.items.filter { $0.type == .python }) { item in
+                  Button(item.name) {
+                    prompt.selectedModel = item
+                    Debug.log("Selected Python Model: \(item.name)")
+                  }
+                }
               }
             } label: {
-              Label("Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+              Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+            }
+          }
+          .onAppear {
+            modelManager.observeScriptManagerState(scriptManager: scriptManager)
+            if scriptManager.scriptState == .readyToStart {
+              Task {
+                await modelManager.loadModels()
+              }
             }
           }
           
@@ -69,10 +88,15 @@ struct PromptView: View {
           VStack(alignment: .leading) {
             PromptRowHeading(title: "Sampling")
             Menu {
-              Button("DPM-Solver++") { }
-              Button("PLMS") { }
+              let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+              ForEach(samplingMethods, id: \.self) { method in
+                Button(method) {
+                  prompt.samplingMethod = method
+                  Debug.log("Selected Sampling Method: \(method)")
+                }
+              }
             } label: {
-              Label("Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline") // "perspective"
+              Label(prompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
             }
           }
         }
@@ -131,11 +155,13 @@ struct PromptView: View {
 
 
 #Preview("Left Prompt View") {
+  let modelManager = ModelManagerViewModel()
+  
   let promptModel = PromptViewModel()
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
   
-  return PromptView(prompt: promptModel).frame(width: 400, height: 600)
+  return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
 }
 
 

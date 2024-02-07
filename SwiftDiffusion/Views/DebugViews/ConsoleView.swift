@@ -48,7 +48,7 @@ struct ConsoleView: View {
             Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
         
-        if scriptManager.scriptState.isActive, let url = scriptManager.serviceUrl {
+        if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
           Button(action: {
             NSWorkspace.shared.open(url)
           }) {
@@ -79,10 +79,10 @@ struct ConsoleView: View {
         .padding(.leading, 2)
         
         Button("Terminate") {
-          ScriptManager.shared.terminateScript { result in
+          ScriptManager.shared.terminate { result in
             switch result {
             case .success(let message):
-              Debug.log(message)
+              Debug.log("Process successfully terminated.\n > \(message)")
             case .failure(let error):
               Debug.log("Error: \(error.localizedDescription)")
             }
@@ -149,9 +149,3 @@ let jsonPayload: [String: Any] = [
   "steps": 20,
   "batch_size": 2
 ]
-
-/*
- #Preview {
- ConsoleView(scriptManager: <#ScriptManager#>, scriptPathInput: <#Binding<String>#>)
- }
- */

@@ -10,7 +10,7 @@ import SwiftUI
 enum ScriptState: Equatable {
   case readyToStart
   case launching
-  case active(String)
+  case active
   case isTerminating
   case terminated
 }
@@ -42,16 +42,26 @@ extension ScriptState {
     switch self {
     case .readyToStart: return Color.gray
     case .launching: return Color.yellow
-    case .active(_): return Color.green
+    case .active: return Color.green
     case .isTerminating: return Color.yellow
     case .terminated: return Color.red
     }
   }
   var isActive: Bool {
-    if case .active(_) = self {
+    if case .active = self {
       return true
     } else {
       return false
+    }
+  }
+  
+  var isAwaitingProcessToPlayOut: Bool {
+    switch self {
+    case .readyToStart: return false
+    case .launching: return true
+    case .active: return false
+    case .isTerminating: return true
+    case .terminated: return true
     }
   }
   
@@ -59,7 +69,7 @@ extension ScriptState {
     switch self {
     case .readyToStart: return true
     case .launching: return false
-    case .active(_): return false
+    case .active: return false
     case .isTerminating: return false
     case .terminated: return true
     }
@@ -69,7 +79,7 @@ extension ScriptState {
     switch self {
     case .readyToStart: return false
     case .launching: return true
-    case .active(_): return true
+    case .active: return true
     case .isTerminating: return false
     case .terminated: return false
     }
