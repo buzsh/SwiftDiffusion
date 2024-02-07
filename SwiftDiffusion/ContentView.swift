@@ -31,7 +31,8 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   // Toolbar
   @State private var showingSettingsView = false
-  // Main
+  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
+  // Prompt
   @ObservedObject var promptViewModel: PromptViewModel
   // Console
   @ObservedObject var scriptManager: ScriptManager
@@ -60,14 +61,13 @@ struct ContentView: View {
       .listStyle(SidebarListStyle())
       
     } content: {
-      // MainView (prompt controller, console, etc.)
       switch selectedView {
       case .prompt:
-        PromptView(prompt: promptViewModel)
+        PromptView(prompt: promptViewModel, modelManager: modelManagerViewModel, scriptManager: scriptManager)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .models:
-        ModelManagerView(scriptManager: scriptManager)
+        ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
         SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
@@ -83,6 +83,9 @@ struct ContentView: View {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
       }
+      if scriptManager.scriptState == .readyToStart {
+        modelManagerViewModel.startObservingModelDirectories()
+      }
     }
     .onChange(of: fileOutputDir) {
       fileHierarchy.rootPath = fileOutputDir
@@ -96,12 +99,12 @@ struct ContentView: View {
         HStack {
           
           /*
-          Text(scriptManager.scriptStateText)
-            .font(.system(.body, design: .monospaced))
-            .onAppear {
-              scriptPathInput = scriptManager.scriptPath ?? ""
-              Debug.log("Current script state: \(scriptManager.scriptStateText)")
-            }
+           Text(scriptManager.scriptStateText)
+           .font(.system(.body, design: .monospaced))
+           .onAppear {
+           scriptPathInput = scriptManager.scriptPath ?? ""
+           Debug.log("Current script state: \(scriptManager.scriptStateText)")
+           }
            */
           
           Button(action: {
@@ -178,10 +181,11 @@ struct ContentView: View {
 
 
 #Preview {
+  let modelManager = ModelManagerViewModel()
   let promptModel = PromptViewModel()
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
-  return ContentView(promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+  return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
 }
 
 extension ScriptManager {

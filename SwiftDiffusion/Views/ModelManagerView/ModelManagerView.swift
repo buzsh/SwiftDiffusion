@@ -116,7 +116,7 @@ extension ModelManagerViewModel {
 struct ModelManagerView: View {
   @ObservedObject var scriptManager: ScriptManager
   
-  @StateObject private var viewModel = ModelManagerViewModel()
+  @ObservedObject var viewModel = ModelManagerViewModel()
   @State private var selectedFilter: ModelType? = nil
   
   private var filterTitle: String {
@@ -189,10 +189,10 @@ struct ModelManagerView: View {
       }
     }
     .onAppear {
-      Task {
-        await viewModel.loadModels()
-      }
       if scriptManager.scriptState == .readyToStart {
+        Task {
+          await viewModel.loadModels()
+        }
         viewModel.startObservingModelDirectories()
       }
     }

@@ -26,7 +26,7 @@ class DirectoryObserver {
     
     observationTask = Task {
       source.setEventHandler { [weak self] in
-        guard let self = self else { return }
+        guard self != nil else { return }
         Task { await onChange() }
       }
       
