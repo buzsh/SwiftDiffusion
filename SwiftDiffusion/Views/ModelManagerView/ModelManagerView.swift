@@ -23,6 +23,9 @@ enum ModelType {
 class ModelManagerViewModel: ObservableObject {
   @Published var items: [ModelItem] = []
   
+  private var coreMlObserver: DirectoryObserver?
+  private var pythonObserver: DirectoryObserver?
+  
   private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"]
   private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"]
   
@@ -50,6 +53,25 @@ class ModelManagerViewModel: ObservableObject {
       self.items = newItems
     } catch {
       Debug.log("Failed to scan directories: \(error)")
+    }
+  }
+  
+  func startObservingModelDirectories() {
+    coreMlObserver = DirectoryObserver()
+    pythonObserver = DirectoryObserver()
+    
+    if let coreMlModelsDir = Constants.FileStructure.coreMlModelsUrl {
+      coreMlObserver?.startObserving(url: coreMlModelsDir) { [weak self] in
+        Debug.log("Detected changes in CoreML models directory")
+        await self?.loadModels()
+      }
+    }
+    
+    if let pythonModelsDir = Constants.FileStructure.pythonModelsUrl {
+      pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
+        Debug.log("Detected changes in Python models directory")
+        await self?.loadModels()
+      }
     }
   }
 }
@@ -170,7 +192,11 @@ struct ModelManagerView: View {
       Task {
         await viewModel.loadModels()
       }
+      if scriptManager.scriptState == .readyToStart {
+        viewModel.startObservingModelDirectories()
+      }
     }
+    
   }
   
   private func openUserModelsFolder() {
@@ -191,15 +217,7 @@ struct ModelManagerView: View {
 extension ScriptManager {
   static func readyPreview() -> ScriptManager {
     let previewManager = ScriptManager()
-    previewManager.scriptState = .readyToStart
+    previewManager.scriptState = .readyToStart // .active
     return previewManager
   }
-  
-  /*
-  static func activePreview() -> ScriptManager {
-    let previewManager = ScriptManager()
-    previewManager.scriptState = .active
-    return previewManager
-  }
-   */
 }
