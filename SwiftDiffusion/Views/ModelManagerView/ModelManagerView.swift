@@ -156,7 +156,7 @@ struct ModelManagerView: View {
                 await viewModel.moveToTrash(item: item)
               }
             }) {
-              Image(systemName: "trash")
+              Image(systemName: isScriptActive ? "lock" : "trash")
             }
             .disabled(isScriptActive)
             .buttonStyle(BorderlessButtonStyle())
