@@ -58,7 +58,7 @@ struct PromptView: View {
               Section(header: Text("􀢇 CoreML")) {
                 ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
                   Button(item.name) {
-                    // Handle selection
+                    prompt.selectedModel = item
                     Debug.log("Selected CoreML Model: \(item.name)")
                   }
                 }
@@ -66,16 +66,17 @@ struct PromptView: View {
               Section(header: Text("􁻴 Python")) {
                 ForEach(modelManager.items.filter { $0.type == .python }) { item in
                   Button(item.name) {
-                    // Handle selection
+                    prompt.selectedModel = item
                     Debug.log("Selected Python Model: \(item.name)")
                   }
                 }
               }
             } label: {
-              Label("Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+              Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
             }
           }
           .onAppear {
+            modelManager.observeScriptManagerState(scriptManager: scriptManager)
             if scriptManager.scriptState == .readyToStart {
               Task {
                 await modelManager.loadModels()
@@ -87,10 +88,15 @@ struct PromptView: View {
           VStack(alignment: .leading) {
             PromptRowHeading(title: "Sampling")
             Menu {
-              Button("DPM-Solver++") { }
-              Button("PLMS") { }
+              let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+              ForEach(samplingMethods, id: \.self) { method in
+                Button(method) {
+                  prompt.samplingMethod = method
+                  Debug.log("Selected Sampling Method: \(method)")
+                }
+              }
             } label: {
-              Label("Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline") // "perspective"
+              Label(prompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
             }
           }
         }
