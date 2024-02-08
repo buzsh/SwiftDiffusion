@@ -20,6 +20,15 @@ struct ModelPreferencesView: View {
   @ObservedObject var modelPreferences: ModelPreferences
   @Environment(\.presentationMode) var presentationMode
   
+  // Use an ObservableObject for temporary editing
+  @StateObject private var temporaryPreferences: ModelPreferences
+  
+  init(modelItem: Binding<ModelItem>, modelPreferences: ModelPreferences) {
+    self._modelItem = modelItem
+    self._modelPreferences = ObservedObject(initialValue: modelPreferences)
+    self._temporaryPreferences = StateObject(wrappedValue: ModelPreferences.copy(from: modelPreferences))
+  }
+  
   var body: some View {
     VStack {
       ScrollView {
@@ -29,67 +38,109 @@ struct ModelPreferencesView: View {
             .truncationMode(.middle)
             .padding(.top, 8)
           
-          VStack(alignment: .leading) {
-            PromptRowHeading(title: "Sampling")
-            Menu {
-              let samplingMethods = modelItem.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
-              ForEach(samplingMethods, id: \.self) { method in
-                Button(method) {
-                  modelItem.preferences.samplingMethod = method
-                  Debug.log("Selected Sampling Method: \(method)")
-                }
-              }
-            } label: {
-              Label(modelItem.preferences.samplingMethod , systemImage: "square.stack.3d.forward.dottedline")
-            }
-          }.padding(.vertical, Constants.Layout.promptRowPadding)
-          /*
-          PromptEditorView(label: "Positive Prompt", text: $modelItem.preferences.positivePrompt)
-          PromptEditorView(label: "Negative Prompt", text: $modelItem.preferences.negativePrompt)
-            .padding(.bottom, 6)
-          */
-          DimensionSelectionRow(width: $modelItem.preferences.width, height: $modelItem.preferences.height)
+          samplingMenu
           
-          DetailSelectionRow(cfgScale: $modelItem.preferences.cfgScale, samplingSteps: $modelItem.preferences.samplingSteps)
+          DimensionSelectionRow(width: $temporaryPreferences.width, height: $temporaryPreferences.height)
           
-          VStack(alignment: .leading) {
-            PromptRowHeading(title: "Seed")
-              .padding(.leading, 8)
-            HStack {
-              TextField("", text: $modelItem.preferences.seed)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .font(.system(.body, design: .monospaced))
-              Button(action: {
-                Debug.log("Shuffle random seed")
-                modelItem.preferences.seed = "-1"
-              }) {
-                Image(systemName: "shuffle") //"dice"
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              Button(action: {
-                Debug.log("Repeat last seed")
-              }) {
-                Image(systemName: "repeat")
-              }
-              .buttonStyle(BorderlessButtonStyle())
-            }
-          }
-          .padding(.bottom, Constants.Layout.promptRowPadding)
+          DetailSelectionRow(cfgScale: $temporaryPreferences.cfgScale, samplingSteps: $temporaryPreferences.samplingSteps)
           
-          ExportSelectionRow(batchCount: $modelItem.preferences.batchCount, batchSize: $modelItem.preferences.batchSize)
-        }.padding(14).padding(.horizontal, 8)
-      }
-      HStack {
-        Spacer()
-        Button("Done") {
-          presentationMode.wrappedValue.dismiss()
+          seedSection
         }
+        .padding(14)
+        .padding(.horizontal, 8)
       }
-      .padding(.horizontal)
-      .padding(.bottom, 12)
+      
+      saveCancelButtons
     }
     .navigationTitle("Model Preferences")
     .frame(minWidth: 300, idealWidth: 400, minHeight: 350, idealHeight: 430)
+  }
+  
+  private var samplingMenu: some View {
+    VStack(alignment: .leading) {
+      PromptRowHeading(title: "Sampling")
+      Menu {
+        let samplingMethods = modelItem.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+        ForEach(samplingMethods, id: \.self) { method in
+          Button(method) {
+            temporaryPreferences.samplingMethod = method
+          }
+        }
+      } label: {
+        Label(temporaryPreferences.samplingMethod, systemImage: "square.stack.3d.forward.dottedline")
+      }
+    }
+    .padding(.vertical, Constants.Layout.promptRowPadding)
+  }
+  
+  private var seedSection: some View {
+    VStack(alignment: .leading) {
+      PromptRowHeading(title: "Seed")
+        .padding(.leading, 8)
+      HStack {
+        TextField("", text: $temporaryPreferences.seed)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .font(.system(.body, design: .monospaced))
+        Button(action: {
+          temporaryPreferences.seed = "-1"
+        }) {
+          Image(systemName: "shuffle")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+      }
+    }
+    .padding(.bottom, Constants.Layout.promptRowPadding)
+  }
+  
+  private var saveCancelButtons: some View {
+    HStack {
+      Button("Cancel") {
+        presentationMode.wrappedValue.dismiss()
+      }
+      Spacer()
+      Button("Save Model Preferences") {
+        applyPreferences()
+        presentationMode.wrappedValue.dismiss()
+      }
+    }
+    .padding(.horizontal)
+    .padding(.bottom, 12)
+  }
+  
+  private func applyPreferences() {
+    modelItem.preferences.update(from: temporaryPreferences)
+  }
+}
+
+extension ModelPreferences {
+  static func copy(from preferences: ModelPreferences) -> ModelPreferences {
+    let copy = ModelPreferences(samplingMethod: preferences.samplingMethod)
+    copy.positivePrompt = preferences.positivePrompt
+    copy.negativePrompt = preferences.negativePrompt
+    copy.width = preferences.width
+    copy.height = preferences.height
+    copy.cfgScale = preferences.cfgScale
+    copy.samplingSteps = preferences.samplingSteps
+    copy.clipSkip = preferences.clipSkip
+    copy.batchCount = preferences.batchCount
+    copy.batchSize = preferences.batchSize
+    copy.seed = preferences.seed
+    return copy
+  }
+  
+  // Ensure this method exists to apply changes from the temporary preferences
+  func update(from preferences: ModelPreferences) {
+    self.samplingMethod = preferences.samplingMethod
+    self.positivePrompt = preferences.positivePrompt
+    self.negativePrompt = preferences.negativePrompt
+    self.width = preferences.width
+    self.height = preferences.height
+    self.cfgScale = preferences.cfgScale
+    self.samplingSteps = preferences.samplingSteps
+    self.clipSkip = preferences.clipSkip
+    self.batchCount = preferences.batchCount
+    self.batchSize = preferences.batchSize
+    self.seed = preferences.seed
   }
 }
 
@@ -101,4 +152,3 @@ struct ModelPreferencesView: View {
   return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 430)
 }
-
