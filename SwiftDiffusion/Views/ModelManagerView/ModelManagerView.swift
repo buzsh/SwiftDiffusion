@@ -103,7 +103,7 @@ struct ModelManagerView: View {
   }
   
   private func openUserModelsFolder() {
-    guard let modelsDirUrl = DirectoryPath.models.url else {
+    guard let modelsDirUrl = AppDirectory.models.url else {
       Debug.log("modelsDirUrl URL is nil")
       return
     }

@@ -13,9 +13,6 @@ enum FileUtilityError: Error {
 }
 
 struct FileUtility {
-  /// Core app file-folder structure setup and configuration.
-  struct AppFileStructure {}
-  
   /// Ensures a directory exists at the specified URL, throwing an error if creation fails.
   ///
   /// - If the directory exists: return the URL to said directory

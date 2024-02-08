@@ -15,7 +15,8 @@ extension Constants.FileStructure {
   static let ApplicationSwiftDataFileName = "default.store"
 }
 
-enum DirectoryPath: String, CaseIterable {
+/// App directories and their associated URLs
+enum AppDirectory: String, CaseIterable {
   // UserFiles: models, loras, embeddings, etc.
   case userFiles    = "UserFiles"
   case models       = "UserFiles/Models"
@@ -24,8 +25,10 @@ enum DirectoryPath: String, CaseIterable {
   // UserData: local database, saved prompt media, etc.
   case userData     = "UserData"
   case promptMedia  = "UserData/PromptMedia"
-  
-  /// `URL` to the DirectoryPath case (if it exists)
+}
+
+extension AppDirectory {
+  /// `URL` to the AppDirectory case (if it exists)
   var url: URL? {
     guard let appSupportUrl = Constants.FileStructure.AppSupportUrl else {
       Debug.log("Error: Unable to find Application Support directory.")
@@ -36,7 +39,8 @@ enum DirectoryPath: String, CaseIterable {
   }
 }
 
-extension FileUtility.AppFileStructure {
+/// Core app file-folder structure setup and configuration.
+struct AppFileStructure {
   /// Attempts to ensure that the required directory structure for the application exists.
   /// Calls the completion handler with an error and the URL of the directory that failed to be created, if applicable.
   ///
@@ -52,7 +56,7 @@ extension FileUtility.AppFileStructure {
   /// }
   /// ```
   static func setup(completion: @escaping (Error?, URL?) -> Void) {
-    for directoryPath in DirectoryPath.allCases {
+    for directoryPath in AppDirectory.allCases {
       guard let directoryUrl = directoryPath.url else {
         completion(FileUtilityError.urlConstructionFailed, nil)
         return

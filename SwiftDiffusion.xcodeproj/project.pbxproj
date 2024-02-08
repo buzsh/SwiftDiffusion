@@ -244,6 +244,7 @@
 				297196512B715380000F7960 /* Services */,
 				297196692B71A5A2000F7960 /* Utilities */,
 				2971964A2B715184000F7960 /* Settings */,
+				29B1D9D62B755929009B6F03 /* AppStructure */,
 				2996D0972B6ED5B100B487D5 /* Assets.xcassets */,
 				2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */,
 				2996D0992B6ED5B100B487D5 /* Preview Content */,
@@ -286,6 +287,13 @@
 				29D362382B72E59F006C57B3 /* FileUtility.swift */,
 			);
 			path = FileUtility;
+			sourceTree = "<group>";
+		};
+		29B1D9D62B755929009B6F03 /* AppStructure */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AppStructure;
 			sourceTree = "<group>";
 		};
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {

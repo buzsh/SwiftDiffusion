@@ -35,7 +35,7 @@ struct SwiftDiffusionApp: App {
 // TODO: UI indicators for user on error
 /// Initialize app file-folder structure setup with error handling.
 func setupAppFileStructure() {
-  FileUtility.AppFileStructure.setup { error, failedUrl in
+  AppFileStructure.setup { error, failedUrl in
     if let error = error, let failedUrl = failedUrl {
       Debug.log("Failed to create directory at \(failedUrl): \(error)")
     } else if let error = error {
