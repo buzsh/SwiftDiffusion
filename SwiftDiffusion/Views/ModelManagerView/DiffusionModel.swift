@@ -12,7 +12,9 @@ struct ModelItem: Identifiable {
   let id = UUID()
   let name: String
   let type: ModelType
+  let url: URL
   var isDefaultModel: Bool = false
+  var defaultPreferences: ModelDefaultPreferences? = nil
 }
 
 struct ModelDefaultPreferences {
@@ -47,14 +49,16 @@ class ModelManagerViewModel: ObservableObject {
       guard let coreMlModelsDir = AppDirectory.coreMl.url,
             let pythonModelsDir = AppDirectory.python.url else { return }
       
+      // CoreML models
       let coreMlModels = try fileManager.contentsOfDirectory(at: coreMlModelsDir, includingPropertiesForKeys: nil)
       newItems += coreMlModels.filter { $0.hasDirectoryPath }.map {
-        ModelItem(name: $0.lastPathComponent, type: .coreMl, isDefaultModel: defaultCoreMLModelNames.contains($0.lastPathComponent))
+        ModelItem(name: $0.lastPathComponent, type: .coreMl, url: $0, isDefaultModel: defaultCoreMLModelNames.contains($0.lastPathComponent))
       }
       
+      // Python models
       let pythonModels = try fileManager.contentsOfDirectory(at: pythonModelsDir, includingPropertiesForKeys: nil)
       newItems += pythonModels.filter { $0.pathExtension == "safetensors" }.map {
-        ModelItem(name: $0.lastPathComponent, type: .python, isDefaultModel: defaultPythonModelNames.contains($0.lastPathComponent))
+        ModelItem(name: $0.lastPathComponent, type: .python, url: $0, isDefaultModel: defaultPythonModelNames.contains($0.lastPathComponent))
       }
       
       self.items = newItems
