@@ -48,96 +48,115 @@ struct PromptView: View {
   }
   
   private var leftPane: some View {
-    ScrollView {
-      Form {
-        HStack {
-          // Models
-          VStack(alignment: .leading) {
-            PromptRowHeading(title: "Model")
-            Menu {
-              Section(header: Text("􀢇 CoreML")) {
-                ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
-                  Button(item.name) {
-                    prompt.selectedModel = item
-                    Debug.log("Selected CoreML Model: \(item.name)")
-                  }
-                }
-              }
-              Section(header: Text("􁻴 Python")) {
-                ForEach(modelManager.items.filter { $0.type == .python }) { item in
-                  Button(item.name) {
-                    prompt.selectedModel = item
-                    Debug.log("Selected Python Model: \(item.name)")
-                  }
-                }
-              }
-            } label: {
-              Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
-            }
-          }
-          .onAppear {
-            modelManager.observeScriptManagerState(scriptManager: scriptManager)
-            if scriptManager.scriptState == .readyToStart {
-              Task {
-                await modelManager.loadModels()
-              }
-            }
-          }
-          
-          // Sampling
-          VStack(alignment: .leading) {
-            PromptRowHeading(title: "Sampling")
-            Menu {
-              let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
-              ForEach(samplingMethods, id: \.self) { method in
-                Button(method) {
-                  prompt.samplingMethod = method
-                  Debug.log("Selected Sampling Method: \(method)")
-                }
-              }
-            } label: {
-              Label(prompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
-            }
-          }
-        }
-        .padding(.vertical, Constants.Layout.promptRowPadding)
-        
-        PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
-        PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
-          .padding(.bottom, 6)
-        
-        DimensionSelectionRow(width: $prompt.width, height: $prompt.height)
-        
-        DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
-        
-        VStack(alignment: .leading) {
-          PromptRowHeading(title: "Seed")
-            .padding(.leading, 8)
+    VStack(spacing: 0) {
+      ScrollView {
+        Form {
           HStack {
-            TextField("", text: $prompt.seed)
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-              .font(.system(.body, design: .monospaced))
-            Button(action: {
-              Debug.log("Shuffle random seed")
-              prompt.seed = "-1"
-            }) {
-              Image(systemName: "shuffle") //"dice"
+            // Models
+            VStack(alignment: .leading) {
+              PromptRowHeading(title: "Model")
+              Menu {
+                Section(header: Text("􀢇 CoreML")) {
+                  ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
+                    Button(item.name) {
+                      prompt.selectedModel = item
+                      Debug.log("Selected CoreML Model: \(item.name)")
+                    }
+                  }
+                }
+                Section(header: Text("􁻴 Python")) {
+                  ForEach(modelManager.items.filter { $0.type == .python }) { item in
+                    Button(item.name) {
+                      prompt.selectedModel = item
+                      Debug.log("Selected Python Model: \(item.name)")
+                    }
+                  }
+                }
+              } label: {
+                Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+              }
             }
-            .buttonStyle(BorderlessButtonStyle())
-            Button(action: {
-              Debug.log("Repeat last seed")
-            }) {
-              Image(systemName: "repeat")
+            .onAppear {
+              modelManager.observeScriptManagerState(scriptManager: scriptManager)
+              if scriptManager.scriptState == .readyToStart {
+                Task {
+                  await modelManager.loadModels()
+                }
+              }
             }
-            .buttonStyle(BorderlessButtonStyle())
+            
+            // Sampling
+            VStack(alignment: .leading) {
+              PromptRowHeading(title: "Sampling")
+              Menu {
+                let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+                ForEach(samplingMethods, id: \.self) { method in
+                  Button(method) {
+                    prompt.samplingMethod = method
+                    Debug.log("Selected Sampling Method: \(method)")
+                  }
+                }
+              } label: {
+                Label(prompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
+              }
+            }
           }
+          .padding(.vertical, Constants.Layout.promptRowPadding)
+          
+          PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
+          PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+            .padding(.bottom, 6)
+          
+          DimensionSelectionRow(width: $prompt.width, height: $prompt.height)
+          
+          DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
+          
+          VStack(alignment: .leading) {
+            PromptRowHeading(title: "Seed")
+              .padding(.leading, 8)
+            HStack {
+              TextField("", text: $prompt.seed)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .font(.system(.body, design: .monospaced))
+              Button(action: {
+                Debug.log("Shuffle random seed")
+                prompt.seed = "-1"
+              }) {
+                Image(systemName: "shuffle") //"dice"
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              Button(action: {
+                Debug.log("Repeat last seed")
+              }) {
+                Image(systemName: "repeat")
+              }
+              .buttonStyle(BorderlessButtonStyle())
+            }
+          }
+          .padding(.bottom, Constants.Layout.promptRowPadding)
+          
+          ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
         }
-        .padding(.bottom, Constants.Layout.promptRowPadding)
-        
-        ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
+        .padding(.leading, 8)
+        .padding(.trailing, 16)
       }
-      .padding(.leading, 8)
-      .padding(.trailing, 16)
+      
+      HStack {
+        Spacer()
+        Button("Save as Model Defaults") {
+          Debug.log("Save model default")
+        }
+        .buttonStyle(.accessoryBar)
+        Button(action: {
+          Debug.log("Toolbar item selected")
+        }) {
+          Image(systemName: "questionmark.circle")
+        }
+        .buttonStyle(.accessoryBar)
+        .padding(.trailing, 8)
+      }
+      .frame(height: 24)
+      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))//.titlebar
     }
     .background(Color(NSColor.windowBackgroundColor))
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)

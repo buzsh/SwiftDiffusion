@@ -15,6 +15,15 @@ struct ModelItem: Identifiable {
   var isDefaultModel: Bool = false
 }
 
+struct ModelDefaultPreferences {
+  var samplingMethod: String?
+  var width: Double?
+  var height: Double?
+  var cfgScale: Double?
+  var samplingSteps: Double?
+  var clipSkip: Double?
+}
+
 enum ModelType {
   case coreMl
   case python
