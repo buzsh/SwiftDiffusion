@@ -109,7 +109,7 @@ struct ModelManagerView: View {
       }
     }
     .sheet(item: $selectedModelItem) { modelItem in
-      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }))
+      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
     }
     
   }

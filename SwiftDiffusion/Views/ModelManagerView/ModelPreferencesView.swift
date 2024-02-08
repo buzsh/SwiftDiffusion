@@ -43,11 +43,11 @@ struct ModelPreferencesView: View {
               Label(modelItem.preferences.samplingMethod , systemImage: "square.stack.3d.forward.dottedline")
             }
           }.padding(.vertical, Constants.Layout.promptRowPadding)
-          
+          /*
           PromptEditorView(label: "Positive Prompt", text: $modelItem.preferences.positivePrompt)
           PromptEditorView(label: "Negative Prompt", text: $modelItem.preferences.negativePrompt)
             .padding(.bottom, 6)
-          
+          */
           DimensionSelectionRow(width: $modelItem.preferences.width, height: $modelItem.preferences.height)
           
           DetailSelectionRow(cfgScale: $modelItem.preferences.cfgScale, samplingSteps: $modelItem.preferences.samplingSteps)
@@ -86,19 +86,19 @@ struct ModelPreferencesView: View {
         }
       }
       .padding(.horizontal)
-      .padding(.bottom, 8)
+      .padding(.bottom, 12)
     }
     .navigationTitle("Model Preferences")
-    .frame(minWidth: 300, idealWidth: 400, minHeight: 350, idealHeight: 600)
+    .frame(minWidth: 300, idealWidth: 400, minHeight: 350, idealHeight: 430)
   }
 }
 
-/*
+
 #Preview {
   let item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
-  return ModelPreferencesView(modelItem: .constant(item))
-    .frame(width: 400, height: 600)
+  return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
+    .frame(width: 400, height: 430)
 }
 
-*/
