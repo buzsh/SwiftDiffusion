@@ -22,7 +22,7 @@ class ModelItem: ObservableObject, Identifiable {
     self.type = type
     self.url = url
     self.isDefaultModel = isDefaultModel
-    self.preferences = ModelPreferences.defaultForModelType(type: type)
+    self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
   }
 }
 
@@ -44,12 +44,11 @@ class ModelPreferences: ObservableObject {
   @Published var batchSize: Double = 1
   @Published var seed: String = "-1"
   
-  // Initialize with default values or specific values as needed
-  init(samplingMethod: String = "DPM-Solver++") {
+  init(samplingMethod: String = "DPM++ 2M Karras") {
     self.samplingMethod = samplingMethod
   }
   
-  static func defaultForModelType(type: ModelType) -> ModelPreferences {
+  static func defaultSamplingForModelType(type: ModelType) -> ModelPreferences {
     let samplingMethod: String
     switch type {
     case .coreMl:
