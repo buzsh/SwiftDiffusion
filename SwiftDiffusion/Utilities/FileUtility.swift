@@ -11,15 +11,19 @@ extension Constants.FileStructure {
   static let ApplicationSupportFolderName = "SwiftDiffusion"
   static let ApplicationSwiftDataFileName = "default.store"
   
-  static let userFilesDir = "UserFiles"
+  // Models, Loras, Embeddings, etc.
+  static let userFilesDir = "UserFiles"                                     // > UserFiles/
   static let relModelsDir = userFilesDir.appending("/").appending("Models") // > UserFiles/Models
   static let relCoreMlDir = relModelsDir.appending("/").appending("CoreML") // > UserFiles/Models/CoreML
   static let relPythonDir = relModelsDir.appending("/").appending("Python") // > UserFiles/Models/Python
   
-  static var userFilesUrl: URL?
-  static var userModelsUrl: URL?
-  static var coreMlModelsUrl: URL?
-  static var pythonModelsUrl: URL?
+  static var userFilesUrl, userModelsUrl, coreMlModelsUrl, pythonModelsUrl: URL?
+  
+  // Assets for SwiftData (media for saved prompts)
+  static let userDataDir = "UserData"
+  static let relPromptMediaDir = userDataDir.appending("/").appending("PromptMedia") // > UserData/PromptMedia
+  
+  static var userDataDirUrl, promptMediaDirUrl: URL?
 }
 
 struct FileUtility {
@@ -31,10 +35,14 @@ struct FileUtility {
       Debug.log("appSupportUrl = \(appSupportUrl)")
       let baseFolderUrl = appSupportUrl.appendingPathComponent(Constants.FileStructure.ApplicationSupportFolderName)
       Debug.log("baseFolderUrl = \(baseFolderUrl)")
+      // UserFiles
       Constants.FileStructure.userFilesUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.userFilesDir), withFileManager: fileManager)
       Constants.FileStructure.userModelsUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.relModelsDir), withFileManager: fileManager)
       Constants.FileStructure.coreMlModelsUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.relCoreMlDir), withFileManager: fileManager)
       Constants.FileStructure.pythonModelsUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.relPythonDir), withFileManager: fileManager)
+      // UserData
+      Constants.FileStructure.userDataDirUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.userDataDir), withFileManager: fileManager)
+      Constants.FileStructure.promptMediaDirUrl = createDirectoryIfNeeded(at: baseFolderUrl.appendingPathComponent(Constants.FileStructure.relPromptMediaDir), withFileManager: fileManager)
     } else {
       Debug.log("Error: Unable to find Application Support directory.")
     }
