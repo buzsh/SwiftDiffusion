@@ -167,7 +167,6 @@
 		2971964A2B715184000F7960 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */,
 				2971964B2B715191000F7960 /* Constants.swift */,
 				297196542B715A58000F7960 /* Debug.swift */,
 			);
@@ -292,6 +291,7 @@
 		29B1D9D62B755929009B6F03 /* AppStructure */ = {
 			isa = PBXGroup;
 			children = (
+				29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */,
 			);
 			path = AppStructure;
 			sourceTree = "<group>";
