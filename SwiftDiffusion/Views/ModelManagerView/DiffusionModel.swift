@@ -35,14 +35,11 @@ class ModelManagerViewModel: ObservableObject {
       let fileManager = FileManager.default
       var newItems: [ModelItem] = []
       
-      guard let coreMlModelsDir = Constants.FileStructure.coreMlModelsUrl,
-            let pythonModelsDir = Constants.FileStructure.pythonModelsUrl else {
-        Debug.log("One or more model directories URL is nil")
-        return
-      }
+      guard let coreMlModelsDir = AppDirectory.coreMl.url,
+            let pythonModelsDir = AppDirectory.python.url else { return }
       
-      let coreMLModels = try fileManager.contentsOfDirectory(at: coreMlModelsDir, includingPropertiesForKeys: nil)
-      newItems += coreMLModels.filter { $0.hasDirectoryPath }.map {
+      let coreMlModels = try fileManager.contentsOfDirectory(at: coreMlModelsDir, includingPropertiesForKeys: nil)
+      newItems += coreMlModels.filter { $0.hasDirectoryPath }.map {
         ModelItem(name: $0.lastPathComponent, type: .coreMl, isDefaultModel: defaultCoreMLModelNames.contains($0.lastPathComponent))
       }
       
@@ -65,7 +62,7 @@ class ModelManagerViewModel: ObservableObject {
         if state == .readyToStart {
           self?.startObservingModelDirectories()
         } else {
-          self?.stopObservingModelDirectories() // This method would need to be implemented
+          self?.stopObservingModelDirectories()
         }
       }
   }
@@ -73,7 +70,7 @@ class ModelManagerViewModel: ObservableObject {
   func stopObservingModelDirectories() {
     coreMlObserver?.stopObserving()
     pythonObserver?.stopObserving()
-    // Reset observers to nil if necessary
+    // reset observers to nil
     coreMlObserver = nil
     pythonObserver = nil
   }
@@ -82,14 +79,14 @@ class ModelManagerViewModel: ObservableObject {
     coreMlObserver = DirectoryObserver()
     pythonObserver = DirectoryObserver()
     
-    if let coreMlModelsDir = Constants.FileStructure.coreMlModelsUrl {
+    if let coreMlModelsDir = AppDirectory.coreMl.url {
       coreMlObserver?.startObserving(url: coreMlModelsDir) { [weak self] in
         Debug.log("Detected changes in CoreML models directory")
         await self?.loadModels()
       }
     }
     
-    if let pythonModelsDir = Constants.FileStructure.pythonModelsUrl {
+    if let pythonModelsDir = AppDirectory.python.url {
       pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
         Debug.log("Detected changes in Python models directory")
         await self?.loadModels()
@@ -102,22 +99,21 @@ extension ModelManagerViewModel {
   func moveToTrash(item: ModelItem) async {
     let fileManager = FileManager.default
     do {
-      let fileURL: URL // Declare the variable outside the switch
+      let fileURL: URL
       
-      // Safely unwrap URLs
       switch item.type {
       case .coreMl:
-        guard let coreMlModelsUrl = Constants.FileStructure.coreMlModelsUrl else {
+        guard let coreMlModelsDirUrl = AppDirectory.coreMl.url else {
           Debug.log("CoreML models URL is nil")
           return
         }
-        fileURL = coreMlModelsUrl.appendingPathComponent(item.name)
+        fileURL = coreMlModelsDirUrl.appendingPathComponent(item.name)
       case .python:
-        guard let pythonModelsUrl = Constants.FileStructure.pythonModelsUrl else {
+        guard let pythonModelsDirUrl = AppDirectory.python.url else {
           Debug.log("Python models URL is nil")
           return
         }
-        fileURL = pythonModelsUrl.appendingPathComponent(item.name)
+        fileURL = pythonModelsDirUrl.appendingPathComponent(item.name)
       }
       
       // Move the file to trash

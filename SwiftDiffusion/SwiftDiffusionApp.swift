@@ -19,13 +19,7 @@ struct SwiftDiffusionApp: App {
   @StateObject var modelManagerViewModel = ModelManagerViewModel()
   
   init() {
-    let fileManager = FileManager.default
-    guard fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first != nil else {
-      fatalError("Application Support directory not found.")
-    }
-    
-    FileUtility.setupAppFileStructureIfNeeded()
-    
+    setupAppFileStructure()
   }
   
   var body: some Scene {
@@ -35,6 +29,20 @@ struct SwiftDiffusionApp: App {
                minHeight: 400, idealHeight: 600, maxHeight: .infinity)
     }
     .windowToolbarStyle(DefaultWindowToolbarStyle())
+  }
+}
+
+// TODO: UI indicators for user on error
+/// Initialize app file-folder structure setup with error handling.
+func setupAppFileStructure() {
+  AppFileStructure.setup { error, failedUrl in
+    if let error = error, let failedUrl = failedUrl {
+      Debug.log("Failed to create directory at \(failedUrl): \(error)")
+    } else if let error = error {
+      Debug.log("Error: \(error)")
+    } else {
+      Debug.log("Successfully initialized application file structure.")
+    }
   }
 }
 
