@@ -42,20 +42,18 @@ extension FileUtility.AppFileStructure {
   static func setup(completion: @escaping (Error?, URL?) -> Void) {
     for directoryPath in DirectoryPath.allCases {
       guard let directoryUrl = directoryPath.url else {
-        completion(FileUtilityError.urlConstructionFailed, nil) // failed to construct URL
+        completion(FileUtilityError.urlConstructionFailed, nil)
         return
       }
-      
       do {
         try FileUtility.ensureDirectoryExists(at: directoryUrl)
-        // success for this directory, continue to the next
       } catch {
-        completion(error, directoryUrl) // Return the error and the URL that caused it
+        completion(error, directoryUrl)
         return
       }
     }
-    
-    completion(nil, nil) // indicate success if all directories were ensured without errors
+    // indicate success if all directories were ensured without errors
+    completion(nil, nil)
   }
 }
 
