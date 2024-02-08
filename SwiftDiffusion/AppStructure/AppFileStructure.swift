@@ -7,26 +7,6 @@
 
 import Foundation
 
-extension Constants.FileStructure {
-  // Can custom set this variable if user wants custom application directory path
-  static let AppSupportUrl: URL? = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-  
-  static let ApplicationSupportFolderName = "SwiftDiffusion"
-  static let ApplicationSwiftDataFileName = "default.store"
-}
-
-/// App directories and their associated URLs
-enum AppDirectory: String, CaseIterable {
-  // UserFiles: models, loras, embeddings, etc.
-  case userFiles    = "UserFiles"
-  case models       = "UserFiles/Models"
-  case coreMl       = "UserFiles/Models/CoreML"
-  case python       = "UserFiles/Models/Python"
-  // UserData: local database, saved prompt media, etc.
-  case userData     = "UserData"
-  case promptMedia  = "UserData/PromptMedia"
-}
-
 extension AppDirectory {
   /// `URL` to the AppDirectory case (if it exists)
   var url: URL? {
@@ -34,7 +14,7 @@ extension AppDirectory {
       Debug.log("Error: Unable to find Application Support directory.")
       return nil
     }
-    let baseFolderUrl = appSupportUrl.appendingPathComponent(Constants.FileStructure.ApplicationSupportFolderName)
+    let baseFolderUrl = appSupportUrl.appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
     return baseFolderUrl.appendingPathComponent(self.rawValue)
   }
 }
