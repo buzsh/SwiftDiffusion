@@ -73,6 +73,15 @@ struct ModelManagerView: View {
           
           Text(item.name)
           Spacer()
+          
+          Button(action: {
+            Debug.log("Open popover sheet view")
+          }) {
+            Image(systemName: "pencil")
+          }
+          .disabled(isScriptActive)
+          .buttonStyle(BorderlessButtonStyle())
+          
           if !item.isDefaultModel {
             Button(action: {
               Task {
