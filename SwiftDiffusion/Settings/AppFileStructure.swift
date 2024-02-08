@@ -39,6 +39,18 @@ enum DirectoryPath: String, CaseIterable {
 extension FileUtility.AppFileStructure {
   /// Attempts to ensure that the required directory structure for the application exists.
   /// Calls the completion handler with an error and the URL of the directory that failed to be created, if applicable.
+  ///
+  /// ## Usage
+  /// ```swift
+  /// FileUtility.AppFileStructure.setup { error, failedUrl in
+  /// if let error = error, let failedUrl = failedUrl {
+  ///   print("Failed to create directory at \(failedUrl): \(error)")
+  /// } else if let error = error {
+  ///   print("Error: \(error)")
+  /// } else {
+  ///   print("Success")
+  /// }
+  /// ```
   static func setup(completion: @escaping (Error?, URL?) -> Void) {
     for directoryPath in DirectoryPath.allCases {
       guard let directoryUrl = directoryPath.url else {
