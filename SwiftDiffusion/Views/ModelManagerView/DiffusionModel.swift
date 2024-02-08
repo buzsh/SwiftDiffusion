@@ -35,8 +35,8 @@ class ModelManagerViewModel: ObservableObject {
       let fileManager = FileManager.default
       var newItems: [ModelItem] = []
       
-      guard let coreMlModelsDir = Constants.FileStructure.coreMlModelsDirUrl,
-            let pythonModelsDir = Constants.FileStructure.pythonModelsDirUrl else {
+      guard let coreMlModelsDir = DirectoryPath.coreMl.url,
+            let pythonModelsDir = DirectoryPath.python.url else {
         Debug.log("One or more model directories URL is nil")
         return
       }
@@ -65,7 +65,7 @@ class ModelManagerViewModel: ObservableObject {
         if state == .readyToStart {
           self?.startObservingModelDirectories()
         } else {
-          self?.stopObservingModelDirectories() // This method would need to be implemented
+          self?.stopObservingModelDirectories()
         }
       }
   }
@@ -73,7 +73,7 @@ class ModelManagerViewModel: ObservableObject {
   func stopObservingModelDirectories() {
     coreMlObserver?.stopObserving()
     pythonObserver?.stopObserving()
-    // Reset observers to nil if necessary
+    // reset observers to nil
     coreMlObserver = nil
     pythonObserver = nil
   }
@@ -82,14 +82,14 @@ class ModelManagerViewModel: ObservableObject {
     coreMlObserver = DirectoryObserver()
     pythonObserver = DirectoryObserver()
     
-    if let coreMlModelsDir = Constants.FileStructure.coreMlModelsDirUrl {
+    if let coreMlModelsDir = DirectoryPath.coreMl.url {
       coreMlObserver?.startObserving(url: coreMlModelsDir) { [weak self] in
         Debug.log("Detected changes in CoreML models directory")
         await self?.loadModels()
       }
     }
     
-    if let pythonModelsDir = Constants.FileStructure.pythonModelsDirUrl {
+    if let pythonModelsDir = DirectoryPath.python.url {
       pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
         Debug.log("Detected changes in Python models directory")
         await self?.loadModels()
@@ -107,13 +107,13 @@ extension ModelManagerViewModel {
       // Safely unwrap URLs
       switch item.type {
       case .coreMl:
-        guard let coreMlModelsDirUrl = Constants.FileStructure.coreMlModelsDirUrl else {
+        guard let coreMlModelsDirUrl = DirectoryPath.coreMl.url else {
           Debug.log("CoreML models URL is nil")
           return
         }
         fileURL = coreMlModelsDirUrl.appendingPathComponent(item.name)
       case .python:
-        guard let pythonModelsDirUrl = Constants.FileStructure.pythonModelsDirUrl else {
+        guard let pythonModelsDirUrl = DirectoryPath.python.url else {
           Debug.log("Python models URL is nil")
           return
         }

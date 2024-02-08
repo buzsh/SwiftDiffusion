@@ -94,11 +94,11 @@ struct ModelManagerView: View {
   }
   
   private func openUserModelsFolder() {
-    guard let userModelsDirUrl = Constants.FileStructure.userModelsDirUrl else {
-      Debug.log("userModelsDirUrl URL is nil")
+    guard let modelsDirUrl = DirectoryPath.models.url else {
+      Debug.log("modelsDirUrl URL is nil")
       return
     }
-    NSWorkspace.shared.open(userModelsDirUrl)
+    NSWorkspace.shared.open(modelsDirUrl)
   }
 }
 
