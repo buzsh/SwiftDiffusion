@@ -8,6 +8,9 @@
 import Foundation
 
 extension Constants.FileStructure {
+  // Can custom set this variable if user wants custom application directory path
+  static let AppSupportUrl: URL? = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+  
   static let ApplicationSupportFolderName = "SwiftDiffusion"
   static let ApplicationSwiftDataFileName = "default.store"
 }
@@ -22,9 +25,9 @@ enum DirectoryPath: String, CaseIterable {
   case userData     = "UserData"
   case promptMedia  = "UserData/PromptMedia"
   
-  // computed property to directly get the URL for a directory path
+  /// `URL` to the DirectoryPath case (if it exists)
   var url: URL? {
-    guard let appSupportUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+    guard let appSupportUrl = Constants.FileStructure.AppSupportUrl else {
       Debug.log("Error: Unable to find Application Support directory.")
       return nil
     }
