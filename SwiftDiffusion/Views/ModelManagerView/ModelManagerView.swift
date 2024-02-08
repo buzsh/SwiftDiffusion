@@ -62,7 +62,14 @@ struct ModelManagerView: View {
       
       List(filteredItems, id: \.id) { item in
         HStack {
-          
+          VStack {
+            switch item.type {
+            case .coreMl:
+              Image(systemName: "rotate.3d")
+            case .python:
+              Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
+            }
+          }.padding(.trailing, 2)
           
           Text(item.name)
           Spacer()
@@ -76,6 +83,8 @@ struct ModelManagerView: View {
             }
             .disabled(isScriptActive)
             .buttonStyle(BorderlessButtonStyle())
+          } else {
+            Image(systemName: "lock").opacity(0.3)
           }
         }
         .padding(.vertical, 6)
