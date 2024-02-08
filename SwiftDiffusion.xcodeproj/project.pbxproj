@@ -208,6 +208,7 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				29B1D9D32B753AE0009B6F03 /* FileUtility */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29D362382B72E59F006C57B3 /* FileUtility.swift */,
 			);
@@ -275,6 +276,13 @@
 				2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */,
 			);
 			path = ScriptManager;
+			sourceTree = "<group>";
+		};
+		29B1D9D32B753AE0009B6F03 /* FileUtility */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = FileUtility;
 			sourceTree = "<group>";
 		};
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {

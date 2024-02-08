@@ -94,7 +94,7 @@ struct ModelManagerView: View {
   }
   
   private func openUserModelsFolder() {
-    guard let userModelsDirUrl = Constants.FileStructure.userModelsUrl else {
+    guard let userModelsDirUrl = Constants.FileStructure.userModelsDirUrl else {
       Debug.log("userModelsDirUrl URL is nil")
       return
     }
