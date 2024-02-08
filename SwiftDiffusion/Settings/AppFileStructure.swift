@@ -36,3 +36,31 @@ enum DirectoryPath: String, CaseIterable {
     return baseFolderUrl.appendingPathComponent(self.rawValue)
   }
 }
+
+extension FileUtility {
+  
+  struct AppFileStructure {
+    /// Attempts to ensure that the required directory structure for the application exists.
+    /// Calls the completion handler with an error and the URL of the directory that failed to be created, if applicable.
+    static func setup(completion: @escaping (Error?, URL?) -> Void) {
+      for directoryPath in DirectoryPath.allCases {
+        guard let directoryUrl = directoryPath.url else {
+          completion(FileUtilityError.urlConstructionFailed, nil) // Failed to construct URL
+          return
+        }
+        
+        do {
+          try ensureDirectoryExists(at: directoryUrl)
+          // Success for this directory, continue to the next
+        } catch {
+          completion(error, directoryUrl) // Return the error and the URL that caused it
+          return
+        }
+      }
+      
+      completion(nil, nil) // Indicate success if all directories were ensured without errors
+    }
+  }
+  
+}
+
