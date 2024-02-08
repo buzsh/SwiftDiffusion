@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ModelManagerView: View {
   @ObservedObject var scriptManager: ScriptManager
-  
   @ObservedObject var viewModel = ModelManagerViewModel()
   @State private var selectedFilter: ModelType? = nil
+  @State private var selectedModelItem: ModelItem?
   
   private var filterTitle: String {
     switch selectedFilter {
@@ -75,11 +75,11 @@ struct ModelManagerView: View {
           Spacer()
           
           Button(action: {
-            Debug.log("Open popover sheet view")
+            Debug.log(item)
+            self.selectedModelItem = item
           }) {
             Image(systemName: "pencil")
           }
-          .disabled(isScriptActive)
           .buttonStyle(BorderlessButtonStyle())
           
           if !item.isDefaultModel {
@@ -107,6 +107,9 @@ struct ModelManagerView: View {
           await viewModel.loadModels()
         }
       }
+    }
+    .sheet(item: $selectedModelItem) { modelItem in
+      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }))
     }
     
   }

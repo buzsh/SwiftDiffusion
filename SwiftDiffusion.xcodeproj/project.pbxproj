@@ -39,6 +39,7 @@
 		29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D72B755965009B6F03 /* AppDirectory.swift */; };
 		29B571772B756C4E0057DD50 /* PromptPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571762B756C4E0057DD50 /* PromptPreferencesView.swift */; };
 		29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* ModelPreferencesView.swift */; };
+		29B5717D2B758D7E0057DD50 /* ModelItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717C2B758D7E0057DD50 /* ModelItem.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -82,6 +83,7 @@
 		29B1D9D72B755965009B6F03 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
 		29B571762B756C4E0057DD50 /* PromptPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPreferencesView.swift; sourceTree = "<group>"; };
 		29B571782B756F320057DD50 /* ModelPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPreferencesView.swift; sourceTree = "<group>"; };
+		29B5717C2B758D7E0057DD50 /* ModelItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelItem.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
 			isa = PBXGroup;
 			children = (
+				29B5717C2B758D7E0057DD50 /* ModelItem.swift */,
 				29D3623F2B7317E1006C57B3 /* DiffusionModel.swift */,
 				29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */,
 				29B571782B756F320057DD50 /* ModelPreferencesView.swift */,
@@ -416,6 +419,7 @@
 				29D362402B7317E1006C57B3 /* DiffusionModel.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				2916F3372B72859D001D14B9 /* DetailView.swift in Sources */,
+				29B5717D2B758D7E0057DD50 /* ModelItem.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptViewModel.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,

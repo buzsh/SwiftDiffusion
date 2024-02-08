@@ -7,8 +7,6 @@
 
 import Combine
 
-
-
 class PromptViewModel: ObservableObject {
   @Published var selectedModel: ModelItem?
   @Published var samplingMethod: String?

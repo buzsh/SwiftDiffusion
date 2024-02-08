@@ -143,7 +143,7 @@ struct PromptView: View {
       
       HStack {
         Spacer()
-        Button("Save as Model Defaults") {
+        Button("Save Model Preferences") {
           Debug.log("Save model default")
         }
         .buttonStyle(.accessoryBar)

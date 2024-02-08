@@ -8,29 +8,6 @@
 import Combine
 import SwiftUI
 
-struct ModelItem: Identifiable {
-  let id = UUID()
-  let name: String
-  let type: ModelType
-  let url: URL
-  var isDefaultModel: Bool = false
-  var defaultPreferences: ModelDefaultPreferences? = nil
-}
-
-struct ModelDefaultPreferences {
-  var samplingMethod: String?
-  var width: Double?
-  var height: Double?
-  var cfgScale: Double?
-  var samplingSteps: Double?
-  var clipSkip: Double?
-}
-
-enum ModelType {
-  case coreMl
-  case python
-}
-
 @MainActor
 class ModelManagerViewModel: ObservableObject {
   @Published var items: [ModelItem] = []
@@ -45,25 +22,40 @@ class ModelManagerViewModel: ObservableObject {
     do {
       let fileManager = FileManager.default
       var newItems: [ModelItem] = []
+      let existingURLs = Set(self.items.map { $0.url })
+      var updatedURLs = Set<URL>()
       
-      guard let coreMlModelsDir = AppDirectory.coreMl.url,
-            let pythonModelsDir = AppDirectory.python.url else { return }
-      
-      // CoreML models
-      let coreMlModels = try fileManager.contentsOfDirectory(at: coreMlModelsDir, includingPropertiesForKeys: nil)
-      newItems += coreMlModels.filter { $0.hasDirectoryPath }.map {
-        ModelItem(name: $0.lastPathComponent, type: .coreMl, url: $0, isDefaultModel: defaultCoreMLModelNames.contains($0.lastPathComponent))
+      // Load CoreML models
+      if let coreMlModelsDir = AppDirectory.coreMl.url {
+        let coreMlModels = try fileManager.contentsOfDirectory(at: coreMlModelsDir, includingPropertiesForKeys: nil)
+        for modelURL in coreMlModels where modelURL.hasDirectoryPath {
+          updatedURLs.insert(modelURL)
+          if !existingURLs.contains(modelURL) {
+            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .coreMl, url: modelURL, isDefaultModel: defaultCoreMLModelNames.contains(modelURL.lastPathComponent))
+            newItems.append(newItem)
+          }
+        }
       }
       
-      // Python models
-      let pythonModels = try fileManager.contentsOfDirectory(at: pythonModelsDir, includingPropertiesForKeys: nil)
-      newItems += pythonModels.filter { $0.pathExtension == "safetensors" }.map {
-        ModelItem(name: $0.lastPathComponent, type: .python, url: $0, isDefaultModel: defaultPythonModelNames.contains($0.lastPathComponent))
+      // Load Python models
+      if let pythonModelsDir = AppDirectory.python.url {
+        let pythonModels = try fileManager.contentsOfDirectory(at: pythonModelsDir, includingPropertiesForKeys: nil)
+        for modelURL in pythonModels where modelURL.pathExtension == "safetensors" {
+          updatedURLs.insert(modelURL)
+          if !existingURLs.contains(modelURL) {
+            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .python, url: modelURL, isDefaultModel: defaultPythonModelNames.contains(modelURL.lastPathComponent))
+            newItems.append(newItem)
+          }
+        }
       }
       
-      self.items = newItems
+      // Remove items whose URLs no longer exist
+      self.items = self.items.filter { updatedURLs.contains($0.url) }
+      
+      // Add new items
+      self.items.append(contentsOf: newItems)
     } catch {
-      Debug.log("Failed to scan directories: \(error)")
+      Debug.log("Failed to load models: \(error)")
     }
   }
   
