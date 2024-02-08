@@ -31,18 +31,23 @@ enum ModelType {
   case python
 }
 
-struct ModelPreferences {
-  var samplingMethod: String
-  var positivePrompt: String = ""
-  var negativePrompt: String = ""
-  var width: Double = 512
-  var height: Double = 512
-  var cfgScale: Double = 7
-  var samplingSteps: Double = 20
-  var clipSkip: Double = 1
-  var batchCount: Double = 1
-  var batchSize: Double = 1
-  var seed: String = "-1"
+class ModelPreferences: ObservableObject {
+  @Published var samplingMethod: String
+  @Published var positivePrompt: String = ""
+  @Published var negativePrompt: String = ""
+  @Published var width: Double = 512
+  @Published var height: Double = 512
+  @Published var cfgScale: Double = 7
+  @Published var samplingSteps: Double = 20
+  @Published var clipSkip: Double = 1
+  @Published var batchCount: Double = 1
+  @Published var batchSize: Double = 1
+  @Published var seed: String = "-1"
+  
+  // Initialize with default values or specific values as needed
+  init(samplingMethod: String = "DPM-Solver++") {
+    self.samplingMethod = samplingMethod
+  }
   
   static func defaultForModelType(type: ModelType) -> ModelPreferences {
     let samplingMethod: String

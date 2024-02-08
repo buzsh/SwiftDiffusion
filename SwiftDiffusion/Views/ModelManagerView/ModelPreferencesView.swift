@@ -17,6 +17,7 @@ extension Constants {
 
 struct ModelPreferencesView: View {
   @Binding var modelItem: ModelItem
+  @ObservedObject var modelPreferences: ModelPreferences
   @Environment(\.presentationMode) var presentationMode
   
   var body: some View {
@@ -92,11 +93,12 @@ struct ModelPreferencesView: View {
   }
 }
 
-
+/*
 #Preview {
-  var item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  let item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
   
   return ModelPreferencesView(modelItem: .constant(item))
     .frame(width: 400, height: 600)
 }
 
+*/
