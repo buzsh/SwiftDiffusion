@@ -62,6 +62,9 @@ extension ContentView {
       return
     }
     
+    scriptManager.genStatus = .preparingToGenerate
+    scriptManager.genProgress = -1
+    
     let overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
       // Include other override settings as needed, for example:
@@ -100,6 +103,11 @@ extension ContentView {
       return
     }
     
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 120 // seconds
+    configuration.timeoutIntervalForResource = 120 // seconds
+    let session = URLSession(configuration: configuration)
+    
     do {
       let requestData = try JSONSerialization.data(withJSONObject: payload, options: [])
       var request = URLRequest(url: url)
@@ -115,7 +123,7 @@ extension ContentView {
       }
     } catch {
       Task { @MainActor in
-        Debug.log("Request error: \(error)")
+        Debug.log("[ContentView] Request error: \(error)")
       }
     }
   }
@@ -175,12 +183,16 @@ extension ContentView {
             await fileHierarchy.refresh()
           }
         }
-        
-        
-        
       } catch {
         Debug.log("Failed to save image: \(error.localizedDescription)")
       }
+    }
+    
+    scriptManager.genStatus = .done
+    
+    Delay.by(3.0) {
+      scriptManager.genStatus = .idle
+      scriptManager.genProgress = 0
     }
   }
 }

@@ -21,6 +21,7 @@ extension ScriptManager: PythonProcessDelegate {
     DispatchQueue.main.async {
       self.consoleOutput += "\n\(filteredOutput)"
       self.parseServiceUrl(from: filteredOutput)
+      self.updateProgressBasedOnOutput(output: output)
     }
   }
   

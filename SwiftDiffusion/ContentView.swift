@@ -45,7 +45,7 @@ struct ContentView: View {
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   
-  
+  @State private var hasFirstAppeared = false
   
   var body: some View {
     NavigationSplitView {
@@ -73,7 +73,7 @@ struct ContentView: View {
       }
     } detail: {
       // Image, FileSelect DetailView
-      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
+      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
@@ -86,6 +86,18 @@ struct ContentView: View {
       if scriptManager.scriptState == .readyToStart {
         modelManagerViewModel.startObservingModelDirectories()
       }
+      
+      // ON FIRST LOAD
+      if !self.hasFirstAppeared {
+        Debug.log("First appearance. Starting script...")
+        scriptManager.run()
+        self.hasFirstAppeared = true
+        
+        Task {
+          await modelManagerViewModel.loadModels()
+        }
+      }
+      // AFTER FIRST LOAD
     }
     .onChange(of: fileOutputDir) {
       fileHierarchy.rootPath = fileOutputDir
@@ -131,6 +143,19 @@ struct ContentView: View {
       
       ToolbarItemGroup(placement: .automatic) {
         HStack {
+          
+          if scriptManager.genStatus == .generating || scriptManager.genStatus == .finishingUp {
+            Text("\(Int(scriptManager.genProgress * 100))%")
+              .font(.system(.body, design: .monospaced))
+          } else if scriptManager.genStatus == .preparingToGenerate {
+            ProgressView()
+              .progressViewStyle(CircularProgressViewStyle())
+              .scaleEffect(0.5)
+          } else if scriptManager.genStatus == .done {
+            Image(systemName: "checkmark.seal.fill")
+              .foregroundStyle(Color.green)
+          }
+          
           Button(action: {
             Task {
               await prepareAndSendAPIRequest()

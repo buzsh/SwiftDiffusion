@@ -11,6 +11,7 @@ struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
   @Binding var lastSelectedImagePath: String
+  @ObservedObject var scriptManager: ScriptManager
   
   var body: some View {
     VSplitView {
@@ -56,6 +57,18 @@ struct DetailView: View {
         
         Spacer()
         
+        if scriptManager.genStatus != .idle {
+          ProgressView(value: scriptManager.genProgress)
+            .progressViewStyle(LinearProgressViewStyle())
+            .frame(width: 100)
+        }
+        
+        
+
+        //Text("\(Int(scriptManager.genProgress * 100))%").padding(.leading, 5)
+        
+        Spacer()
+        
         Button(action: {
           Task {
             if let mostRecentImageNode = await fileHierarchyObject.findMostRecentlyModifiedImageFile() {
@@ -90,16 +103,17 @@ struct DetailView: View {
   }
 }
 
-
+/*
 #Preview {
   let mockFileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
   @State var selectedImage: NSImage? = nil
   @State var lastSelectedImagePath: String = ""
+  let progressViewModel = ProgressViewModel()
+  progressViewModel.progress = 20.0
   
-  return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
-    .frame(width: 300, height: 600)
+  return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, progressViewModel: progressViewModel).frame(width: 300, height: 600)
 }
-
+*/
 
 extension FileHierarchy {
   func findMostRecentlyModifiedImageFile() async -> FileNode? {
@@ -125,7 +139,6 @@ extension FileHierarchy {
               }
             }
           } else if isImageFile(itemPath) {
-            // Only consider image files
             let attributes = try fileManager.attributesOfItem(atPath: itemPath)
             if let modificationDate = attributes[FileAttributeKey.modificationDate] as? Date {
               let fileNode = FileNode(name: item, fullPath: itemPath, lastModified: modificationDate)

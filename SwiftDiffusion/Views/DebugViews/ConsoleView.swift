@@ -138,7 +138,7 @@ struct ConsoleView: View {
       }
     } catch {
       DispatchQueue.main.async {
-        Debug.log("Request error: \(error)")
+        Debug.log("[ConsoleView] Request error: \(error)")
       }
     }
   }

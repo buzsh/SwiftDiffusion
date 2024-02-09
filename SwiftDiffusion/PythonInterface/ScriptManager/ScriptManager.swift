@@ -31,6 +31,11 @@ class ScriptManager: ObservableObject {
   
   var shouldTrimOutput: Bool = false
   
+  enum GenerationStatus { case idle, preparingToGenerate, generating, finishingUp, done }
+  
+  @Published var genStatus: GenerationStatus = .idle
+  @Published var genProgress: Double = 0
+
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
   var scriptPath: String? {
