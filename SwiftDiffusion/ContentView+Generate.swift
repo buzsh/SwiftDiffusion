@@ -166,14 +166,13 @@ extension ContentView {
     var nextImageNumber = 1
     let fileManager = FileManager.default
     do {
-        let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
-        let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
-        let cleanGridName = imageFiles.map { $0.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "-grid", with: "") }
-        cleanGridName.forEach { Debug.log($0) }
-        let imageNumbers = cleanGridName.compactMap { Int($0) }
-        if let maxNumber = imageNumbers.max() {
-            nextImageNumber = maxNumber + 1
-        }
+      let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+      let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
+      let cleanGridName = imageFiles.map { $0.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "-grid", with: "") }
+      let imageNumbers = cleanGridName.compactMap { Int($0) }
+      if let maxNumber = imageNumbers.max() {
+        nextImageNumber = maxNumber + 1
+      }
     } catch {
       Debug.log("Error listing directory contents: \(error.localizedDescription)")
     }
