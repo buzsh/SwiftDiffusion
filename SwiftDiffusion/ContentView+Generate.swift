@@ -11,19 +11,18 @@ import Combine
 extension Constants.Api {
   static let timeoutInterval: TimeInterval = 1000 // in seconds
   
-  static let compositeImageCompressionFactor = 0.5 // 1.0 no compression
+  static let compositeImageCompressionFactor = 0.5 // JPEG: 0-most compression, 1.0-no compression
 }
 
 extension ContentView {
   func generatePayload() -> [String: Any] {
-    // Collect values from PromptViewModel
     let prompt = promptViewModel.positivePrompt
     let negativePrompt = promptViewModel.negativePrompt
     let width = Int(promptViewModel.width)
     let height = Int(promptViewModel.height)
     let cfgScale = promptViewModel.cfgScale
     let steps = Int(promptViewModel.samplingSteps)
-    let seed = Int(promptViewModel.seed) ?? -1 // Assuming seed is a string that can be converted to Int
+    let seed = Int(promptViewModel.seed) ?? -1
     let batchCount = Int(promptViewModel.batchCount)
     let batchSize = Int(promptViewModel.batchSize)
     let model = promptViewModel.selectedModel?.name ?? ""
