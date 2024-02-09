@@ -11,11 +11,13 @@ struct Constants {
   
   struct Api {}
   struct CommandLine {}
+  struct Debug {}
   struct Delays {}
   struct FileStructure {}
   struct FileTypes {}
   struct Keys {}
   struct Layout {}
+  struct Parsing {}
   struct PromptOptions {}
   
 }
