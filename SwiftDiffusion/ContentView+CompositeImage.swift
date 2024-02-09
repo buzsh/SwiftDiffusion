@@ -14,9 +14,8 @@ extension ContentView {
     guard !images.isEmpty else { return nil }
     
     let rowCount = Int(ceil(Double(images.count) / 2.0))
-    let columnCount = min(images.count, 2) // Ensures we don't calculate more columns than there are images
+    let columnCount = min(images.count, 2) // ensures we don't calculate more columns than there are images
     
-    // Assuming all images are the same size for simplicity. Adjust as needed.
     guard let firstImage = images.first else { return nil }
     guard let firstImageRep = firstImage.representations.first else { return nil }
     let imageSize = CGSize(width: firstImageRep.pixelsWide, height: firstImageRep.pixelsHigh)
@@ -39,7 +38,7 @@ extension ContentView {
     
     finalImage.unlockFocus()
     
-    // Convert the finalImage to a compressed JPEG
+    // convert finalImage to a compressed JPEG
     guard let tiffData = finalImage.tiffRepresentation,
           let imageRep = NSBitmapImageRep(data: tiffData) else {
       Debug.log("Failed to create image representation")

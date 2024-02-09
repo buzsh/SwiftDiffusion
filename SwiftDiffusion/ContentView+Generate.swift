@@ -10,54 +10,7 @@ import Combine
 
 extension Constants.Api {
   static let timeoutInterval: TimeInterval = 1000 // in seconds
-  
   static let compositeImageCompressionFactor = 0.5 // JPEG: 0-most compression, 1.0-no compression
-}
-
-extension ContentView {
-  func generatePayload() -> [String: Any] {
-    let prompt = promptViewModel.positivePrompt
-    let negativePrompt = promptViewModel.negativePrompt
-    let width = Int(promptViewModel.width)
-    let height = Int(promptViewModel.height)
-    let cfgScale = promptViewModel.cfgScale
-    let steps = Int(promptViewModel.samplingSteps)
-    let seed = Int(promptViewModel.seed) ?? -1
-    let batchCount = Int(promptViewModel.batchCount)
-    let batchSize = Int(promptViewModel.batchSize)
-    let model = promptViewModel.selectedModel?.name ?? ""
-    let samplingMethod = promptViewModel.samplingMethod ?? ""
-    
-    // Construct the JSON payload
-    let jsonPayload: [String: Any] = [
-      "alwayson_scripts": [
-        "API payload": ["args": []],
-        "AnimateDiff": [
-          "args": [
-            [
-              "batch_size": batchSize,
-              "model": model,
-              "request_id": "",
-              // Add other values as needed
-            ]
-          ]
-        ],
-        // Add other scripts as needed
-      ],
-      "batch_size": batchCount,
-      "cfg_scale": cfgScale,
-      "height": height,
-      "negative_prompt": negativePrompt,
-      "prompt": prompt,
-      "sampler_name": samplingMethod,
-      "seed": seed,
-      "steps": steps,
-      "width": width,
-      // Add other fields as needed
-    ]
-    
-    return jsonPayload
-  }
 }
 
 extension ContentView {
@@ -72,7 +25,6 @@ extension ContentView {
     
     let overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
-      // Include other override settings as needed, for example:
     ]
     
     let payload: [String: Any] = [
@@ -88,7 +40,7 @@ extension ContentView {
       "override_settings": overrideSettings,
       // extras
       "do_not_save_grid" : false,
-      "do_not_save_samples" : false
+      "do_not_save_samples" : false,
     ]
     
     Debug.log("Sending API request to \(baseUrl)\n > \(payload)")
@@ -108,30 +60,25 @@ extension ContentView {
       return
     }
     
-    // Define a custom URLSession configuration with increased timeout intervals
+    // custom URLSession configuration with increased timeout intervals
     let configuration = URLSessionConfiguration.default
     configuration.timeoutIntervalForRequest = Constants.Api.timeoutInterval
     configuration.timeoutIntervalForResource = Constants.Api.timeoutInterval
-    
-    // Create a URLSession with the custom configuration
     let session = URLSession(configuration: configuration)
     
     do {
-      // Serialize the payload into JSON data
       let requestData = try JSONSerialization.data(withJSONObject: payload, options: [])
-      // Create a URLRequest with the serialized JSON payload
       var request = URLRequest(url: url)
       request.httpMethod = "POST"
       request.addValue("application/json", forHTTPHeaderField: "Content-Type")
       request.httpBody = requestData
       
-      // Use the custom URLSession to make the network request
+      // use the custom URLSession to make the network request
       let (data, _) = try await session.data(for: request)
       
-      // Process the response data
       if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
          let images = json["images"] as? [String] {
-        // Save the received images
+        
         await saveImages(base64EncodedImages: images)
       }
     } catch {
@@ -211,7 +158,7 @@ extension ContentView {
         do {
           try pngData.write(to: compositeImagePath)
           Debug.log("Composite image saved to \(compositeImagePath)")
-
+          
           await MainActor.run {
             self.selectedImage = compositeImage
             self.lastSelectedImagePath = compositeImagePath.path
