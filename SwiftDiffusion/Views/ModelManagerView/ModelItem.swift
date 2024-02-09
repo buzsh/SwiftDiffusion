@@ -31,6 +31,7 @@ enum ModelType {
   case python
 }
 
+@MainActor
 class ModelPreferences: ObservableObject {
   @Published var samplingMethod: String
   @Published var positivePrompt: String = ""
@@ -57,5 +58,21 @@ class ModelPreferences: ObservableObject {
       samplingMethod = "DPM++ 2M Karras"
     }
     return ModelPreferences(samplingMethod: samplingMethod)
+  }
+}
+
+extension ModelPreferences {
+  convenience init(from promptViewModel: PromptViewModel) {
+    self.init(samplingMethod: promptViewModel.samplingMethod ?? "DPM++ 2M Karras") // Provide a default or handle nil differently
+    self.positivePrompt = promptViewModel.positivePrompt
+    self.negativePrompt = promptViewModel.negativePrompt
+    self.width = promptViewModel.width
+    self.height = promptViewModel.height
+    self.cfgScale = promptViewModel.cfgScale
+    self.samplingSteps = promptViewModel.samplingSteps
+    self.clipSkip = promptViewModel.clipSkip
+    self.batchCount = promptViewModel.batchCount
+    self.batchSize = promptViewModel.batchSize
+    self.seed = promptViewModel.seed
   }
 }

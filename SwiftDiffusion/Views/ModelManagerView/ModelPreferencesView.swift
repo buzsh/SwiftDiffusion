@@ -44,7 +44,17 @@ struct ModelPreferencesView: View {
           
           DetailSelectionRow(cfgScale: $temporaryPreferences.cfgScale, samplingSteps: $temporaryPreferences.samplingSteps)
           
-          seedSection
+          HStack {
+            HalfMaxWidthView {}
+            
+            CompactSlider(value: $temporaryPreferences.clipSkip, in: 1...12, step: 1) {
+              Text("Clip Skip")
+              Spacer()
+              Text("\(Int(temporaryPreferences.clipSkip))")
+            }
+          }
+          
+          //seedSection
         }
         .padding(14)
         .padding(.horizontal, 8)
@@ -53,7 +63,7 @@ struct ModelPreferencesView: View {
       saveCancelButtons
     }
     .navigationTitle("Model Preferences")
-    .frame(minWidth: 300, idealWidth: 400, minHeight: 350, idealHeight: 430)
+    .frame(minWidth: 300, idealWidth: 400, minHeight: 250, idealHeight: 430)
   }
   
   private var samplingMenu: some View {
@@ -150,5 +160,21 @@ extension ModelPreferences {
   item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
   return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
-    .frame(width: 400, height: 430)
+    .frame(width: 400, height: 350)
+}
+
+
+struct HalfMaxWidthView<Content: View>: View {
+  let content: Content
+  
+  init(@ViewBuilder content: () -> Content) {
+    self.content = content()
+  }
+  
+  var body: some View {
+    GeometryReader { geometry in
+      content
+        .frame(width: geometry.size.width / 2)
+    }
+  }
 }

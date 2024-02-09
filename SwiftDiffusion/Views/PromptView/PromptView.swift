@@ -23,6 +23,8 @@ struct PromptView: View {
   @ObservedObject var modelManager: ModelManagerViewModel
   @ObservedObject var scriptManager: ScriptManager
   
+  @State private var showingModelPreferences = false
+  
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   let minColumnWidth: CGFloat = 160
@@ -112,30 +114,47 @@ struct PromptView: View {
           DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
           
           VStack(alignment: .leading) {
-            PromptRowHeading(title: "Seed")
-              .padding(.leading, 8)
+            
             HStack {
-              TextField("", text: $prompt.seed)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .font(.system(.body, design: .monospaced))
-              Button(action: {
-                Debug.log("Shuffle random seed")
-                prompt.seed = "-1"
-              }) {
-                Image(systemName: "shuffle") //"dice"
+              VStack(alignment: .leading) {
+                HStack {
+                  PromptRowHeading(title: "Seed")
+                    .padding(.leading, 8)
+                  Spacer()
+                  Button(action: {
+                    Debug.log("Shuffle random seed")
+                    prompt.seed = "-1"
+                  }) {
+                    Image(systemName: "shuffle") //"dice"
+                  }
+                  .buttonStyle(BorderlessButtonStyle())
+                  Button(action: {
+                    Debug.log("Repeat last seed")
+                  }) {
+                    Image(systemName: "repeat")
+                  }
+                  .buttonStyle(BorderlessButtonStyle())
+                }
+                TextField("", text: $prompt.seed)
+                  .textFieldStyle(RoundedBorderTextFieldStyle())
+                  .font(.system(.body, design: .monospaced))
+                
               }
-              .buttonStyle(BorderlessButtonStyle())
-              Button(action: {
-                Debug.log("Repeat last seed")
-              }) {
-                Image(systemName: "repeat")
+              VStack {
+                CompactSlider(value: $prompt.clipSkip, in: 1...12, step: 1) {
+                  Text("Clip Skip")
+                  Spacer()
+                  Text("\(Int(prompt.clipSkip))")
+                }
+                
               }
-              .buttonStyle(BorderlessButtonStyle())
+              .padding(.top, 18)
             }
           }
           .padding(.bottom, Constants.Layout.promptRowPadding)
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
+          
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
@@ -144,16 +163,19 @@ struct PromptView: View {
       HStack {
         Spacer()
         Button("Save Model Preferences") {
-          Debug.log("Save model default")
+          if let selectedModel = prompt.selectedModel {
+            let updatedPreferences = ModelPreferences(from: prompt)
+            selectedModel.preferences = updatedPreferences // Update the selected model's preferences
+            showingModelPreferences = true
+          }
         }
         .buttonStyle(.accessoryBar)
-        Button(action: {
-          Debug.log("Toolbar item selected")
-        }) {
-          Image(systemName: "questionmark.circle")
+        .sheet(isPresented: $showingModelPreferences) {
+          if let selectedModel = prompt.selectedModel {
+            ModelPreferencesView(modelItem: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
+          }
         }
-        .buttonStyle(.accessoryBar)
-        .padding(.trailing, 8)
+        
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))//.titlebar
