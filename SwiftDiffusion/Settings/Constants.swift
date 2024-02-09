@@ -9,6 +9,7 @@ import Foundation
 
 struct Constants {
   
+  struct Api {}
   struct CommandLine {}
   struct Delays {}
   struct FileStructure {}

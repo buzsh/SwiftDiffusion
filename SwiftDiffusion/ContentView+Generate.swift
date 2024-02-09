@@ -8,51 +8,9 @@
 import SwiftUI
 import Combine
 
-extension ContentView {
-  func generatePayload() -> [String: Any] {
-    // Collect values from PromptViewModel
-    let prompt = promptViewModel.positivePrompt
-    let negativePrompt = promptViewModel.negativePrompt
-    let width = Int(promptViewModel.width)
-    let height = Int(promptViewModel.height)
-    let cfgScale = promptViewModel.cfgScale
-    let steps = Int(promptViewModel.samplingSteps)
-    let seed = Int(promptViewModel.seed) ?? -1 // Assuming seed is a string that can be converted to Int
-    let batchCount = Int(promptViewModel.batchCount)
-    let batchSize = Int(promptViewModel.batchSize)
-    let model = promptViewModel.selectedModel?.name ?? ""
-    let samplingMethod = promptViewModel.samplingMethod ?? ""
-    
-    // Construct the JSON payload
-    let jsonPayload: [String: Any] = [
-      "alwayson_scripts": [
-        "API payload": ["args": []],
-        "AnimateDiff": [
-          "args": [
-            [
-              "batch_size": batchSize,
-              "model": model,
-              "request_id": "",
-              // Add other values as needed
-            ]
-          ]
-        ],
-        // Add other scripts as needed
-      ],
-      "batch_size": batchCount,
-      "cfg_scale": cfgScale,
-      "height": height,
-      "negative_prompt": negativePrompt,
-      "prompt": prompt,
-      "sampler_name": samplingMethod,
-      "seed": seed,
-      "steps": steps,
-      "width": width,
-      // Add other fields as needed
-    ]
-    
-    return jsonPayload
-  }
+extension Constants.Api {
+  static let timeoutInterval: TimeInterval = 1000 // in seconds
+  static let compositeImageCompressionFactor = 0.5 // JPEG: 0-most compression, 1.0-no compression
 }
 
 extension ContentView {
@@ -62,9 +20,11 @@ extension ContentView {
       return
     }
     
+    scriptManager.genStatus = .preparingToGenerate
+    scriptManager.genProgress = -1
+    
     let overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
-      // Include other override settings as needed, for example:
     ]
     
     let payload: [String: Any] = [
@@ -80,7 +40,7 @@ extension ContentView {
       "override_settings": overrideSettings,
       // extras
       "do_not_save_grid" : false,
-      "do_not_save_samples" : false
+      "do_not_save_samples" : false,
     ]
     
     Debug.log("Sending API request to \(baseUrl)\n > \(payload)")
@@ -100,6 +60,12 @@ extension ContentView {
       return
     }
     
+    // custom URLSession configuration with increased timeout intervals
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = Constants.Api.timeoutInterval
+    configuration.timeoutIntervalForResource = Constants.Api.timeoutInterval
+    let session = URLSession(configuration: configuration)
+    
     do {
       let requestData = try JSONSerialization.data(withJSONObject: payload, options: [])
       var request = URLRequest(url: url)
@@ -107,15 +73,17 @@ extension ContentView {
       request.addValue("application/json", forHTTPHeaderField: "Content-Type")
       request.httpBody = requestData
       
-      let (data, _) = try await URLSession.shared.data(for: request)
+      // use the custom URLSession to make the network request
+      let (data, _) = try await session.data(for: request)
       
       if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
          let images = json["images"] as? [String] {
+        
         await saveImages(base64EncodedImages: images)
       }
     } catch {
       Task { @MainActor in
-        Debug.log("Request error: \(error)")
+        Debug.log("[ContentView] Request error: \(error)")
       }
     }
   }
@@ -146,41 +114,73 @@ extension ContentView {
     do {
       let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
       let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
-      let imageNumbers = imageFiles.compactMap { Int($0.deletingPathExtension().lastPathComponent) }
+      let cleanGridName = imageFiles.map { $0.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "-grid", with: "") }
+      let imageNumbers = cleanGridName.compactMap { Int($0) }
       if let maxNumber = imageNumbers.max() {
         nextImageNumber = maxNumber + 1
       }
     } catch {
       Debug.log("Error listing directory contents: \(error.localizedDescription)")
-      // Proceed with nextImageNumber starting from 1 if there's an error listing the directory
     }
     
+    var imagesForComposite: [NSImage] = []
+    
     for base64Image in base64EncodedImages {
-      guard let imageData = Data(base64Encoded: base64Image) else {
+      guard let imageData = Data(base64Encoded: base64Image), let nsImage = NSImage(data: imageData) else {
         Debug.log("Invalid image data")
         continue
       }
+      
+      imagesForComposite.append(nsImage)
       
       let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
       do {
         try imageData.write(to: filePath)
         Debug.log("Image saved to \(filePath)")
         nextImageNumber += 1
-        
-        await MainActor.run {
-          self.selectedImage = NSImage(data: imageData)
-          self.lastSelectedImagePath = filePath.path
-          
-          Task {
-            await fileHierarchy.refresh()
-          }
-        }
-        
-        
-        
       } catch {
         Debug.log("Failed to save image: \(error.localizedDescription)")
       }
+    }
+    
+    // check if more than one image is returned; if so, create and set to composite image
+    if imagesForComposite.count > 1 {
+      if let compositeImage = await createCompositeImage(from: imagesForComposite, withCompressionFactor: Constants.Api.compositeImageCompressionFactor) {
+        let compositeImageName = "\(nextImageNumber)-grid.png"
+        let compositeImagePath = directoryURL.appendingPathComponent(compositeImageName)
+        guard let tiffData = compositeImage.tiffRepresentation,
+              let bitmapImage = NSBitmapImageRep(data: tiffData),
+              let pngData = bitmapImage.representation(using: .png, properties: [:]) else {
+          Debug.log("Failed to prepare composite image data")
+          return
+        }
+        
+        do {
+          try pngData.write(to: compositeImagePath)
+          Debug.log("Composite image saved to \(compositeImagePath)")
+          
+          await MainActor.run {
+            self.selectedImage = compositeImage
+            self.lastSelectedImagePath = compositeImagePath.path
+          }
+        } catch {
+          Debug.log("Failed to save composite image: \(error.localizedDescription)")
+        }
+      }
+    } else if let singleImage = imagesForComposite.first {
+      // if only one image, set selectedImage and lastSelectedImagePath to that image
+      let singleImagePath = directoryURL.appendingPathComponent("\(nextImageNumber - 1).png")
+      await MainActor.run {
+        self.selectedImage = singleImage
+        self.lastSelectedImagePath = singleImagePath.path
+      }
+    }
+    
+    // update scriptManager.genStatus and Delay as previously
+    scriptManager.genStatus = .done
+    Delay.by(3.0) {
+      scriptManager.genStatus = .idle
+      scriptManager.genProgress = 0
     }
   }
 }

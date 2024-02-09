@@ -44,6 +44,8 @@
 		29B571842B75B2070057DD50 /* SeedRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571832B75B2070057DD50 /* SeedRows.swift */; };
 		29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571872B75C53C0057DD50 /* ContentView+Generate.swift */; };
 		29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */; };
+		29B5718C2B75EAC50057DD50 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5718B2B75EAC50057DD50 /* ProgressView.swift */; };
+		29B5718E2B7601960057DD50 /* ContentView+CompositeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -92,6 +94,8 @@
 		29B571832B75B2070057DD50 /* SeedRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedRows.swift; sourceTree = "<group>"; };
 		29B571872B75C53C0057DD50 /* ContentView+Generate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Generate.swift"; sourceTree = "<group>"; };
 		29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PromptView+ParseCivitai.swift"; sourceTree = "<group>"; };
+		29B5718B2B75EAC50057DD50 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+CompositeImage.swift"; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -123,6 +127,7 @@
 		2916F3352B728586001D14B9 /* DetailView */ = {
 			isa = PBXGroup;
 			children = (
+				29B5718B2B75EAC50057DD50 /* ProgressView.swift */,
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
 				2916F3382B728604001D14B9 /* FileHierarchy.swift */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
@@ -258,6 +263,7 @@
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
+				29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */,
 				297196472B715061000F7960 /* Views */,
 				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
 				297196512B715380000F7960 /* Services */,
@@ -422,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29B5718E2B7601960057DD50 /* ContentView+CompositeImage.swift in Sources */,
 				29B571822B75AE410057DD50 /* PromptRows.swift in Sources */,
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
@@ -459,6 +466,7 @@
 				2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
+				29B5718C2B75EAC50057DD50 /* ProgressView.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
 				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,
 			);
