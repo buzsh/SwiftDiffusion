@@ -71,7 +71,7 @@ struct ContentView: View {
       case .models:
         ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
-        SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -182,7 +182,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
