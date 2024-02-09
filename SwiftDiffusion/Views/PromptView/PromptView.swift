@@ -21,6 +21,7 @@ struct PromptView: View {
   @ObservedObject var prompt: PromptViewModel
   @ObservedObject var modelManager: ModelManagerViewModel
   @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var userSettings: UserSettingsModel
   
   @State private var showingModelPreferences = false
   @State private var isRightPaneVisible: Bool = false
@@ -55,7 +56,8 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      if generationDataInPasteboard {
+      
+      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
         HStack {
           Button("Paste Generation Data") {
             if let pasteboardContent = getPasteboardString() {
@@ -228,6 +230,6 @@ struct PromptView: View {
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
   
-  return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
+  return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview(), userSettings: UserSettingsModel.preview()).frame(width: 400, height: 600)
 }
 

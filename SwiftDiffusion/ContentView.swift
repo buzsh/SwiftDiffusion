@@ -65,7 +65,7 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(prompt: promptViewModel, modelManager: modelManagerViewModel, scriptManager: scriptManager)
+        PromptView(prompt: promptViewModel, modelManager: modelManagerViewModel, scriptManager: scriptManager, userSettings: userSettingsModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .models:

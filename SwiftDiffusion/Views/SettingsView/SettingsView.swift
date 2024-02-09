@@ -86,8 +86,7 @@ struct SettingsView: View {
         
         .padding(10)
       }
-      .background(Color(NSColor.windowBackgroundColor)) //.windowBackgroundColor
-      //.background(VisualEffectBlurView(material: .underWindowBackground, blendingMode: .behindWindow))
+      .background(Color(NSColor.windowBackgroundColor))
     }
     .padding(2)
     .navigationTitle("Settings")

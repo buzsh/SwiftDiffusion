@@ -26,6 +26,9 @@ extension PromptView {
   
   /// Checks the system pasteboard for generation data. If found, updates a flag to indicate that generation data is present.
   func checkPasteboardAndUpdateFlag() {
+    // dont automatically check pasteboard if disabled via userSettings
+    if userSettings.disablePasteboardParsingForGenerationData { return }
+    // check for pasteboard data
     if let pasteboardContent = getPasteboardString() {
       if userHasGenerationDataInPasteboard(from: pasteboardContent) {
         generationDataInPasteboard = true
