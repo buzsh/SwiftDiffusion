@@ -118,6 +118,20 @@ struct PromptView: View {
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
           
+          HStack {
+            Spacer()
+            Button("Debug.log all variables") {
+              logAllVariables()
+            }
+            
+            Button("Paste and parse data") {
+              if let pasteboardContent = getPasteboardString() {
+                parseAndSetPromptData(from: pasteboardContent)
+              }
+            }
+            Spacer()
+          }
+          .padding()
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
@@ -157,6 +171,8 @@ struct PromptView: View {
     .padding()
     .background(Color(NSColor.windowBackgroundColor))
   }
+  
+  
 }
 
 
@@ -169,3 +185,4 @@ struct PromptView: View {
   
   return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
 }
+

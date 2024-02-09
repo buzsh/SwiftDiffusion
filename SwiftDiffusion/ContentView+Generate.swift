@@ -52,17 +52,6 @@ extension ContentView {
     ]
     
     return jsonPayload
-    
-    // Convert JSON payload to Data
-    do {
-      let jsonData = try JSONSerialization.data(withJSONObject: jsonPayload, options: .prettyPrinted)
-      // Here, you can either convert jsonData to a String and print it,
-      // or use it directly as the body of a network request.
-      let jsonString = String(data: jsonData, encoding: .utf8)
-      Debug.log(jsonString ?? "Invalid JSON")
-    } catch {
-      Debug.log("Error creating JSON: \(error.localizedDescription)")
-    }
   }
 }
 
@@ -74,9 +63,8 @@ extension ContentView {
     }
     
     let overrideSettings: [String: Any] = [
-        "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
-        // Include other override settings as needed, for example:
-        "filter_nsfw": false  // or any other setting you wish to override
+      "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
+      // Include other override settings as needed, for example:
     ]
     
     let payload: [String: Any] = [
@@ -86,11 +74,11 @@ extension ContentView {
       "height": Int(promptViewModel.height),
       "cfg_scale": Int(promptViewModel.cfgScale),
       "steps": Int(promptViewModel.samplingSteps),
-      "seed": Int(promptViewModel.seed) ?? -1, // Assuming seed is a string that can be converted to Int
+      "seed": Int(promptViewModel.seed) ?? -1,
       "batch_count": Int(promptViewModel.batchCount),
       "batch_size": Int(promptViewModel.batchSize),
       "override_settings": overrideSettings,
-      // Include other necessary fields as per your API's requirements
+      // extras
       "do_not_save_grid" : false,
       "do_not_save_samples" : false
     ]
@@ -100,6 +88,7 @@ extension ContentView {
     await sendAPIRequest(api: baseUrl, payload: payload)
   }
 }
+
 
 extension ContentView {
   func sendAPIRequest(api: URL, payload: [String: Any]) async {
@@ -120,21 +109,77 @@ extension ContentView {
       
       let (data, _) = try await URLSession.shared.data(for: request)
       
-      // Parse the JSON response
       if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-         let images = json["images"] as? [String], !images.isEmpty,
-         let imageData = Data(base64Encoded: images[0]) {
-        Task { @MainActor in  // Use Task to switch to the Main Actor
-          if let nsImage = NSImage(data: imageData) {
-            await MainActor.run {
-              self.selectedImage = nsImage
-            }
-          }
-        }
+         let images = json["images"] as? [String] {
+        await saveImages(base64EncodedImages: images)
       }
     } catch {
-      Task { @MainActor in  // Use Task for error handling on the Main Actor
+      Task { @MainActor in
         Debug.log("Request error: \(error)")
+      }
+    }
+  }
+}
+
+
+extension ContentView {
+  func saveImages(base64EncodedImages: [String]) async {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    let dateFolderName = dateFormatter.string(from: Date())
+    let baseDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
+    
+    guard let directoryURL = baseDirectory else {
+      Debug.log("Directory URL construction failed")
+      return
+    }
+    
+    do {
+      try FileUtility.ensureDirectoryExists(at: directoryURL)
+    } catch {
+      Debug.log("Could not ensure directory exists: \(error.localizedDescription)")
+      return
+    }
+    
+    var nextImageNumber = 1
+    let fileManager = FileManager.default
+    do {
+      let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+      let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
+      let imageNumbers = imageFiles.compactMap { Int($0.deletingPathExtension().lastPathComponent) }
+      if let maxNumber = imageNumbers.max() {
+        nextImageNumber = maxNumber + 1
+      }
+    } catch {
+      Debug.log("Error listing directory contents: \(error.localizedDescription)")
+      // Proceed with nextImageNumber starting from 1 if there's an error listing the directory
+    }
+    
+    for base64Image in base64EncodedImages {
+      guard let imageData = Data(base64Encoded: base64Image) else {
+        Debug.log("Invalid image data")
+        continue
+      }
+      
+      let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
+      do {
+        try imageData.write(to: filePath)
+        Debug.log("Image saved to \(filePath)")
+        nextImageNumber += 1
+        
+        await MainActor.run {
+          self.selectedImage = NSImage(data: imageData)
+          self.lastSelectedImagePath = filePath.path
+          
+          Task {
+            await fileHierarchy.refresh()
+          }
+        }
+        
+        
+        
+      } catch {
+        Debug.log("Failed to save image: \(error.localizedDescription)")
       }
     }
   }
