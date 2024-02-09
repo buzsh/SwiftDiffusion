@@ -217,58 +217,64 @@ extension PromptView {
   
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
-    Debug.log(lines)
+    
+    // Set the positive prompt from the first line
     if let positivePromptLine = lines.first {
       prompt.positivePrompt = String(positivePromptLine)
     }
     
+    // Loop through each line of the pasteboard content
     for line in lines {
       if line.starts(with: "Negative prompt:") {
         let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
         prompt.negativePrompt = negativePrompt
-      } else if line.starts(with: "Steps:") {
-        let steps = line.split(separator: ",").first?.replacingOccurrences(of: "Steps: ", with: "")
-        if let stepsValue = Double(steps ?? "") {
-          prompt.samplingSteps = stepsValue
-        }
-      } else if line.starts(with: "Size:") {
-        let sizeComponents = line.replacingOccurrences(of: "Size: ", with: "").split(separator: "x")
-        if sizeComponents.count == 2, let width = Double(sizeComponents[0]), let height = Double(sizeComponents[1]) {
-          prompt.width = width
-          prompt.height = height
-        }
-      } else if line.starts(with: "Seed:") {
-        let seed = line.replacingOccurrences(of: "Seed: ", with: "")
-        prompt.seed = seed
-      } else if line.starts(with: "Sampler:") {
-        let sampler = line.replacingOccurrences(of: "Sampler: ", with: "")
-        prompt.samplingMethod = sampler
-      } else if line.starts(with: "CFG scale:") {
-        let cfgScale = line.split(separator: ",").first?.replacingOccurrences(of: "CFG scale: ", with: "")
-        Debug.log("CFG: \(cfgScale)")
-        if let cfgScaleValue = Double(cfgScale ?? "") {
-          prompt.cfgScale = cfgScaleValue
-        }
-      } else if line.starts(with: "Clip skip:") {
-        let clipSkip = line.split(separator: ",").first?.replacingOccurrences(of: "Clip skip: ", with: "")
-        if let clipSkipValue = Double(clipSkip ?? "") {
-          prompt.clipSkip = clipSkipValue
-        }
-        
-      } else if line.starts(with: "Model:") {
-        let parsedModelName = line.replacingOccurrences(of: "Model: ", with: "")
-        let normalizedParsedModelName = normalizeModelName(parsedModelName)
-        
-        // Find a matching model
-        if let matchingModel = modelManager.items.first(where: { item in
-          let normalizedItemName = normalizeModelName(item.name)
-          return normalizedItemName.contains(normalizedParsedModelName) || normalizedParsedModelName.contains(normalizedItemName)
-        }) {
-          prompt.selectedModel = matchingModel
+      } else {
+        // For the line with multiple parameters, split by comma and process each key-value pair
+        let parameters = line.split(separator: ",").map(String.init)
+        for parameter in parameters {
+          let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
+          guard keyValue.count == 2 else { continue }
+          let key = keyValue[0].trimmingCharacters(in: .whitespaces)
+          let value = keyValue[1].trimmingCharacters(in: .whitespaces)
+          
+          switch key {
+          case "Steps":
+            if let stepsValue = Double(value) {
+              prompt.samplingSteps = stepsValue
+            }
+          case "Size":
+            let sizeComponents = value.split(separator: "x").map(String.init)
+            if sizeComponents.count == 2, let width = Double(sizeComponents[0]), let height = Double(sizeComponents[1]) {
+              prompt.width = width
+              prompt.height = height
+            }
+          case "Seed":
+            prompt.seed = value
+          case "Sampler":
+            prompt.samplingMethod = value
+          case "CFG scale":
+            if let cfgScaleValue = Double(value) {
+              prompt.cfgScale = cfgScaleValue
+            }
+          case "Clip skip":
+            if let clipSkipValue = Double(value) {
+              prompt.clipSkip = clipSkipValue
+            }
+          case "Model":
+            let parsedModelName = value
+            let normalizedParsedModelName = normalizeModelName(parsedModelName)
+            
+            if let matchingModel = modelManager.items.first(where: { item in
+              let normalizedItemName = normalizeModelName(item.name)
+              return normalizedItemName.contains(normalizedParsedModelName) || normalizedParsedModelName.contains(normalizedItemName)
+            }) {
+              prompt.selectedModel = matchingModel
+            }
+          default:
+            break
+          }
         }
       }
-      
-      
     }
   }
   
