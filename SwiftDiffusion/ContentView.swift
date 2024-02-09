@@ -161,13 +161,12 @@ struct ContentView: View {
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
+          
           Button(action: {
             Debug.log("Testing api")
             
             //showingSettingsView = true
-            assignSdModelCheckpointTitles {
-              Debug.log("Assignment of SD Model Checkpoint Titles completed.")
-            }
+
           }) {
             Image(systemName: "arkit")
           }

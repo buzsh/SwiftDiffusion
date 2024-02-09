@@ -25,15 +25,33 @@ struct SdModel: Decodable {
   }
 }
 
-func getSdModelData(_ api: URL) async throws -> [SdModel] {
-  let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
-  let (data, _) = try await URLSession.shared.data(from: endpoint)
-  let decoder = JSONDecoder()
-  let models = try decoder.decode([SdModel].self, from: data)
-  return models
+struct UpdateSdModelCheckpointRequest: Codable {
+  let sdModelCheckpoint: String
+  
+  enum CodingKeys: String, CodingKey {
+    case sdModelCheckpoint = "sd_model_checkpoint"
+  }
 }
 
-extension ContentView {
+struct ValidationErrorDetail: Codable {
+  let loc: [String]
+  let msg: String
+  let type: String
+}
+
+struct ValidationErrorResponse: Codable {
+  let detail: [ValidationErrorDetail]
+}
+
+extension PromptView {
+  func getSdModelData(_ api: URL) async throws -> [SdModel] {
+    let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
+    let (data, _) = try await URLSession.shared.data(from: endpoint)
+    let decoder = JSONDecoder()
+    let models = try decoder.decode([SdModel].self, from: data)
+    return models
+  }
+  
   @MainActor
   func assignSdModelCheckpointTitles(completion: @escaping () -> Void) {
     guard let baseUrl = scriptManager.serviceUrl else {
@@ -50,7 +68,7 @@ extension ContentView {
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
         
-        for item in modelManagerViewModel.items where item.sdModelCheckpoint == nil {
+        for item in modelManager.items where item.sdModelCheckpoint == nil {
           let itemFilename = item.url.lastPathComponent
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
             item.sdModelCheckpoint = matchingModel.title
@@ -73,29 +91,7 @@ extension ContentView {
       }
     }
   }
-  
-}
-
-
-extension ContentView {
-  
-  struct UpdateSdModelCheckpointRequest: Codable {
-    let sdModelCheckpoint: String
-    
-    enum CodingKeys: String, CodingKey {
-      case sdModelCheckpoint = "sd_model_checkpoint"
-    }
-  }
-  
-  struct ValidationErrorDetail: Codable {
-    let loc: [String]
-    let msg: String
-    let type: String
-  }
-  
-  struct ValidationErrorResponse: Codable {
-    let detail: [ValidationErrorDetail]
-  }
+ 
   
   @MainActor
   func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (String) -> Void) {
