@@ -61,8 +61,24 @@ struct DetailView: View {
           ProgressView(value: scriptManager.genProgress)
             .progressViewStyle(LinearProgressViewStyle())
             .frame(width: 100)
+            .onChange(of: scriptManager.genStatus) {
+              if scriptManager.genStatus == .done {
+                Task {
+                  await self.fileHierarchyObject.refresh()
+                }
+              }
+            }
         }
         
+        /*
+        if scriptManager.genStatus != .idle {
+          
+              if scriptManager.genStatus == .done {
+                Task {
+                  await self.fileHierarchyObject.refresh()
+                }
+            }
+        }*/
         
 
         //Text("\(Int(scriptManager.genProgress * 100))%").padding(.leading, 5)
@@ -100,6 +116,7 @@ struct DetailView: View {
       .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
       .frame(minHeight: 140, idealHeight: 200)
     }
+
   }
 }
 

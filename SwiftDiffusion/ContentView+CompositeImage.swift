@@ -10,7 +10,7 @@ import Combine
 import AppKit
 
 extension ContentView {
-  func createCompositeImage(from images: [NSImage]) async -> NSImage? {
+  func createCompositeImage(from images: [NSImage], withCompressionFactor: Double = 1.0) async -> NSImage? {
     guard !images.isEmpty else { return nil }
     
     let rowCount = Int(ceil(Double(images.count) / 2.0))
@@ -26,7 +26,6 @@ extension ContentView {
     let finalImage = NSImage(size: finalSize)
     finalImage.lockFocus()
     
-    // Correct way to fill a rectangle in macOS
     NSColor.black.setFill()
     NSRect(origin: .zero, size: finalSize).fill()
     
@@ -40,6 +39,20 @@ extension ContentView {
     
     finalImage.unlockFocus()
     
-    return finalImage
+    // Convert the finalImage to a compressed JPEG
+    guard let tiffData = finalImage.tiffRepresentation,
+          let imageRep = NSBitmapImageRep(data: tiffData) else {
+      Debug.log("Failed to create image representation")
+      return nil
+    }
+    
+    // Adjust the compression quality as needed (0.0 to 1.0, lower means more compression)
+    let compressionQuality: CGFloat = 0.5
+    guard let jpegData = imageRep.representation(using: .jpeg, properties: [.compressionFactor: withCompressionFactor]) else {
+      Debug.log("Failed to compress image")
+      return nil
+    }
+    
+    return NSImage(data: jpegData)
   }
 }

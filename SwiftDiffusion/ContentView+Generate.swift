@@ -10,6 +10,8 @@ import Combine
 
 extension Constants.Api {
   static let timeoutInterval: TimeInterval = 1000 // in seconds
+  
+  static let compositeImageCompressionFactor = 0.5 // 1.0 no compression
 }
 
 extension ContentView {
@@ -196,7 +198,7 @@ extension ContentView {
     
     // Check if more than one image is returned; if so, create and set to composite image
     if imagesForComposite.count > 1 {
-      if let compositeImage = await createCompositeImage(from: imagesForComposite) {
+      if let compositeImage = await createCompositeImage(from: imagesForComposite, withCompressionFactor: Constants.Api.compositeImageCompressionFactor) {
         let compositeImageName = "\(nextImageNumber)-grid.png"
         let compositeImagePath = directoryURL.appendingPathComponent(compositeImageName)
         guard let tiffData = compositeImage.tiffRepresentation,
