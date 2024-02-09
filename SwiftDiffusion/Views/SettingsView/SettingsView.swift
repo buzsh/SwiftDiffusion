@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+  @ObservedObject var userSettings: UserSettingsModel
   @Binding var scriptPathInput: String
   @Binding var fileOutputDir: String
   @Environment(\.presentationMode) var presentationMode
@@ -33,6 +34,26 @@ struct SettingsView: View {
             await FilePickerService.browseForDirectory()
           }
         }
+        
+        VStack(alignment: .leading) {
+          
+          HStack {
+            Toggle("", isOn: $userSettings.alwaysShowPasteboardGenerationDataButton)
+            Text("Always show 'Paste Generation Data' Button in prompt view, even if data is incompatible")
+              .font(.system(.body, design: .monospaced))
+              .padding()
+          }
+          Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
+            .font(.system(.body, design: .monospaced))
+            .padding()
+        }
+        
+        HStack {
+          Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
+            .font(.system(.body, design: .monospaced))
+            .padding()
+        }
+        
       }
       HStack {
         Spacer()
@@ -48,7 +69,14 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+  SettingsView(userSettings: UserSettingsModel.preview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+}
+
+extension UserSettingsModel {
+  static func preview() -> UserSettingsModel {
+    let previewManager = UserSettingsModel()
+    return previewManager
+  }
 }
 
 struct BrowseFileRow: View {

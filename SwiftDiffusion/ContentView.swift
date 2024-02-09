@@ -45,6 +45,8 @@ struct ContentView: View {
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   
+  @StateObject var userSettingsModel: UserSettingsModel
+  
   @State private var hasFirstAppeared = false
   
   var body: some View {
@@ -69,7 +71,7 @@ struct ContentView: View {
       case .models:
         ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
-        SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -188,7 +190,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
@@ -208,6 +210,8 @@ struct ContentView: View {
   let promptModel = PromptViewModel()
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
-  return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+  return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"), userSettingsModel: UserSettingsModel.preview())
     .frame(height: 700)
 }
+
+
