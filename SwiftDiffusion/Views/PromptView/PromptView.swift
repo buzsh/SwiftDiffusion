@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import CompactSlider
 
 extension Constants.Layout {
@@ -24,6 +25,11 @@ struct PromptView: View {
   @State private var showingModelPreferences = false
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
+  
+  @State var generationDataInPasteboard: Bool = false
+  
+  @State private var appIsActive = true
+  
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
   
@@ -48,6 +54,23 @@ struct PromptView: View {
   
   private var leftPane: some View {
     VStack(spacing: 0) {
+      
+      if generationDataInPasteboard {
+        HStack {
+          Button("Paste Generation Data") {
+            if let pasteboardContent = getPasteboardString() {
+              parseAndSetPromptData(from: pasteboardContent)
+            }
+          }
+          .buttonStyle(.accessoryBar)
+          .padding(.leading, 10)
+          
+          Spacer()
+        }
+        .frame(height: 24)
+        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+      }
+      
       ScrollView {
         Form {
           HStack {
@@ -86,6 +109,8 @@ struct PromptView: View {
             
             // Sampling
             VStack(alignment: .leading) {
+              
+              
               PromptRowHeading(title: "Sampling")
               Menu {
                 let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
@@ -135,6 +160,28 @@ struct PromptView: View {
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
+        .onAppear {
+          
+          Debug.log("onAppear")
+          
+          if let pasteboardContent = getPasteboardString() {
+            if userHasGenerationDataInPasteboard(from: pasteboardContent) {
+              generationDataInPasteboard = true
+            } else {
+              generationDataInPasteboard = false
+            }
+          }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
+          Debug.log("[PromptView] willBecomeActiveNotification")
+          Task {
+            await checkPasteboardAndUpdateFlag()
+          }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
+          // Handle application going to background if needed
+        }
+        
       }
       
       HStack {
@@ -154,7 +201,6 @@ struct PromptView: View {
             ModelPreferencesView(modelItem: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
           }
         }
-        
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
@@ -172,6 +218,15 @@ struct PromptView: View {
     .background(Color(NSColor.windowBackgroundColor))
   }
   
+  private func checkPasteboardAndUpdateFlag() {
+    if let pasteboardContent = getPasteboardString() {
+      if userHasGenerationDataInPasteboard(from: pasteboardContent) {
+        generationDataInPasteboard = true
+      } else {
+        generationDataInPasteboard = false
+      }
+    }
+  }
   
 }
 

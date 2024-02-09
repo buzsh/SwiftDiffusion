@@ -25,7 +25,7 @@ extension PromptView {
     debugOutput += "batchSize: \(prompt.batchSize)\n"
     debugOutput += "clipSkip: \(prompt.clipSkip)\n"
     
-    Debug.log(debugOutput) // Assuming Debug.log can accept a String argument and functions like print().
+    Debug.log(debugOutput)
   }
   
   func getPasteboardString() -> String? {
@@ -48,6 +48,33 @@ extension PromptView {
     return splitNames.filter { !ignoreList.contains($0) }
   }
   
+  @MainActor
+  func checkPasteboardAndUpdateFlag() async {
+    // Assuming getPasteboardString() can be called directly without needing to be async
+    // Consider making it async if it performs any lengthy operations
+    if let pasteboardContent = getPasteboardString() {
+      let hasData = userHasGenerationDataInPasteboard(from: pasteboardContent)
+      // Update the state property directly, since we are on the main thread
+      generationDataInPasteboard = hasData
+    }
+  }
+  
+  func userHasGenerationDataInPasteboard(from pasteboardContent: String) -> Bool {
+    var relevantKeywordCounter = 0
+    let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:"]
+    
+    for keyword in keywords {
+      if pasteboardContent.contains(keyword) {
+        relevantKeywordCounter += 1
+      }
+      
+      if relevantKeywordCounter >= 2 {
+        return true
+      }
+    }
+    return false
+  }
+  
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     
@@ -64,6 +91,8 @@ extension PromptView {
       } else {
         let parameters = line.split(separator: ",").map(String.init)
         if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
+          processModelParameter(modelParameter)
+        } else if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model hash:") }) {
           processModelParameter(modelParameter)
         }
         for parameter in parameters where !parameter.trimmingCharacters(in: .whitespaces).starts(with: "Model:") {
