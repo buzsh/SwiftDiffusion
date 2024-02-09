@@ -15,56 +15,30 @@ struct FileOutlineView: View {
   var lastSelectedImagePath: String
   
   var body: some View {
-    VStack(spacing: 0) {
-      
+    List(self.fileHierarchyObject.rootNodes, children: \.children) { node in
       HStack {
-        Button(action: {
-          Task {
-            await self.fileHierarchyObject.refresh()
-          }
-        }) {
-          Image(systemName: "arrow.clockwise")
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        
-        if fileHierarchyObject.isLoading {
-          ProgressView()
-            .progressViewStyle(.circular)
-            .controlSize(.small)
-            .padding(.leading, 5)
-        }
-      }
-      .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 30)
-      .background(.bar)
-      
-      Divider()
-        .overlay(Color.black.opacity(0.1))
-      
-      List(self.fileHierarchyObject.rootNodes, children: \.children) { node in
-        HStack {
-          if node.isLeaf {
-            if node.isImage {
-              FileRowView(node: node)
-            } else {
-              Image(systemName: node.iconName)
-              Text(node.name)
-            }
+        if node.isLeaf {
+          if node.isImage {
+            FileRowView(node: node)
           } else {
             Image(systemName: node.iconName)
             Text(node.name)
           }
-          Spacer()
+        } else {
+          Image(systemName: node.iconName)
+          Text(node.name)
         }
-        .padding(5)
-        .background(self.selectedNode == node ? Color.blue : Color.clear)
-        .cornerRadius(5)
-        .onTapGesture {
-          self.selectNode(node)
-        }
-        .onAppear {
-          if node.fullPath == lastSelectedImagePath {
-            self.selectedNode = node
-          }
+        Spacer()
+      }
+      .padding(5)
+      .background(self.selectedNode == node ? Color.blue : Color.clear)
+      .cornerRadius(5)
+      .onTapGesture {
+        self.selectNode(node)
+      }
+      .onAppear {
+        if node.fullPath == lastSelectedImagePath {
+          self.selectedNode = node
         }
       }
     }
