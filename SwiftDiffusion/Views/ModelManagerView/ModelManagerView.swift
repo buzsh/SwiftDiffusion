@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ModelManagerView: View {
   @ObservedObject var scriptManager: ScriptManager
-  
   @ObservedObject var viewModel = ModelManagerViewModel()
   @State private var selectedFilter: ModelType? = nil
+  @State private var selectedModelItem: ModelItem?
   
   private var filterTitle: String {
     switch selectedFilter {
@@ -73,6 +73,15 @@ struct ModelManagerView: View {
           
           Text(item.name)
           Spacer()
+          
+          Button(action: {
+            Debug.log(item)
+            self.selectedModelItem = item
+          }) {
+            Image(systemName: "pencil")
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          
           if !item.isDefaultModel {
             Button(action: {
               Task {
@@ -98,6 +107,9 @@ struct ModelManagerView: View {
           await viewModel.loadModels()
         }
       }
+    }
+    .sheet(item: $selectedModelItem) { modelItem in
+      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
     }
     
   }
