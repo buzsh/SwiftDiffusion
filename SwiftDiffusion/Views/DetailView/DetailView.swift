@@ -37,6 +37,43 @@ struct DetailView: View {
       }
       .frame(minHeight: 200, idealHeight: 400)
       
+      HStack {
+        Button(action: {
+          Task {
+            await self.fileHierarchyObject.refresh()
+          }
+        }) {
+          Image(systemName: "arrow.clockwise")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        
+        if fileHierarchyObject.isLoading {
+          ProgressView()
+            .progressViewStyle(.circular)
+            .controlSize(.small)
+            .padding(.leading, 5)
+        }
+        
+        Spacer()
+        
+        Button(action: {
+          Task {
+            if let mostRecentImageNode = await fileHierarchyObject.findMostRecentlyModifiedImageFile() {
+              if let image = NSImage(contentsOfFile: mostRecentImageNode.fullPath) {
+                self.selectedImage = image
+                self.lastSelectedImagePath = mostRecentImageNode.fullPath
+              }
+            }
+          }
+        }) {
+          Image(systemName: "link")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+      }
+      .padding(.horizontal, 18)
+      .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)
+      .background(.bar)
+      
       FileOutlineView(fileHierarchyObject: fileHierarchyObject, selectedImage: $selectedImage, onSelectImage: { imagePath in
         lastSelectedImagePath = imagePath
       }, lastSelectedImagePath: lastSelectedImagePath)
@@ -47,6 +84,56 @@ struct DetailView: View {
 }
 
 
-//#Preview {
-//  DetailView()
-//}
+#Preview {
+  let mockFileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
+  @State var selectedImage: NSImage? = nil
+  @State var lastSelectedImagePath: String = ""
+  
+  return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
+    .frame(width: 300, height: 600)
+}
+
+
+extension FileHierarchy {
+  func findMostRecentlyModifiedImageFile() async -> FileNode? {
+    func isImageFile(_ path: String) -> Bool {
+      let imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff"]
+      return imageExtensions.contains((path as NSString).pathExtension.lowercased())
+    }
+    
+    func searchDirectory(_ directory: String) async -> FileNode? {
+      var mostRecentImageNode: FileNode? = nil
+      let fileManager = FileManager.default
+      do {
+        let items = try fileManager.contentsOfDirectory(atPath: directory)
+        for item in items {
+          let itemPath = (directory as NSString).appendingPathComponent(item)
+          var isDir: ObjCBool = false
+          fileManager.fileExists(atPath: itemPath, isDirectory: &isDir)
+          if isDir.boolValue {
+            // Recursively search in directories
+            if let foundNode = await searchDirectory(itemPath) {
+              if mostRecentImageNode == nil || foundNode.lastModified > mostRecentImageNode!.lastModified {
+                mostRecentImageNode = foundNode
+              }
+            }
+          } else if isImageFile(itemPath) {
+            // Only consider image files
+            let attributes = try fileManager.attributesOfItem(atPath: itemPath)
+            if let modificationDate = attributes[FileAttributeKey.modificationDate] as? Date {
+              let fileNode = FileNode(name: item, fullPath: itemPath, lastModified: modificationDate)
+              if mostRecentImageNode == nil || fileNode.lastModified > mostRecentImageNode!.lastModified {
+                mostRecentImageNode = fileNode
+              }
+            }
+          }
+        }
+      } catch {
+        Debug.log("Failed to list directory: \(error.localizedDescription)")
+      }
+      return mostRecentImageNode
+    }
+    
+    return await searchDirectory(self.rootPath)
+  }
+}

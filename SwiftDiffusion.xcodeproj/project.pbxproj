@@ -42,6 +42,7 @@
 		29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */; };
 		29B571822B75AE410057DD50 /* PromptRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571812B75AE410057DD50 /* PromptRows.swift */; };
 		29B571842B75B2070057DD50 /* SeedRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571832B75B2070057DD50 /* SeedRows.swift */; };
+		29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571872B75C53C0057DD50 /* ContentView+Generate.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -88,6 +89,7 @@
 		29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfMaxWidthView.swift; sourceTree = "<group>"; };
 		29B571812B75AE410057DD50 /* PromptRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRows.swift; sourceTree = "<group>"; };
 		29B571832B75B2070057DD50 /* SeedRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedRows.swift; sourceTree = "<group>"; };
+		29B571872B75C53C0057DD50 /* ContentView+Generate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Generate.swift"; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 			children = (
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
+				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
 				297196472B715061000F7960 /* Views */,
 				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
 				297196512B715380000F7960 /* Services */,
@@ -429,6 +432,7 @@
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
+				29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */,
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				2916F33B2B728633001D14B9 /* FileOutlineView.swift in Sources */,
