@@ -17,10 +17,19 @@ struct SettingsView: View {
     VStack {
       ScrollView {
         VStack(alignment: .leading) {
-          Text("Settings")
-            .font(.largeTitle)
-            .padding(.vertical, 20)
-            .padding(.horizontal, 14)
+          HStack {
+            Text("Settings")
+              .font(.largeTitle)
+              .padding(.vertical, 20)
+              .padding(.horizontal, 14)
+            Spacer()
+            Button(action: {
+              Debug.log("Toolbar item selected")
+            }) {
+              Text("Show All")
+              Image(systemName: "questionmark.circle")
+            }
+          }
           
           BrowseFileRow(labelText: "webui.sh path",
                         placeholderText: "path/to/webui.sh",
@@ -36,13 +45,24 @@ struct SettingsView: View {
         }
         
         VStack(alignment: .leading) {
-          
-          HStack {
-            Toggle("", isOn: $userSettings.alwaysShowPasteboardGenerationDataButton)
-            Text("Always show 'Paste Generation Data' Button in prompt view, even if data is incompatible")
-              .font(.system(.body, design: .monospaced))
-              .padding()
+          Text("Prompt")
+            .font(.title)
+            .padding(.vertical, 20)
+            .padding(.horizontal, 14)
+          VStack(alignment: .leading) {
+            ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.")
+            
+            ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.")
           }
+          .padding(.leading, 8)
+          
+          Text("Developer")
+            .font(.title)
+            .padding(.vertical, 20)
+            .padding(.horizontal, 14)
+          
+          ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.")
+          
           Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
             .font(.system(.body, design: .monospaced))
             .padding()
@@ -70,6 +90,7 @@ struct SettingsView: View {
 
 #Preview {
   SettingsView(userSettings: UserSettingsModel.preview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+    .frame(width: 500, height: 700)
 }
 
 extension UserSettingsModel {
@@ -78,6 +99,42 @@ extension UserSettingsModel {
     return previewManager
   }
 }
+
+struct ToggleWithHeader: View {
+  @Binding var isToggled: Bool
+  var header: String
+  var description: String = ""
+  @State private var isHovering = false
+  
+  var body: some View {
+    HStack(alignment: .top) {
+      Toggle("", isOn: $isToggled)
+        .padding(.trailing, 6)
+        .padding(.top, 2)
+      
+      VStack(alignment: .leading) {
+        HStack {
+          Text(header)
+            .font(.system(size: 14, weight: .semibold, design: .default))
+            .underline()
+            .padding(.vertical, 2)
+          Image(systemName: "questionmark.circle")
+            .onHover { isHovering in
+              self.isHovering = isHovering
+            }
+        }
+        Text(description)
+          .font(.system(size: 12))
+          .foregroundStyle(Color.secondary)
+          .opacity(isHovering ? 1 : 0)
+      }
+      
+    }
+    .padding(.bottom, 8)
+  }
+}
+
+
 
 struct BrowseFileRow: View {
   var labelText: String?
