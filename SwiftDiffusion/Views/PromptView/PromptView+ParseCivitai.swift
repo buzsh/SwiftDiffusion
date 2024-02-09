@@ -28,6 +28,16 @@ extension PromptView {
     Debug.log(debugOutput)
   }
   
+  func checkPasteboardAndUpdateFlag() {
+    if let pasteboardContent = getPasteboardString() {
+      if userHasGenerationDataInPasteboard(from: pasteboardContent) {
+        generationDataInPasteboard = true
+      } else {
+        generationDataInPasteboard = false
+      }
+    }
+  }
+  
   func getPasteboardString() -> String? {
     return NSPasteboard.general.string(forType: .string)
   }
@@ -85,14 +95,15 @@ extension PromptView {
     
     // Loop through each line of the pasteboard content
     for line in lines {
+      if line.contains("Model hash:") {
+        parseModelHash(from: String(line))
+      }
       if line.starts(with: "Negative prompt:") {
         let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
         prompt.negativePrompt = negativePrompt
       } else {
         let parameters = line.split(separator: ",").map(String.init)
         if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
-          processModelParameter(modelParameter)
-        } else if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model hash:") }) {
           processModelParameter(modelParameter)
         }
         for parameter in parameters where !parameter.trimmingCharacters(in: .whitespaces).starts(with: "Model:") {
@@ -102,7 +113,30 @@ extension PromptView {
     }
   }
   
-  // Helper function to process the "Model" parameter
+  func parseModelHash(from line: String) {
+    // This regex looks for "Model hash:" followed by any combination of text until it encounters another key
+    // which is indicated by ", {Word}:" pattern. It captures the content right after "Model hash:".
+    let regexPattern = "Model hash: ([^,]+(?:, [^,]+(?= Version:))*)"
+    let regex = try! NSRegularExpression(pattern: regexPattern, options: [])
+    let nsLine = line as NSString
+    let matches = regex.matches(in: line, options: [], range: NSRange(location: 0, length: nsLine.length))
+    
+    guard let match = matches.first else {
+      Debug.log("No model hash found in the line.")
+      return
+    }
+    
+    // Extracting the model hash values from the capture group
+    let modelHashesString = nsLine.substring(with: match.range(at: 1))
+    let modelHashes = modelHashesString.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+    
+    // Logging and processing each model hash value
+    for modelHash in modelHashes {
+      Debug.log("Processing model hash: \(modelHash)")
+      processModelParameter("Model hash: \(modelHash)")
+    }
+  }
+  
   func processModelParameter(_ parameter: String) {
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
     guard keyValue.count == 2 else { return }

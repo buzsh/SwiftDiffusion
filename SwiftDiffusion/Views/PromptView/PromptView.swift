@@ -218,16 +218,6 @@ struct PromptView: View {
     .background(Color(NSColor.windowBackgroundColor))
   }
   
-  private func checkPasteboardAndUpdateFlag() {
-    if let pasteboardContent = getPasteboardString() {
-      if userHasGenerationDataInPasteboard(from: pasteboardContent) {
-        generationDataInPasteboard = true
-      } else {
-        generationDataInPasteboard = false
-      }
-    }
-  }
-  
 }
 
 
