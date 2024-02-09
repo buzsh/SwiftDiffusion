@@ -189,35 +189,42 @@ extension ContentView {
         try imageData.write(to: filePath)
         Debug.log("Image saved to \(filePath)")
         nextImageNumber += 1
-        
-        await MainActor.run {
-          self.selectedImage = NSImage(data: imageData)
-          self.lastSelectedImagePath = filePath.path
-          
-          Task {
-            await fileHierarchy.refresh()
-          }
-        }
       } catch {
         Debug.log("Failed to save image: \(error.localizedDescription)")
       }
     }
     
-    // Generate and save the composite image
-    if let compositeImage = await createCompositeImage(from: imagesForComposite) {
-      let compositeImagePath = directoryURL.appendingPathComponent("composite.png")
-      guard let tiffData = compositeImage.tiffRepresentation,
-            let bitmapImage = NSBitmapImageRep(data: tiffData),
-            let pngData = bitmapImage.representation(using: .png, properties: [:]) else {
-        Debug.log("Failed to prepare composite image data")
-        return
+    // Check if more than one image is returned; if so, create and set to composite image
+    if imagesForComposite.count > 1 {
+      if let compositeImage = await createCompositeImage(from: imagesForComposite) {
+        let compositeImageName = "\(nextImageNumber)-grid.png"
+        let compositeImagePath = directoryURL.appendingPathComponent(compositeImageName)
+        guard let tiffData = compositeImage.tiffRepresentation,
+              let bitmapImage = NSBitmapImageRep(data: tiffData),
+              let pngData = bitmapImage.representation(using: .png, properties: [:]) else {
+          Debug.log("Failed to prepare composite image data")
+          return
+        }
+        
+        do {
+          try pngData.write(to: compositeImagePath)
+          Debug.log("Composite image saved to \(compositeImagePath)")
+          
+          // Set selectedImage and lastSelectedImagePath to composite image
+          await MainActor.run {
+            self.selectedImage = compositeImage
+            self.lastSelectedImagePath = compositeImagePath.path
+          }
+        } catch {
+          Debug.log("Failed to save composite image: \(error.localizedDescription)")
+        }
       }
-      
-      do {
-        try pngData.write(to: compositeImagePath)
-        Debug.log("Composite image saved to \(compositeImagePath)")
-      } catch {
-        Debug.log("Failed to save composite image: \(error.localizedDescription)")
+    } else if let singleImage = imagesForComposite.first {
+      // If only one image, set selectedImage and lastSelectedImagePath to that image
+      let singleImagePath = directoryURL.appendingPathComponent("\(nextImageNumber - 1).png")
+      await MainActor.run {
+        self.selectedImage = singleImage
+        self.lastSelectedImagePath = singleImagePath.path
       }
     }
     
