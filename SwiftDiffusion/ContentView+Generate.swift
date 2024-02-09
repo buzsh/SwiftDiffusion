@@ -197,7 +197,7 @@ extension ContentView {
       }
     }
     
-    // Check if more than one image is returned; if so, create and set to composite image
+    // check if more than one image is returned; if so, create and set to composite image
     if imagesForComposite.count > 1 {
       if let compositeImage = await createCompositeImage(from: imagesForComposite, withCompressionFactor: Constants.Api.compositeImageCompressionFactor) {
         let compositeImageName = "\(nextImageNumber)-grid.png"
@@ -212,8 +212,7 @@ extension ContentView {
         do {
           try pngData.write(to: compositeImagePath)
           Debug.log("Composite image saved to \(compositeImagePath)")
-          
-          // Set selectedImage and lastSelectedImagePath to composite image
+
           await MainActor.run {
             self.selectedImage = compositeImage
             self.lastSelectedImagePath = compositeImagePath.path
@@ -223,7 +222,7 @@ extension ContentView {
         }
       }
     } else if let singleImage = imagesForComposite.first {
-      // If only one image, set selectedImage and lastSelectedImagePath to that image
+      // if only one image, set selectedImage and lastSelectedImagePath to that image
       let singleImagePath = directoryURL.appendingPathComponent("\(nextImageNumber - 1).png")
       await MainActor.run {
         self.selectedImage = singleImage
@@ -231,7 +230,7 @@ extension ContentView {
       }
     }
     
-    // Update scriptManager.genStatus and Delay as previously
+    // update scriptManager.genStatus and Delay as previously
     scriptManager.genStatus = .done
     Delay.by(3.0) {
       scriptManager.genStatus = .idle
