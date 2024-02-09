@@ -172,14 +172,17 @@ extension ContentView {
       }
     } catch {
       Debug.log("Error listing directory contents: \(error.localizedDescription)")
-      // Proceed with nextImageNumber starting from 1 if there's an error listing the directory
     }
     
+    var imagesForComposite: [NSImage] = []
+    
     for base64Image in base64EncodedImages {
-      guard let imageData = Data(base64Encoded: base64Image) else {
+      guard let imageData = Data(base64Encoded: base64Image), let nsImage = NSImage(data: imageData) else {
         Debug.log("Invalid image data")
         continue
       }
+      
+      imagesForComposite.append(nsImage)
       
       let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
       do {
@@ -200,8 +203,26 @@ extension ContentView {
       }
     }
     
-    scriptManager.genStatus = .done
+    // Generate and save the composite image
+    if let compositeImage = await createCompositeImage(from: imagesForComposite) {
+      let compositeImagePath = directoryURL.appendingPathComponent("composite.png")
+      guard let tiffData = compositeImage.tiffRepresentation,
+            let bitmapImage = NSBitmapImageRep(data: tiffData),
+            let pngData = bitmapImage.representation(using: .png, properties: [:]) else {
+        Debug.log("Failed to prepare composite image data")
+        return
+      }
+      
+      do {
+        try pngData.write(to: compositeImagePath)
+        Debug.log("Composite image saved to \(compositeImagePath)")
+      } catch {
+        Debug.log("Failed to save composite image: \(error.localizedDescription)")
+      }
+    }
     
+    // Update scriptManager.genStatus and Delay as previously
+    scriptManager.genStatus = .done
     Delay.by(3.0) {
       scriptManager.genStatus = .idle
       scriptManager.genProgress = 0
