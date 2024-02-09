@@ -44,6 +44,13 @@ struct SettingsView: View {
                           textValue: $fileOutputDir) {
               await FilePickerService.browseForDirectory()
             }
+            
+            BrowseFileRow(labelText: "stable diffusion models",
+                          placeholderText: "path/to/stable-diffusion",
+                          textValue: $userSettings.stableDiffusionModelsPath) {
+              await FilePickerService.browseForDirectory()
+              
+            }
           }
           
           VStack(alignment: .leading) {

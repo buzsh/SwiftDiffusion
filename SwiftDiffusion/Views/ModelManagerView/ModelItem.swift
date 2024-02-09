@@ -71,7 +71,7 @@ class ModelPreferences: ObservableObject {
 
 extension ModelPreferences {
   convenience init(from promptViewModel: PromptViewModel) {
-    self.init(samplingMethod: promptViewModel.samplingMethod ?? "DPM++ 2M Karras") // Provide a default or handle nil differently
+    self.init(samplingMethod: promptViewModel.samplingMethod ?? "DPM++ 2M Karras")
     self.positivePrompt = promptViewModel.positivePrompt
     self.negativePrompt = promptViewModel.negativePrompt
     self.width = promptViewModel.width

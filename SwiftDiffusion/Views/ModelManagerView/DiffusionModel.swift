@@ -18,6 +18,8 @@ class ModelManagerViewModel: ObservableObject {
   private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"]
   private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"]
   
+  private let userSettings = UserSettingsModel.shared
+  
   func loadModels() async {
     do {
       let fileManager = FileManager.default
@@ -38,7 +40,8 @@ class ModelManagerViewModel: ObservableObject {
       }
       
       // Load Python models
-      if let pythonModelsDir = AppDirectory.python.url {
+      let pythonModelsDir = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+      if let pythonModelsDir = pythonModelsDir {
         let pythonModels = try fileManager.contentsOfDirectory(at: pythonModelsDir, includingPropertiesForKeys: nil)
         for modelURL in pythonModels where modelURL.pathExtension == "safetensors" {
           updatedURLs.insert(modelURL)
@@ -91,7 +94,8 @@ class ModelManagerViewModel: ObservableObject {
       }
     }
     
-    if let pythonModelsDir = AppDirectory.python.url {
+    let pythonModelsDir = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+    if let pythonModelsDir = pythonModelsDir {
       pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
         Debug.log("Detected changes in Python models directory")
         await self?.loadModels()
@@ -114,7 +118,8 @@ extension ModelManagerViewModel {
         }
         fileURL = coreMlModelsDirUrl.appendingPathComponent(item.name)
       case .python:
-        guard let pythonModelsDirUrl = AppDirectory.python.url else {
+        let pythonModelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+        guard let pythonModelsDirUrl = pythonModelsDirUrl else {
           Debug.log("Python models URL is nil")
           return
         }
