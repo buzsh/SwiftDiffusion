@@ -118,6 +118,20 @@ struct PromptView: View {
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
           
+          HStack {
+            Spacer()
+            Button("Debug.log all variables") {
+              logAllVariables()
+            }
+            
+            Button("Paste and parse data") {
+              if let pasteboardContent = getPasteboardString() {
+                parseAndSetPromptData(from: pasteboardContent)
+              }
+            }
+            Spacer()
+          }
+          .padding()
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
@@ -157,6 +171,25 @@ struct PromptView: View {
     .padding()
     .background(Color(NSColor.windowBackgroundColor))
   }
+  
+  func logAllVariables() {
+    var debugOutput = ""
+    
+    debugOutput += "selectedModel: \(prompt.selectedModel?.name ?? "nil")\n"
+    debugOutput += "samplingMethod: \(prompt.samplingMethod ?? "nil")\n"
+    debugOutput += "positivePrompt: \(prompt.positivePrompt)\n"
+    debugOutput += "negativePrompt: \(prompt.negativePrompt)\n"
+    debugOutput += "width: \(prompt.width)\n"
+    debugOutput += "height: \(prompt.height)\n"
+    debugOutput += "cfgScale: \(prompt.cfgScale)\n"
+    debugOutput += "samplingSteps: \(prompt.samplingSteps)\n"
+    debugOutput += "seed: \(prompt.seed)\n"
+    debugOutput += "batchCount: \(prompt.batchCount)\n"
+    debugOutput += "batchSize: \(prompt.batchSize)\n"
+    debugOutput += "clipSkip: \(prompt.clipSkip)\n"
+    
+    Debug.log(debugOutput) // Assuming Debug.log can accept a String argument and functions like print().
+  }
 }
 
 
@@ -168,4 +201,76 @@ struct PromptView: View {
   promptModel.negativePrompt = "sample, negative, prompt"
   
   return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
+}
+
+extension PromptView {
+  
+  func getPasteboardString() -> String? {
+    return NSPasteboard.general.string(forType: .string)
+  }
+  
+  func normalizeModelName(_ name: String) -> String {
+    let lowercased = name.lowercased()
+    let alphanumeric = lowercased.filter { $0.isLetter || $0.isNumber }
+    return alphanumeric
+  }
+  
+  func parseAndSetPromptData(from pasteboardContent: String) {
+    let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
+    Debug.log(lines)
+    if let positivePromptLine = lines.first {
+      prompt.positivePrompt = String(positivePromptLine)
+    }
+    
+    for line in lines {
+      if line.starts(with: "Negative prompt:") {
+        let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
+        prompt.negativePrompt = negativePrompt
+      } else if line.starts(with: "Steps:") {
+        let steps = line.split(separator: ",").first?.replacingOccurrences(of: "Steps: ", with: "")
+        if let stepsValue = Double(steps ?? "") {
+          prompt.samplingSteps = stepsValue
+        }
+      } else if line.starts(with: "Size:") {
+        let sizeComponents = line.replacingOccurrences(of: "Size: ", with: "").split(separator: "x")
+        if sizeComponents.count == 2, let width = Double(sizeComponents[0]), let height = Double(sizeComponents[1]) {
+          prompt.width = width
+          prompt.height = height
+        }
+      } else if line.starts(with: "Seed:") {
+        let seed = line.replacingOccurrences(of: "Seed: ", with: "")
+        prompt.seed = seed
+      } else if line.starts(with: "Sampler:") {
+        let sampler = line.replacingOccurrences(of: "Sampler: ", with: "")
+        prompt.samplingMethod = sampler
+      } else if line.starts(with: "CFG scale:") {
+        let cfgScale = line.split(separator: ",").first?.replacingOccurrences(of: "CFG scale: ", with: "")
+        Debug.log("CFG: \(cfgScale)")
+        if let cfgScaleValue = Double(cfgScale ?? "") {
+          prompt.cfgScale = cfgScaleValue
+        }
+      } else if line.starts(with: "Clip skip:") {
+        let clipSkip = line.split(separator: ",").first?.replacingOccurrences(of: "Clip skip: ", with: "")
+        if let clipSkipValue = Double(clipSkip ?? "") {
+          prompt.clipSkip = clipSkipValue
+        }
+        
+      } else if line.starts(with: "Model:") {
+        let parsedModelName = line.replacingOccurrences(of: "Model: ", with: "")
+        let normalizedParsedModelName = normalizeModelName(parsedModelName)
+        
+        // Find a matching model
+        if let matchingModel = modelManager.items.first(where: { item in
+          let normalizedItemName = normalizeModelName(item.name)
+          return normalizedItemName.contains(normalizedParsedModelName) || normalizedParsedModelName.contains(normalizedItemName)
+        }) {
+          prompt.selectedModel = matchingModel
+        }
+      }
+      
+      
+    }
+  }
+  
+  
 }
