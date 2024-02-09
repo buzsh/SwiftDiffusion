@@ -8,6 +8,10 @@
 import SwiftUI
 import Combine
 
+extension Constants.Api {
+  static let timeoutInterval: TimeInterval = 1000 // in seconds
+}
+
 extension ContentView {
   func generatePayload() -> [String: Any] {
     // Collect values from PromptViewModel
@@ -103,22 +107,30 @@ extension ContentView {
       return
     }
     
+    // Define a custom URLSession configuration with increased timeout intervals
     let configuration = URLSessionConfiguration.default
-    configuration.timeoutIntervalForRequest = 120 // seconds
-    configuration.timeoutIntervalForResource = 120 // seconds
+    configuration.timeoutIntervalForRequest = Constants.Api.timeoutInterval
+    configuration.timeoutIntervalForResource = Constants.Api.timeoutInterval
+    
+    // Create a URLSession with the custom configuration
     let session = URLSession(configuration: configuration)
     
     do {
+      // Serialize the payload into JSON data
       let requestData = try JSONSerialization.data(withJSONObject: payload, options: [])
+      // Create a URLRequest with the serialized JSON payload
       var request = URLRequest(url: url)
       request.httpMethod = "POST"
       request.addValue("application/json", forHTTPHeaderField: "Content-Type")
       request.httpBody = requestData
       
-      let (data, _) = try await URLSession.shared.data(for: request)
+      // Use the custom URLSession to make the network request
+      let (data, _) = try await session.data(for: request)
       
+      // Process the response data
       if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
          let images = json["images"] as? [String] {
+        // Save the received images
         await saveImages(base64EncodedImages: images)
       }
     } catch {
