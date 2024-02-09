@@ -27,6 +27,8 @@ extension ContentView {
       "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
     ]
     
+    // API payload models (might have to get hacky)
+    // https://github.com/AUTOMATIC1111/stable-diffusion-webui/discussions/3734#discussioncomment-4125262
     let payload: [String: Any] = [
       "prompt": promptViewModel.positivePrompt,
       "negative_prompt": promptViewModel.negativePrompt,
