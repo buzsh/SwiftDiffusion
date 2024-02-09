@@ -29,6 +29,9 @@ extension ContentView {
     
     // API payload models (might have to get hacky)
     // https://github.com/AUTOMATIC1111/stable-diffusion-webui/discussions/3734#discussioncomment-4125262
+    //
+    // UPDATE: POSTing to sdapi/v1/options with sd_model_checkpoint works
+    // https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/4301#issuecomment-1328249975
     let payload: [String: Any] = [
       "prompt": promptViewModel.positivePrompt,
       "negative_prompt": promptViewModel.negativePrompt,
