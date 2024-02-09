@@ -11,10 +11,8 @@ import CompactSlider
 extension Constants.Layout {
   static let listViewPadding: CGFloat = 12
   static let listViewResizableBarPadding = listViewPadding - halfResizableBarWidth
-  
   static let resizableBarWidth: CGFloat = 10
   static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
-  
   static let promptRowPadding: CGFloat = 16
 }
 
@@ -24,7 +22,6 @@ struct PromptView: View {
   @ObservedObject var scriptManager: ScriptManager
   
   @State private var showingModelPreferences = false
-  
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   let minColumnWidth: CGFloat = 160
@@ -113,45 +110,11 @@ struct PromptView: View {
           
           DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
           
-          VStack(alignment: .leading) {
-            
-            HStack {
-              VStack(alignment: .leading) {
-                HStack {
-                  PromptRowHeading(title: "Seed")
-                    .padding(.leading, 8)
-                  Spacer()
-                  Button(action: {
-                    Debug.log("Shuffle random seed")
-                    prompt.seed = "-1"
-                  }) {
-                    Image(systemName: "shuffle") //"dice"
-                  }
-                  .buttonStyle(BorderlessButtonStyle())
-                  Button(action: {
-                    Debug.log("Repeat last seed")
-                  }) {
-                    Image(systemName: "repeat")
-                  }
-                  .buttonStyle(BorderlessButtonStyle())
-                }
-                TextField("", text: $prompt.seed)
-                  .textFieldStyle(RoundedBorderTextFieldStyle())
-                  .font(.system(.body, design: .monospaced))
-                
-              }
-              VStack {
-                CompactSlider(value: $prompt.clipSkip, in: 1...12, step: 1) {
-                  Text("Clip Skip")
-                  Spacer()
-                  Text("\(Int(prompt.clipSkip))")
-                }
-                
-              }
-              .padding(.top, 18)
-            }
-          }
-          .padding(.bottom, Constants.Layout.promptRowPadding)
+          HalfSkipClipRow(clipSkip: $prompt.clipSkip)
+          
+          SeedRow(seed: $prompt.seed, controlButtonLayout: .beside)
+          //SeedAndClipSkipRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
+          //SeedRowAndClipSkipHalfRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
           
@@ -165,7 +128,7 @@ struct PromptView: View {
         Button("Save Model Preferences") {
           if let selectedModel = prompt.selectedModel {
             let updatedPreferences = ModelPreferences(from: prompt)
-            selectedModel.preferences = updatedPreferences // Update the selected model's preferences
+            selectedModel.preferences = updatedPreferences
             showingModelPreferences = true
           }
         }
@@ -178,7 +141,7 @@ struct PromptView: View {
         
       }
       .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))//.titlebar
+      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
     }
     .background(Color(NSColor.windowBackgroundColor))
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
@@ -204,91 +167,3 @@ struct PromptView: View {
   
   return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
 }
-
-
-
-struct PromptRowHeading: View {
-  var title: String
-  
-  var body: some View {
-    Text(title)
-      .textCase(.uppercase)
-      .font(.system(size: 11, weight: .bold, design: .rounded))
-      .opacity(0.8)
-      .padding(.horizontal, 8)
-  }
-  
-}
-
-struct DimensionSelectionRow: View {
-  @Binding var width: Double
-  @Binding var height: Double
-  
-  var body: some View {
-    VStack(alignment: .leading) {
-      PromptRowHeading(title: "Dimensions")
-      HStack {
-        CompactSlider(value: $width, in: 64...2048, step: 64) {
-          Text("Width")
-          Spacer()
-          Text("\(Int(width))")
-        }
-        CompactSlider(value: $height, in: 64...2048, step: 64) {
-          Text("Height")
-          Spacer()
-          Text("\(Int(height))")
-        }
-      }
-    }
-    .padding(.bottom, Constants.Layout.promptRowPadding)
-  }
-}
-
-struct DetailSelectionRow: View {
-  @Binding var cfgScale: Double
-  @Binding var samplingSteps: Double
-  
-  var body: some View {
-    VStack(alignment: .leading) {
-      PromptRowHeading(title: "Detail")
-      HStack {
-        CompactSlider(value: $cfgScale, in: 1...30, step: 0.5) {
-          Text("CFG Scale")
-          Spacer()
-          Text(String(format: "%.1f", cfgScale))
-        }
-        CompactSlider(value: $samplingSteps, in: 1...150, step: 1) {
-          Text("Sampling Steps")
-          Spacer()
-          Text("\(Int(samplingSteps))")
-        }
-      }
-    }
-    .padding(.bottom, Constants.Layout.promptRowPadding)
-  }
-}
-
-struct ExportSelectionRow: View {
-  @Binding var batchCount: Double
-  @Binding var batchSize: Double
-  
-  var body: some View {
-    VStack(alignment: .leading) {
-      PromptRowHeading(title: "Export Amount")
-      HStack {
-        CompactSlider(value: $batchCount, in: 1...100, step: 1) {
-          Text("Batch Count")
-          Spacer()
-          Text("\(Int(batchCount))")
-        }
-        CompactSlider(value: $batchSize, in: 1...8, step: 1) {
-          Text("Batch Size")
-          Spacer()
-          Text("\(Int(batchSize))")
-        }
-      }
-    }
-    .padding(.bottom, Constants.Layout.promptRowPadding)
-  }
-}
-
