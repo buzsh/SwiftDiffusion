@@ -24,9 +24,9 @@ struct SettingsView: View {
               .padding(.horizontal, 14)
             Spacer()
             Button(action: {
-              Debug.log("Toolbar item selected")
+              userSettings.showAllDescriptions.toggle() // Toggle setting
             }) {
-              Text("Show All")
+              Text(userSettings.showAllDescriptions ? "Hide All" : "Show All") // Dynamic label
               Image(systemName: "questionmark.circle")
             }
           }
@@ -105,6 +105,7 @@ struct ToggleWithHeader: View {
   var header: String
   var description: String = ""
   @State private var isHovering = false
+  @EnvironmentObject var userSettings: UserSettingsModel
   
   var body: some View {
     HStack(alignment: .top) {
@@ -126,7 +127,7 @@ struct ToggleWithHeader: View {
         Text(description)
           .font(.system(size: 12))
           .foregroundStyle(Color.secondary)
-          .opacity(isHovering ? 1 : 0)
+          .opacity(userSettings.showAllDescriptions || isHovering ? 1 : 0)
       }
       
     }
