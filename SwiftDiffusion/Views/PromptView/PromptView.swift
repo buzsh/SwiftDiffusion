@@ -130,6 +130,8 @@ struct PromptView: View {
             let updatedPreferences = ModelPreferences(from: prompt)
             selectedModel.preferences = updatedPreferences
             showingModelPreferences = true
+          } else {
+            Debug.log("[Toast] Error: Please select a model first")
           }
         }
         .buttonStyle(.accessoryBar)
