@@ -36,14 +36,18 @@ class FileHierarchy: ObservableObject {
       for item in items where item != ".DS_Store" {
         let itemPath = (directory as NSString).appendingPathComponent(item)
         var isDir: ObjCBool = false
+        let attributes = try fileManager.attributesOfItem(atPath: itemPath)
+        let modificationDate = attributes[.modificationDate] as? Date ?? Date()
         fileManager.fileExists(atPath: itemPath, isDirectory: &isDir)
         if isDir.boolValue {
-          let children = await loadFiles(from: itemPath) // Recursively load files
-          nodes.append(FileNode(name: item, fullPath: itemPath, children: children))
+          let children = await loadFiles(from: itemPath)
+          nodes.append(FileNode(name: item, fullPath: itemPath, children: children, lastModified: modificationDate))
         } else {
-          nodes.append(FileNode(name: item, fullPath: itemPath, children: nil))
+          nodes.append(FileNode(name: item, fullPath: itemPath, children: nil, lastModified: modificationDate))
         }
       }
+      // Sort the nodes by lastModified date in descending order
+      nodes.sort { $0.lastModified > $1.lastModified }
     } catch {
       await MainActor.run {
         Debug.log("[FileHierarchy] loadFiles(from: \(directory))\n > \(error)")
@@ -51,6 +55,7 @@ class FileHierarchy: ObservableObject {
     }
     return nodes
   }
+  
 }
 
 struct FileNode: Identifiable {
@@ -58,11 +63,13 @@ struct FileNode: Identifiable {
   let name: String
   let fullPath: String
   var children: [FileNode]? = nil
+  let lastModified: Date
   
   var isLeaf: Bool {
     return children == nil
   }
 }
+
 
 extension FileNode: Equatable {
   static func == (lhs: FileNode, rhs: FileNode) -> Bool {
