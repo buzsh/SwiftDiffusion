@@ -18,10 +18,8 @@ extension Constants {
 struct ModelPreferencesView: View {
   @Binding var modelItem: ModelItem
   @ObservedObject var modelPreferences: ModelPreferences
-  @Environment(\.presentationMode) var presentationMode
-  
-  // Use an ObservableObject for temporary editing
   @StateObject private var temporaryPreferences: ModelPreferences
+  @Environment(\.presentationMode) var presentationMode
   
   init(modelItem: Binding<ModelItem>, modelPreferences: ModelPreferences) {
     self._modelItem = modelItem
@@ -148,7 +146,6 @@ extension ModelPreferences {
     return copy
   }
   
-  // Ensure this method exists to apply changes from the temporary preferences
   func update(from preferences: ModelPreferences) {
     self.samplingMethod = preferences.samplingMethod
     self.positivePrompt = preferences.positivePrompt
