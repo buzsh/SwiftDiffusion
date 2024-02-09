@@ -15,76 +15,79 @@ struct SettingsView: View {
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
   var body: some View {
-    ScrollView {
-      VStack {
-        VStack(alignment: .leading) {
-          HStack {
-            Text("Settings")
-              .font(.largeTitle)
-              .padding(.vertical, 20)
-              .padding(.horizontal, 14)
-            Spacer()
-            Button(action: {
-              showAllDescriptions.toggle() // Toggle setting
-            }) {
-              Text(showAllDescriptions ? "Hide All" : "Show All") // Dynamic label
-              Image(systemName: "questionmark.circle")
+    VStack {
+      ScrollView {
+        VStack {
+          VStack(alignment: .leading) {
+            HStack {
+              Text("Settings")
+                .font(.largeTitle)
+                .padding(.vertical, 20)
+                .padding(.horizontal, 14)
+              Spacer()
+              Button(action: {
+                showAllDescriptions.toggle()
+              }) {
+                Text(showAllDescriptions ? "Hide All" : "Show All")
+                Image(systemName: "questionmark.circle")
+              }
+            }
+            
+            BrowseFileRow(labelText: "webui.sh path",
+                          placeholderText: "path/to/webui.sh",
+                          textValue: $scriptPathInput) {
+              await FilePickerService.browseForShellFile()
+            }
+            
+            BrowseFileRow(labelText: "image output directory",
+                          placeholderText: "path/to/outputs",
+                          textValue: $fileOutputDir) {
+              await FilePickerService.browseForDirectory()
             }
           }
           
-          BrowseFileRow(labelText: "webui.sh path",
-                        placeholderText: "path/to/webui.sh",
-                        textValue: $scriptPathInput) {
-            await FilePickerService.browseForShellFile()
-          }
-          
-          BrowseFileRow(labelText: "image output directory",
-                        placeholderText: "path/to/outputs",
-                        textValue: $fileOutputDir) {
-            await FilePickerService.browseForDirectory()
-          }
-        }
-        
-        VStack(alignment: .leading) {
-          Text("Prompt")
-            .font(.title)
-            .padding(.vertical, 20)
-            .padding(.horizontal, 14)
           VStack(alignment: .leading) {
-            ToggleWithHeader(isToggled: $userSettings.alwaysStartPythonEnvironmentAtLaunch, header: "Start Python environment at launch", description: "This will automatically ready the Python environment such that you can start generating immediately.", showAllDescriptions: showAllDescriptions)
+            Text("Prompt")
+              .font(.title)
+              .padding(.vertical, 20)
+              .padding(.horizontal, 14)
+            VStack(alignment: .leading) {
+              ToggleWithHeader(isToggled: $userSettings.alwaysStartPythonEnvironmentAtLaunch, header: "Start Python environment at launch", description: "This will automatically ready the Python environment such that you can start generating immediately.", showAllDescriptions: showAllDescriptions)
+              
+              ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
+              
+              ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.", showAllDescriptions: showAllDescriptions)
+            }
+            .padding(.leading, 8)
             
-            ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
+            Text("Developer")
+              .font(.title)
+              .padding(.vertical, 20)
+              .padding(.horizontal, 14)
             
-            ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.", showAllDescriptions: showAllDescriptions)
+            ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: showAllDescriptions)
+            
           }
-          .padding(.leading, 8)
           
-          Text("Developer")
-            .font(.title)
-            .padding(.vertical, 20)
-            .padding(.horizontal, 14)
           
-          ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: showAllDescriptions)
-          
-          Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
-            .font(.system(.body, design: .monospaced))
-            .padding()
         }
-        
+        .padding(.horizontal, 16)
+      }//scrollview
+      VStack {
         HStack {
-          Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
-            .font(.system(.body, design: .monospaced))
-            .padding()
-        }
-        
-        HStack {
+          Button("Restore Defaults") {
+            userSettings.restoreDefaults()
+          }
           Spacer()
           Button("Done") {
             presentationMode.wrappedValue.dismiss()
           }
         }
+        
+        .padding(10)
       }
-      .padding(.horizontal, 16)
+      .background(Color(NSColor.windowBackgroundColor)) //.windowBackgroundColor
+      //.background(VisualEffectBlurView(material: .underWindowBackground, blendingMode: .behindWindow))
     }
     .padding(2)
     .navigationTitle("Settings")
@@ -94,7 +97,7 @@ struct SettingsView: View {
 
 #Preview {
   SettingsView(userSettings: UserSettingsModel.preview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
-    .frame(width: 500, height: 700)
+    .frame(width: 500, height: 400)
 }
 
 extension UserSettingsModel {

@@ -206,16 +206,18 @@ struct ContentView: View {
 
 extension ContentView {
   func handleScriptOnLaunch() {
-    if !self.hasFirstAppeared {
-      if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-        Debug.log("Running in SwiftUI Preview, skipping script execution and model loading.")
-      } else {
-        Debug.log("First appearance. Starting script...")
-        scriptManager.run()
-        self.hasFirstAppeared = true
-        
-        Task {
-          await modelManagerViewModel.loadModels()
+    if userSettingsModel.alwaysStartPythonEnvironmentAtLaunch {
+      if !self.hasFirstAppeared {
+        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
+          Debug.log("Running in SwiftUI Preview, skipping script execution and model loading.")
+        } else {
+          Debug.log("First appearance. Starting script...")
+          scriptManager.run()
+          self.hasFirstAppeared = true
+          
+          Task {
+            await modelManagerViewModel.loadModels()
+          }
         }
       }
     }

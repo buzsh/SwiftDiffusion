@@ -6,14 +6,22 @@
 //
 
 import Foundation
+import SwiftUI
 
 class UserSettingsModel: ObservableObject {
   static let shared = UserSettingsModel()
   
-  @Published var alwaysStartPythonEnvironmentAtLaunch: Bool = true
-  @Published var showDebugMenu: Bool = false
+  @AppStorage("alwaysStartPythonEnvironmentAtLaunch") var alwaysStartPythonEnvironmentAtLaunch: Bool = true
+  @AppStorage("showDebugMenu") var showDebugMenu: Bool = false
   
-  @Published var disablePasteboardParsingForGenerationData: Bool = false
-  @Published var alwaysShowPasteboardGenerationDataButton: Bool = false
+  @AppStorage("disablePasteboardParsingForGenerationData") var disablePasteboardParsingForGenerationData: Bool = false
+  @AppStorage("alwaysShowPasteboardGenerationDataButton") var alwaysShowPasteboardGenerationDataButton: Bool = false
   
+  
+  func restoreDefaults() {
+    alwaysStartPythonEnvironmentAtLaunch = true
+    showDebugMenu = false
+    disablePasteboardParsingForGenerationData = false
+    alwaysShowPasteboardGenerationDataButton = false
+  }
 }
