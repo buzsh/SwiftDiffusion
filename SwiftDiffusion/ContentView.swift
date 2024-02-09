@@ -42,7 +42,7 @@ struct ContentView: View {
   @State private var selectedView: ViewManager = .prompt
   // Detail
   @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
-  @State private var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
+  @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") private var lastSelectedImagePath: String = ""
   
   
@@ -97,16 +97,6 @@ struct ContentView: View {
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
-          
-          /*
-           Text(scriptManager.scriptStateText)
-           .font(.system(.body, design: .monospaced))
-           .onAppear {
-           scriptPathInput = scriptManager.scriptPath ?? ""
-           Debug.log("Current script state: \(scriptManager.scriptStateText)")
-           }
-           */
-          
           Button(action: {
             if scriptManager.scriptState == .readyToStart {
               scriptManager.scriptPath = scriptPathInput
@@ -141,24 +131,32 @@ struct ContentView: View {
       
       ToolbarItemGroup(placement: .automatic) {
         HStack {
+          Button(action: {
+            Task {
+              await prepareAndSendAPIRequest()
+            }
+          }) {
+            Text("Generate")
+          }
+          
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
             Text("Console").tag(ViewManager.console)
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
-        }
-        Button(action: {
-          Debug.log("Toolbar item selected")
-          showingSettingsView = true
-        }) {
-          Image(systemName: "arkit")
-        }
-        Button(action: {
-          Debug.log("Toolbar item selected")
-          showingSettingsView = true
-        }) {
-          Image(systemName: "gear")
+          Button(action: {
+            Debug.log("Toolbar item selected")
+            showingSettingsView = true
+          }) {
+            Image(systemName: "arkit")
+          }
+          Button(action: {
+            Debug.log("Toolbar item selected")
+            showingSettingsView = true
+          }) {
+            Image(systemName: "gear")
+          }
         }
       }
       
@@ -186,12 +184,5 @@ struct ContentView: View {
   promptModel.positivePrompt = "sample, positive, prompt"
   promptModel.negativePrompt = "sample, negative, prompt"
   return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
-}
-
-extension ScriptManager {
-  static func ireadyPreview() -> ScriptManager {
-    let previewManager = ScriptManager()
-    previewManager.scriptState = .readyToStart
-    return previewManager
-  }
+    .frame(height: 700)
 }

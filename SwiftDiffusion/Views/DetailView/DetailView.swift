@@ -86,10 +86,7 @@ struct DetailView: View {
 
 #Preview {
   let mockFileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
-  
-  // Use State to simulate bindings for the preview
-  // Note: Since previews don't support async operations well, you might not be able to load real data
-  @State var selectedImage: NSImage? = nil // Provide a default or mock image if you have one
+  @State var selectedImage: NSImage? = nil
   @State var lastSelectedImagePath: String = ""
   
   return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
@@ -132,7 +129,7 @@ extension FileHierarchy {
           }
         }
       } catch {
-        print("Failed to list directory: \(error.localizedDescription)")
+        Debug.log("Failed to list directory: \(error.localizedDescription)")
       }
       return mostRecentImageNode
     }
