@@ -122,6 +122,16 @@ struct ModelPreferencesView: View {
   }
 }
 
+
+#Preview {
+  let item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
+  
+  return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
+    .frame(width: 400, height: 350)
+}
+
+
 extension ModelPreferences {
   static func copy(from preferences: ModelPreferences) -> ModelPreferences {
     let copy = ModelPreferences(samplingMethod: preferences.samplingMethod)
@@ -151,30 +161,5 @@ extension ModelPreferences {
     self.batchCount = preferences.batchCount
     self.batchSize = preferences.batchSize
     self.seed = preferences.seed
-  }
-}
-
-
-#Preview {
-  let item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
-  item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
-  
-  return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
-    .frame(width: 400, height: 350)
-}
-
-
-struct HalfMaxWidthView<Content: View>: View {
-  let content: Content
-  
-  init(@ViewBuilder content: () -> Content) {
-    self.content = content()
-  }
-  
-  var body: some View {
-    GeometryReader { geometry in
-      content
-        .frame(width: geometry.size.width / 2)
-    }
   }
 }
