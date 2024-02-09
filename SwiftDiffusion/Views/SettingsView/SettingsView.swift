@@ -12,10 +12,11 @@ struct SettingsView: View {
   @Binding var scriptPathInput: String
   @Binding var fileOutputDir: String
   @Environment(\.presentationMode) var presentationMode
+  @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
   var body: some View {
-    VStack {
-      ScrollView {
+    ScrollView {
+      VStack {
         VStack(alignment: .leading) {
           HStack {
             Text("Settings")
@@ -24,9 +25,9 @@ struct SettingsView: View {
               .padding(.horizontal, 14)
             Spacer()
             Button(action: {
-              userSettings.showAllDescriptions.toggle() // Toggle setting
+              showAllDescriptions.toggle() // Toggle setting
             }) {
-              Text(userSettings.showAllDescriptions ? "Hide All" : "Show All") // Dynamic label
+              Text(showAllDescriptions ? "Hide All" : "Show All") // Dynamic label
               Image(systemName: "questionmark.circle")
             }
           }
@@ -50,9 +51,11 @@ struct SettingsView: View {
             .padding(.vertical, 20)
             .padding(.horizontal, 14)
           VStack(alignment: .leading) {
-            ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.")
+            ToggleWithHeader(isToggled: $userSettings.alwaysStartPythonEnvironmentAtLaunch, header: "Start Python environment at launch", description: "This will automatically ready the Python environment such that you can start generating immediately.", showAllDescriptions: showAllDescriptions)
             
-            ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.")
+            ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
+            
+            ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.", showAllDescriptions: showAllDescriptions)
           }
           .padding(.leading, 8)
           
@@ -61,7 +64,7 @@ struct SettingsView: View {
             .padding(.vertical, 20)
             .padding(.horizontal, 14)
           
-          ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.")
+          ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: showAllDescriptions)
           
           Toggle("[Advanced] Show Debug Menu", isOn: $userSettings.showDebugMenu)
             .font(.system(.body, design: .monospaced))
@@ -74,15 +77,16 @@ struct SettingsView: View {
             .padding()
         }
         
-      }
-      HStack {
-        Spacer()
-        Button("Done") {
-          presentationMode.wrappedValue.dismiss()
+        HStack {
+          Spacer()
+          Button("Done") {
+            presentationMode.wrappedValue.dismiss()
+          }
         }
       }
+      .padding(.horizontal, 16)
     }
-    .padding(14)
+    .padding(2)
     .navigationTitle("Settings")
     .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 500)
   }
@@ -105,7 +109,7 @@ struct ToggleWithHeader: View {
   var header: String
   var description: String = ""
   @State private var isHovering = false
-  @EnvironmentObject var userSettings: UserSettingsModel
+  var showAllDescriptions: Bool
   
   var body: some View {
     HStack(alignment: .top) {
@@ -127,7 +131,7 @@ struct ToggleWithHeader: View {
         Text(description)
           .font(.system(size: 12))
           .foregroundStyle(Color.secondary)
-          .opacity(userSettings.showAllDescriptions || isHovering ? 1 : 0)
+          .opacity(showAllDescriptions || isHovering ? 1 : 0)
       }
       
     }
