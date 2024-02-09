@@ -14,7 +14,11 @@ class ModelItem: ObservableObject, Identifiable {
   let name: String
   let type: ModelType
   let url: URL
+  
   var isDefaultModel: Bool = false
+  
+  var sdModelCheckpoint: String?
+  
   @Published var preferences: ModelPreferences
   
   init(name: String, type: ModelType, url: URL, isDefaultModel: Bool = false) {
@@ -23,6 +27,10 @@ class ModelItem: ObservableObject, Identifiable {
     self.url = url
     self.isDefaultModel = isDefaultModel
     self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
+  }
+  
+  func setSdModelCheckpoint(_ checkpoint: String) {
+    self.sdModelCheckpoint = checkpoint
   }
 }
 

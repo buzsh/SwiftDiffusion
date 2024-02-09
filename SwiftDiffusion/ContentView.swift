@@ -162,8 +162,12 @@ struct ContentView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
           Button(action: {
-            Debug.log("Toolbar item selected")
-            showingSettingsView = true
+            Debug.log("Testing api")
+            
+            //showingSettingsView = true
+            assignSdModelCheckpointTitles {
+              Debug.log("Assignment of SD Model Checkpoint Titles completed.")
+            }
           }) {
             Image(systemName: "arkit")
           }
