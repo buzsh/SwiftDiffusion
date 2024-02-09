@@ -41,9 +41,9 @@ struct ContentView: View {
   // Views
   @State private var selectedView: ViewManager = .prompt
   // Detail
-  @StateObject private var fileHierarchy = FileHierarchy(rootPath: "")
+  @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
-  @AppStorage("lastSelectedImagePath") private var lastSelectedImagePath: String = ""
+  @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   
   
   

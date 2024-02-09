@@ -172,24 +172,7 @@ struct PromptView: View {
     .background(Color(NSColor.windowBackgroundColor))
   }
   
-  func logAllVariables() {
-    var debugOutput = ""
-    
-    debugOutput += "selectedModel: \(prompt.selectedModel?.name ?? "nil")\n"
-    debugOutput += "samplingMethod: \(prompt.samplingMethod ?? "nil")\n"
-    debugOutput += "positivePrompt: \(prompt.positivePrompt)\n"
-    debugOutput += "negativePrompt: \(prompt.negativePrompt)\n"
-    debugOutput += "width: \(prompt.width)\n"
-    debugOutput += "height: \(prompt.height)\n"
-    debugOutput += "cfgScale: \(prompt.cfgScale)\n"
-    debugOutput += "samplingSteps: \(prompt.samplingSteps)\n"
-    debugOutput += "seed: \(prompt.seed)\n"
-    debugOutput += "batchCount: \(prompt.batchCount)\n"
-    debugOutput += "batchSize: \(prompt.batchSize)\n"
-    debugOutput += "clipSkip: \(prompt.clipSkip)\n"
-    
-    Debug.log(debugOutput) // Assuming Debug.log can accept a String argument and functions like print().
-  }
+  
 }
 
 
@@ -203,80 +186,3 @@ struct PromptView: View {
   return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview()).frame(width: 400, height: 600)
 }
 
-extension PromptView {
-  
-  func getPasteboardString() -> String? {
-    return NSPasteboard.general.string(forType: .string)
-  }
-  
-  func normalizeModelName(_ name: String) -> String {
-    let lowercased = name.lowercased()
-    let alphanumeric = lowercased.filter { $0.isLetter || $0.isNumber }
-    return alphanumeric
-  }
-  
-  func parseAndSetPromptData(from pasteboardContent: String) {
-    let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
-    
-    // Set the positive prompt from the first line
-    if let positivePromptLine = lines.first {
-      prompt.positivePrompt = String(positivePromptLine)
-    }
-    
-    // Loop through each line of the pasteboard content
-    for line in lines {
-      if line.starts(with: "Negative prompt:") {
-        let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
-        prompt.negativePrompt = negativePrompt
-      } else {
-        // For the line with multiple parameters, split by comma and process each key-value pair
-        let parameters = line.split(separator: ",").map(String.init)
-        for parameter in parameters {
-          let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
-          guard keyValue.count == 2 else { continue }
-          let key = keyValue[0].trimmingCharacters(in: .whitespaces)
-          let value = keyValue[1].trimmingCharacters(in: .whitespaces)
-          
-          switch key {
-          case "Steps":
-            if let stepsValue = Double(value) {
-              prompt.samplingSteps = stepsValue
-            }
-          case "Size":
-            let sizeComponents = value.split(separator: "x").map(String.init)
-            if sizeComponents.count == 2, let width = Double(sizeComponents[0]), let height = Double(sizeComponents[1]) {
-              prompt.width = width
-              prompt.height = height
-            }
-          case "Seed":
-            prompt.seed = value
-          case "Sampler":
-            prompt.samplingMethod = value
-          case "CFG scale":
-            if let cfgScaleValue = Double(value) {
-              prompt.cfgScale = cfgScaleValue
-            }
-          case "Clip skip":
-            if let clipSkipValue = Double(value) {
-              prompt.clipSkip = clipSkipValue
-            }
-          case "Model":
-            let parsedModelName = value
-            let normalizedParsedModelName = normalizeModelName(parsedModelName)
-            
-            if let matchingModel = modelManager.items.first(where: { item in
-              let normalizedItemName = normalizeModelName(item.name)
-              return normalizedItemName.contains(normalizedParsedModelName) || normalizedParsedModelName.contains(normalizedItemName)
-            }) {
-              prompt.selectedModel = matchingModel
-            }
-          default:
-            break
-          }
-        }
-      }
-    }
-  }
-  
-  
-}

@@ -69,6 +69,13 @@ struct DetailView: View {
           Image(systemName: "link")
         }
         .buttonStyle(BorderlessButtonStyle())
+        
+        Button(action: {
+          Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
+        }) {
+          Image(systemName: "questionmark")
+        }
+        .buttonStyle(BorderlessButtonStyle())
       }
       .padding(.horizontal, 18)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)

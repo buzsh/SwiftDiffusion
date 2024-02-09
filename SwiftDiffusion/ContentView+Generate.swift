@@ -74,11 +74,11 @@ extension ContentView {
       "height": Int(promptViewModel.height),
       "cfg_scale": Int(promptViewModel.cfgScale),
       "steps": Int(promptViewModel.samplingSteps),
-      "seed": Int(promptViewModel.seed) ?? -1, // Assuming seed is a string that can be converted to Int
+      "seed": Int(promptViewModel.seed) ?? -1,
       "batch_count": Int(promptViewModel.batchCount),
       "batch_size": Int(promptViewModel.batchSize),
       "override_settings": overrideSettings,
-      // Include other necessary fields as per your API's requirements
+      // extras
       "do_not_save_grid" : false,
       "do_not_save_samples" : false
     ]
@@ -161,19 +161,23 @@ extension ContentView {
         continue
       }
       
-      if nextImageNumber == 1 {
-        if let nsImage = NSImage(data: imageData) {
-          await MainActor.run {
-            self.selectedImage = nsImage
-          }
-        }
-      }
-      
       let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
       do {
         try imageData.write(to: filePath)
         Debug.log("Image saved to \(filePath)")
         nextImageNumber += 1
+        
+        await MainActor.run {
+          self.selectedImage = NSImage(data: imageData)
+          self.lastSelectedImagePath = filePath.path
+          
+          Task {
+            await fileHierarchy.refresh()
+          }
+        }
+        
+        
+        
       } catch {
         Debug.log("Failed to save image: \(error.localizedDescription)")
       }
