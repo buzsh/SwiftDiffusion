@@ -51,6 +51,9 @@
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
 		29D362402B7317E1006C57B3 /* DiffusionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623F2B7317E1006C57B3 /* DiffusionModel.swift */; };
+		29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */; };
+		29F0D3052B76D12400BF56CE /* SdModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3042B76D12400BF56CE /* SdModelData.swift */; };
+		29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */; };
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
 /* End PBXBuildFile section */
@@ -102,6 +105,9 @@
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		29D3623F2B7317E1006C57B3 /* DiffusionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffusionModel.swift; sourceTree = "<group>"; };
+		29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadState.swift; sourceTree = "<group>"; };
+		29F0D3042B76D12400BF56CE /* SdModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SdModelData.swift; sourceTree = "<group>"; };
+		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -150,6 +156,7 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
+				29F0D3042B76D12400BF56CE /* SdModelData.swift */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
@@ -305,6 +312,8 @@
 				2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */,
 				2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */,
 				2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */,
+				29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */,
+				29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */,
 			);
 			path = ScriptManager;
 			sourceTree = "<group>";
@@ -444,10 +453,12 @@
 				29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
+				29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
 				29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */,
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
+				29F0D3052B76D12400BF56CE /* SdModelData.swift in Sources */,
 				2916F33B2B728633001D14B9 /* FileOutlineView.swift in Sources */,
 				29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */,
 				29D362402B7317E1006C57B3 /* DiffusionModel.swift in Sources */,
@@ -468,6 +479,7 @@
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */,
+				29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
 				29B5718C2B75EAC50057DD50 /* ProgressView.swift in Sources */,

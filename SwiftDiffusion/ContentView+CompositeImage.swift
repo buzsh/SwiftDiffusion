@@ -45,8 +45,6 @@ extension ContentView {
       return nil
     }
     
-    // Adjust the compression quality as needed (0.0 to 1.0, lower means more compression)
-    let compressionQuality: CGFloat = 0.5
     guard let jpegData = imageRep.representation(using: .jpeg, properties: [.compressionFactor: withCompressionFactor]) else {
       Debug.log("Failed to compress image")
       return nil

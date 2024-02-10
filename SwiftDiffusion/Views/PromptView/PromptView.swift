@@ -57,21 +57,39 @@ struct PromptView: View {
     VStack(spacing: 0) {
       
       
-      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-        HStack {
-          Button("Paste Generation Data") {
-            if let pasteboardContent = getPasteboardString() {
-              parseAndSetPromptData(from: pasteboardContent)
+      //if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
+      HStack {
+        Button("Paste Generation Data") {
+          if let pasteboardContent = getPasteboardString() {
+            parseAndSetPromptData(from: pasteboardContent)
+          }
+        }
+        .buttonStyle(.accessoryBar)
+        .padding(.leading, 10)
+        
+        Spacer()
+        
+        
+        Button("assignSdModelCheckpointTitles") {
+          assignSdModelCheckpointTitles {
+            Debug.log("Assignment of SD Model Checkpoint Titles completed.")
+          }
+        }
+        .buttonStyle(.accessoryBar)
+        
+        Button("Set SdModelCheckpoint") {
+          if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+            updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+              Debug.log(result)
             }
           }
-          .buttonStyle(.accessoryBar)
-          .padding(.leading, 10)
-          
-          Spacer()
         }
-        .frame(height: 24)
-        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+        .buttonStyle(.accessoryBar)
+        .padding(.leading, 10)
       }
+      .frame(height: 24)
+      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+      //}
       
       ScrollView {
         Form {
@@ -222,7 +240,6 @@ struct PromptView: View {
   
 }
 
-
 #Preview("Left Prompt View") {
   let modelManager = ModelManagerViewModel()
   
@@ -232,4 +249,3 @@ struct PromptView: View {
   
   return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview(), userSettings: UserSettingsModel.preview()).frame(width: 400, height: 600)
 }
-

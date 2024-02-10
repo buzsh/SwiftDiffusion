@@ -23,9 +23,12 @@ extension ContentView {
     scriptManager.genStatus = .preparingToGenerate
     scriptManager.genProgress = -1
     
+    guard let sdModelCheckpoint = promptViewModel.selectedModel?.sdModelCheckpoint else { return }
+    
     let overrideSettings: [String: Any] = [
-      "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip),
+      "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip)
     ]
+    // "sd_model_checkpoint": sdModelCheckpoint
     
     // API payload models (might have to get hacky)
     // https://github.com/AUTOMATIC1111/stable-diffusion-webui/discussions/3734#discussioncomment-4125262

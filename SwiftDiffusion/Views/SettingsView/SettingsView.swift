@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
   @ObservedObject var userSettings: UserSettingsModel
+  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
   @Binding var scriptPathInput: String
   @Binding var fileOutputDir: String
   @Environment(\.presentationMode) var presentationMode
@@ -43,6 +44,17 @@ struct SettingsView: View {
                           placeholderText: "path/to/outputs",
                           textValue: $fileOutputDir) {
               await FilePickerService.browseForDirectory()
+            }
+            
+            BrowseFileRow(labelText: "stable diffusion models",
+                          placeholderText: "path/to/stable-diffusion",
+                          textValue: $userSettings.stableDiffusionModelsPath) {
+              await FilePickerService.browseForDirectory()
+            }
+          }
+          .onChange(of: userSettings.stableDiffusionModelsPath) {
+            Task {
+              await modelManagerViewModel.loadModels()
             }
           }
           
@@ -95,7 +107,7 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettingsModel.preview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+  SettingsView(userSettings: UserSettingsModel.preview(), modelManagerViewModel: ModelManagerViewModel(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
     .frame(width: 500, height: 400)
 }
 

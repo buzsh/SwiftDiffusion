@@ -18,6 +18,9 @@ class ModelManagerViewModel: ObservableObject {
   private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"]
   private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"]
   
+  private let userSettings = UserSettingsModel.shared
+  private let scriptManager = ScriptManager.shared
+  
   func loadModels() async {
     do {
       let fileManager = FileManager.default
@@ -38,7 +41,8 @@ class ModelManagerViewModel: ObservableObject {
       }
       
       // Load Python models
-      if let pythonModelsDir = AppDirectory.python.url {
+      let pythonModelsDir = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+      if let pythonModelsDir = pythonModelsDir {
         let pythonModels = try fileManager.contentsOfDirectory(at: pythonModelsDir, includingPropertiesForKeys: nil)
         for modelURL in pythonModels where modelURL.pathExtension == "safetensors" {
           updatedURLs.insert(modelURL)
@@ -48,14 +52,20 @@ class ModelManagerViewModel: ObservableObject {
           }
         }
       }
-      
       // Remove items whose URLs no longer exist
       self.items = self.items.filter { updatedURLs.contains($0.url) }
-      
       // Add new items
       self.items.append(contentsOf: newItems)
+      // Assign model titles if API is connectable
+      assignNewModelCheckpointTitles()
     } catch {
       Debug.log("Failed to load models: \(error)")
+    }
+  }
+  
+  func assignNewModelCheckpointTitles() {
+    assignSdModelCheckpointTitles {
+      Debug.log("Assignment of SD Model Checkpoint Titles completed.")
     }
   }
   
@@ -91,7 +101,8 @@ class ModelManagerViewModel: ObservableObject {
       }
     }
     
-    if let pythonModelsDir = AppDirectory.python.url {
+    let pythonModelsDir = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+    if let pythonModelsDir = pythonModelsDir {
       pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
         Debug.log("Detected changes in Python models directory")
         await self?.loadModels()
@@ -114,7 +125,8 @@ extension ModelManagerViewModel {
         }
         fileURL = coreMlModelsDirUrl.appendingPathComponent(item.name)
       case .python:
-        guard let pythonModelsDirUrl = AppDirectory.python.url else {
+        let pythonModelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+        guard let pythonModelsDirUrl = pythonModelsDirUrl else {
           Debug.log("Python models URL is nil")
           return
         }
@@ -130,6 +142,56 @@ extension ModelManagerViewModel {
       await loadModels()
     } catch {
       Debug.log("Failed to move to trash: \(item.name), error: \(error)")
+    }
+  }
+}
+
+extension ModelManagerViewModel {
+  func getSdModelData(_ api: URL) async throws -> [SdModel] {
+    let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
+    let (data, _) = try await URLSession.shared.data(from: endpoint)
+    let decoder = JSONDecoder()
+    let models = try decoder.decode([SdModel].self, from: data)
+    return models
+  }
+  
+  @MainActor
+  func assignSdModelCheckpointTitles(completion: @escaping () -> Void) {
+    guard let baseUrl = scriptManager.serviceUrl else {
+      completion()
+      return
+    }
+    
+    Task {
+      do {
+        let models = try await getSdModelData(baseUrl)
+        var unassignedItems: [ModelItem] = []
+        
+        // Log all filenames from the API for comparison
+        let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
+        Debug.log("API Filenames: \(apiFilenames)")
+        
+        for item in self.items where item.sdModelCheckpoint == nil {
+          let itemFilename = item.url.lastPathComponent
+          if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
+            item.sdModelCheckpoint = matchingModel.title
+            Debug.log("Assigned \(matchingModel.title) to \(item.name)")
+          } else {
+            unassignedItems.append(item)
+            Debug.log("No match for \(item.name) with filename \(itemFilename)")
+          }
+        }
+        
+        // Log unassigned ModelItems
+        for item in unassignedItems {
+          Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
+        }
+        
+        completion()
+      } catch {
+        Debug.log("Failed to fetch SD Model Data: \(error)")
+        completion()
+      }
     }
   }
 }

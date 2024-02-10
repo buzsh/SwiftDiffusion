@@ -22,6 +22,7 @@ extension ScriptManager: PythonProcessDelegate {
       self.consoleOutput += "\n\(filteredOutput)"
       self.parseServiceUrl(from: filteredOutput)
       self.updateProgressBasedOnOutput(output: output)
+      self.updateModelLoadStateBasedOnOutput(output: output)
     }
   }
   

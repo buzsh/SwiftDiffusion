@@ -71,7 +71,7 @@ struct ContentView: View {
       case .models:
         ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
-        SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -94,6 +94,13 @@ struct ContentView: View {
       fileHierarchy.rootPath = fileOutputDir
       Task {
         await fileHierarchy.refresh()
+      }
+    }
+    .onChange(of: scriptManager.scriptState) {
+      if scriptManager.scriptState == .active {
+        Task {
+          await modelManagerViewModel.loadModels()
+        }
       }
     }
     .navigationTitle(selectedView.title)
@@ -134,6 +141,22 @@ struct ContentView: View {
       
       ToolbarItemGroup(placement: .automatic) {
         HStack {
+          /*
+          if Debug.shared.isActive {
+            Text(scriptManager.modelLoadState.statusTest)
+              .font(.system(.body, design: .monospaced))
+              .padding(.trailing, 6)
+          }*/
+          
+          if scriptManager.modelLoadState == .done {
+            Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
+              .font(.system(size: 11, design: .monospaced))
+              .padding(.trailing, 6)
+          } else if scriptManager.modelLoadState == .isLoading || scriptManager.modelLoadState == .launching {
+            ProgressView()
+              .progressViewStyle(CircularProgressViewStyle())
+              .scaleEffect(0.5)
+          }
           
           if scriptManager.genStatus == .generating || scriptManager.genStatus == .finishingUp {
             Text("\(Int(scriptManager.genProgress * 100))%")
@@ -154,6 +177,12 @@ struct ContentView: View {
           }) {
             Text("Generate")
           }
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
+              promptViewModel.selectedModel == nil
+          )
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
@@ -161,9 +190,12 @@ struct ContentView: View {
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
+          
           Button(action: {
-            Debug.log("Toolbar item selected")
-            showingSettingsView = true
+            Debug.log("Testing api")
+            
+            //showingSettingsView = true
+
           }) {
             Image(systemName: "arkit")
           }
@@ -179,7 +211,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(userSettings: userSettingsModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
