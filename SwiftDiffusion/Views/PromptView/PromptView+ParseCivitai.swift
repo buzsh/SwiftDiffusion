@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Constants.Debug {
-  static let enableParseLog = false
+  static let enableParseLog = true
 }
 
 extension Constants.Parsing {

@@ -59,6 +59,22 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
+      // PromptDebugView
+      if userSettings.showDebugMenu {
+        HStack {
+          Spacer()
+          VStack(alignment: .leading) {
+            Text("     ScriptState: \(scriptManager.scriptState.debugInfo)")
+            Text("GenerationStatus: \(scriptManager.genStatus.debugInfo) (\(Int(scriptManager.genProgress * 100))%)")
+            Text("  ModelLoadState: \(scriptManager.modelLoadState.debugInfo) (\(String(format: "%.1f", scriptManager.modelLoadTime))s)")
+          }
+          .padding(.horizontal)
+          .font(.system(size: 12, design: .monospaced))
+          Spacer()
+        }
+        .padding(.vertical, 6).padding(.bottom, 2)
+        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
+      }
       
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
         HStack {
