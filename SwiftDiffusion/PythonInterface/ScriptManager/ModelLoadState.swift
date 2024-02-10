@@ -15,6 +15,43 @@ enum ModelLoadState: Equatable {
   case failedOnLaunch
 }
 
+extension ModelLoadState {
+  var statusTest: String {
+    switch self {
+    case .launching: return "[Launch] Unpacking"
+    case .done: return "Done!"
+    case .isLoading: return "Loading..."
+    case .failed: return "Failed"
+    case .failedOnLaunch: return "[Launch] Failed unpacking"
+    }
+  }
+}
+
+extension ScriptManager {
+  func parseAndUpdateModelLoadState(output: String) async {
+    // Check for "Model loaded" message
+    if output.starts(with: "Model loaded in ") {
+      let timeString = output.replacingOccurrences(of: "Model loaded in ", with: "").replacingOccurrences(of: "s", with: "")
+      if let time = Double(timeString) {
+        await updateModelLoadState(state: .done, time: time)
+      }
+    }
+    // Check for failure messages
+    else if output.starts(with: "Stable diffusion model failed to load") ||
+              output.contains("TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.") {
+      await updateModelLoadState(state: .failed, time: 0)
+    }
+  }
+  
+  @MainActor
+  func updateModelLoadState(state: ModelLoadState, time: Double) {
+    modelLoadState = state
+    modelLoadTime = time
+    Debug.log(state == .done ? "Model loaded in \(time) seconds" : "Model load failed")
+  }
+}
+
+
 // .done:
 // Model loaded in 4.6s (load weights from disk: 0.4s, create model: 0.7s, apply weights to model: 2.8s, move model to device: 0.2s, calculate empty prompt: 0.4s).
 //

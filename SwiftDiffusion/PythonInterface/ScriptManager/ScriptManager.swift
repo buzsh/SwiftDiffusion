@@ -35,6 +35,9 @@ class ScriptManager: ObservableObject {
   
   @Published var genStatus: GenerationStatus = .idle
   @Published var genProgress: Double = 0
+  
+  @Published var modelLoadState: ModelLoadState = .launching
+  @Published var modelLoadTime: Double = 0
 
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""

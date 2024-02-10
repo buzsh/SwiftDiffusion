@@ -135,6 +135,12 @@ struct ContentView: View {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
           
+          if Debug.shared.isActive {
+            Text(scriptManager.modelLoadState.statusTest)
+              .font(.system(.body, design: .monospaced))
+              .padding(.trailing, 6)
+          }
+          
           if scriptManager.genStatus == .generating || scriptManager.genStatus == .finishingUp {
             Text("\(Int(scriptManager.genProgress * 100))%")
               .font(.system(.body, design: .monospaced))
