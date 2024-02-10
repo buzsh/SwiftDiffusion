@@ -18,6 +18,8 @@ class UserSettingsModel: ObservableObject {
   @AppStorage("alwaysShowPasteboardGenerationDataButton") var alwaysShowPasteboardGenerationDataButton: Bool = false
   
   @AppStorage("stableDiffusionModelsPath") var stableDiffusionModelsPath: String = ""
+  @AppStorage("userOutputDirectoryPath") var userOutputDirectoryPath: String = ""
+  
 
   
   func restoreDefaults() {
@@ -38,6 +40,17 @@ class UserSettingsModel: ObservableObject {
     } else {
       return nil
     }
+  }
+  
+  var userOutputDirectoryUrl: URL? {
+    if !userOutputDirectoryPath.isEmpty {
+      let pathUrl = URL(fileURLWithPath: userOutputDirectoryPath)
+      var isDir: ObjCBool = false
+      if FileManager.default.fileExists(atPath: userOutputDirectoryPath, isDirectory: &isDir), isDir.boolValue {
+        return pathUrl
+      }
+    }
+    return nil
   }
   
   

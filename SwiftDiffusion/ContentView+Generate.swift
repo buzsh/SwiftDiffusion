@@ -103,12 +103,17 @@ extension ContentView {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd"
     let dateFolderName = dateFormatter.string(from: Date())
-    let baseDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
     
-    guard let directoryURL = baseDirectory else {
-      Debug.log("Directory URL construction failed")
-      return
+    let fileManager = FileManager.default
+    
+    
+    var directoryURL: URL = URL(fileURLWithPath: userSettingsModel.userOutputDirectoryPath).appendingPathComponent("txt2img/\(dateFolderName)")
+    if !fileManager.fileExists(atPath: directoryURL.path) {
+        // Fallback to using the documents directory if the specified path doesn't exist
+        directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
     }
+    
+    Debug.log("saveImages.directoryURL: \(String(describing: directoryURL))")
     
     do {
       try FileUtility.ensureDirectoryExists(at: directoryURL)
@@ -118,7 +123,6 @@ extension ContentView {
     }
     
     var nextImageNumber = 1
-    let fileManager = FileManager.default
     do {
       let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
       let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
