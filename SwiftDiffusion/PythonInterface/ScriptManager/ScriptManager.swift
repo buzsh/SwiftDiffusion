@@ -36,7 +36,7 @@ class ScriptManager: ObservableObject {
   @Published var genStatus: GenerationStatus = .idle
   @Published var genProgress: Double = 0
   
-  @Published var modelLoadState: ModelLoadState = .launching
+  @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
 
   @Published var scriptState: ScriptState = .readyToStart
@@ -88,6 +88,8 @@ class ScriptManager: ObservableObject {
   }
   
   func run() {
+    modelLoadState = .launching
+    
     newRunScriptState()
     guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) else { return }
     

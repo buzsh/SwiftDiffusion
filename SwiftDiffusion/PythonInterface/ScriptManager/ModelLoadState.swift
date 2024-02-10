@@ -13,6 +13,7 @@ enum ModelLoadState: Equatable {
   case isLoading
   case failed
   case failedOnLaunch
+  case idle
 }
 
 extension ModelLoadState {
@@ -23,33 +24,59 @@ extension ModelLoadState {
     case .isLoading: return "Loading..."
     case .failed: return "Failed"
     case .failedOnLaunch: return "[Launch] Failed unpacking"
+    case .idle: return "idle"
     }
   }
 }
 
 extension ScriptManager {
+  
   func parseAndUpdateModelLoadState(output: String) async {
-    // Check for "Model loaded" message
-    if output.starts(with: "Model loaded in ") {
-      let timeString = output.replacingOccurrences(of: "Model loaded in ", with: "").replacingOccurrences(of: "s", with: "")
-      if let time = Double(timeString) {
-        await updateModelLoadState(state: .done, time: time)
+    Debug.log(output)
+    // Adjusted regular expression to allow for extra text after the initial match
+    if let loadedRange = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
+      let timeString = String(output[loadedRange])
+      // The previous logic to extract the numerical value might also need adjustment
+      // Extract just the numerical value directly using the regex capture group
+      let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
+      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
+      if let match = regex.firstMatch(in: output, options: [], range: nsRange),
+         let timeRange = Range(match.range(at: 1), in: output) {
+        let timeString = String(output[timeRange])
+        if let time = Double(timeString) {
+          await updateModelLoadStateAndTime(to: .done, time: time)
+        }
       }
     }
-    // Check for failure messages
-    else if output.starts(with: "Stable diffusion model failed to load") ||
-              output.contains("TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.") {
-      await updateModelLoadState(state: .failed, time: 0)
+    
+    let failureMessages = [
+      "Stable diffusion model failed to load",
+      "TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead."
+    ]
+    
+    if failureMessages.contains(where: output.contains) {
+      await updateModelLoadStateAndTime(to: .failed, time: 0)
     }
   }
   
+  
   @MainActor
-  func updateModelLoadState(state: ModelLoadState, time: Double) {
-    modelLoadState = state
-    modelLoadTime = time
-    Debug.log(state == .done ? "Model loaded in \(time) seconds" : "Model load failed")
+  private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double) {
+    self.modelLoadState = state
+    self.modelLoadTime = time
+    // Assuming Debug.log is a method to log messages
+    Debug.log("Model load state updated to \(state) with load time: \(time)")
   }
+  
+  func updateModelLoadStateBasedOnOutput(output: String) {
+    Task {
+        await parseAndUpdateModelLoadState(output: output)
+    }
+  }
+  
 }
+
+
 
 
 // .done:

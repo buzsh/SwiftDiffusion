@@ -156,6 +156,7 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
+				29F0D3042B76D12400BF56CE /* SdModelData.swift */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
@@ -346,7 +347,6 @@
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
 			isa = PBXGroup;
 			children = (
-				29F0D3042B76D12400BF56CE /* SdModelData.swift */,
 				29B5717C2B758D7E0057DD50 /* ModelItem.swift */,
 				29D3623F2B7317E1006C57B3 /* DiffusionModel.swift */,
 				29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */,
