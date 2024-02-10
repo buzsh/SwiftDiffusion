@@ -59,24 +59,9 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      // DebugPromptStatusView
-      if userSettings.showDebugMenu {
-        HStack {
-          Spacer()
-          VStack(alignment: .leading) {
-            Text("     ScriptState: \(scriptManager.scriptState.debugInfo)")
-            Text("GenerationStatus: \(scriptManager.genStatus.debugInfo) (\(Int(scriptManager.genProgress * 100))%)")
-            Text("  ModelLoadState: \(scriptManager.modelLoadState.debugInfo) (\(String(format: "%.1f", scriptManager.modelLoadTime))s)")
-          }
-          .padding(.horizontal)
-          .font(.system(size: 12, design: .monospaced))
-          .foregroundColor(Color.white)
-          Spacer()
-        }
-        .padding(.vertical, 6).padding(.bottom, 2)
-        .background(Color.black)
-      }
+      DebugPromptStatusView(scriptManager: scriptManager, userSettings: userSettings)
       
+      // PromptTopStatusBar
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
         HStack {
           Button("Paste Generation Data") {
@@ -217,6 +202,7 @@ struct PromptView: View {
         
       }
       
+      // PromptBottomStatusBar
       HStack {
         Spacer()
         Button("Save Model Preferences") {
@@ -272,12 +258,6 @@ struct PromptView: View {
   
 }
 
-#Preview("Left Prompt View") {
-  let modelManager = ModelManagerViewModel()
-  
-  let promptModel = PromptViewModel()
-  promptModel.positivePrompt = "sample, positive, prompt"
-  promptModel.negativePrompt = "sample, negative, prompt"
-  
-  return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview(), userSettings: UserSettingsModel.preview()).frame(width: 400, height: 600)
+#Preview("PromptView") {
+  CommonPreviews.promptView
 }
