@@ -96,6 +96,13 @@ struct ContentView: View {
         await fileHierarchy.refresh()
       }
     }
+    .onChange(of: scriptManager.scriptState) {
+      if scriptManager.scriptState == .active {
+        Task {
+          await modelManagerViewModel.loadModels()
+        }
+      }
+    }
     .navigationTitle(selectedView.title)
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
