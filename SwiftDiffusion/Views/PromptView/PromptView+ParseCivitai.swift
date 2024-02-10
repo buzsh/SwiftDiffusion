@@ -47,13 +47,30 @@ extension PromptView {
     let alphanumeric = lowercased.filter { $0.isLetter || $0.isNumber }
     return alphanumeric
   }
-  /// Splits a model name into substrings based on specified separators and filters out any substrings that are in the ignore list.
+  /// Splits a model name into substrings based on specified separators and filters out any substrings that are in the ignore list or match the pattern "v" followed by any number of digits.
   func splitAndFilterModelName(_ name: String) -> [String] {
     let separators = CharacterSet(charactersIn: Constants.Parsing.separateModelKeywordsForParsingByCharacters)
     let lowercased = name.lowercased()
     let splitNames = lowercased.components(separatedBy: separators)
     let ignoreList = Constants.Parsing.ignoreModelKeywords
-    return splitNames.filter { !ignoreList.contains($0) }
+    let regexPattern = "^v\\d+$"  // ignore v2, v3, v10, etc.
+    let regex = try? NSRegularExpression(pattern: regexPattern)
+    
+    return splitNames.filter { splitName in
+      if ignoreList.contains(splitName) {
+        return false
+      }
+      
+      // check if splitName matches the "v{numbers}" pattern
+      if let regex = regex {
+        let range = NSRange(location: 0, length: splitName.utf16.count)
+        if regex.firstMatch(in: splitName, options: [], range: range) != nil {
+          return false
+        }
+      }
+      
+      return true
+    }
   }
   /// Asynchronously checks the system pasteboard for generation data and updates a flag accordingly. Intended to be used on the main actor to ensure UI updates are handled correctly.
   @MainActor
