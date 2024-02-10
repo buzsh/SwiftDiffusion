@@ -100,10 +100,18 @@ extension PromptView {
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     
+    Debug.log(lines)
+    
+    prompt.positivePrompt = buildPositivePrompt(from: lines)
+    
+    Debug.log("positivePrompt: \(prompt.positivePrompt)")
+    
     // Set the positive prompt from the first line
+    /*
     if let positivePromptLine = lines.first {
       prompt.positivePrompt = String(positivePromptLine)
     }
+     */
     
     // Loop through each line of the pasteboard content
     for line in lines {
@@ -124,6 +132,19 @@ extension PromptView {
       }
     }
   }
+  
+  func buildPositivePrompt(from lines: [String.SubSequence]) -> String {
+    var positivePrompt = ""
+    for line in lines {
+      if !line.contains("Negative prompt:") {
+        positivePrompt = positivePrompt.appending(line)
+      } else {
+        return positivePrompt
+      }
+    }
+    return positivePrompt
+  }
+  
   /// Parses the "Model hash:" value(s) from a given line of text, extracting and processing each hash found.
   ///
   /// This regex looks for `"Model hash:"` followed by any combination of text until it encounters another key, indicated by "{Word}:" pattern. ie.
