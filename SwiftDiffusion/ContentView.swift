@@ -141,11 +141,21 @@ struct ContentView: View {
       
       ToolbarItemGroup(placement: .automatic) {
         HStack {
-          
+          /*
           if Debug.shared.isActive {
             Text(scriptManager.modelLoadState.statusTest)
               .font(.system(.body, design: .monospaced))
               .padding(.trailing, 6)
+          }*/
+          
+          if scriptManager.modelLoadState == .done {
+            Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
+              .font(.system(size: 11, design: .monospaced))
+              .padding(.trailing, 6)
+          } else if scriptManager.modelLoadState == .isLoading || scriptManager.modelLoadState == .launching {
+            ProgressView()
+              .progressViewStyle(CircularProgressViewStyle())
+              .scaleEffect(0.5)
           }
           
           if scriptManager.genStatus == .generating || scriptManager.genStatus == .finishingUp {
@@ -167,6 +177,12 @@ struct ContentView: View {
           }) {
             Text("Generate")
           }
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
+              promptViewModel.selectedModel == nil
+          )
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)

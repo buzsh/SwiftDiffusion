@@ -12,18 +12,16 @@ enum ModelLoadState: Equatable {
   case done
   case isLoading
   case failed
-  case failedOnLaunch
   case idle
 }
 
 extension ModelLoadState {
   var statusTest: String {
     switch self {
-    case .launching: return "[Launch] Unpacking"
+    case .launching: return "Unpacking" // loading initial
     case .done: return "Done!"
-    case .isLoading: return "Loading..."
+    case .isLoading: return "Loading..." // loading new model
     case .failed: return "Failed"
-    case .failedOnLaunch: return "[Launch] Failed unpacking"
     case .idle: return "idle"
     }
   }
@@ -35,7 +33,6 @@ extension ScriptManager {
     Debug.log(output)
     // Adjusted regular expression to allow for extra text after the initial match
     if let loadedRange = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
-      let timeString = String(output[loadedRange])
       // The previous logic to extract the numerical value might also need adjustment
       // Extract just the numerical value directly using the regex capture group
       let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
@@ -66,6 +63,13 @@ extension ScriptManager {
     self.modelLoadTime = time
     // Assuming Debug.log is a method to log messages
     Debug.log("Model load state updated to \(state) with load time: \(time)")
+    
+    if state == .done {
+      Delay.by(3) {
+        self.modelLoadState = .idle
+        self.modelLoadTime = 0
+      }
+    }
   }
   
   func updateModelLoadStateBasedOnOutput(output: String) {
