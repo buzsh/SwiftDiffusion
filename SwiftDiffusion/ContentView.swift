@@ -160,11 +160,26 @@ struct ContentView: View {
               .foregroundStyle(Color.green)
           }
           
-          ToolbarButton(text: "Generate") {
+          Button(action: {
             Task {
               await prepareAndSendAPIRequest()
             }
+          }) {
+            Text("Generate")
           }
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              promptViewModel.selectedModel == nil
+          )
+          /*
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
+              promptViewModel.selectedModel == nil
+          )
+           */
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
@@ -173,15 +188,28 @@ struct ContentView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
           
-          
-          ToolbarButton(image: "gear") {
-            showingSettingsView = true
+          /*
+          Button(action: {
+            Debug.log("Testing api")
+            //showingSettingsView = true
+          }) {
+            Image(systemName: "arkit")
           }
-          .sheet(isPresented: $showingSettingsView) {
-            SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+           */
+           
+          Button(action: {
+            Debug.log("Toolbar item selected")
+            showingSettingsView = true
+          }) {
+            Image(systemName: "gear")
           }
         }
       }
+      
+      
+    }
+    .sheet(isPresented: $showingSettingsView) {
+      SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
