@@ -31,6 +31,7 @@ struct PromptView: View {
   
   @State private var appIsActive = true
   @State private var userDidSelectModel = false
+  @State var shouldPostNewlySelectedModelCheckpointToApi = false
   
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -113,7 +114,8 @@ struct PromptView: View {
               }
             }
             .onChange(of: prompt.selectedModel) {
-              if userDidSelectModel {
+              
+              if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
                 scriptManager.modelLoadState = .isLoading
                 if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
                   updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in

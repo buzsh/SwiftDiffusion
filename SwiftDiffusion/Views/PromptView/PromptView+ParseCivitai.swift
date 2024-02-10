@@ -53,7 +53,7 @@ extension PromptView {
     let lowercased = name.lowercased()
     let splitNames = lowercased.components(separatedBy: separators)
     let ignoreList = Constants.Parsing.ignoreModelKeywords
-    let regexPattern = "^v\\d+$"  // ignore v2, v3, v10, etc.
+    let regexPattern = "^v\\d+$|^[0-9]+$"  // ignores "v2", "v3", "v10", etc., and also strings of just numbers like "123"
     let regex = try? NSRegularExpression(pattern: regexPattern)
     
     return splitNames.filter { splitName in
@@ -166,8 +166,9 @@ extension PromptView {
       parseLog("Attempting to match \(parsedModelSubstrings) with \(itemSubstrings): \(isMatch)")
       return isMatch
     }) {
-      prompt.selectedModel = matchingModel
       parseLog("Match found: \(matchingModel.name)")
+      shouldPostNewlySelectedModelCheckpointToApi = true
+      prompt.selectedModel = matchingModel
     } else {
       parseLog("No matching model found for \(parsedModelSubstrings)")
     }

@@ -30,6 +30,9 @@ extension ModelLoadState {
 extension ScriptManager {
   
   func parseAndUpdateModelLoadState(output: String) async {
+    if output.contains("Update successful for model") {
+      await updateModelLoadStateAndTime(to: .done)
+    }
     //Debug.log(output)
     // Check for model loading time
     if let loadedRange = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
@@ -54,9 +57,7 @@ extension ScriptManager {
       await updateModelLoadStateAndTime(to: .failed, time: 0)
     }
     
-    if output.contains("Update successful for model:") {
-      await updateModelLoadStateAndTime(to: .done)
-    }
+    
       
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
