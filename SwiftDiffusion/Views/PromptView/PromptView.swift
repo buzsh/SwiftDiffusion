@@ -30,6 +30,7 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   
   @State private var appIsActive = true
+  @State private var userDidSelectModel = false
   
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -58,39 +59,19 @@ struct PromptView: View {
       
       
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-      HStack {
-        Button("Paste Generation Data") {
-          if let pasteboardContent = getPasteboardString() {
-            parseAndSetPromptData(from: pasteboardContent)
-          }
-        }
-        .buttonStyle(.accessoryBar)
-        .padding(.leading, 10)
-        
-        Spacer()
-        
-        // DEBUG
-        /*
-        Button("assignSdModelCheckpointTitles") {
-          assignSdModelCheckpointTitles {
-            Debug.log("Assignment of SD Model Checkpoint Titles completed.")
-          }
-        }
-        .buttonStyle(.accessoryBar)
-        
-        Button("Set SdModelCheckpoint") {
-          if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
-            updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
-              Debug.log(result)
+        HStack {
+          Button("Paste Generation Data") {
+            if let pasteboardContent = getPasteboardString() {
+              parseAndSetPromptData(from: pasteboardContent)
             }
           }
+          .buttonStyle(.accessoryBar)
+          .padding(.leading, 10)
+          
+          Spacer()
         }
-        .buttonStyle(.accessoryBar)
-        .padding(.leading, 10)
-        */
-      }
-      .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+        .frame(height: 24)
+        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
       }
       
       ScrollView {
@@ -103,6 +84,7 @@ struct PromptView: View {
                 Section(header: Text("􀢇 CoreML")) {
                   ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
                     Button(item.name) {
+                      userDidSelectModel = true
                       prompt.selectedModel = item
                       Debug.log("Selected CoreML Model: \(item.name)")
                     }
@@ -111,6 +93,7 @@ struct PromptView: View {
                 Section(header: Text("􁻴 Python")) {
                   ForEach(modelManager.items.filter { $0.type == .python }) { item in
                     Button(item.name) {
+                      userDidSelectModel = true
                       prompt.selectedModel = item
                       Debug.log("Selected Python Model: \(item.name)")
                     }
@@ -130,11 +113,14 @@ struct PromptView: View {
               }
             }
             .onChange(of: prompt.selectedModel) {
-              scriptManager.modelLoadState = .isLoading
-              if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
-                updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
-                  Debug.log(result)
+              if userDidSelectModel {
+                scriptManager.modelLoadState = .isLoading
+                if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+                  updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+                    Debug.log(result)
+                  }
                 }
+                userDidSelectModel = false
               }
             }
             .onChange(of: scriptManager.scriptState) {
@@ -186,21 +172,21 @@ struct PromptView: View {
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
           
           /*
-          HStack {
-            Spacer()
-            Button("Debug.log all variables") {
-              logAllVariables()
-            }
-            
-            Button("Paste and parse data") {
-              if let pasteboardContent = getPasteboardString() {
-                parseAndSetPromptData(from: pasteboardContent)
-              }
-            }
-            Spacer()
-          }
-          .padding()
-          */
+           HStack {
+           Spacer()
+           Button("Debug.log all variables") {
+           logAllVariables()
+           }
+           
+           Button("Paste and parse data") {
+           if let pasteboardContent = getPasteboardString() {
+           parseAndSetPromptData(from: pasteboardContent)
+           }
+           }
+           Spacer()
+           }
+           .padding()
+           */
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
