@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Constants.Debug {
-  static let enableParseLog = true
+  static let enableParseLog = false
 }
 
 extension Constants.Parsing {
@@ -100,11 +100,11 @@ extension PromptView {
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     
-    Debug.log(lines)
+    parseLog(lines)
     
     prompt.positivePrompt = buildPositivePrompt(from: lines)
     
-    Debug.log("positivePrompt: \(prompt.positivePrompt)")
+    parseLog("positivePrompt: \(prompt.positivePrompt)")
     
     // Set the positive prompt from the first line
     /*

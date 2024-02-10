@@ -31,10 +31,16 @@ struct ModelPreferencesView: View {
     VStack {
       ScrollView {
         VStack(alignment: .leading) {
+          Text("Model Preferences")
+            .font(.system(size: 18)).underline()
+            .padding(.bottom, 4)
+          Text("Set default properties for loading this model.")
+            .padding(.bottom, 4)
           Text(modelItem.name)
             .font(.system(.body, design: .monospaced))
             .truncationMode(.middle)
-            .padding(.top, 8)
+          
+          Divider().padding(.top)
           
           samplingMenu
           
@@ -56,12 +62,13 @@ struct ModelPreferencesView: View {
         }
         .padding(14)
         .padding(.horizontal, 8)
+        .padding(.top, 8)
       }
       
       saveCancelButtons
     }
     .navigationTitle("Model Preferences")
-    .frame(minWidth: 300, idealWidth: 400, minHeight: 250, idealHeight: 430)
+    .frame(minWidth: 300, idealWidth: 400, minHeight: 400, idealHeight: 430)
   }
   
   private var samplingMenu: some View {
@@ -126,7 +133,7 @@ struct ModelPreferencesView: View {
   item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
   return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
-    .frame(width: 400, height: 350)
+    .frame(width: 400, height: 400)
 }
 
 

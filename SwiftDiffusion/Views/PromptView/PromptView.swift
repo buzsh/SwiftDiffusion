@@ -23,7 +23,6 @@ struct PromptView: View {
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
   
-  @State private var showingModelPreferences = false
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   
@@ -61,22 +60,13 @@ struct PromptView: View {
       
       DebugPromptStatusView(scriptManager: scriptManager, userSettings: userSettings)
       
-      // PromptTopStatusBar
-      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-        HStack {
-          Button("Paste Generation Data") {
-            if let pasteboardContent = getPasteboardString() {
-              parseAndSetPromptData(from: pasteboardContent)
-            }
-          }
-          .buttonStyle(.accessoryBar)
-          .padding(.leading, 10)
-          
-          Spacer()
+      PromptTopStatusBar(
+        userSettings: userSettings,
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
         }
-        .frame(height: 24)
-        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
-      }
+      )
       
       ScrollView {
         Form {
@@ -203,6 +193,9 @@ struct PromptView: View {
       }
       
       // PromptBottomStatusBar
+      
+      PromptBottomStatusBar(prompt: prompt)
+      /*
       HStack {
         Spacer()
         Button("Save Model Preferences") {
@@ -223,24 +216,10 @@ struct PromptView: View {
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+       */
       
       // DebugPromptActionView
-      if userSettings.showDebugMenu {
-        HStack {
-          Spacer()
-          VStack(alignment: .leading) {
-            Button("Log Prompt") {
-              logPromptProperties()
-            }
-          }
-          .padding(.horizontal)
-          .font(.system(size: 12, design: .monospaced))
-          .foregroundColor(Color.white)
-          Spacer()
-        }
-        .padding(.vertical, 6).padding(.bottom, 2)
-        .background(Color.black)
-      }
+      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings, prompt: prompt)
       
     }
     .background(Color(NSColor.windowBackgroundColor))

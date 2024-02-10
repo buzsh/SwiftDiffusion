@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct DebugPromptActionView: View {
+  @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
-  var logPromptProperties: () -> Void
+  @ObservedObject var prompt: PromptViewModel
   
   var body: some View {
     if userSettings.showDebugMenu {
@@ -36,7 +37,30 @@ struct DebugPromptActionView: View {
   CommonPreviews.promptView
 }
 
+/*
 #Preview {
-  DebugPromptStatusView(scriptManager: ScriptManager.readyPreview(),
-                        userSettings: UserSettingsModel.preview())
+  DebugPromptActionView(userSettings: UserSettingsModel.preview(),
+                        prompt: PromptViewModel())
+}
+*/
+
+extension DebugPromptActionView {
+  func logPromptProperties() {
+    var debugOutput = ""
+    debugOutput += "selectedModel: \(prompt.selectedModel?.name ?? "nil")\n"
+    debugOutput += "samplingMethod: \(prompt.samplingMethod ?? "nil")\n"
+    debugOutput += "positivePrompt: \(prompt.positivePrompt)\n"
+    debugOutput += "negativePrompt: \(prompt.negativePrompt)\n"
+    debugOutput += "width: \(prompt.width)\n"
+    debugOutput += "height: \(prompt.height)\n"
+    debugOutput += "cfgScale: \(prompt.cfgScale)\n"
+    debugOutput += "samplingSteps: \(prompt.samplingSteps)\n"
+    debugOutput += "seed: \(prompt.seed)\n"
+    debugOutput += "batchCount: \(prompt.batchCount)\n"
+    debugOutput += "batchSize: \(prompt.batchSize)\n"
+    debugOutput += "clipSkip: \(prompt.clipSkip)\n"
+    
+    Debug.log(debugOutput)
+    scriptManager.updateConsoleOutput(with: debugOutput)
+  }
 }
