@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */; };
 		2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3332B7278FD001D14B9 /* SettingsView.swift */; };
 		2916F3372B72859D001D14B9 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3362B72859D001D14B9 /* DetailView.swift */; };
 		2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3382B728604001D14B9 /* FileHierarchy.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateDebugInfo.swift; sourceTree = "<group>"; };
 		2916F3332B7278FD001D14B9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2916F3362B72859D001D14B9 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		2916F3382B728604001D14B9 /* FileHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHierarchy.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				2971965E2B71770B000F7960 /* ScriptSetupHelper.swift */,
 				29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */,
 				29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */,
+				29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */,
 			);
 			path = ScriptManager;
 			sourceTree = "<group>";
@@ -463,6 +466,7 @@
 				29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */,
 				29D362402B7317E1006C57B3 /* DiffusionModel.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
+				29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */,
 				2916F3372B72859D001D14B9 /* DetailView.swift in Sources */,
 				29B5717D2B758D7E0057DD50 /* ModelItem.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
