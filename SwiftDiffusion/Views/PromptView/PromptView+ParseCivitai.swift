@@ -47,13 +47,30 @@ extension PromptView {
     let alphanumeric = lowercased.filter { $0.isLetter || $0.isNumber }
     return alphanumeric
   }
-  /// Splits a model name into substrings based on specified separators and filters out any substrings that are in the ignore list.
+  /// Splits a model name into substrings based on specified separators and filters out any substrings that are in the ignore list or match the pattern "v" followed by any number of digits.
   func splitAndFilterModelName(_ name: String) -> [String] {
     let separators = CharacterSet(charactersIn: Constants.Parsing.separateModelKeywordsForParsingByCharacters)
     let lowercased = name.lowercased()
     let splitNames = lowercased.components(separatedBy: separators)
     let ignoreList = Constants.Parsing.ignoreModelKeywords
-    return splitNames.filter { !ignoreList.contains($0) }
+    let regexPattern = "^v\\d+$|^[0-9]+$"  // ignores "v2", "v3", "v10", etc., and also strings of just numbers like "123"
+    let regex = try? NSRegularExpression(pattern: regexPattern)
+    
+    return splitNames.filter { splitName in
+      if ignoreList.contains(splitName) {
+        return false
+      }
+      
+      // check if splitName matches the "v{numbers}" pattern
+      if let regex = regex {
+        let range = NSRange(location: 0, length: splitName.utf16.count)
+        if regex.firstMatch(in: splitName, options: [], range: range) != nil {
+          return false
+        }
+      }
+      
+      return true
+    }
   }
   /// Asynchronously checks the system pasteboard for generation data and updates a flag accordingly. Intended to be used on the main actor to ensure UI updates are handled correctly.
   @MainActor
@@ -83,10 +100,18 @@ extension PromptView {
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     
+    parseLog(lines)
+    
+    prompt.positivePrompt = buildPositivePrompt(from: lines)
+    
+    parseLog("positivePrompt: \(prompt.positivePrompt)")
+    
     // Set the positive prompt from the first line
+    /*
     if let positivePromptLine = lines.first {
       prompt.positivePrompt = String(positivePromptLine)
     }
+     */
     
     // Loop through each line of the pasteboard content
     for line in lines {
@@ -107,6 +132,19 @@ extension PromptView {
       }
     }
   }
+  
+  func buildPositivePrompt(from lines: [String.SubSequence]) -> String {
+    var positivePrompt = ""
+    for line in lines {
+      if !line.contains("Negative prompt:") {
+        positivePrompt = positivePrompt.appending(line)
+      } else {
+        return positivePrompt
+      }
+    }
+    return positivePrompt
+  }
+  
   /// Parses the "Model hash:" value(s) from a given line of text, extracting and processing each hash found.
   ///
   /// This regex looks for `"Model hash:"` followed by any combination of text until it encounters another key, indicated by "{Word}:" pattern. ie.
@@ -149,8 +187,9 @@ extension PromptView {
       parseLog("Attempting to match \(parsedModelSubstrings) with \(itemSubstrings): \(isMatch)")
       return isMatch
     }) {
-      prompt.selectedModel = matchingModel
       parseLog("Match found: \(matchingModel.name)")
+      shouldPostNewlySelectedModelCheckpointToApi = true
+      prompt.selectedModel = matchingModel
     } else {
       parseLog("No matching model found for \(parsedModelSubstrings)")
     }

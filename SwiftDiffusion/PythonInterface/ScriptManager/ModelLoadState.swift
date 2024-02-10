@@ -30,11 +30,13 @@ extension ModelLoadState {
 extension ScriptManager {
   
   func parseAndUpdateModelLoadState(output: String) async {
-    Debug.log(output)
-    // Adjusted regular expression to allow for extra text after the initial match
+    Debug.log(">> \(output)")
+    if output.contains("Update successful for model") {
+      await updateModelLoadStateAndTime(to: .done)
+    }
+    //Debug.log(output)
+    // Check for model loading time
     if let loadedRange = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
-      // The previous logic to extract the numerical value might also need adjustment
-      // Extract just the numerical value directly using the regex capture group
       let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
       let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
       if let match = regex.firstMatch(in: output, options: [], range: nsRange),
@@ -46,6 +48,7 @@ extension ScriptManager {
       }
     }
     
+    // Check for failure messages
     let failureMessages = [
       "Stable diffusion model failed to load",
       "TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead."
@@ -54,11 +57,21 @@ extension ScriptManager {
     if failureMessages.contains(where: output.contains) {
       await updateModelLoadStateAndTime(to: .failed, time: 0)
     }
+    
+    
+      
+    // Check for update successful message
+    let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
+    let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
+    if let successMatch = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
+      await updateModelLoadStateAndTime(to: .done)
+    }
   }
   
   
+  
   @MainActor
-  private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double) {
+  private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
     self.modelLoadState = state
     self.modelLoadTime = time
     // Assuming Debug.log is a method to log messages
@@ -74,7 +87,7 @@ extension ScriptManager {
   
   func updateModelLoadStateBasedOnOutput(output: String) {
     Task {
-        await parseAndUpdateModelLoadState(output: output)
+      await parseAndUpdateModelLoadState(output: output)
     }
   }
   

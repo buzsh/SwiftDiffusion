@@ -84,3 +84,9 @@ extension ModelPreferences {
     self.seed = promptViewModel.seed
   }
 }
+
+extension ModelItem: Equatable {
+  static func == (lhs: ModelItem, rhs: ModelItem) -> Bool {
+    return lhs.id == rhs.id
+  }
+}

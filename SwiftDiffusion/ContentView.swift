@@ -148,7 +148,7 @@ struct ContentView: View {
               .padding(.trailing, 6)
           }*/
           
-          if scriptManager.modelLoadState == .done {
+          if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
             Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
               .font(.system(size: 11, design: .monospaced))
               .padding(.trailing, 6)
@@ -180,9 +180,16 @@ struct ContentView: View {
           .disabled(
               scriptManager.scriptState != .active ||
               (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              promptViewModel.selectedModel == nil
+          )
+          /*
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
               (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
               promptViewModel.selectedModel == nil
           )
+           */
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)

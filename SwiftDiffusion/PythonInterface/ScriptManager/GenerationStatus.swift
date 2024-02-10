@@ -7,6 +7,14 @@
 
 import Foundation
 
+enum GenerationStatus {
+  case idle
+  case preparingToGenerate
+  case generating
+  case finishingUp
+  case done
+}
+
 extension ScriptManager {
   // Assuming this is your existing init or somewhere you can access ProgressViewModel
   func parseAndUpdateProgress(output: String) {

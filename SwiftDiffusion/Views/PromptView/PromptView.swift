@@ -23,13 +23,15 @@ struct PromptView: View {
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
   
-  @State private var showingModelPreferences = false
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
   
   @State var generationDataInPasteboard: Bool = false
   
   @State private var appIsActive = true
+  @State private var userDidSelectModel = false
+  @State var shouldPostNewlySelectedModelCheckpointToApi = false
+  @State private var previousSelectedModel: ModelItem?
   
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -56,40 +58,15 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
+      DebugPromptStatusView(scriptManager: scriptManager, userSettings: userSettings)
       
-      //if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-      HStack {
-        Button("Paste Generation Data") {
-          if let pasteboardContent = getPasteboardString() {
-            parseAndSetPromptData(from: pasteboardContent)
-          }
+      PromptTopStatusBar(
+        userSettings: userSettings,
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
         }
-        .buttonStyle(.accessoryBar)
-        .padding(.leading, 10)
-        
-        Spacer()
-        
-        
-        Button("assignSdModelCheckpointTitles") {
-          assignSdModelCheckpointTitles {
-            Debug.log("Assignment of SD Model Checkpoint Titles completed.")
-          }
-        }
-        .buttonStyle(.accessoryBar)
-        
-        Button("Set SdModelCheckpoint") {
-          if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
-            updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
-              Debug.log(result)
-            }
-          }
-        }
-        .buttonStyle(.accessoryBar)
-        .padding(.leading, 10)
-      }
-      .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
-      //}
+      )
       
       ScrollView {
         Form {
@@ -101,6 +78,7 @@ struct PromptView: View {
                 Section(header: Text("􀢇 CoreML")) {
                   ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
                     Button(item.name) {
+                      userDidSelectModel = true
                       prompt.selectedModel = item
                       Debug.log("Selected CoreML Model: \(item.name)")
                     }
@@ -109,6 +87,7 @@ struct PromptView: View {
                 Section(header: Text("􁻴 Python")) {
                   ForEach(modelManager.items.filter { $0.type == .python }) { item in
                     Button(item.name) {
+                      userDidSelectModel = true
                       prompt.selectedModel = item
                       Debug.log("Selected Python Model: \(item.name)")
                     }
@@ -118,12 +97,39 @@ struct PromptView: View {
                 Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
+            //.disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
               modelManager.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
                 Task {
                   await modelManager.loadModels()
                 }
+              }
+            }
+            .onChange(of: prompt.selectedModel) { newValue in
+              if let newValue = newValue, newValue != previousSelectedModel {
+                if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
+                  scriptManager.modelLoadState = .isLoading
+                  if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+                    updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+                      Debug.log(result)
+                    }
+                  }
+                  userDidSelectModel = false
+                  shouldPostNewlySelectedModelCheckpointToApi = false
+                  previousSelectedModel = newValue
+                }
+              }
+            }
+            .onChange(of: scriptManager.scriptState) {
+              if scriptManager.scriptState == .active {
+                
+              }
+            }
+            .onChange(of: scriptManager.modelLoadState) {
+              Debug.log("scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
+              Task {
+                await selectModelMatchingSdModelCheckpoint()
               }
             }
             
@@ -162,28 +168,10 @@ struct PromptView: View {
           //SeedRowAndClipSkipHalfRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
-          
-          HStack {
-            Spacer()
-            Button("Debug.log all variables") {
-              logAllVariables()
-            }
-            
-            Button("Paste and parse data") {
-              if let pasteboardContent = getPasteboardString() {
-                parseAndSetPromptData(from: pasteboardContent)
-              }
-            }
-            Spacer()
-          }
-          .padding()
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
         .onAppear {
-          
-          Debug.log("onAppear")
-          
           if let pasteboardContent = getPasteboardString() {
             if userHasGenerationDataInPasteboard(from: pasteboardContent) {
               generationDataInPasteboard = true
@@ -204,6 +192,10 @@ struct PromptView: View {
         
       }
       
+      // PromptBottomStatusBar
+      
+      PromptBottomStatusBar(prompt: prompt)
+      /*
       HStack {
         Spacer()
         Button("Save Model Preferences") {
@@ -224,6 +216,11 @@ struct PromptView: View {
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+       */
+      
+      // DebugPromptActionView
+      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings, prompt: prompt)
+      
     }
     .background(Color(NSColor.windowBackgroundColor))
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
@@ -240,12 +237,6 @@ struct PromptView: View {
   
 }
 
-#Preview("Left Prompt View") {
-  let modelManager = ModelManagerViewModel()
-  
-  let promptModel = PromptViewModel()
-  promptModel.positivePrompt = "sample, positive, prompt"
-  promptModel.negativePrompt = "sample, negative, prompt"
-  
-  return PromptView(prompt: promptModel, modelManager: modelManager, scriptManager: ScriptManager.readyPreview(), userSettings: UserSettingsModel.preview()).frame(width: 400, height: 600)
+#Preview("PromptView") {
+  CommonPreviews.promptView
 }
