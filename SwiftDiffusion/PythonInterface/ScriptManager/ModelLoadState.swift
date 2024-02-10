@@ -30,6 +30,7 @@ extension ModelLoadState {
 extension ScriptManager {
   
   func parseAndUpdateModelLoadState(output: String) async {
+    Debug.log(">> \(output)")
     if output.contains("Update successful for model") {
       await updateModelLoadStateAndTime(to: .done)
     }

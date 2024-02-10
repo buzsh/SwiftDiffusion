@@ -180,9 +180,16 @@ struct ContentView: View {
           .disabled(
               scriptManager.scriptState != .active ||
               (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              promptViewModel.selectedModel == nil
+          )
+          /*
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
               (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
               promptViewModel.selectedModel == nil
           )
+           */
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)

@@ -32,6 +32,7 @@ struct PromptView: View {
   @State private var appIsActive = true
   @State private var userDidSelectModel = false
   @State var shouldPostNewlySelectedModelCheckpointToApi = false
+  @State private var previousSelectedModel: ModelItem?
   
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -104,7 +105,7 @@ struct PromptView: View {
                 Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
-            .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
+            //.disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
               modelManager.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
@@ -113,16 +114,19 @@ struct PromptView: View {
                 }
               }
             }
-            .onChange(of: prompt.selectedModel) {
-              
-              if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
-                scriptManager.modelLoadState = .isLoading
-                if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
-                  updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
-                    Debug.log(result)
+            .onChange(of: prompt.selectedModel) { newValue in
+              if let newValue = newValue, newValue != previousSelectedModel {
+                if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
+                  scriptManager.modelLoadState = .isLoading
+                  if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+                    updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+                      Debug.log(result)
+                    }
                   }
+                  userDidSelectModel = false
+                  shouldPostNewlySelectedModelCheckpointToApi = false
+                  previousSelectedModel = newValue
                 }
-                userDidSelectModel = false
               }
             }
             .onChange(of: scriptManager.scriptState) {
