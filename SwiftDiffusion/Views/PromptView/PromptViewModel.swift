@@ -50,6 +50,27 @@ class PromptViewModel: ObservableObject {
   }
 }
 
+extension PromptView {
+  func logPromptProperties() {
+    var debugOutput = ""
+    debugOutput += "selectedModel: \(prompt.selectedModel?.name ?? "nil")\n"
+    debugOutput += "samplingMethod: \(prompt.samplingMethod ?? "nil")\n"
+    debugOutput += "positivePrompt: \(prompt.positivePrompt)\n"
+    debugOutput += "negativePrompt: \(prompt.negativePrompt)\n"
+    debugOutput += "width: \(prompt.width)\n"
+    debugOutput += "height: \(prompt.height)\n"
+    debugOutput += "cfgScale: \(prompt.cfgScale)\n"
+    debugOutput += "samplingSteps: \(prompt.samplingSteps)\n"
+    debugOutput += "seed: \(prompt.seed)\n"
+    debugOutput += "batchCount: \(prompt.batchCount)\n"
+    debugOutput += "batchSize: \(prompt.batchSize)\n"
+    debugOutput += "clipSkip: \(prompt.clipSkip)\n"
+    
+    Debug.log(debugOutput)
+    scriptManager.updateConsoleOutput(with: debugOutput)
+  }
+}
+
 // CoreML Sampling Methods:
 // ['DPM-Solver++', 'PLMS']
 

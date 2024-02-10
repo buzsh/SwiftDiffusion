@@ -59,7 +59,7 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      // PromptDebugView
+      // DebugPromptStatusView
       if userSettings.showDebugMenu {
         HStack {
           Spacer()
@@ -70,10 +70,11 @@ struct PromptView: View {
           }
           .padding(.horizontal)
           .font(.system(size: 12, design: .monospaced))
+          .foregroundColor(Color.white)
           Spacer()
         }
         .padding(.vertical, 6).padding(.bottom, 2)
-        .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
+        .background(Color.black)
       }
       
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
@@ -192,30 +193,10 @@ struct PromptView: View {
           //SeedRowAndClipSkipHalfRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
-          
-          /*
-           HStack {
-           Spacer()
-           Button("Debug.log all variables") {
-           logAllVariables()
-           }
-           
-           Button("Paste and parse data") {
-           if let pasteboardContent = getPasteboardString() {
-           parseAndSetPromptData(from: pasteboardContent)
-           }
-           }
-           Spacer()
-           }
-           .padding()
-           */
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
         .onAppear {
-          
-          Debug.log("onAppear")
-          
           if let pasteboardContent = getPasteboardString() {
             if userHasGenerationDataInPasteboard(from: pasteboardContent) {
               generationDataInPasteboard = true
@@ -256,6 +237,25 @@ struct PromptView: View {
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
+      
+      // DebugPromptActionView
+      if userSettings.showDebugMenu {
+        HStack {
+          Spacer()
+          VStack(alignment: .leading) {
+            Button("Log Prompt") {
+              logPromptProperties()
+            }
+          }
+          .padding(.horizontal)
+          .font(.system(size: 12, design: .monospaced))
+          .foregroundColor(Color.white)
+          Spacer()
+        }
+        .padding(.vertical, 6).padding(.bottom, 2)
+        .background(Color.black)
+      }
+      
     }
     .background(Color(NSColor.windowBackgroundColor))
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
