@@ -141,12 +141,6 @@ struct ContentView: View {
       
       ToolbarItemGroup(placement: .automatic) {
         HStack {
-          /*
-          if Debug.shared.isActive {
-            Text(scriptManager.modelLoadState.statusTest)
-              .font(.system(.body, design: .monospaced))
-              .padding(.trailing, 6)
-          }*/
           
           if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
             Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
@@ -166,26 +160,11 @@ struct ContentView: View {
               .foregroundStyle(Color.green)
           }
           
-          Button(action: {
+          ToolbarButton(text: "Generate") {
             Task {
               await prepareAndSendAPIRequest()
             }
-          }) {
-            Text("Generate")
           }
-          .disabled(
-              scriptManager.scriptState != .active ||
-              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-              promptViewModel.selectedModel == nil
-          )
-          /*
-          .disabled(
-              scriptManager.scriptState != .active ||
-              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-              (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
-              promptViewModel.selectedModel == nil
-          )
-           */
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
@@ -194,27 +173,15 @@ struct ContentView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
           
-          Button(action: {
-            Debug.log("Testing api")
-            
-            //showingSettingsView = true
-
-          }) {
-            Image(systemName: "arkit")
-          }
-          Button(action: {
-            Debug.log("Toolbar item selected")
+          
+          ToolbarButton(image: "gear") {
             showingSettingsView = true
-          }) {
-            Image(systemName: "gear")
+          }
+          .sheet(isPresented: $showingSettingsView) {
+            SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
           }
         }
       }
-      
-      
-    }
-    .sheet(isPresented: $showingSettingsView) {
-      SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   

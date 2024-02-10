@@ -58,12 +58,19 @@ class ScriptManager: ObservableObject {
     self.scriptState = state
     
     if state == .terminated {
+      handleUiOnTermination()
       Delay.by(Constants.Delays.secondsBetweenTerminatedAndReadyState) {
         self.scriptState = .readyToStart
       }
     }
   }
   
+  func handleUiOnTermination() {
+    genStatus = .idle
+    genProgress = 0
+    modelLoadState = .idle
+    modelLoadTime = 0
+  }
   /// Updates the console output with a new message.
   /// - Parameter message: The message to be added to the console output.
   func updateConsoleOutput(with message: String) {
@@ -131,6 +138,8 @@ class ScriptManager: ObservableObject {
     updateScriptState(.terminated)
     Debug.log("Process terminated immediately.")
   }
+  
+
   
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {

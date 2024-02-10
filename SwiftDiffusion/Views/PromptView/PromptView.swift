@@ -133,10 +133,7 @@ struct PromptView: View {
               }
             }
             
-            // Sampling
             VStack(alignment: .leading) {
-              
-              
               PromptRowHeading(title: "Sampling")
               Menu {
                 let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
