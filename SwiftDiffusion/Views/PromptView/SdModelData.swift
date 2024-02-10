@@ -91,7 +91,7 @@ extension PromptView {
       }
     }
   }
- 
+  
   
   @MainActor
   func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (String) -> Void) {
@@ -140,4 +140,71 @@ extension PromptView {
   }
   
   
+}
+
+
+extension PromptView {
+  @MainActor
+  func selectModelMatchingSdModelCheckpoint() async {
+    guard let apiUrl = scriptManager.serviceUrl else {
+      Debug.log("Service URL is nil.")
+      return
+    }
+    
+    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
+    do {
+      let (data, _) = try await URLSession.shared.data(from: endpoint)
+      let decoder = JSONDecoder()
+      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
+      
+      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
+      
+      // Now iterate over modelManager.items to find a match
+      if let matchingItem = modelManager.items.first(where: { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }) {
+        prompt.selectedModel = matchingItem
+        Debug.log("Selected model: \(matchingItem.name)")
+      } else {
+        Debug.log("No matching model found for sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
+      }
+    } catch {
+      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
+    }
+  }
+  
+  @MainActor
+  func getModelMatchingSdModelCheckpoint() async -> ModelItem? {
+    guard let apiUrl = scriptManager.serviceUrl else {
+      Debug.log("Service URL is nil.")
+      return nil
+    }
+    
+    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
+    do {
+      let (data, _) = try await URLSession.shared.data(from: endpoint)
+      let decoder = JSONDecoder()
+      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
+      
+      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
+      
+      // Find the matching item and return it
+      return modelManager.items.first { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }
+    } catch {
+      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
+      return nil
+    }
+  }
+}
+
+struct OptionsResponse: Decodable {
+  let samplesSave: Bool
+  let samplesFormat: String
+  // Add other properties as needed...
+  let sdModelCheckpoint: String
+  // Use CodingKeys to match JSON keys with Swift property names
+  enum CodingKeys: String, CodingKey {
+    case samplesSave = "samples_save"
+    case samplesFormat = "samples_format"
+    // Map other properties...
+    case sdModelCheckpoint = "sd_model_checkpoint"
+  }
 }

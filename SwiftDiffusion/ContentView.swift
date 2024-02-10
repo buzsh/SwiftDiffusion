@@ -148,7 +148,7 @@ struct ContentView: View {
               .padding(.trailing, 6)
           }*/
           
-          if scriptManager.modelLoadState == .done {
+          if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
             Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
               .font(.system(size: 11, design: .monospaced))
               .padding(.trailing, 6)

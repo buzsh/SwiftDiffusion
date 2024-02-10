@@ -57,7 +57,7 @@ struct PromptView: View {
     VStack(spacing: 0) {
       
       
-      //if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
+      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
       HStack {
         Button("Paste Generation Data") {
           if let pasteboardContent = getPasteboardString() {
@@ -69,7 +69,8 @@ struct PromptView: View {
         
         Spacer()
         
-        
+        // DEBUG
+        /*
         Button("assignSdModelCheckpointTitles") {
           assignSdModelCheckpointTitles {
             Debug.log("Assignment of SD Model Checkpoint Titles completed.")
@@ -86,10 +87,11 @@ struct PromptView: View {
         }
         .buttonStyle(.accessoryBar)
         .padding(.leading, 10)
+        */
       }
       .frame(height: 24)
       .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
-      //}
+      }
       
       ScrollView {
         Form {
@@ -118,12 +120,32 @@ struct PromptView: View {
                 Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
+            .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
               modelManager.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
                 Task {
                   await modelManager.loadModels()
                 }
+              }
+            }
+            .onChange(of: prompt.selectedModel) {
+              scriptManager.modelLoadState = .isLoading
+              if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+                updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+                  Debug.log(result)
+                }
+              }
+            }
+            .onChange(of: scriptManager.scriptState) {
+              if scriptManager.scriptState == .active {
+                
+              }
+            }
+            .onChange(of: scriptManager.modelLoadState) {
+              Debug.log("scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
+              Task {
+                await selectModelMatchingSdModelCheckpoint()
               }
             }
             
@@ -163,6 +185,7 @@ struct PromptView: View {
           
           ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
           
+          /*
           HStack {
             Spacer()
             Button("Debug.log all variables") {
@@ -177,6 +200,7 @@ struct PromptView: View {
             Spacer()
           }
           .padding()
+          */
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
