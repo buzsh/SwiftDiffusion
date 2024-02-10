@@ -18,7 +18,6 @@ extension AppDirectory {
     return baseFolderUrl.appendingPathComponent(self.rawValue)
   }
 }
-
 /// Core app file-folder structure setup and configuration.
 struct AppFileStructure {
   /// Attempts to ensure that the required directory structure for the application exists.
@@ -52,4 +51,3 @@ struct AppFileStructure {
     completion(nil, nil)
   }
 }
-

@@ -167,7 +167,13 @@ struct ContentView: View {
           }) {
             Text("Generate")
           }
-
+          /*
+          .disabled(
+              scriptManager.scriptState != .active ||
+              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              promptViewModel.selectedModel == nil
+          )
+           */
           /*
           .disabled(
               scriptManager.scriptState != .active ||

@@ -39,12 +39,13 @@ struct SettingsView: View {
                           textValue: $scriptPathInput) {
               await FilePickerService.browseForShellFile()
             }
-            
+            /*
             BrowseFileRow(labelText: "image output directory",
-                          placeholderText: "path/to/outputs",
-                          textValue: $fileOutputDir) {
+                          placeholderText: "~/Documents/SwiftDiffusion/",
+                          textValue: $userSettings.userOutputDirectoryPath) {
               await FilePickerService.browseForDirectory()
             }
+             */
             
             BrowseFileRow(labelText: "stable diffusion models",
                           placeholderText: "path/to/stable-diffusion",
