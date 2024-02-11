@@ -9,22 +9,15 @@ import Foundation
 import SwiftUI
 
 class UserSettingsModel: ObservableObject {
-  static let shared = UserSettingsModel()
   
   @AppStorage("alwaysStartPythonEnvironmentAtLaunch") var alwaysStartPythonEnvironmentAtLaunch: Bool = true
   @AppStorage("showDebugMenu") var showDebugMenu: Bool = false
-  
   @AppStorage("disablePasteboardParsingForGenerationData") var disablePasteboardParsingForGenerationData: Bool = false
   @AppStorage("alwaysShowPasteboardGenerationDataButton") var alwaysShowPasteboardGenerationDataButton: Bool = false
-  
   @AppStorage("stableDiffusionModelsPath") var stableDiffusionModelsPath: String = ""
   @AppStorage("userOutputDirectoryPath") var userOutputDirectoryPath: String = ""
-  
   @AppStorage("disableModelLoadingRamOptimizations") var disableModelLoadingRamOptimizations: Bool = false
-  
   @AppStorage("killAllPythonProcessesOnTerminate") var killAllPythonProcessesOnTerminate: Bool = false
-  
-
   
   func restoreDefaults() {
     alwaysStartPythonEnvironmentAtLaunch = true
@@ -56,6 +49,5 @@ class UserSettingsModel: ObservableObject {
     }
     return nil
   }
-  
   
 }
