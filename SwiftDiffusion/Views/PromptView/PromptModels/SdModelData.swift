@@ -94,14 +94,14 @@ extension PromptView {
   
   
   @MainActor
-  func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (String) -> Void) {
+  func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
     let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
     var request = URLRequest(url: endpoint)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
     guard let sdModelCheckpoint = modelItem.sdModelCheckpoint else {
-      completion("ModelItem sdModelCheckpoint is nil.")
+      completion(.failure(.nilCheckpoint))
       return
     }
     
@@ -109,7 +109,7 @@ extension PromptView {
     do {
       request.httpBody = try JSONEncoder().encode(requestBody)
     } catch {
-      completion("Failed to encode request body: \(error.localizedDescription)")
+      completion(.failure(.encodingError(error.localizedDescription)))
       return
     }
     
@@ -118,28 +118,37 @@ extension PromptView {
         let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
-          completion("Invalid response from server.")
+          completion(.failure(.invalidServerResponse))
           return
         }
         
         switch httpResponse.statusCode {
         case 200:
-          completion("Update successful for model: \(sdModelCheckpoint).")
+          scriptManager.modelLoadState = .done
+          completion(.success("Update successful for model: \(sdModelCheckpoint)."))
         case 422:
+          scriptManager.modelLoadState = .failed
           let decoder = JSONDecoder()
           let validationError = try decoder.decode(ValidationErrorResponse.self, from: data)
           let errorMsg = validationError.detail.map { "\($0.msg)" }.joined(separator: ", ")
-          completion("Validation error: \(errorMsg)")
+          completion(.failure(.validationError("Validation error: \(errorMsg)")))
         default:
-          completion("Unexpected server response: \(httpResponse.statusCode)")
+          completion(.failure(.unexpectedStatusCode(httpResponse.statusCode)))
         }
       } catch {
-        completion("Failed to perform request: \(error.localizedDescription)")
+        completion(.failure(.requestFailure(error.localizedDescription)))
       }
     }
   }
-  
-  
+}
+
+enum UpdateModelError: Error {
+  case nilCheckpoint
+  case encodingError(String)
+  case invalidServerResponse
+  case validationError(String)
+  case unexpectedStatusCode(Int)
+  case requestFailure(String)
 }
 
 

@@ -97,12 +97,20 @@ struct PromptView: View {
                 Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
-            //.disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
+            .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
               modelManager.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
                 Task {
                   await modelManager.loadModels()
+                  
+                }
+              }
+            }
+            .onChange(of: scriptManager.scriptState) {
+              if scriptManager.scriptState == .active {
+                Task {
+                  await selectModelMatchingSdModelCheckpoint()
                 }
               }
             }
@@ -123,13 +131,11 @@ struct PromptView: View {
             }
             .onChange(of: scriptManager.modelLoadState) {
               Debug.log("scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
-              /*
               if scriptManager.modelLoadState == .done {
                 Task {
                   await selectModelMatchingSdModelCheckpoint()
                 }
-              }*/
-               
+              }
             }
             
             VStack(alignment: .leading) {
