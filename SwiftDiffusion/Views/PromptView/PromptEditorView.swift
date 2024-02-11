@@ -29,7 +29,7 @@ struct PromptEditorView: View {
       .padding(.horizontal, 8)
       
       TextEditor(text: $text)
-        .frame(minHeight: 80, maxHeight: 80)
+        .frame(minHeight: 50, maxHeight: isFocused ? 170 : 90)
         .font(.system(.body, design: .monospaced))
         .padding(4)
         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -38,6 +38,7 @@ struct PromptEditorView: View {
             .stroke(isFocused ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
         )
         .focused($isFocused)
+        .animation(.easeInOut(duration: 0.15), value: isFocused)
     }
     .padding(.bottom, 10)
   }
