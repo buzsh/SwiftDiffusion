@@ -20,6 +20,8 @@ class UserSettingsModel: ObservableObject {
   @AppStorage("stableDiffusionModelsPath") var stableDiffusionModelsPath: String = ""
   @AppStorage("userOutputDirectoryPath") var userOutputDirectoryPath: String = ""
   
+  @AppStorage("userOutputDirectoryPath") var disableModelLoadingRamOptimizations: Bool = false
+  
 
   
   func restoreDefaults() {

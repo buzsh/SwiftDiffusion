@@ -9,7 +9,11 @@ import Foundation
 
 extension Constants.CommandLine {
   static var defaultCommand: (String, String) -> String = { dir, name in
-      return "cd \(dir); ./\(name) --api --api-log --disable-model-loading-ram-optimization" // --api --api-log --no-half
+    if UserSettingsModel().disableModelLoadingRamOptimizations {
+      Debug.log("disableModelLoadingRamOptimizations: \(UserSettingsModel().disableModelLoadingRamOptimizations)")
+      return "cd \(dir); ./\(name) --api --api-log --disable-model-loading-ram-optimization"
+    }
+    return "cd \(dir); ./\(name) --api --api-log" // --no-half
   }
 }
 
