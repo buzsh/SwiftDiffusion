@@ -30,11 +30,7 @@ extension PromptView {
     if userSettings.disablePasteboardParsingForGenerationData { return }
     // check for pasteboard data
     if let pasteboardContent = getPasteboardString() {
-      if userHasGenerationDataInPasteboard(from: pasteboardContent) {
-        generationDataInPasteboard = true
-      } else {
-        generationDataInPasteboard = false
-      }
+      generationDataInPasteboard = userHasGenerationDataInPasteboard(from: pasteboardContent)
     }
   }
   /// Returns the string currently stored in the system's pasteboard, if available.
