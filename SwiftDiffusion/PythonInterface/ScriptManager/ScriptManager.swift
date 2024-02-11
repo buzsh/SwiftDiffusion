@@ -42,19 +42,9 @@ class ScriptManager: ObservableObject {
   
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
-  var scriptPath: String? {
-    didSet {
-      UserDefaults.standard.set(scriptPath, forKey: Constants.Keys.scriptPath)
-    }
-  }
   /// Initializes a new instance of `ScriptManager`.
   init() {
-    self.scriptPath = UserDefaults.standard.string(forKey: Constants.Keys.scriptPath)
-    if let scriptPath = self.scriptPath {
-      self.configManager = ConfigFileManager(scriptPath: scriptPath)
-    } else {
-      self.configManager = nil
-    }
+    self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)
   }
   
   func updateScriptState(_ state: ScriptState) {
@@ -99,7 +89,7 @@ class ScriptManager: ObservableObject {
     modelLoadState = .launching
     
     newRunScriptState()
-    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) else { return }
+    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath) else { return }
     
     disableLaunchBrowserInConfigJson()
     

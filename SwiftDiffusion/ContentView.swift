@@ -37,7 +37,6 @@ struct ContentView: View {
   @State private var showingSettingsView = false
   // Console
   @ObservedObject var scriptManager: ScriptManager
-  @Binding var scriptPathInput: String
   // Views
   @State private var selectedView: ViewManager = .prompt
   // Detail
@@ -76,11 +75,11 @@ struct ContentView: View {
       case .prompt:
         PromptView(scriptManager: scriptManager)
       case .console:
-        ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
+        ConsoleView(scriptManager: scriptManager)
       case .models:
         ModelManagerView(scriptManager: scriptManager)
       case .settings:
-        SettingsView(scriptPathInput: $scriptPathInput)
+        SettingsView()
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -88,8 +87,6 @@ struct ContentView: View {
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
-      scriptPathInput = scriptManager.scriptPath ?? ""
-      
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }
@@ -126,7 +123,6 @@ struct ContentView: View {
         HStack {
           Button(action: {
             if scriptManager.scriptState == .readyToStart {
-              scriptManager.scriptPath = scriptPathInput
               scriptManager.run()
             } else {
               scriptManager.terminate()
@@ -213,7 +209,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(scriptPathInput: $scriptPathInput)
+      SettingsView()
     }
   }
   
@@ -245,7 +241,7 @@ extension ModelLoadState {
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
   let modelManagerViewModel = ModelManagerViewModel()
-  return ContentView(scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"))
+  return ContentView(scriptManager: scriptManagerPreview)
     .environmentObject(promptModelPreview)
     .environmentObject(modelManagerViewModel)
     .frame(height: 700)

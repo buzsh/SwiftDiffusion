@@ -11,7 +11,6 @@ struct SettingsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
-  @Binding var scriptPathInput: String
   @Environment(\.presentationMode) var presentationMode
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
@@ -36,7 +35,7 @@ struct SettingsView: View {
             
             BrowseFileRow(labelText: "webui.sh file",
                           placeholderText: "../stable-diffusion-webui/webui.sh",
-                          textValue: $scriptPathInput) {
+                          textValue: $userSettings.webuiShellPath) {
               await FilePickerService.browseForShellFile()
             }
             
@@ -111,8 +110,8 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(scriptPathInput: .constant(""))
-    .frame(width: 500, height: 400)
+  SettingsView()
+    .frame(width: 500, height: 700)
 }
 
 struct ToggleWithHeader: View {

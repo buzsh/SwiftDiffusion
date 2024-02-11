@@ -12,6 +12,10 @@ class UserSettings: ObservableObject {
   static let shared = UserSettings()
   let store = UserDefaults.standard
   
+  @Published var webuiShellPath: String {
+    didSet { store.set(webuiShellPath, forKey: "webuiShellPath") }
+  }
+  
   @Published var stableDiffusionModelsPath: String {
     didSet { store.set(stableDiffusionModelsPath, forKey: "stableDiffusionModelsPath") }
   }
@@ -45,15 +49,34 @@ class UserSettings: ObservableObject {
   }
   
   private init() {
+    let defaults: [String: Any] = [ // default settings
+      "alwaysStartPythonEnvironmentAtLaunch": true
+    ]
+    store.register(defaults: defaults)
+    
+    self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""
     self.killAllPythonProcessesOnTerminate = store.bool(forKey: "killAllPythonProcessesOnTerminate")
-    self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch") // default value should be true
+    self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch")
     self.showDebugMenu = store.bool(forKey: "showDebugMenu")
     self.disablePasteboardParsingForGenerationData = store.bool(forKey: "disablePasteboardParsingForGenerationData")
     self.alwaysShowPasteboardGenerationDataButton = store.bool(forKey: "alwaysShowPasteboardGenerationDataButton")
     self.disableModelLoadingRamOptimizations = store.bool(forKey: "disableModelLoadingRamOptimizations")
   }
+  
+  func restoreDefaults() {
+    outputDirectoryPath = ""
+    killAllPythonProcessesOnTerminate = false
+    alwaysStartPythonEnvironmentAtLaunch = true
+    showDebugMenu = false
+    disablePasteboardParsingForGenerationData = false
+    alwaysShowPasteboardGenerationDataButton = false
+    disableModelLoadingRamOptimizations = false
+  }
+  
+  
+  // MARK: URLs from Paths
   
   var stableDiffusionModelsDirectoryUrl: URL? {
     guard !stableDiffusionModelsPath.isEmpty else { return nil }
@@ -66,7 +89,6 @@ class UserSettings: ObservableObject {
     }
   }
   
-  //let swiftDiffusionDocumentsUrl: URL =
   var outputDirectoryUrl: URL? {
     let fileManager = FileManager.default
     var directoryUrl: URL?
@@ -77,65 +99,18 @@ class UserSettings: ObservableObject {
       directoryUrl = documentsDirectoryUrl.appendingPathComponent("SwiftDiffusion")
     }
     
-    Debug.log("DIRECTORY URL: \(String(describing: directoryUrl))")
-    
-    // Ensure the directory exists
     if let url = directoryUrl {
       do {
         try FileUtility.ensureDirectoryExists(at: url)
-        return url // Return the URL only if the directory exists or was successfully created
+        return url
       } catch {
-        print("Failed to ensure directory exists: \(error.localizedDescription)")
+        Debug.log("Failed to ensure directory exists: \(error.localizedDescription)")
         return nil
       }
     }
     
-    return nil // Return nil if we failed to obtain or create the directory
-  }
-  
-  /*
-  var outputDirectoryUrl: URL? {
-    if !outputDirectoryPath.isEmpty {
-      let pathUrl = URL(fileURLWithPath: outputDirectoryPath)
-      var isDir: ObjCBool = false
-      if FileManager.default.fileExists(atPath: outputDirectoryPath, isDirectory: &isDir), isDir.boolValue {
-        return pathUrl
-      }
-    }
     return nil
-  }*/
-  
-  func restoreDefaults() {
-    alwaysStartPythonEnvironmentAtLaunch = true
-    showDebugMenu = false
-    disablePasteboardParsingForGenerationData = false
-    alwaysShowPasteboardGenerationDataButton = false
-    //stableDiffusionModelsPath = ""
-  }
-}
-
-/*
-import Foundation
-import SwiftUI
-
-class UserSettingsModel: ObservableObject {
-  
-  @AppStorage("alwaysStartPythonEnvironmentAtLaunch") var alwaysStartPythonEnvironmentAtLaunch: Bool = true
-  @AppStorage("showDebugMenu") var showDebugMenu: Bool = false
-  @AppStorage("disablePasteboardParsingForGenerationData") var disablePasteboardParsingForGenerationData: Bool = false
-  @AppStorage("alwaysShowPasteboardGenerationDataButton") var alwaysShowPasteboardGenerationDataButton: Bool = false
-  //@AppStorage("stableDiffusionModelsPath") var stableDiffusionModelsPath: String = ""
-  //@AppStorage("userOutputDirectoryPath") var userOutputDirectoryPath: String = ""
-  @AppStorage("disableModelLoadingRamOptimizations") var disableModelLoadingRamOptimizations: Bool = false
-  //@AppStorage("killAllPythonProcessesOnTerminate") var killAllPythonProcessesOnTerminate: Bool = false
-  
-  func restoreDefaults() {
-    alwaysStartPythonEnvironmentAtLaunch = true
-    showDebugMenu = false
-    disablePasteboardParsingForGenerationData = false
-    alwaysShowPasteboardGenerationDataButton = false
-    //stableDiffusionModelsPath = ""
   }
   
+  
 }
-*/
