@@ -122,13 +122,19 @@ class ScriptManager: ObservableObject {
   ///   }
   /// }
   func terminate(completion: @escaping (ScriptResult) -> Void = { _ in }) {
-      updateScriptState(.isTerminating)
-      pythonProcess?.terminate()
-
-      // Handle post-termination logic
-      restoreLaunchBrowserInConfigJson()
-      completion(.success("Process terminated successfully."))
-      updateScriptState(.terminated)
+    updateScriptState(.isTerminating)
+    pythonProcess?.terminate()
+    
+    // TODO: UserSettingsModel
+    
+    //if userSettings.killAllPythonProcessesOnTerminate {
+    //  terminateAllPythonProcesses
+    //}
+    
+    // Handle post-termination logic
+    restoreLaunchBrowserInConfigJson()
+    completion(.success("Process terminated successfully."))
+    updateScriptState(.terminated)
   }
   
   /// Terminates the script execution immediately.

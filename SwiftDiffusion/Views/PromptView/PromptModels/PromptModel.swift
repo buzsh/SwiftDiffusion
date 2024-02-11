@@ -1,5 +1,5 @@
 //
-//  PromptViewModel.swift
+//  PromptModel.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/5/24.
@@ -8,7 +8,7 @@
 import Combine
 
 @MainActor
-class PromptViewModel: ObservableObject {
+class PromptModel: ObservableObject {
   @Published var selectedModel: ModelItem?
   /*
   @Published var selectedModel: ModelItem? {

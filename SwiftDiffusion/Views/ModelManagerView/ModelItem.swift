@@ -70,18 +70,18 @@ class ModelPreferences: ObservableObject {
 }
 
 extension ModelPreferences {
-  convenience init(from promptViewModel: PromptViewModel) {
-    self.init(samplingMethod: promptViewModel.samplingMethod ?? "DPM++ 2M Karras")
-    self.positivePrompt = promptViewModel.positivePrompt
-    self.negativePrompt = promptViewModel.negativePrompt
-    self.width = promptViewModel.width
-    self.height = promptViewModel.height
-    self.cfgScale = promptViewModel.cfgScale
-    self.samplingSteps = promptViewModel.samplingSteps
-    self.clipSkip = promptViewModel.clipSkip
-    self.batchCount = promptViewModel.batchCount
-    self.batchSize = promptViewModel.batchSize
-    self.seed = promptViewModel.seed
+  convenience init(from promptModel: PromptModel) {
+    self.init(samplingMethod: promptModel.samplingMethod ?? "DPM++ 2M Karras")
+    self.positivePrompt = promptModel.positivePrompt
+    self.negativePrompt = promptModel.negativePrompt
+    self.width = promptModel.width
+    self.height = promptModel.height
+    self.cfgScale = promptModel.cfgScale
+    self.samplingSteps = promptModel.samplingSteps
+    self.clipSkip = promptModel.clipSkip
+    self.batchCount = promptModel.batchCount
+    self.batchSize = promptModel.batchSize
+    self.seed = promptModel.seed
   }
 }
 

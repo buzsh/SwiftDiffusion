@@ -81,6 +81,8 @@ struct SettingsView: View {
             
             ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: showAllDescriptions)
             
+            ToggleWithHeader(isToggled: $userSettings.killAllPythonProcessesOnTerminate, header: "Kill all Python processes on terminate", description: "Will terminate all Python processes on terminate. Useful for Xcode development force stopping.", showAllDescriptions: showAllDescriptions)
+            //killAllPythonProcessesOnTerminate
           }
           
           
@@ -111,13 +113,6 @@ struct SettingsView: View {
 #Preview {
   SettingsView(userSettings: UserSettingsModel.preview(), modelManagerViewModel: ModelManagerViewModel(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
     .frame(width: 500, height: 400)
-}
-
-extension UserSettingsModel {
-  static func preview() -> UserSettingsModel {
-    let previewManager = UserSettingsModel()
-    return previewManager
-  }
 }
 
 struct ToggleWithHeader: View {

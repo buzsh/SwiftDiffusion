@@ -18,7 +18,8 @@ extension Constants.Layout {
 }
 
 struct PromptView: View {
-  @ObservedObject var prompt: PromptViewModel
+  @EnvironmentObject var currentPrompt: PromptModel
+  
   @ObservedObject var modelManager: ModelManagerViewModel
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
@@ -79,7 +80,7 @@ struct PromptView: View {
                   ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
                     Button(item.name) {
                       userDidSelectModel = true
-                      prompt.selectedModel = item
+                      currentPrompt.selectedModel = item
                       Debug.log("Selected CoreML Model: \(item.name)")
                     }
                   }
@@ -88,13 +89,13 @@ struct PromptView: View {
                   ForEach(modelManager.items.filter { $0.type == .python }) { item in
                     Button(item.name) {
                       userDidSelectModel = true
-                      prompt.selectedModel = item
+                      currentPrompt.selectedModel = item
                       Debug.log("Selected Python Model: \(item.name)")
                     }
                   }
                 }
               } label: {
-                Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+                Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
@@ -114,11 +115,11 @@ struct PromptView: View {
                 }
               }
             }
-            .onChange(of: prompt.selectedModel) { newValue in
+            .onChange(of: currentPrompt.selectedModel) { newValue in
               if let newValue = newValue, newValue != previousSelectedModel {
                 if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
                   scriptManager.modelLoadState = .isLoading
-                  if let modelItem = prompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+                  if let modelItem = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
                     updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
                       Debug.log(result)
                     }
@@ -137,39 +138,38 @@ struct PromptView: View {
                 }
               }
             }
-            
             VStack(alignment: .leading) {
               PromptRowHeading(title: "Sampling")
               Menu {
-                let samplingMethods = prompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+                let samplingMethods = currentPrompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
                 ForEach(samplingMethods, id: \.self) { method in
                   Button(method) {
-                    prompt.samplingMethod = method
+                    currentPrompt.samplingMethod = method
                     Debug.log("Selected Sampling Method: \(method)")
                   }
                 }
               } label: {
-                Label(prompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
+                Label(currentPrompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
               }
             }
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
           
-          PromptEditorView(label: "Positive Prompt", text: $prompt.positivePrompt)
-          PromptEditorView(label: "Negative Prompt", text: $prompt.negativePrompt)
+          PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+          PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
             .padding(.bottom, 6)
           
-          DimensionSelectionRow(width: $prompt.width, height: $prompt.height)
+          DimensionSelectionRow(width: $currentPrompt.width, height: $currentPrompt.height)
           
-          DetailSelectionRow(cfgScale: $prompt.cfgScale, samplingSteps: $prompt.samplingSteps)
+          DetailSelectionRow(cfgScale: $currentPrompt.cfgScale, samplingSteps: $currentPrompt.samplingSteps)
           
-          HalfSkipClipRow(clipSkip: $prompt.clipSkip)
+          HalfSkipClipRow(clipSkip: $currentPrompt.clipSkip)
           
-          SeedRow(seed: $prompt.seed, controlButtonLayout: .beside)
-          //SeedAndClipSkipRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
-          //SeedRowAndClipSkipHalfRow(seed: $prompt.seed, clipSkip: $prompt.clipSkip)
+          SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
+          //SeedAndClipSkipRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
+          //SeedRowAndClipSkipHalfRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
           
-          ExportSelectionRow(batchCount: $prompt.batchCount, batchSize: $prompt.batchSize)
+          ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
         }
         .padding(.leading, 8)
         .padding(.trailing, 16)
@@ -193,10 +193,8 @@ struct PromptView: View {
         }
       }
       
-      //PromptBottomStatusBar(prompt: prompt)
-      
-      // DebugPromptActionView
-      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings, prompt: prompt)
+      //PromptBottomStatusBar()
+      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings)
       
     }
     .background(Color(NSColor.windowBackgroundColor))
@@ -214,6 +212,6 @@ struct PromptView: View {
   
 }
 
-#Preview("PromptView") {
+#Preview {
   CommonPreviews.promptView
 }
