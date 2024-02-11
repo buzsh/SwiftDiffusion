@@ -158,8 +158,11 @@ struct ContentView: View {
               .padding(.trailing, 6)
           }
           
-          if scriptManager.genStatus == .generating || scriptManager.genStatus == .finishingUp {
+          if scriptManager.genStatus == .generating {
             Text("\(Int(scriptManager.genProgress * 100))%")
+              .font(.system(.body, design: .monospaced))
+          } else if scriptManager.genStatus == .finishingUp {
+            Text("Finishing up... \(Int(scriptManager.genProgress * 100))%")
               .font(.system(.body, design: .monospaced))
           } else if scriptManager.genStatus == .preparingToGenerate {
             ProgressView()
