@@ -35,22 +35,6 @@ struct CommonPreviews {
     .environmentObject(modelManagerViewModel)
     .frame(width: 400, height: 600)
   }
-  
-  
-  
-  
-  /*
-   #Preview {
-     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
-     let promptModelPreview = PromptModel()
-     promptModelPreview.positivePrompt = "sample, positive, prompt"
-     promptModelPreview.negativePrompt = "sample, negative, prompt"
-     let modelManager = ModelManagerViewModel()
-     return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"), userSettingsModel: UserSettingsModel.preview())
-       .environmentObject(promptModelPreview)
-       .frame(height: 700)
-   }
-   */
 }
 
 #Preview {

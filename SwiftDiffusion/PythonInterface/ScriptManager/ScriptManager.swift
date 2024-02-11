@@ -13,10 +13,6 @@ enum ScriptResult {
   case failure(Error)
 }
 
-extension Constants.Keys {
-  static let scriptPath = "scriptPath"
-}
-
 extension Constants.Delays {
   static let secondsBetweenTerminatedAndReadyState: Double = 2
 }
