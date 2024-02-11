@@ -52,7 +52,6 @@ func setupAppFileStructure() {
       Debug.log("Error: \(error)")
     } else {
       Debug.log("Successfully initialized application documents structure.")
-      Debug.log("\(AppDocuments.txt2img): \(AppDocuments.txt2img.url)")
     }
   }
 }
