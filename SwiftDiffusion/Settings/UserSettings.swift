@@ -1,5 +1,5 @@
 //
-//  UserSettingsModel.swift
+//  UserSettings.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/9/24.
