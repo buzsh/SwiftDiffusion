@@ -9,25 +9,25 @@ import SwiftUI
 
 struct PromptBottomStatusBar: View {
   @State private var showingModelPreferences = false
-  @EnvironmentObject var promptModel: PromptModel
+  @EnvironmentObject var currentPrompt: PromptModel
   
   
   var body: some View {
     HStack {
       Spacer()
       Button("Save Model Preferences") {
-        if let selectedModel = promptModel.selectedModel {
-          let updatedPreferences = ModelPreferences(from: promptModel)
+        if let selectedModel = currentPrompt.selectedModel {
+          let updatedPreferences = ModelPreferences(from: currentPrompt)
           selectedModel.preferences = updatedPreferences
           showingModelPreferences = true
         } else {
           Debug.log("[Toast] Error: Please select a model first")
         }
       }
-      .disabled(promptModel.selectedModel == nil)
+      .disabled(currentPrompt.selectedModel == nil)
       .buttonStyle(.accessoryBar)
       .sheet(isPresented: $showingModelPreferences) {
-        if let selectedModel = promptModel.selectedModel {
+        if let selectedModel = currentPrompt.selectedModel {
           ModelPreferencesView(modelItem: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
         }
       }

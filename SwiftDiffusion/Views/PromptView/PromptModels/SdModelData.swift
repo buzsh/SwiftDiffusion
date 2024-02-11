@@ -171,7 +171,7 @@ extension PromptView {
       // Now iterate over modelManager.items to find a match
       if let matchingItem = modelManager.items.first(where: { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }) {
         // SET MODEL TO MATCHED MODEL
-        prompt.selectedModel = matchingItem
+        currentPrompt.selectedModel = matchingItem
         Debug.log("Selected model: \(matchingItem.name)")
       } else {
         Debug.log("No matching model found for sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")

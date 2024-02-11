@@ -8,15 +8,15 @@
 import SwiftUI
 import CompactSlider
 
-#Preview("Prompt Rows") {
+#Preview {
   let modelManager = ModelManagerViewModel()
   
-  let promptModel = PromptModel()
-  promptModel.positivePrompt = "sample, positive, prompt"
-  promptModel.negativePrompt = "sample, negative, prompt"
+  let promptModelPreview = PromptModel()
+  promptModelPreview.positivePrompt = "sample, positive, prompt"
+  promptModelPreview.negativePrompt = "sample, negative, prompt"
   
   return PromptView(modelManager: modelManager, scriptManager: ScriptManager.preview(withState: .readyToStart), userSettings: UserSettingsModel.preview())
-    .environmentObject(promptModel)
+    .environmentObject(promptModelPreview)
     .frame(width: 400, height: 600)
 }
 

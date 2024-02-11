@@ -49,7 +49,7 @@ struct PromptEditorView: View {
   }
 }
 
-#Preview("Prompt Editor View") {
+#Preview {
   @State var promptText: String = "some, positive, prompt, text"
   return PromptEditorView(label: "Positive Prompt", text: $promptText)
     .frame(width: 400, height: 600)

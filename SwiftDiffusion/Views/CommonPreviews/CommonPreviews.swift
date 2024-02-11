@@ -11,13 +11,13 @@ struct CommonPreviews {
   
   @MainActor
   static var previewEnvironment: some View {
-    let promptModel = PromptModel()
+    let promptModelPreview = PromptModel()
     let modelManager = ModelManagerViewModel()
     let scriptManager = ScriptManager.preview(withState: .readyToStart)
     let userSettings = UserSettingsModel.preview()
     
     return AnyView(EmptyView())
-      .environmentObject(promptModel)
+      .environmentObject(promptModelPreview)
       .environmentObject(modelManager)
       .environmentObject(scriptManager)
       .environmentObject(userSettings)
@@ -26,16 +26,16 @@ struct CommonPreviews {
   @MainActor
   static var promptView: some View {
     let modelManager = ModelManagerViewModel()
-    let promptModel = PromptModel()
-    promptModel.positivePrompt = "sample, positive, prompt"
-    promptModel.negativePrompt = "sample, negative, prompt"
+    let promptModelPreview = PromptModel()
+    promptModelPreview.positivePrompt = "sample, positive, prompt"
+    promptModelPreview.negativePrompt = "sample, negative, prompt"
     
     return PromptView(
       modelManager: modelManager,
       scriptManager: ScriptManager.preview(withState: .readyToStart),
       userSettings: UserSettingsModel.preview()
     )
-    .environmentObject(promptModel)
+    .environmentObject(promptModelPreview)
     .frame(width: 400, height: 600)
   }
   

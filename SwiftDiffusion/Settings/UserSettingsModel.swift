@@ -20,7 +20,9 @@ class UserSettingsModel: ObservableObject {
   @AppStorage("stableDiffusionModelsPath") var stableDiffusionModelsPath: String = ""
   @AppStorage("userOutputDirectoryPath") var userOutputDirectoryPath: String = ""
   
-  @AppStorage("userOutputDirectoryPath") var disableModelLoadingRamOptimizations: Bool = false
+  @AppStorage("disableModelLoadingRamOptimizations") var disableModelLoadingRamOptimizations: Bool = false
+  
+  @AppStorage("killAllPythonProcessesOnTerminate") var killAllPythonProcessesOnTerminate: Bool = false
   
 
   
