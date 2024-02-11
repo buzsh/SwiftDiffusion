@@ -202,7 +202,7 @@ struct ContentView: View {
           .pickerStyle(SegmentedPickerStyle())
           
           if shouldBotherForRequiredInputPaths && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
-            PulsatingButtonView(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
+            RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
           }
           
           Button(action: {

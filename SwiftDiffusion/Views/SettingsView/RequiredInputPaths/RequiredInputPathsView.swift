@@ -7,45 +7,6 @@
 
 import SwiftUI
 
-struct PulsatingButtonView: View {
-  @Binding var showingRequiredInputPathsView: Bool
-  @Binding var hasDismissedRequiredInputPathsView: Bool
-  @State private var isPulsating = false
-  @State private var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-  
-  var body: some View {
-    Button(action: {
-      showingRequiredInputPathsView = true
-      hasDismissedRequiredInputPathsView = false // Reset the dismissal tracking
-    }) {
-      Image(systemName: "exclamationmark.triangle")
-        .scaleEffect(isPulsating ? 1.1 : 1.0)
-        .foregroundColor(isPulsating ? .orange : .primary)
-    }
-    .onAppear {
-      triggerPulsation()
-    }
-    .onReceive(timer) { _ in
-      triggerPulsation()
-    }
-  }
-  
-  private func triggerPulsation() {
-    // Reset to original state before starting animation
-    self.isPulsating = false
-    // Start pulsation with a delay to allow for reset to take effect
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-      withAnimation(Animation.easeInOut(duration: 1)) {
-        self.isPulsating = true
-      }
-      // Reset the state after the animation completes
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-        self.isPulsating = false
-      }
-    }
-  }
-}
-
 struct RequiredInputPathsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
