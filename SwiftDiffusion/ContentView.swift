@@ -38,7 +38,6 @@ struct ContentView: View {
   // Console
   @ObservedObject var scriptManager: ScriptManager
   @Binding var scriptPathInput: String
-  @Binding var fileOutputDir: String
   // Views
   @State private var selectedView: ViewManager = .prompt
   // Detail
@@ -81,7 +80,7 @@ struct ContentView: View {
       case .models:
         ModelManagerView(scriptManager: scriptManager)
       case .settings:
-        SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(scriptPathInput: $scriptPathInput)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -90,7 +89,20 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
-      fileHierarchy.rootPath = fileOutputDir
+      
+      Debug.log("[onAppear] userSettings.outputDirectoryUrl: \(String(describing: userSettings.outputDirectoryUrl))")
+      
+      
+      if let directoryUrl = userSettings.outputDirectoryUrl {
+        let directoryPath = directoryUrl.path
+        Debug.log("[onAppear] userSettings.outputDirectoryUrl.path: \(directoryPath)")
+        fileHierarchy.rootPath = userSettings.outputDirectoryPath
+      } else {
+        fileHierarchy.rootPath = userSettings.outputDirectoryPath
+      }
+      
+      Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
+      
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
@@ -100,8 +112,8 @@ struct ContentView: View {
       }
       handleScriptOnLaunch()
     }
-    .onChange(of: fileOutputDir) {
-      fileHierarchy.rootPath = fileOutputDir
+    .onChange(of: userSettings.outputDirectoryPath) {
+      fileHierarchy.rootPath = userSettings.outputDirectoryPath
       Task {
         await fileHierarchy.refresh()
       }
@@ -206,7 +218,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(scriptPathInput: $scriptPathInput)
     }
   }
   
@@ -238,7 +250,7 @@ extension ModelLoadState {
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
   let modelManagerViewModel = ModelManagerViewModel()
-  return ContentView(scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+  return ContentView(scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"))
     .environmentObject(promptModelPreview)
     .environmentObject(modelManagerViewModel)
     .frame(height: 700)

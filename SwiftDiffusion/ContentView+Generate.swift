@@ -23,8 +23,6 @@ extension ContentView {
     scriptManager.genStatus = .preparingToGenerate
     scriptManager.genProgress = -1
     
-    guard let sdModelCheckpoint = currentPrompt.selectedModel?.sdModelCheckpoint else { return }
-    
     let overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
     ]
@@ -104,47 +102,28 @@ extension ContentView {
     dateFormatter.dateFormat = "yyyy-MM-dd"
     let dateFolderName = dateFormatter.string(from: Date())
     
-    let fileManager = FileManager.default
-    
-    var directoryURL: URL? = nil
-    // Attempt to use userSettings.outputDirectoryUrl if it's valid
-    if let outputDir = userSettings.outputDirectoryUrl {
-      let potentialDirectoryURL = outputDir.appendingPathComponent("txt2img/\(dateFolderName)")
-      do {
-        try FileUtility.ensureDirectoryExists(at: potentialDirectoryURL)
-        directoryURL = potentialDirectoryURL
-      } catch {
-        Debug.log("Could not ensure directory exists at outputDirectoryUrl: \(error.localizedDescription)")
-        // Fallback will be handled outside this block
-      }
-    }
-    
-    // Fallback to using the documents directory if directoryURL is still nil
-    if directoryURL == nil {
-      directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
-      if let directoryURL = directoryURL {
-        do {
-          try FileUtility.ensureDirectoryExists(at: directoryURL)
-        } catch {
-          Debug.log("Could not ensure directory exists in documents directory: \(error.localizedDescription)")
-          return
-        }
-      } else {
-        Debug.log("Failed to construct fallback directoryURL")
-        return
-      }
-    }
-    
-    guard let directoryURL = directoryURL else {
-      Debug.log("directoryURL is nil after attempting to set it.")
+    guard let baseDirectoryURL = UserSettings.shared.outputDirectoryUrl else {
+      Debug.log("Unable to get base directory URL from UserSettings.")
       return
     }
     
-    Debug.log("saveImages.directoryURL: \(directoryURL)")
+    // Append the "txt2img/\(dateFolderName)" to the base directory URL
+    let finalDirectoryURL = baseDirectoryURL.appendingPathComponent("txt2img/\(dateFolderName)")
     
+    // Ensure this final directory exists
+    do {
+      try FileUtility.ensureDirectoryExists(at: finalDirectoryURL)
+    } catch {
+      Debug.log("Could not ensure directory exists: \(error.localizedDescription)")
+      return
+    }
+    
+    Debug.log("saveImages.directoryURL: \(finalDirectoryURL)")
+    
+    let fileManager = FileManager.default
     var nextImageNumber = 1
     do {
-      let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+      let fileURLs = try fileManager.contentsOfDirectory(at: finalDirectoryURL, includingPropertiesForKeys: nil)
       let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
       let cleanGridName = imageFiles.map { $0.deletingPathExtension().lastPathComponent.replacingOccurrences(of: "-grid", with: "") }
       let imageNumbers = cleanGridName.compactMap { Int($0) }
@@ -165,7 +144,7 @@ extension ContentView {
       
       imagesForComposite.append(nsImage)
       
-      let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
+      let filePath = finalDirectoryURL.appendingPathComponent("\(nextImageNumber).png")
       do {
         try imageData.write(to: filePath)
         Debug.log("Image saved to \(filePath)")
@@ -179,7 +158,7 @@ extension ContentView {
     if imagesForComposite.count > 1 {
       if let compositeImage = await createCompositeImage(from: imagesForComposite, withCompressionFactor: Constants.Api.compositeImageCompressionFactor) {
         let compositeImageName = "\(nextImageNumber)-grid.png"
-        let compositeImagePath = directoryURL.appendingPathComponent(compositeImageName)
+        let compositeImagePath = finalDirectoryURL.appendingPathComponent(compositeImageName)
         guard let tiffData = compositeImage.tiffRepresentation,
               let bitmapImage = NSBitmapImageRep(data: tiffData),
               let pngData = bitmapImage.representation(using: .png, properties: [:]) else {
@@ -201,7 +180,7 @@ extension ContentView {
       }
     } else if let singleImage = imagesForComposite.first {
       // if only one image, set selectedImage and lastSelectedImagePath to that image
-      let singleImagePath = directoryURL.appendingPathComponent("\(nextImageNumber - 1).png")
+      let singleImagePath = finalDirectoryURL.appendingPathComponent("\(nextImageNumber - 1).png")
       await MainActor.run {
         self.selectedImage = singleImage
         self.lastSelectedImagePath = singleImagePath.path

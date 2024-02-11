@@ -12,8 +12,6 @@ class UserSettings: ObservableObject {
   static let shared = UserSettings()
   let store = UserDefaults.standard
   
-  //@AppStorage("disableModelLoadingRamOptimizations") var disableModelLoadingRamOptimizations: Bool = false
-  
   @Published var stableDiffusionModelsPath: String {
     didSet { store.set(stableDiffusionModelsPath, forKey: "stableDiffusionModelsPath") }
   }
@@ -68,6 +66,34 @@ class UserSettings: ObservableObject {
     }
   }
   
+  //let swiftDiffusionDocumentsUrl: URL =
+  var outputDirectoryUrl: URL? {
+    let fileManager = FileManager.default
+    var directoryUrl: URL?
+    
+    if !outputDirectoryPath.isEmpty {
+      directoryUrl = URL(fileURLWithPath: outputDirectoryPath)
+    } else if let documentsDirectoryUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+      directoryUrl = documentsDirectoryUrl.appendingPathComponent("SwiftDiffusion")
+    }
+    
+    Debug.log("DIRECTORY URL: \(String(describing: directoryUrl))")
+    
+    // Ensure the directory exists
+    if let url = directoryUrl {
+      do {
+        try FileUtility.ensureDirectoryExists(at: url)
+        return url // Return the URL only if the directory exists or was successfully created
+      } catch {
+        print("Failed to ensure directory exists: \(error.localizedDescription)")
+        return nil
+      }
+    }
+    
+    return nil // Return nil if we failed to obtain or create the directory
+  }
+  
+  /*
   var outputDirectoryUrl: URL? {
     if !outputDirectoryPath.isEmpty {
       let pathUrl = URL(fileURLWithPath: outputDirectoryPath)
@@ -77,7 +103,7 @@ class UserSettings: ObservableObject {
       }
     }
     return nil
-  }
+  }*/
   
   func restoreDefaults() {
     alwaysStartPythonEnvironmentAtLaunch = true

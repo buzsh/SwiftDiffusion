@@ -11,10 +11,7 @@ struct SettingsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
-  
-  
   @Binding var scriptPathInput: String
-  @Binding var fileOutputDir: String
   @Environment(\.presentationMode) var presentationMode
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
@@ -42,13 +39,12 @@ struct SettingsView: View {
                           textValue: $scriptPathInput) {
               await FilePickerService.browseForShellFile()
             }
-            /*
+            
             BrowseFileRow(labelText: "image output directory",
                           placeholderText: "~/Documents/SwiftDiffusion/",
-                          textValue: $userSettings.userOutputDirectoryPath) {
+                          textValue: $userSettings.outputDirectoryPath) {
               await FilePickerService.browseForDirectory()
             }
-             */
             
             BrowseFileRow(labelText: "stable diffusion models",
                           placeholderText: "path/to/stable-diffusion",
@@ -113,7 +109,7 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+  SettingsView(scriptPathInput: .constant("path/to/webui.sh"))
     .frame(width: 500, height: 400)
 }
 
