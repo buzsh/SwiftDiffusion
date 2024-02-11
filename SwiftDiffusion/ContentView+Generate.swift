@@ -107,7 +107,7 @@ extension ContentView {
     let fileManager = FileManager.default
     
     
-    var directoryURL: URL = URL(fileURLWithPath: userSettingsModel.userOutputDirectoryPath).appendingPathComponent("txt2img/\(dateFolderName)")
+    var directoryURL: URL = URL(fileURLWithPath: userSettings.userOutputDirectoryPath).appendingPathComponent("txt2img/\(dateFolderName)")
     if !fileManager.fileExists(atPath: directoryURL.path) {
         // Fallback to using the documents directory if the specified path doesn't exist
         directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")

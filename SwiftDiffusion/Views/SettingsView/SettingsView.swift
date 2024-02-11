@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-  @ObservedObject var userSettings: UserSettingsModel
+  @EnvironmentObject var userSettings: UserSettingsModel
+  
   @ObservedObject var modelManagerViewModel: ModelManagerViewModel
   @Binding var scriptPathInput: String
   @Binding var fileOutputDir: String
@@ -111,7 +112,8 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettingsModel.preview(), modelManagerViewModel: ModelManagerViewModel(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+  SettingsView(modelManagerViewModel: ModelManagerViewModel(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
+    .environmentObject(UserSettingsModel.preview())
     .frame(width: 500, height: 400)
 }
 

@@ -19,10 +19,10 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var userSettings: UserSettingsModel
   
   @ObservedObject var modelManager: ModelManagerViewModel
   @ObservedObject var scriptManager: ScriptManager
-  @ObservedObject var userSettings: UserSettingsModel
   
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
@@ -59,10 +59,9 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      DebugPromptStatusView(scriptManager: scriptManager, userSettings: userSettings)
+      DebugPromptStatusView(scriptManager: scriptManager)
       
       PromptTopStatusBar(
-        userSettings: userSettings,
         generationDataInPasteboard: generationDataInPasteboard,
         onPaste: { pasteboardContent in
           self.parseAndSetPromptData(from: pasteboardContent)
@@ -194,7 +193,7 @@ struct PromptView: View {
       }
       
       //PromptBottomStatusBar()
-      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings)
+      DebugPromptActionView(scriptManager: scriptManager)
       
     }
     .background(Color(NSColor.windowBackgroundColor))

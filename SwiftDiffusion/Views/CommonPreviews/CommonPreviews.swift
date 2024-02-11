@@ -32,8 +32,7 @@ struct CommonPreviews {
     
     return PromptView(
       modelManager: modelManager,
-      scriptManager: ScriptManager.preview(withState: .readyToStart),
-      userSettings: UserSettingsModel.preview()
+      scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .environmentObject(promptModelPreview)
     .frame(width: 400, height: 600)
@@ -71,10 +70,10 @@ extension View {
   func withCommonEnvironment() -> some View {
     //let promptModel = PromptModel()
     let scriptManager = ScriptManager.preview(withState: .readyToStart)
-    let userSettings = UserSettingsModel.preview()
+    let userSettingsPreview = UserSettingsModel.preview()
     return self
       .environmentObject(scriptManager)
-      .environmentObject(userSettings)
+      .environmentObject(userSettingsPreview)
   }
 }
 

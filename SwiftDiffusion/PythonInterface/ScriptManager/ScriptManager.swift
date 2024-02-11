@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum ScriptResult {
   case success(String)
@@ -21,6 +22,8 @@ extension Constants.Delays {
 }
 
 class ScriptManager: ObservableObject {
+  @EnvironmentObject var userSettings: UserSettingsModel
+  
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
   
@@ -36,7 +39,7 @@ class ScriptManager: ObservableObject {
   
   @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
-
+  
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
   var scriptPath: String? {
@@ -125,11 +128,11 @@ class ScriptManager: ObservableObject {
     updateScriptState(.isTerminating)
     pythonProcess?.terminate()
     
-    // TODO: UserSettingsModel
-    
-    //if userSettings.killAllPythonProcessesOnTerminate {
-    //  terminateAllPythonProcesses
-    //}
+    if userSettings.killAllPythonProcessesOnTerminate {
+      terminateAllPythonProcesses()
+    } else {
+      pythonProcess?.terminate()
+    }
     
     // Handle post-termination logic
     restoreLaunchBrowserInConfigJson()
@@ -145,14 +148,12 @@ class ScriptManager: ObservableObject {
     Debug.log("Process terminated immediately.")
   }
   
-
-  
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {
       updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
-
+    
     configManager.disableLaunchBrowser { [weak self] result in
       switch result {
       case .success(let originalLine):

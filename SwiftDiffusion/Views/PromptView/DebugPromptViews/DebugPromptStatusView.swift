@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct DebugPromptStatusView: View {
+  @EnvironmentObject var userSettings: UserSettingsModel
+  
   @ObservedObject var scriptManager: ScriptManager
-  @ObservedObject var userSettings: UserSettingsModel
   
   var body: some View {
     if userSettings.showDebugMenu {
@@ -36,8 +37,8 @@ struct DebugPromptStatusView: View {
 }
 
 #Preview {
-  DebugPromptStatusView(scriptManager: ScriptManager.preview(withState: .readyToStart),
-                        userSettings: UserSettingsModel.preview())
+  DebugPromptStatusView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+    .environmentObject(UserSettingsModel.preview())
 }
 
 

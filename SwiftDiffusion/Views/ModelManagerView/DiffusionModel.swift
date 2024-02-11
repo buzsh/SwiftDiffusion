@@ -10,6 +10,9 @@ import SwiftUI
 
 @MainActor
 class ModelManagerViewModel: ObservableObject {
+  @EnvironmentObject var userSettings: UserSettingsModel
+  //let userSettings = UserSettingsModel.shared
+  
   @Published var items: [ModelItem] = []
   
   private var coreMlObserver: DirectoryObserver?
@@ -18,7 +21,6 @@ class ModelManagerViewModel: ObservableObject {
   private let defaultCoreMLModelNames: [String] = ["defaultCoreMLModel1", "defaultCoreMLModel2"]
   private let defaultPythonModelNames: [String] = ["v1-5-pruned-emaonly.safetensors", "defaultPythonModel2"]
   
-  private let userSettings = UserSettingsModel.shared
   private let scriptManager = ScriptManager.shared
   
   func loadModels() async {

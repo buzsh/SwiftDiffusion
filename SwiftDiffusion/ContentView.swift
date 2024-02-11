@@ -30,6 +30,7 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var userSettings: UserSettingsModel
   // Toolbar
   @State private var showingSettingsView = false
   @ObservedObject var modelManagerViewModel: ModelManagerViewModel
@@ -43,8 +44,6 @@ struct ContentView: View {
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
-  
-  @StateObject var userSettingsModel: UserSettingsModel
   
   @State private var hasFirstAppeared = false
   
@@ -75,13 +74,13 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(modelManager: modelManagerViewModel, scriptManager: scriptManager, userSettings: userSettingsModel)
+        PromptView(modelManager: modelManagerViewModel, scriptManager: scriptManager)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .models:
         ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
       case .settings:
-        SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -206,7 +205,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(userSettings: userSettingsModel, modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
@@ -238,15 +237,16 @@ extension ModelLoadState {
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
   let modelManager = ModelManagerViewModel()
-  return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"), userSettingsModel: UserSettingsModel.preview())
+  return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
     .environmentObject(promptModelPreview)
+    .environmentObject(UserSettingsModel.preview())
     .frame(height: 700)
 }
 
 
 extension ContentView {
   func handleScriptOnLaunch() {
-    if userSettingsModel.alwaysStartPythonEnvironmentAtLaunch {
+    if userSettings.alwaysStartPythonEnvironmentAtLaunch {
       if !self.hasFirstAppeared {
         if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
           Debug.log("Running in SwiftUI Preview, skipping script execution and model loading.")
