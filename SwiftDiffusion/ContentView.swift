@@ -90,15 +90,8 @@ struct ContentView: View {
     .onAppear {
       scriptPathInput = scriptManager.scriptPath ?? ""
       
-      Debug.log("[onAppear] userSettings.outputDirectoryUrl: \(String(describing: userSettings.outputDirectoryUrl))")
-      
-      
-      if let directoryUrl = userSettings.outputDirectoryUrl {
-        let directoryPath = directoryUrl.path
-        Debug.log("[onAppear] userSettings.outputDirectoryUrl.path: \(directoryPath)")
-        fileHierarchy.rootPath = userSettings.outputDirectoryPath
-      } else {
-        fileHierarchy.rootPath = userSettings.outputDirectoryPath
+      if let directoryPath = userSettings.outputDirectoryUrl?.path {
+        fileHierarchy.rootPath = directoryPath
       }
       
       Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
@@ -113,7 +106,9 @@ struct ContentView: View {
       handleScriptOnLaunch()
     }
     .onChange(of: userSettings.outputDirectoryPath) {
-      fileHierarchy.rootPath = userSettings.outputDirectoryPath
+      if let directoryPath = userSettings.outputDirectoryUrl?.path {
+        fileHierarchy.rootPath = directoryPath
+      }
       Task {
         await fileHierarchy.refresh()
       }
@@ -193,10 +188,10 @@ struct ContentView: View {
             Text("Generate")
           }
           .disabled(
-              scriptManager.scriptState != .active ||
-              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-              (!scriptManager.modelLoadState.allowGeneration) ||
-              currentPrompt.selectedModel == nil
+            scriptManager.scriptState != .active ||
+            (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+            (!scriptManager.modelLoadState.allowGeneration) ||
+            currentPrompt.selectedModel == nil
           )
           
           Picker("Options", selection: $selectedView) {
@@ -205,7 +200,7 @@ struct ContentView: View {
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
-           
+          
           Button(action: {
             Debug.log("Toolbar item selected")
             showingSettingsView = true

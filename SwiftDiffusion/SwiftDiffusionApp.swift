@@ -24,8 +24,8 @@ struct SwiftDiffusionApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
-        .frame(minWidth: 600, idealWidth: 800, maxWidth: .infinity,
-               minHeight: 400, idealHeight: 600, maxHeight: .infinity)
+        .frame(minWidth: 600, idealWidth: 900, maxWidth: .infinity,
+               minHeight: 400, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(promptModel)
         .environmentObject(modelManangerViewModel)
     }

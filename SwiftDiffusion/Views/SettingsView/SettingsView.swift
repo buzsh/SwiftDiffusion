@@ -34,23 +34,24 @@ struct SettingsView: View {
               }
             }
             
-            BrowseFileRow(labelText: "webui.sh path",
-                          placeholderText: "path/to/webui.sh",
+            BrowseFileRow(labelText: "webui.sh file",
+                          placeholderText: "../stable-diffusion-webui/webui.sh",
                           textValue: $scriptPathInput) {
               await FilePickerService.browseForShellFile()
             }
             
-            BrowseFileRow(labelText: "image output directory",
+            BrowseFileRow(labelText: "Stable diffusion models",
+                          placeholderText: "../stable-diffusion-webui/models/Stable-diffusion/",
+                          textValue: $userSettings.stableDiffusionModelsPath) {
+              await FilePickerService.browseForDirectory()
+            }
+            
+            BrowseFileRow(labelText: "Custom image output directory",
                           placeholderText: "~/Documents/SwiftDiffusion/",
                           textValue: $userSettings.outputDirectoryPath) {
               await FilePickerService.browseForDirectory()
             }
             
-            BrowseFileRow(labelText: "stable diffusion models",
-                          placeholderText: "path/to/stable-diffusion",
-                          textValue: $userSettings.stableDiffusionModelsPath) {
-              await FilePickerService.browseForDirectory()
-            }
           }
           .onChange(of: userSettings.stableDiffusionModelsPath) {
             Task {
@@ -69,6 +70,7 @@ struct SettingsView: View {
               ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
               
               ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.", showAllDescriptions: showAllDescriptions)
+              
               ToggleWithHeader(isToggled: $userSettings.disableModelLoadingRamOptimizations, header: "Disable model loading RAM optimizations", description: "Can sometimes resolve certain model load issues regarding MPS, BFloat16. Warning: Can increase load times significantly.", showAllDescriptions: showAllDescriptions)
             }
             .padding(.leading, 8)
@@ -104,12 +106,12 @@ struct SettingsView: View {
     }
     .padding(2)
     .navigationTitle("Settings")
-    .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 500)
+    .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 700)
   }
 }
 
 #Preview {
-  SettingsView(scriptPathInput: .constant("path/to/webui.sh"))
+  SettingsView(scriptPathInput: .constant(""))
     .frame(width: 500, height: 400)
 }
 
@@ -160,8 +162,10 @@ struct BrowseFileRow: View {
     VStack(alignment: .leading) {
       if let label = labelText {
         Text(label)
+          .font(.system(size: 14, weight: .semibold, design: .default))
+          .underline()
+          .padding(.vertical, 2)
           .padding(.horizontal, 14)
-          .font(.system(.body, design: .monospaced))
       }
       HStack {
         TextField(placeholderText, text: $textValue)
