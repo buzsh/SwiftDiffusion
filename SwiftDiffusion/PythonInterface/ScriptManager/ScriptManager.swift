@@ -50,10 +50,11 @@ class ScriptManager: ObservableObject {
   func updateScriptState(_ state: ScriptState) {
     self.scriptState = state
     
-    if state == .terminated {
+    if state == .terminated || state == .unableToLocateScript {
       handleUiOnTermination()
       Delay.by(Constants.Delays.secondsBetweenTerminatedAndReadyState) {
         self.scriptState = .readyToStart
+        self.modelLoadState = .idle
       }
     }
   }
@@ -82,14 +83,33 @@ class ScriptManager: ObservableObject {
   func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
     updateScriptState(.launching)
+    modelLoadState = .launching
     serviceUrl = nil
   }
   
+  func performRequiredPathsCheck() {
+    guard !userSettings.webuiShellPath.isEmpty else {
+      Debug.log("[run] userSettings.webuiShellPath is empty")
+      updateScriptState(.unableToLocateScript)
+      modelLoadState = .failed
+      return
+    }
+    guard !userSettings.stableDiffusionModelsPath.isEmpty else {
+      Debug.log("[run] userSettings.stableDiffusionModelsPath is empty")
+      updateScriptState(.unableToLocateScript)
+      modelLoadState = .failed
+      return
+    }
+  }
+  
   func run() {
-    modelLoadState = .launching
-    
     newRunScriptState()
-    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath) else { return }
+    
+    performRequiredPathsCheck()
+    
+    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath) else {
+      Debug.log("GUARD: (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath)")
+      return }
     
     disableLaunchBrowserInConfigJson()
     
@@ -97,8 +117,6 @@ class ScriptManager: ObservableObject {
     pythonProcess?.delegate = self
     pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
   }
-  
-  
   /// Terminates the script execution.
   /// - Parameter completion: A closure that is called with the result of the termination attempt.
   ///

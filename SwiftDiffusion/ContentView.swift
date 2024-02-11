@@ -137,7 +137,7 @@ struct ContentView: View {
             } else {
               Image(systemName: "stop.fill")
             }
-          }.disabled(scriptManager.scriptState.isAwaitingProcessToPlayOut)
+          }//.disabled(scriptManager.scriptState == .isTerminating)
           
           Circle()
             .fill(scriptManager.scriptState.statusColor)
@@ -196,12 +196,14 @@ struct ContentView: View {
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
-            Text("Console").tag(ViewManager.console)
+            if userSettings.showDebugMenu {
+              Text("Console").tag(ViewManager.console)
+            }
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
           
-          if shouldBotherForRequiredInputPaths && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+          if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
             RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
           }
           
@@ -219,7 +221,7 @@ struct ContentView: View {
       SettingsView()
     }
     .onAppear {
-      if shouldBotherForRequiredInputPaths {
+      if !CanvasPreview && !userHasEnteredBothRequiredFields {
         showingRequiredInputPathsView = true
       }
     }
@@ -228,10 +230,16 @@ struct ContentView: View {
     }) {
       RequiredInputPathsView()
     }
+    .onChange(of: userSettings.webuiShellPath) {
+      attemptLaunchOfPythonEnvironment()
+    }
+    .onChange(of: userSettings.stableDiffusionModelsPath) {
+      attemptLaunchOfPythonEnvironment()
+    }
   }
   
-  private var shouldBotherForRequiredInputPaths: Bool {
-    return userSettings.webuiShellPath.isEmpty || userSettings.stableDiffusionModelsPath.isEmpty
+  private var userHasEnteredBothRequiredFields: Bool {
+    return !userSettings.webuiShellPath.isEmpty && !userSettings.stableDiffusionModelsPath.isEmpty
   }
   
   private func loadLastSelectedImage() async {
@@ -271,20 +279,22 @@ extension ModelLoadState {
 
 extension ContentView {
   func handleScriptOnLaunch() {
-    if userSettings.alwaysStartPythonEnvironmentAtLaunch {
-      if !self.hasFirstAppeared {
-        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-          Debug.log("Running in SwiftUI Preview, skipping script execution and model loading.")
-        } else {
-          Debug.log("First appearance. Starting script...")
-          scriptManager.run()
-          self.hasFirstAppeared = true
-          
-          Task {
-            await modelManagerViewModel.loadModels()
-          }
+    if !self.hasFirstAppeared {
+      Debug.log("First appearance. Starting script...")
+      attemptLaunchOfPythonEnvironment()
+      self.hasFirstAppeared = true
+    }
+  }
+  func attemptLaunchOfPythonEnvironment() {
+    if userSettings.alwaysStartPythonEnvironmentAtLaunch && userHasEnteredBothRequiredFields {
+      if !CanvasPreview {
+        scriptManager.run()
+        Task {
+          await modelManagerViewModel.loadModels()
         }
       }
     }
   }
 }
+
+let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"

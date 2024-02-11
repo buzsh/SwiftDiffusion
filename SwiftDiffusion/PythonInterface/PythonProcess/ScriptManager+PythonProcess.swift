@@ -11,6 +11,12 @@ extension ScriptManager: PythonProcessDelegate {
   func setupPythonProcess() {
     let pythonProcess = PythonProcess()
     pythonProcess.delegate = self
+    
+    guard userSettings.webuiShellPath.isEmpty || userSettings.stableDiffusionModelsPath.isEmpty else {
+      updateScriptState(.unableToLocateScript)
+      return
+    }
+    
     if let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath) {
       pythonProcess.runScript(at: scriptDirectory, scriptName: scriptName)
     }
