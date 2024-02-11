@@ -52,13 +52,24 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView {
       // Sidebar
+      
       List {
         NavigationLink(value: ViewManager.prompt) {
-          Label("Prompt", systemImage: "text.bubble")
+          Label("New Prompt", systemImage: "text.bubble")
         }
-        NavigationLink(value: ViewManager.console) {
-          Label("Console", systemImage: "terminal")
-        }
+        
+        Divider()
+        
+        Label("Saved Prompt 1", systemImage: "photo")
+        Label("Saved Prompt 2", systemImage: "photo")
+        
+        Divider()
+        
+        Label("Saved Grid 1", systemImage: "photo.on.rectangle.angled") // photo.stack, photo.on.rectangle, photo.on.rectangle.angled
+        
+        Divider()
+        
+        Label("Saved Prompts Folder", systemImage: "folder")
       }
       .listStyle(SidebarListStyle())
       
