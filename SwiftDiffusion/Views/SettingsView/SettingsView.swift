@@ -113,13 +113,6 @@ struct SettingsView: View {
     .frame(width: 500, height: 400)
 }
 
-extension UserSettingsModel {
-  static func preview() -> UserSettingsModel {
-    let previewManager = UserSettingsModel()
-    return previewManager
-  }
-}
-
 struct ToggleWithHeader: View {
   @Binding var isToggled: Bool
   var header: String

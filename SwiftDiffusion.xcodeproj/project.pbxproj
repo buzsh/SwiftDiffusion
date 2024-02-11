@@ -23,7 +23,7 @@
 		2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD62B71AEFA002FC885 /* PromptView.swift */; };
-		2952BAD92B71B79F002FC885 /* PromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* PromptViewModel.swift */; };
+		2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* PromptModel.swift */; };
 		2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */; };
 		2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */; };
 		296AA9F02B769B2A00CF0658 /* UserSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296AA9EF2B769B2A00CF0658 /* UserSettingsModel.swift */; };
@@ -83,7 +83,7 @@
 		2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailLoader.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2952BAD62B71AEFA002FC885 /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
-		2952BAD82B71B79F002FC885 /* PromptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptViewModel.swift; sourceTree = "<group>"; };
+		2952BAD82B71B79F002FC885 /* PromptModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptModel.swift; sourceTree = "<group>"; };
 		2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
 		2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlurView.swift; sourceTree = "<group>"; };
 		296AA9EF2B769B2A00CF0658 /* UserSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsModel.swift; sourceTree = "<group>"; };
@@ -161,7 +161,7 @@
 		29145E712B77D95600BFA64B /* PromptModels */ = {
 			isa = PBXGroup;
 			children = (
-				2952BAD82B71B79F002FC885 /* PromptViewModel.swift */,
+				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				29F0D3042B76D12400BF56CE /* SdModelData.swift */,
 			);
 			path = PromptModels;
@@ -537,7 +537,7 @@
 				29B5717D2B758D7E0057DD50 /* ModelItem.swift in Sources */,
 				29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
-				2952BAD92B71B79F002FC885 /* PromptViewModel.swift in Sources */,
+				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
 				29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */,
 				2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */,

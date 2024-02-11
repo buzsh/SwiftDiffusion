@@ -10,7 +10,8 @@ import SwiftUI
 struct DebugPromptActionView: View {
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
-  @ObservedObject var prompt: PromptViewModel
+  
+  @EnvironmentObject var promptModel: PromptModel
   
   var body: some View {
     if userSettings.showDebugMenu {
@@ -20,6 +21,7 @@ struct DebugPromptActionView: View {
           Button("Log Prompt") {
             logPromptProperties()
           }
+          //.padding(.trailing, 6)
         }
         .padding(.horizontal)
         .font(.system(size: 12, design: .monospaced))
@@ -37,28 +39,26 @@ struct DebugPromptActionView: View {
   CommonPreviews.promptView
 }
 
-/*
+
 #Preview {
-  DebugPromptActionView(userSettings: UserSettingsModel.preview(),
-                        prompt: PromptViewModel())
+  DebugPromptActionView(scriptManager: ScriptManager.preview(withState: .readyToStart), userSettings: UserSettingsModel.preview())
 }
-*/
 
 extension DebugPromptActionView {
   func logPromptProperties() {
     var debugOutput = ""
-    debugOutput += "selectedModel: \(prompt.selectedModel?.name ?? "nil")\n"
-    debugOutput += "samplingMethod: \(prompt.samplingMethod ?? "nil")\n"
-    debugOutput += "positivePrompt: \(prompt.positivePrompt)\n"
-    debugOutput += "negativePrompt: \(prompt.negativePrompt)\n"
-    debugOutput += "width: \(prompt.width)\n"
-    debugOutput += "height: \(prompt.height)\n"
-    debugOutput += "cfgScale: \(prompt.cfgScale)\n"
-    debugOutput += "samplingSteps: \(prompt.samplingSteps)\n"
-    debugOutput += "seed: \(prompt.seed)\n"
-    debugOutput += "batchCount: \(prompt.batchCount)\n"
-    debugOutput += "batchSize: \(prompt.batchSize)\n"
-    debugOutput += "clipSkip: \(prompt.clipSkip)\n"
+    debugOutput += "selectedModel: \(promptModel.selectedModel?.name ?? "nil")\n"
+    debugOutput += "samplingMethod: \(promptModel.samplingMethod ?? "nil")\n"
+    debugOutput += "positivePrompt: \(promptModel.positivePrompt)\n"
+    debugOutput += "negativePrompt: \(promptModel.negativePrompt)\n"
+    debugOutput += "width: \(promptModel.width)\n"
+    debugOutput += "height: \(promptModel.height)\n"
+    debugOutput += "cfgScale: \(promptModel.cfgScale)\n"
+    debugOutput += "samplingSteps: \(promptModel.samplingSteps)\n"
+    debugOutput += "seed: \(promptModel.seed)\n"
+    debugOutput += "batchCount: \(promptModel.batchCount)\n"
+    debugOutput += "batchSize: \(promptModel.batchSize)\n"
+    debugOutput += "clipSkip: \(promptModel.clipSkip)\n"
     
     Debug.log(debugOutput)
     scriptManager.updateConsoleOutput(with: debugOutput)

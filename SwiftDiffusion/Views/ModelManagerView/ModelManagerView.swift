@@ -126,13 +126,8 @@ struct ModelManagerView: View {
 
 
 #Preview {
-  ModelManagerView(scriptManager: ScriptManager.readyPreview()).frame(width: 500, height: 400)
+  ModelManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+    .frame(width: 500, height: 400)
 }
 
-extension ScriptManager {
-  static func readyPreview() -> ScriptManager {
-    let previewManager = ScriptManager()
-    previewManager.scriptState = .readyToStart // .active
-    return previewManager
-  }
-}
+

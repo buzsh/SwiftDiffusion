@@ -36,7 +36,7 @@ struct DebugPromptStatusView: View {
 }
 
 #Preview {
-  DebugPromptStatusView(scriptManager: ScriptManager.readyPreview(),
+  DebugPromptStatusView(scriptManager: ScriptManager.preview(withState: .readyToStart),
                         userSettings: UserSettingsModel.preview())
 }
 

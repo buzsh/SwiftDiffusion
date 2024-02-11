@@ -23,10 +23,10 @@ extension ContentView {
     scriptManager.genStatus = .preparingToGenerate
     scriptManager.genProgress = -1
     
-    guard let sdModelCheckpoint = promptViewModel.selectedModel?.sdModelCheckpoint else { return }
+    guard let sdModelCheckpoint = currentPrompt.selectedModel?.sdModelCheckpoint else { return }
     
     let overrideSettings: [String: Any] = [
-      "CLIP_stop_at_last_layers": Int(promptViewModel.clipSkip)
+      "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
     ]
     // "sd_model_checkpoint": sdModelCheckpoint
     
@@ -36,15 +36,15 @@ extension ContentView {
     // UPDATE: POSTing to sdapi/v1/options with sd_model_checkpoint works
     // https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/4301#issuecomment-1328249975
     let payload: [String: Any] = [
-      "prompt": promptViewModel.positivePrompt,
-      "negative_prompt": promptViewModel.negativePrompt,
-      "width": Int(promptViewModel.width),
-      "height": Int(promptViewModel.height),
-      "cfg_scale": Int(promptViewModel.cfgScale),
-      "steps": Int(promptViewModel.samplingSteps),
-      "seed": Int(promptViewModel.seed) ?? -1,
-      "batch_count": Int(promptViewModel.batchCount),
-      "batch_size": Int(promptViewModel.batchSize),
+      "prompt": currentPrompt.positivePrompt,
+      "negative_prompt": currentPrompt.negativePrompt,
+      "width": Int(currentPrompt.width),
+      "height": Int(currentPrompt.height),
+      "cfg_scale": Int(currentPrompt.cfgScale),
+      "steps": Int(currentPrompt.samplingSteps),
+      "seed": Int(currentPrompt.seed) ?? -1,
+      "batch_count": Int(currentPrompt.batchCount),
+      "batch_size": Int(currentPrompt.batchSize),
       "override_settings": overrideSettings,
       // extras
       "do_not_save_grid" : false,

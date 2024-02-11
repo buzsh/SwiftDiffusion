@@ -18,7 +18,8 @@ extension Constants.Layout {
 }
 
 struct PromptView: View {
-  @ObservedObject var prompt: PromptViewModel
+  @EnvironmentObject var prompt: PromptModel
+  
   @ObservedObject var modelManager: ModelManagerViewModel
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings: UserSettingsModel
@@ -137,7 +138,6 @@ struct PromptView: View {
                 }
               }
             }
-            
             VStack(alignment: .leading) {
               PromptRowHeading(title: "Sampling")
               Menu {
@@ -194,9 +194,7 @@ struct PromptView: View {
       }
       
       //PromptBottomStatusBar(prompt: prompt)
-      
-      // DebugPromptActionView
-      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings, prompt: prompt)
+      DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings)
       
     }
     .background(Color(NSColor.windowBackgroundColor))

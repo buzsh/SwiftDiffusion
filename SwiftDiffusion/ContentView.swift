@@ -29,11 +29,10 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
+  @EnvironmentObject var currentPrompt: PromptModel
   // Toolbar
   @State private var showingSettingsView = false
   @ObservedObject var modelManagerViewModel: ModelManagerViewModel
-  // Prompt
-  @ObservedObject var promptViewModel: PromptViewModel
   // Console
   @ObservedObject var scriptManager: ScriptManager
   @Binding var scriptPathInput: String
@@ -76,7 +75,7 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(prompt: promptViewModel, modelManager: modelManagerViewModel, scriptManager: scriptManager, userSettings: userSettingsModel)
+        PromptView(modelManager: modelManagerViewModel, scriptManager: scriptManager, userSettings: userSettingsModel)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .models:
@@ -182,7 +181,7 @@ struct ContentView: View {
               scriptManager.scriptState != .active ||
               (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
               (!scriptManager.modelLoadState.allowGeneration) ||
-              promptViewModel.selectedModel == nil
+              currentPrompt.selectedModel == nil
           )
           
           Picker("Options", selection: $selectedView) {
@@ -231,11 +230,13 @@ extension ModelLoadState {
 }
 
 #Preview {
+  let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
+  let promptModelPreview = PromptModel()
+  promptModelPreview.positivePrompt = "sample, positive, prompt"
+  promptModelPreview.negativePrompt = "sample, negative, prompt"
   let modelManager = ModelManagerViewModel()
-  let promptModel = PromptViewModel()
-  promptModel.positivePrompt = "sample, positive, prompt"
-  promptModel.negativePrompt = "sample, negative, prompt"
-  return ContentView(modelManagerViewModel: modelManager, promptViewModel: promptModel, scriptManager: ScriptManager.readyPreview(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"), userSettingsModel: UserSettingsModel.preview())
+  return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"), userSettingsModel: UserSettingsModel.preview())
+    .environmentObject(promptModelPreview)
     .frame(height: 700)
 }
 
