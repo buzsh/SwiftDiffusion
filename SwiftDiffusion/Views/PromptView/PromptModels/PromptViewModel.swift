@@ -9,11 +9,14 @@ import Combine
 
 @MainActor
 class PromptViewModel: ObservableObject {
+  @Published var selectedModel: ModelItem?
+  /*
   @Published var selectedModel: ModelItem? {
     didSet {
       updatePromptPreferences()
     }
   }
+   */
   @Published var samplingMethod: String?
   
   @Published var positivePrompt: String = ""

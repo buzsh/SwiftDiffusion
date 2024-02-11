@@ -99,20 +99,9 @@ extension PromptView {
   /// Parses the pasteboard content to extract prompt data, including positive and negative prompts, and other parameters like model hash.
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
-    
     parseLog(lines)
-    
     prompt.positivePrompt = buildPositivePrompt(from: lines)
-    
     parseLog("positivePrompt: \(prompt.positivePrompt)")
-    
-    // Set the positive prompt from the first line
-    /*
-    if let positivePromptLine = lines.first {
-      prompt.positivePrompt = String(positivePromptLine)
-    }
-     */
-    
     // Loop through each line of the pasteboard content
     for line in lines {
       if line.contains("Model hash:") {
@@ -187,7 +176,7 @@ extension PromptView {
       parseLog("Attempting to match \(parsedModelSubstrings) with \(itemSubstrings): \(isMatch)")
       return isMatch
     }) {
-      parseLog("Match found: \(matchingModel.name)")
+      Debug.log("[processModelParameter] match: \(matchingModel.name)")
       shouldPostNewlySelectedModelCheckpointToApi = true
       prompt.selectedModel = matchingModel
     } else {

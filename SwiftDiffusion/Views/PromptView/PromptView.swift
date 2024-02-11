@@ -97,12 +97,20 @@ struct PromptView: View {
                 Label(prompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
               }
             }
-            //.disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
+            .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
               modelManager.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
                 Task {
                   await modelManager.loadModels()
+                  
+                }
+              }
+            }
+            .onChange(of: scriptManager.scriptState) {
+              if scriptManager.scriptState == .active {
+                Task {
+                  await selectModelMatchingSdModelCheckpoint()
                 }
               }
             }
@@ -121,15 +129,12 @@ struct PromptView: View {
                 }
               }
             }
-            .onChange(of: scriptManager.scriptState) {
-              if scriptManager.scriptState == .active {
-                
-              }
-            }
             .onChange(of: scriptManager.modelLoadState) {
               Debug.log("scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
-              Task {
-                await selectModelMatchingSdModelCheckpoint()
+              if scriptManager.modelLoadState == .done {
+                Task {
+                  await selectModelMatchingSdModelCheckpoint()
+                }
               }
             }
             
@@ -186,34 +191,9 @@ struct PromptView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
           // Handle application going to background if needed
         }
-        
       }
       
-      // PromptBottomStatusBar
-      
-      PromptBottomStatusBar(prompt: prompt)
-      /*
-      HStack {
-        Spacer()
-        Button("Save Model Preferences") {
-          if let selectedModel = prompt.selectedModel {
-            let updatedPreferences = ModelPreferences(from: prompt)
-            selectedModel.preferences = updatedPreferences
-            showingModelPreferences = true
-          } else {
-            Debug.log("[Toast] Error: Please select a model first")
-          }
-        }
-        .buttonStyle(.accessoryBar)
-        .sheet(isPresented: $showingModelPreferences) {
-          if let selectedModel = prompt.selectedModel {
-            ModelPreferencesView(modelItem: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
-          }
-        }
-      }
-      .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) //.titlebar
-       */
+      //PromptBottomStatusBar(prompt: prompt)
       
       // DebugPromptActionView
       DebugPromptActionView(scriptManager: scriptManager, userSettings: userSettings, prompt: prompt)

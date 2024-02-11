@@ -167,21 +167,12 @@ struct ContentView: View {
           }) {
             Text("Generate")
           }
-          /*
           .disabled(
               scriptManager.scriptState != .active ||
               (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+              (!scriptManager.modelLoadState.allowGeneration) ||
               promptViewModel.selectedModel == nil
           )
-           */
-          /*
-          .disabled(
-              scriptManager.scriptState != .active ||
-              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-              (scriptManager.modelLoadState != .idle && scriptManager.modelLoadState != .done) ||
-              promptViewModel.selectedModel == nil
-          )
-           */
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
@@ -189,15 +180,6 @@ struct ContentView: View {
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
-          
-          /*
-          Button(action: {
-            Debug.log("Testing api")
-            //showingSettingsView = true
-          }) {
-            Image(systemName: "arkit")
-          }
-           */
            
           Button(action: {
             Debug.log("Toolbar item selected")
@@ -225,6 +207,17 @@ struct ContentView: View {
   
 }
 
+extension ModelLoadState {
+  var allowGeneration: Bool {
+    switch self {
+    case .idle: return true
+    case .done: return true
+    case .failed: return true
+    case .isLoading: return true
+    case .launching: return true
+    }
+  }
+}
 
 #Preview {
   let modelManager = ModelManagerViewModel()
