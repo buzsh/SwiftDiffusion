@@ -12,29 +12,27 @@ struct CommonPreviews {
   @MainActor
   static var previewEnvironment: some View {
     let promptModelPreview = PromptModel()
-    let modelManager = ModelManagerViewModel()
+    let modelManagerViewModel = ModelManagerViewModel()
     let scriptManager = ScriptManager.preview(withState: .readyToStart)
-    let userSettings = UserSettingsModel.preview()
     
     return AnyView(EmptyView())
       .environmentObject(promptModelPreview)
-      .environmentObject(modelManager)
+      .environmentObject(modelManagerViewModel)
       .environmentObject(scriptManager)
-      .environmentObject(userSettings)
   }
   
   @MainActor
   static var promptView: some View {
-    let modelManager = ModelManagerViewModel()
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
+    let modelManagerViewModel = ModelManagerViewModel()
     
     return PromptView(
-      modelManager: modelManager,
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .environmentObject(promptModelPreview)
+    .environmentObject(modelManagerViewModel)
     .frame(width: 400, height: 600)
   }
   
@@ -70,10 +68,8 @@ extension View {
   func withCommonEnvironment() -> some View {
     //let promptModel = PromptModel()
     let scriptManager = ScriptManager.preview(withState: .readyToStart)
-    let userSettingsPreview = UserSettingsModel.preview()
     return self
       .environmentObject(scriptManager)
-      .environmentObject(userSettingsPreview)
   }
 }
 
@@ -90,13 +86,6 @@ extension ScriptManager {
   static func readyPreview() -> ScriptManager {
     let previewManager = ScriptManager()
     previewManager.scriptState = .readyToStart // .active
-    return previewManager
-  }
-}
-
-extension UserSettingsModel {
-  static func preview() -> UserSettingsModel {
-    let previewManager = UserSettingsModel()
     return previewManager
   }
 }

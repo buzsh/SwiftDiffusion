@@ -22,7 +22,7 @@ extension Constants.Delays {
 }
 
 class ScriptManager: ObservableObject {
-  @EnvironmentObject var userSettings: UserSettingsModel
+  @ObservedObject var userSettings = UserSettings.shared
   
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
@@ -132,10 +132,11 @@ class ScriptManager: ObservableObject {
       terminateAllPythonProcesses()
     } else {
       pythonProcess?.terminate()
+      restoreLaunchBrowserInConfigJson()
     }
     
     // Handle post-termination logic
-    restoreLaunchBrowserInConfigJson()
+    
     completion(.success("Process terminated successfully."))
     updateScriptState(.terminated)
   }

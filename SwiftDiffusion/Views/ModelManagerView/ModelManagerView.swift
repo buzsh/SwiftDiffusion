@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ModelManagerView: View {
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  
   @ObservedObject var scriptManager: ScriptManager
-  @ObservedObject var viewModel = ModelManagerViewModel()
   @State private var selectedFilter: ModelType? = nil
   @State private var selectedModelItem: ModelItem?
   
@@ -25,8 +26,8 @@ struct ModelManagerView: View {
   }
   
   var filteredItems: [ModelItem] {
-    guard let selectedFilter = selectedFilter else { return viewModel.items }
-    return viewModel.items.filter { $0.type == selectedFilter }
+    guard let selectedFilter = selectedFilter else { return modelManagerViewModel.items }
+    return modelManagerViewModel.items.filter { $0.type == selectedFilter }
   }
   
   var isScriptActive: Bool {
@@ -43,7 +44,7 @@ struct ModelManagerView: View {
         
         Button("Refresh") {
           Task {
-            await viewModel.loadModels()
+            await modelManagerViewModel.loadModels()
           }
         }.disabled(isScriptActive)
         
@@ -85,7 +86,7 @@ struct ModelManagerView: View {
           if !item.isDefaultModel {
             Button(action: {
               Task {
-                await viewModel.moveToTrash(item: item)
+                await modelManagerViewModel.moveToTrash(item: item)
               }
             }) {
               Image(systemName: isScriptActive ? "lock" : "trash")
@@ -101,10 +102,10 @@ struct ModelManagerView: View {
       }
     }
     .onAppear {
-      viewModel.observeScriptManagerState(scriptManager: scriptManager)
+      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
       if scriptManager.scriptState == .readyToStart {
         Task {
-          await viewModel.loadModels()
+          await modelManagerViewModel.loadModels()
         }
       }
     }

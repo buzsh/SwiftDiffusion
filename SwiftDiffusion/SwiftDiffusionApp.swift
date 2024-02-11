@@ -16,9 +16,7 @@ struct SwiftDiffusionApp: App {
   @AppStorage("fileOutputDir") var fileOutputDir: String = ""
   
   let promptModel = PromptModel()
-  let userSettingsModel = UserSettingsModel()
-  
-  @StateObject var modelManagerViewModel = ModelManagerViewModel()
+  let modelManangerViewModel = ModelManagerViewModel()
   
   init() {
     setupAppFileStructure()
@@ -26,11 +24,11 @@ struct SwiftDiffusionApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(modelManagerViewModel: modelManagerViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      ContentView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
         .frame(minWidth: 600, idealWidth: 800, maxWidth: .infinity,
                minHeight: 400, idealHeight: 600, maxHeight: .infinity)
         .environmentObject(promptModel)
-        .environmentObject(userSettingsModel)
+        .environmentObject(modelManangerViewModel)
     }
     .windowToolbarStyle(DefaultWindowToolbarStyle())
   }

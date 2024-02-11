@@ -106,21 +106,41 @@ extension ContentView {
     
     let fileManager = FileManager.default
     
-    
-    var directoryURL: URL = URL(fileURLWithPath: userSettings.userOutputDirectoryPath).appendingPathComponent("txt2img/\(dateFolderName)")
-    if !fileManager.fileExists(atPath: directoryURL.path) {
-        // Fallback to using the documents directory if the specified path doesn't exist
-        directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
+    var directoryURL: URL? = nil
+    // Attempt to use userSettings.outputDirectoryUrl if it's valid
+    if let outputDir = userSettings.outputDirectoryUrl {
+      let potentialDirectoryURL = outputDir.appendingPathComponent("txt2img/\(dateFolderName)")
+      do {
+        try FileUtility.ensureDirectoryExists(at: potentialDirectoryURL)
+        directoryURL = potentialDirectoryURL
+      } catch {
+        Debug.log("Could not ensure directory exists at outputDirectoryUrl: \(error.localizedDescription)")
+        // Fallback will be handled outside this block
+      }
     }
     
-    Debug.log("saveImages.directoryURL: \(String(describing: directoryURL))")
+    // Fallback to using the documents directory if directoryURL is still nil
+    if directoryURL == nil {
+      directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SwiftDiffusion/txt2img/\(dateFolderName)")
+      if let directoryURL = directoryURL {
+        do {
+          try FileUtility.ensureDirectoryExists(at: directoryURL)
+        } catch {
+          Debug.log("Could not ensure directory exists in documents directory: \(error.localizedDescription)")
+          return
+        }
+      } else {
+        Debug.log("Failed to construct fallback directoryURL")
+        return
+      }
+    }
     
-    do {
-      try FileUtility.ensureDirectoryExists(at: directoryURL)
-    } catch {
-      Debug.log("Could not ensure directory exists: \(error.localizedDescription)")
+    guard let directoryURL = directoryURL else {
+      Debug.log("directoryURL is nil after attempting to set it.")
       return
     }
+    
+    Debug.log("saveImages.directoryURL: \(directoryURL)")
     
     var nextImageNumber = 1
     do {

@@ -29,11 +29,12 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
+  @ObservedObject var userSettings = UserSettings.shared
+  
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var userSettings: UserSettingsModel
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   // Toolbar
   @State private var showingSettingsView = false
-  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
   // Console
   @ObservedObject var scriptManager: ScriptManager
   @Binding var scriptPathInput: String
@@ -74,13 +75,13 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(modelManager: modelManagerViewModel, scriptManager: scriptManager)
+        PromptView(scriptManager: scriptManager)
       case .console:
         ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
       case .models:
-        ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
+        ModelManagerView(scriptManager: scriptManager)
       case .settings:
-        SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -205,7 +206,7 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView(scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
     }
   }
   
@@ -236,10 +237,10 @@ extension ModelLoadState {
   let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
-  let modelManager = ModelManagerViewModel()
-  return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+  let modelManagerViewModel = ModelManagerViewModel()
+  return ContentView(scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
     .environmentObject(promptModelPreview)
-    .environmentObject(UserSettingsModel.preview())
+    .environmentObject(modelManagerViewModel)
     .frame(height: 700)
 }
 
