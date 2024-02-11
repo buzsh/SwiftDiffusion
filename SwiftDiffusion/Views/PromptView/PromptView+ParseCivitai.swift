@@ -161,8 +161,6 @@ extension PromptView {
   }
   /// Processes a model parameter by extracting the value from a key-value pair and attempting to match it with a model in the model manager.
   func processModelParameter(_ parameter: String) {
-    var containsXlKeyword = parameter.lowercased().contains("xl")
-    
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
     guard keyValue.count == 2 else { return }
     let value = keyValue[1].trimmingCharacters(in: .whitespaces)
