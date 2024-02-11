@@ -31,6 +31,7 @@ extension ScriptManager {
   
   func parseAndUpdateModelLoadState(output: String) async {
     Debug.log(">> \(output)")
+    // Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
     if output.contains("Update successful for model") {
       await updateModelLoadStateAndTime(to: .done)
     }
