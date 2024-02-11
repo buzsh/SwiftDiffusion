@@ -35,6 +35,10 @@ struct ContentView: View {
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   // Toolbar
   @State private var showingSettingsView = false
+  // RequiredInputPaths
+  @State private var showingRequiredInputPathsView = false
+  @State private var hasDismissedRequiredInputPathsView = false
+  @State private var isPulsating = false
   // Console
   @ObservedObject var scriptManager: ScriptManager
   // Views
@@ -197,8 +201,11 @@ struct ContentView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
           
+          if shouldBotherForRequiredInputPaths && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+            PulsatingButtonView(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
+          }
+          
           Button(action: {
-            Debug.log("Toolbar item selected")
             showingSettingsView = true
           }) {
             Image(systemName: "gear")
@@ -211,6 +218,20 @@ struct ContentView: View {
     .sheet(isPresented: $showingSettingsView) {
       SettingsView()
     }
+    .onAppear {
+      if shouldBotherForRequiredInputPaths {
+        showingRequiredInputPathsView = true
+      }
+    }
+    .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
+      hasDismissedRequiredInputPathsView = true
+    }) {
+      RequiredInputPathsView()
+    }
+  }
+  
+  private var shouldBotherForRequiredInputPaths: Bool {
+    return userSettings.webuiShellPath.isEmpty || userSettings.stableDiffusionModelsPath.isEmpty
   }
   
   private func loadLastSelectedImage() async {

@@ -149,8 +149,6 @@ struct ToggleWithHeader: View {
   }
 }
 
-
-
 struct BrowseFileRow: View {
   var labelText: String?
   var placeholderText: String
@@ -169,7 +167,8 @@ struct BrowseFileRow: View {
       HStack {
         TextField(placeholderText, text: $textValue)
           .textFieldStyle(RoundedBorderTextFieldStyle())
-          .font(.system(.body, design: .monospaced))
+          .font(.system(size: 11, design: .monospaced))
+          .disabled(true)
         Button("Browse...") {
           Task {
             if let path = await browseAction() {
