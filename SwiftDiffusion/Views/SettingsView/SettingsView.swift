@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct SettingsView: View {
-  @ObservedObject var userSettings: UserSettingsModel
-  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
-  @Binding var scriptPathInput: String
-  @Binding var fileOutputDir: String
+  @ObservedObject var userSettings = UserSettings.shared
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  
   @Environment(\.presentationMode) var presentationMode
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
@@ -34,24 +33,24 @@ struct SettingsView: View {
               }
             }
             
-            BrowseFileRow(labelText: "webui.sh path",
-                          placeholderText: "path/to/webui.sh",
-                          textValue: $scriptPathInput) {
+            BrowseFileRow(labelText: "webui.sh file",
+                          placeholderText: "../stable-diffusion-webui/webui.sh",
+                          textValue: $userSettings.webuiShellPath) {
               await FilePickerService.browseForShellFile()
             }
-            /*
-            BrowseFileRow(labelText: "image output directory",
-                          placeholderText: "~/Documents/SwiftDiffusion/",
-                          textValue: $userSettings.userOutputDirectoryPath) {
-              await FilePickerService.browseForDirectory()
-            }
-             */
             
-            BrowseFileRow(labelText: "stable diffusion models",
-                          placeholderText: "path/to/stable-diffusion",
+            BrowseFileRow(labelText: "Stable diffusion models",
+                          placeholderText: "../stable-diffusion-webui/models/Stable-diffusion/",
                           textValue: $userSettings.stableDiffusionModelsPath) {
               await FilePickerService.browseForDirectory()
             }
+            
+            BrowseFileRow(labelText: "Custom image output directory",
+                          placeholderText: "~/Documents/SwiftDiffusion/",
+                          textValue: $userSettings.outputDirectoryPath) {
+              await FilePickerService.browseForDirectory()
+            }
+            
           }
           .onChange(of: userSettings.stableDiffusionModelsPath) {
             Task {
@@ -70,6 +69,7 @@ struct SettingsView: View {
               ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
               
               ToggleWithHeader(isToggled: $userSettings.alwaysShowPasteboardGenerationDataButton, header: "Always show Paste Generation Data button", description: "This will cause the 'Paste Generation Data' button to always show, even if copied data is incompatible and cannot be pasted.", showAllDescriptions: showAllDescriptions)
+              
               ToggleWithHeader(isToggled: $userSettings.disableModelLoadingRamOptimizations, header: "Disable model loading RAM optimizations", description: "Can sometimes resolve certain model load issues regarding MPS, BFloat16. Warning: Can increase load times significantly.", showAllDescriptions: showAllDescriptions)
             }
             .padding(.leading, 8)
@@ -82,7 +82,6 @@ struct SettingsView: View {
             ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: showAllDescriptions)
             
             ToggleWithHeader(isToggled: $userSettings.killAllPythonProcessesOnTerminate, header: "Kill all Python processes on terminate", description: "Will terminate all Python processes on terminate. Useful for Xcode development force stopping.", showAllDescriptions: showAllDescriptions)
-            //killAllPythonProcessesOnTerminate
           }
           
           
@@ -106,13 +105,13 @@ struct SettingsView: View {
     }
     .padding(2)
     .navigationTitle("Settings")
-    .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 500)
+    .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 700)
   }
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettingsModel.preview(), modelManagerViewModel: ModelManagerViewModel(), scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/outputs/"))
-    .frame(width: 500, height: 400)
+  SettingsView()
+    .frame(width: 500, height: 700)
 }
 
 struct ToggleWithHeader: View {
@@ -150,8 +149,6 @@ struct ToggleWithHeader: View {
   }
 }
 
-
-
 struct BrowseFileRow: View {
   var labelText: String?
   var placeholderText: String
@@ -162,13 +159,16 @@ struct BrowseFileRow: View {
     VStack(alignment: .leading) {
       if let label = labelText {
         Text(label)
+          .font(.system(size: 14, weight: .semibold, design: .default))
+          .underline()
+          .padding(.vertical, 2)
           .padding(.horizontal, 14)
-          .font(.system(.body, design: .monospaced))
       }
       HStack {
         TextField(placeholderText, text: $textValue)
           .textFieldStyle(RoundedBorderTextFieldStyle())
-          .font(.system(.body, design: .monospaced))
+          .font(.system(size: 11, design: .monospaced))
+          .disabled(true)
         Button("Browse...") {
           Task {
             if let path = await browseAction() {

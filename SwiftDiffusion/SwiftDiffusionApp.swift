@@ -11,14 +11,10 @@ import SwiftUI
 @main
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-  @StateObject var userSettingsModel = UserSettingsModel.shared
   @StateObject var scriptManager = ScriptManager.shared
-  @AppStorage("scriptPathInput") var scriptPathInput: String = ""
-  @AppStorage("fileOutputDir") var fileOutputDir: String = ""
   
   let promptModel = PromptModel()
-  
-  @StateObject var modelManagerViewModel = ModelManagerViewModel()
+  let modelManangerViewModel = ModelManagerViewModel()
   
   init() {
     setupAppFileStructure()
@@ -26,10 +22,11 @@ struct SwiftDiffusionApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(modelManagerViewModel: modelManagerViewModel, scriptManager: scriptManager, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir, userSettingsModel: userSettingsModel)
-        .frame(minWidth: 600, idealWidth: 800, maxWidth: .infinity,
-               minHeight: 400, idealHeight: 600, maxHeight: .infinity)
+      ContentView(scriptManager: scriptManager)
+        .frame(minWidth: 600, idealWidth: 900, maxWidth: .infinity,
+               minHeight: 400, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(promptModel)
+        .environmentObject(modelManangerViewModel)
     }
     .windowToolbarStyle(DefaultWindowToolbarStyle())
   }

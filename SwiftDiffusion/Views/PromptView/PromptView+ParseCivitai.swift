@@ -165,7 +165,7 @@ extension PromptView {
     let parsedModelName = value
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
     parseLog("Parsed model substrings: \(parsedModelSubstrings)")
-    if let matchingModel = modelManager.items.first(where: { item in
+    if let matchingModel = modelManagerViewModel.items.first(where: { item in
       let itemSubstrings = splitAndFilterModelName(item.name)
       parseLog("Model item substrings: \(itemSubstrings) for model: \(item.name)")
       let isMatch = parsedModelSubstrings.contains(where: itemSubstrings.contains)

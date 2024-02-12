@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct PromptTopStatusBar: View {
-  var userSettings: UserSettingsModel
+  @ObservedObject var userSettings = UserSettings.shared
+  
   var generationDataInPasteboard: Bool
   var onPaste: (String) -> Void // Closure to handle paste action
   
@@ -44,7 +45,6 @@ struct PromptTopStatusBar: View {
       print("Pasteboard content: \(pasteboardContent)")
   }
   return PromptTopStatusBar(
-      userSettings: UserSettingsModel.preview(),
       generationDataInPasteboard: true,
       onPaste: mockParseAndSetPromptData
   )

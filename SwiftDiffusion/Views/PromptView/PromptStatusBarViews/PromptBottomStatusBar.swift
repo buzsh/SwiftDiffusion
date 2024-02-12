@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct PromptBottomStatusBar: View {
-  @State private var showingModelPreferences = false
   @EnvironmentObject var currentPrompt: PromptModel
   
+  @State private var showingModelPreferences = false
   
   var body: some View {
     HStack {

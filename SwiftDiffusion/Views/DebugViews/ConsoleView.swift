@@ -8,19 +8,20 @@
 import SwiftUI
 
 struct ConsoleView: View {
+  @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager
-  @Binding var scriptPathInput: String
   
   @State private var outputImage: Image?
   
   var body: some View {
     VStack {
-      BrowseFileRow(placeholderText: "path/to/webui.sh",
-                    textValue: $scriptPathInput) {
+      BrowseFileRow(labelText: "webui.sh file",
+                    placeholderText: "../stable-diffusion-webui/webui.sh",
+                    textValue: $userSettings.webuiShellPath) {
         await FilePickerService.browseForShellFile()
       }
-                    .padding(.horizontal, Constants.Layout.verticalPadding)
-                    .padding(.top, 10)
+      .padding(.horizontal, Constants.Layout.verticalPadding)
+      .padding(.top, 10)
       // API test output
       if let outputImage = outputImage {
         outputImage
@@ -44,7 +45,6 @@ struct ConsoleView: View {
         Text(scriptManager.scriptStateText)
           .font(.system(.body, design: .monospaced))
           .onAppear {
-            scriptPathInput = scriptManager.scriptPath ?? ""
             Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
         
@@ -91,7 +91,6 @@ struct ConsoleView: View {
         .disabled(!scriptManager.scriptState.isTerminatable)
         
         Button("Start") {
-          scriptManager.scriptPath = scriptPathInput
           scriptManager.run()
         }
         .disabled(!scriptManager.scriptState.isStartable)

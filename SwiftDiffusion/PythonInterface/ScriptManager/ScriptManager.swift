@@ -6,14 +6,11 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum ScriptResult {
   case success(String)
   case failure(Error)
-}
-
-extension Constants.Keys {
-  static let scriptPath = "scriptPath"
 }
 
 extension Constants.Delays {
@@ -21,6 +18,8 @@ extension Constants.Delays {
 }
 
 class ScriptManager: ObservableObject {
+  @ObservedObject var userSettings = UserSettings.shared
+  
   static let shared = ScriptManager()
   private var pythonProcess: PythonProcess?
   
@@ -36,31 +35,22 @@ class ScriptManager: ObservableObject {
   
   @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
-
+  
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
-  var scriptPath: String? {
-    didSet {
-      UserDefaults.standard.set(scriptPath, forKey: Constants.Keys.scriptPath)
-    }
-  }
   /// Initializes a new instance of `ScriptManager`.
   init() {
-    self.scriptPath = UserDefaults.standard.string(forKey: Constants.Keys.scriptPath)
-    if let scriptPath = self.scriptPath {
-      self.configManager = ConfigFileManager(scriptPath: scriptPath)
-    } else {
-      self.configManager = nil
-    }
+    self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)
   }
   
   func updateScriptState(_ state: ScriptState) {
     self.scriptState = state
     
-    if state == .terminated {
+    if state == .terminated || state == .unableToLocateScript {
       handleUiOnTermination()
       Delay.by(Constants.Delays.secondsBetweenTerminatedAndReadyState) {
         self.scriptState = .readyToStart
+        self.modelLoadState = .idle
       }
     }
   }
@@ -89,14 +79,33 @@ class ScriptManager: ObservableObject {
   func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
     updateScriptState(.launching)
+    modelLoadState = .launching
     serviceUrl = nil
   }
   
+  func performRequiredPathsCheck() {
+    guard !userSettings.webuiShellPath.isEmpty else {
+      Debug.log("[run] userSettings.webuiShellPath is empty")
+      updateScriptState(.unableToLocateScript)
+      modelLoadState = .failed
+      return
+    }
+    guard !userSettings.stableDiffusionModelsPath.isEmpty else {
+      Debug.log("[run] userSettings.stableDiffusionModelsPath is empty")
+      updateScriptState(.unableToLocateScript)
+      modelLoadState = .failed
+      return
+    }
+  }
+  
   func run() {
-    modelLoadState = .launching
-    
     newRunScriptState()
-    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(scriptPath) else { return }
+    
+    performRequiredPathsCheck()
+    
+    guard let (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath) else {
+      Debug.log("GUARD: (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath)")
+      return }
     
     disableLaunchBrowserInConfigJson()
     
@@ -104,8 +113,6 @@ class ScriptManager: ObservableObject {
     pythonProcess?.delegate = self
     pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
   }
-  
-  
   /// Terminates the script execution.
   /// - Parameter completion: A closure that is called with the result of the termination attempt.
   ///
@@ -125,14 +132,15 @@ class ScriptManager: ObservableObject {
     updateScriptState(.isTerminating)
     pythonProcess?.terminate()
     
-    // TODO: UserSettingsModel
-    
-    //if userSettings.killAllPythonProcessesOnTerminate {
-    //  terminateAllPythonProcesses
-    //}
+    if userSettings.killAllPythonProcessesOnTerminate {
+      terminateAllPythonProcesses()
+    } else {
+      pythonProcess?.terminate()
+      restoreLaunchBrowserInConfigJson()
+    }
     
     // Handle post-termination logic
-    restoreLaunchBrowserInConfigJson()
+    
     completion(.success("Process terminated successfully."))
     updateScriptState(.terminated)
   }
@@ -145,14 +153,12 @@ class ScriptManager: ObservableObject {
     Debug.log("Process terminated immediately.")
   }
   
-
-  
   func disableLaunchBrowserInConfigJson() {
     guard let configManager = self.configManager else {
       updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
       return
     }
-
+    
     configManager.disableLaunchBrowser { [weak self] result in
       switch result {
       case .success(let originalLine):

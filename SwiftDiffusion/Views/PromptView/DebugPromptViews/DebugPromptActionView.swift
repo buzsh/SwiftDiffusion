@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct DebugPromptActionView: View {
-  @ObservedObject var scriptManager: ScriptManager
-  @ObservedObject var userSettings: UserSettingsModel
-  
   @EnvironmentObject var currentPrompt: PromptModel
+  
+  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var userSettings = UserSettings.shared
   
   var body: some View {
     if userSettings.showDebugMenu {
@@ -41,7 +41,7 @@ struct DebugPromptActionView: View {
 
 
 #Preview {
-  DebugPromptActionView(scriptManager: ScriptManager.preview(withState: .readyToStart), userSettings: UserSettingsModel.preview())
+  DebugPromptActionView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .environmentObject(PromptModel())
 }
 

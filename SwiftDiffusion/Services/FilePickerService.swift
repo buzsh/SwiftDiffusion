@@ -58,6 +58,7 @@ struct FilePickerService {
       let panel = NSOpenPanel()
       panel.allowsMultipleSelection = false
       panel.canChooseDirectories = true
+      panel.canCreateDirectories = true
       panel.canChooseFiles = false
       
       panel.begin { response in
