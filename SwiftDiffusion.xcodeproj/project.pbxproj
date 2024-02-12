@@ -277,8 +277,8 @@
 		297196472B715061000F7960 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				29145E7B2B78110200BFA64B /* ToolbarViews */,
 				29145E742B77DBCE00BFA64B /* CommonPreviews */,
+				29145E7B2B78110200BFA64B /* ToolbarViews */,
 				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
 				293336472B72A5CE007237AA /* PromptView */,
 				2916F3352B728586001D14B9 /* DetailView */,

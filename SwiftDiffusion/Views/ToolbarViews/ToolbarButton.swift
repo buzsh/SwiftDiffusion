@@ -40,4 +40,5 @@ struct ToolbarButton: View {
   ToolbarButton(symbol: "arkit") {
     Debug.log("Hello")
   }
+  .frame(width: 300, height: 40)
 }
