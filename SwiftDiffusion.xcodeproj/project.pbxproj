@@ -232,10 +232,10 @@
 		2916F3322B7278D4001D14B9 /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
+				29623E382B79886000EC719F /* RequiredInputPaths */,
 				29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */,
 				2916F3332B7278FD001D14B9 /* SettingsView.swift */,
 				29C0F37E2B7ABED50017DD6B /* SettingsSections */,
-				29623E382B79886000EC719F /* RequiredInputPaths */,
 				296AA9EF2B769B2A00CF0658 /* UserSettings.swift */,
 				29C0F37C2B7AB3D50017DD6B /* UserSettings+URLs.swift */,
 			);

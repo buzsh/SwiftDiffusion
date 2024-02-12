@@ -41,5 +41,5 @@ struct FilesSection: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .files)
+  SettingsView(selectedTab: .files)
 }

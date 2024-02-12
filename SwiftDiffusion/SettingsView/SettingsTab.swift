@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-enum SettingsTab: String, CaseIterable, Identifiable {
+enum SettingsTab: String {
   case general = "General"
   case files = "Files"
   case prompt = "Prompt"
   case engine = "Engine"
   case developer = "Developer"
-  
-  var id: Self { self }
   
   var symbol: String {
     switch self {
@@ -45,6 +43,11 @@ enum SettingsTab: String, CaseIterable, Identifiable {
     case .developer: return "Developer"
     }
   }
+}
+
+
+extension SettingsTab: CaseIterable, Identifiable {
+  var id: Self { self }
 }
 
 

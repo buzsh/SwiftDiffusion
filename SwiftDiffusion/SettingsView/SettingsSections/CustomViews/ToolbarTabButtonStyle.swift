@@ -21,5 +21,5 @@ struct ToolbarTabButtonStyle: ButtonStyle {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .general)
+  SettingsView(selectedTab: .general)
 }

@@ -42,5 +42,5 @@ struct ToggleWithHeader: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .prompt)
+  SettingsView(selectedTab: .prompt)
 }

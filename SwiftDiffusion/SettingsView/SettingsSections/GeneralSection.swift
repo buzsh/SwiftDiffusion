@@ -16,5 +16,5 @@ struct GeneralSection: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .general)
+  SettingsView(selectedTab: .general)
 }

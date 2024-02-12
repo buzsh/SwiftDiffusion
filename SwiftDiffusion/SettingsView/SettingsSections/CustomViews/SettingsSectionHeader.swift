@@ -41,9 +41,9 @@ struct SettingsSectionHeader: View {
 
 
 #Preview("Prompt Tab") {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .prompt)
+  SettingsView(selectedTab: .prompt)
 }
 
 #Preview("Files Tab") {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .files)
+  SettingsView(selectedTab: .files)
 }

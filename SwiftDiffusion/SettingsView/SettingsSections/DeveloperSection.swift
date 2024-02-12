@@ -23,5 +23,5 @@ struct DeveloperSection: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .developer)
+  SettingsView(selectedTab: .developer)
 }

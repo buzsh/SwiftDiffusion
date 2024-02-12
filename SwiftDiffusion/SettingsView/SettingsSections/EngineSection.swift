@@ -19,5 +19,5 @@ struct EngineSection: View {
 }
 
 #Preview {
-  SettingsView(userSettings: UserSettings.shared, selectedTab: .engine)
+  SettingsView(selectedTab: .engine)
 }
