@@ -16,8 +16,6 @@ struct SwiftDiffusionApp: App {
   let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
   
-  @State private var showingUpdates = false
-  
   init() {
     setupAppFileStructure()
   }
@@ -25,11 +23,12 @@ struct SwiftDiffusionApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView(scriptManager: scriptManager)
-        .frame(minWidth: 600, idealWidth: 900, maxWidth: .infinity,
-               minHeight: 400, idealHeight: 800, maxHeight: .infinity)
+        .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
+               minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
     }
+    .windowToolbarStyle(.unified(showsTitle: false))
     .commands {
       CommandGroup(after: .appInfo) {
         Divider()

@@ -12,10 +12,11 @@ struct PromptTopStatusBar: View {
   @ObservedObject var userSettings = UserSettings.shared
   
   var generationDataInPasteboard: Bool
-  var onPaste: (String) -> Void // Closure to handle paste action
+  var onPaste: (String) -> Void
   
   var body: some View {
-    
+    if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton || currentPrompt.selectedModel != nil {
+      
       HStack {
         if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
           Button("Paste Generation Data") {
@@ -40,7 +41,8 @@ struct PromptTopStatusBar: View {
       }
       .padding(.horizontal, 12)
       .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow)) // Assuming VisualEffectBlurView is defined elsewhere
+      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
+    }
   }
   
   func getPasteboardString() -> String? {
@@ -49,19 +51,45 @@ struct PromptTopStatusBar: View {
   
 }
 
-#Preview {
-  CommonPreviews.promptView
+#Preview("PromptView") {
+  CommonPreviews.promptTopStatusBarView
 }
 
-/*
-#Preview {
-  let mockParseAndSetPromptData: (String) -> Void = { pasteboardContent in
-      print("Pasteboard content: \(pasteboardContent)")
+extension CommonPreviews {
+  
+  @MainActor
+  static var promptTopStatusBarView: some View {
+    let promptModelPreview = PromptModel()
+    promptModelPreview.positivePrompt = "sample, positive, prompt"
+    promptModelPreview.negativePrompt = "sample, negative, prompt"
+    
+    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
+    
+    let modelManagerViewModel = ModelManagerViewModel()
+    
+    return PromptView(
+      scriptManager: ScriptManager.preview(withState: .readyToStart)
+    )
+    .environmentObject(promptModelPreview)
+    .environmentObject(modelManagerViewModel)
+    .frame(width: 400, height: 600)
   }
-  let promptModelPreview: PromptModel
-  return PromptTopStatusBar(
-      generationDataInPasteboard: true,
-      onPaste: mockParseAndSetPromptData
-  )
 }
-*/
+
+#Preview("TopStatusBar") {
+  let mockParseAndSetPromptData: (String) -> Void = { pasteboardContent in
+    print("Pasteboard content: \(pasteboardContent)")
+  }
+  let promptModelPreview = PromptModel()
+  promptModelPreview.positivePrompt = "sample, positive, prompt"
+  promptModelPreview.negativePrompt = "sample, negative, prompt"
+  promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
+  
+  return PromptTopStatusBar(
+    generationDataInPasteboard: true,
+    onPaste: mockParseAndSetPromptData
+  )
+  .environmentObject(promptModelPreview)
+  .frame(width: 400)
+}
+

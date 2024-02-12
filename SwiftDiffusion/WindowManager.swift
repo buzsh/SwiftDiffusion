@@ -17,7 +17,7 @@ class WindowManager: NSObject, ObservableObject {
   override private init() { }
   
   func showUpdatesWindow() {
-    // Check if the window already exists to avoid creating multiple instances
+    // check if the window already exists to avoid creating multiple instances
     if updatesWindow == nil {
       updatesWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: 480, height: 300),
@@ -28,15 +28,15 @@ class WindowManager: NSObject, ObservableObject {
       updatesWindow?.title = "Check for Updates"
       
       updatesWindow?.isReleasedWhenClosed = false
-      updatesWindow?.delegate = self // Make sure WindowManager conforms to NSWindowDelegate
+      updatesWindow?.delegate = self
     }
     updatesWindow?.makeKeyAndOrderFront(nil)
   }
   
-  func showSettingsWindow() {
+  func showSettingsWindow(withPreferenceStyle: Bool = false) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
-        contentRect: NSRect(x: 40, y: 40, width: 480, height: 300),
+        contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
         styleMask: [.titled, .closable, .resizable],
         backing: .buffered, defer: false)
       settingsWindow?.center()
@@ -46,6 +46,14 @@ class WindowManager: NSObject, ObservableObject {
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
+      
+      if withPreferenceStyle {
+        if #available(macOS 11.0, *) {
+          settingsWindow?.toolbarStyle = .preference
+          settingsWindow?.titlebarAppearsTransparent = false
+          settingsWindow?.titleVisibility = .visible
+        }
+      }
     }
     settingsWindow?.makeKeyAndOrderFront(nil)
   }
