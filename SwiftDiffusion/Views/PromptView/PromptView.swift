@@ -48,10 +48,12 @@ struct PromptView: View {
     .frame(minWidth: 320, idealWidth: 800, maxHeight: .infinity)
     .toolbar {
       ToolbarItem(placement: .automatic) {
-        Button(action: {
-          isRightPaneVisible.toggle()
-        }) {
-          Image(systemName: "sidebar.squares.right")
+        if userSettings.showDebugMenu {
+          Button(action: {
+            isRightPaneVisible.toggle()
+          }) {
+            Image(systemName: "apple.terminal") // sidebar.squares.right
+          }
         }
       }
     }
@@ -203,8 +205,7 @@ struct PromptView: View {
   
   private var rightPane: some View {
     VStack {
-      Text("Resizable column 2")
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+      ConsoleView(scriptManager: scriptManager)
     }
     .padding()
     .background(Color(NSColor.windowBackgroundColor))
