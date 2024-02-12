@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PromptTopStatusBar: View {
-  @EnvironmentObject var userSettings: UserSettingsModel
+  @ObservedObject var userSettings = UserSettings.shared
   
   var generationDataInPasteboard: Bool
   var onPaste: (String) -> Void // Closure to handle paste action

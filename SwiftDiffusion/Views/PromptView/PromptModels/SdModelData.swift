@@ -68,7 +68,7 @@ extension PromptView {
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
         
-        for item in modelManager.items where item.sdModelCheckpoint == nil {
+        for item in modelManagerViewModel.items where item.sdModelCheckpoint == nil {
           let itemFilename = item.url.lastPathComponent
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
             item.sdModelCheckpoint = matchingModel.title
@@ -169,7 +169,7 @@ extension PromptView {
       Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
       
       // Now iterate over modelManager.items to find a match
-      if let matchingItem = modelManager.items.first(where: { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }) {
+      if let matchingItem = modelManagerViewModel.items.first(where: { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }) {
         // SET MODEL TO MATCHED MODEL
         currentPrompt.selectedModel = matchingItem
         Debug.log("Selected model: \(matchingItem.name)")
@@ -197,7 +197,7 @@ extension PromptView {
       Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
       
       // Find the matching item and return it
-      return modelManager.items.first { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }
+      return modelManagerViewModel.items.first { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }
     } catch {
       Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
       return nil

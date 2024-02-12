@@ -15,6 +15,7 @@ extension ScriptState {
     case .active:         return ".active"
     case .isTerminating:  return ".isTerminating"
     case .terminated:     return ".terminated"
+    case .unableToLocateScript: return ".unableToLocateScript"
     }
   }
 }

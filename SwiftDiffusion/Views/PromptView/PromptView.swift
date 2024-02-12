@@ -18,10 +18,11 @@ extension Constants.Layout {
 }
 
 struct PromptView: View {
-  @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var userSettings: UserSettingsModel
+  @ObservedObject var userSettings = UserSettings.shared
   
-  @ObservedObject var modelManager: ModelManagerViewModel
+  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  
   @ObservedObject var scriptManager: ScriptManager
   
   @State private var isRightPaneVisible: Bool = false
@@ -76,7 +77,7 @@ struct PromptView: View {
               PromptRowHeading(title: "Model")
               Menu {
                 Section(header: Text("􀢇 CoreML")) {
-                  ForEach(modelManager.items.filter { $0.type == .coreMl }) { item in
+                  ForEach(modelManagerViewModel.items.filter { $0.type == .coreMl }) { item in
                     Button(item.name) {
                       userDidSelectModel = true
                       currentPrompt.selectedModel = item
@@ -85,7 +86,7 @@ struct PromptView: View {
                   }
                 }
                 Section(header: Text("􁻴 Python")) {
-                  ForEach(modelManager.items.filter { $0.type == .python }) { item in
+                  ForEach(modelManagerViewModel.items.filter { $0.type == .python }) { item in
                     Button(item.name) {
                       userDidSelectModel = true
                       currentPrompt.selectedModel = item
@@ -99,10 +100,10 @@ struct PromptView: View {
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
             .onAppear {
-              modelManager.observeScriptManagerState(scriptManager: scriptManager)
+              modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
               if scriptManager.scriptState == .readyToStart {
                 Task {
-                  await modelManager.loadModels()
+                  await modelManagerViewModel.loadModels()
                   
                 }
               }

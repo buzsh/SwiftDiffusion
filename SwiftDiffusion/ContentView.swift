@@ -29,15 +29,18 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
+  @ObservedObject var userSettings = UserSettings.shared
+  
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var userSettings: UserSettingsModel
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   // Toolbar
   @State private var showingSettingsView = false
-  @ObservedObject var modelManagerViewModel: ModelManagerViewModel
+  // RequiredInputPaths
+  @State private var showingRequiredInputPathsView = false
+  @State private var hasDismissedRequiredInputPathsView = false
+  @State private var isPulsating = false
   // Console
   @ObservedObject var scriptManager: ScriptManager
-  @Binding var scriptPathInput: String
-  @Binding var fileOutputDir: String
   // Views
   @State private var selectedView: ViewManager = .prompt
   // Detail
@@ -74,13 +77,13 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(modelManager: modelManagerViewModel, scriptManager: scriptManager)
+        PromptView(scriptManager: scriptManager)
       case .console:
-        ConsoleView(scriptManager: scriptManager, scriptPathInput: $scriptPathInput)
+        ConsoleView(scriptManager: scriptManager)
       case .models:
-        ModelManagerView(scriptManager: scriptManager, viewModel: modelManagerViewModel)
+        ModelManagerView(scriptManager: scriptManager)
       case .settings:
-        SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+        SettingsView()
       }
     } detail: {
       // Image, FileSelect DetailView
@@ -88,8 +91,12 @@ struct ContentView: View {
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .onAppear {
-      scriptPathInput = scriptManager.scriptPath ?? ""
-      fileHierarchy.rootPath = fileOutputDir
+      if let directoryPath = userSettings.outputDirectoryUrl?.path {
+        fileHierarchy.rootPath = directoryPath
+      }
+      
+      Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
+      
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
@@ -99,8 +106,10 @@ struct ContentView: View {
       }
       handleScriptOnLaunch()
     }
-    .onChange(of: fileOutputDir) {
-      fileHierarchy.rootPath = fileOutputDir
+    .onChange(of: userSettings.outputDirectoryPath) {
+      if let directoryPath = userSettings.outputDirectoryUrl?.path {
+        fileHierarchy.rootPath = directoryPath
+      }
       Task {
         await fileHierarchy.refresh()
       }
@@ -118,7 +127,6 @@ struct ContentView: View {
         HStack {
           Button(action: {
             if scriptManager.scriptState == .readyToStart {
-              scriptManager.scriptPath = scriptPathInput
               scriptManager.run()
             } else {
               scriptManager.terminate()
@@ -129,7 +137,7 @@ struct ContentView: View {
             } else {
               Image(systemName: "stop.fill")
             }
-          }.disabled(scriptManager.scriptState.isAwaitingProcessToPlayOut)
+          }//.disabled(scriptManager.scriptState == .isTerminating)
           
           Circle()
             .fill(scriptManager.scriptState.statusColor)
@@ -180,21 +188,26 @@ struct ContentView: View {
             Text("Generate")
           }
           .disabled(
-              scriptManager.scriptState != .active ||
-              (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-              (!scriptManager.modelLoadState.allowGeneration) ||
-              currentPrompt.selectedModel == nil
+            scriptManager.scriptState != .active ||
+            (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+            (!scriptManager.modelLoadState.allowGeneration) ||
+            currentPrompt.selectedModel == nil
           )
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
-            Text("Console").tag(ViewManager.console)
+            if userSettings.showDebugMenu {
+              Text("Console").tag(ViewManager.console)
+            }
             Text("Models").tag(ViewManager.models)
           }
           .pickerStyle(SegmentedPickerStyle())
-           
+          
+          if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+            RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
+          }
+          
           Button(action: {
-            Debug.log("Toolbar item selected")
             showingSettingsView = true
           }) {
             Image(systemName: "gear")
@@ -205,8 +218,28 @@ struct ContentView: View {
       
     }
     .sheet(isPresented: $showingSettingsView) {
-      SettingsView(modelManagerViewModel: modelManagerViewModel, scriptPathInput: $scriptPathInput, fileOutputDir: $fileOutputDir)
+      SettingsView()
     }
+    .onAppear {
+      if !CanvasPreview && !userHasEnteredBothRequiredFields {
+        showingRequiredInputPathsView = true
+      }
+    }
+    .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
+      hasDismissedRequiredInputPathsView = true
+    }) {
+      RequiredInputPathsView()
+    }
+    .onChange(of: userSettings.webuiShellPath) {
+      attemptLaunchOfPythonEnvironment()
+    }
+    .onChange(of: userSettings.stableDiffusionModelsPath) {
+      attemptLaunchOfPythonEnvironment()
+    }
+  }
+  
+  private var userHasEnteredBothRequiredFields: Bool {
+    return !userSettings.webuiShellPath.isEmpty && !userSettings.stableDiffusionModelsPath.isEmpty
   }
   
   private func loadLastSelectedImage() async {
@@ -236,30 +269,32 @@ extension ModelLoadState {
   let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
-  let modelManager = ModelManagerViewModel()
-  return ContentView(modelManagerViewModel: modelManager, scriptManager: scriptManagerPreview, scriptPathInput: .constant("path/to/webui.sh"), fileOutputDir: .constant("path/to/output"))
+  let modelManagerViewModel = ModelManagerViewModel()
+  return ContentView(scriptManager: scriptManagerPreview)
     .environmentObject(promptModelPreview)
-    .environmentObject(UserSettingsModel.preview())
+    .environmentObject(modelManagerViewModel)
     .frame(height: 700)
 }
 
 
 extension ContentView {
   func handleScriptOnLaunch() {
-    if userSettings.alwaysStartPythonEnvironmentAtLaunch {
-      if !self.hasFirstAppeared {
-        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-          Debug.log("Running in SwiftUI Preview, skipping script execution and model loading.")
-        } else {
-          Debug.log("First appearance. Starting script...")
-          scriptManager.run()
-          self.hasFirstAppeared = true
-          
-          Task {
-            await modelManagerViewModel.loadModels()
-          }
+    if !self.hasFirstAppeared {
+      Debug.log("First appearance. Starting script...")
+      attemptLaunchOfPythonEnvironment()
+      self.hasFirstAppeared = true
+    }
+  }
+  func attemptLaunchOfPythonEnvironment() {
+    if userSettings.alwaysStartPythonEnvironmentAtLaunch && userHasEnteredBothRequiredFields {
+      if !CanvasPreview {
+        scriptManager.run()
+        Task {
+          await modelManagerViewModel.loadModels()
         }
       }
     }
   }
 }
+
+let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"

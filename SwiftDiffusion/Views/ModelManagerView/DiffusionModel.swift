@@ -10,8 +10,7 @@ import SwiftUI
 
 @MainActor
 class ModelManagerViewModel: ObservableObject {
-  @EnvironmentObject var userSettings: UserSettingsModel
-  //let userSettings = UserSettingsModel.shared
+  @ObservedObject var userSettings = UserSettings.shared
   
   @Published var items: [ModelItem] = []
   

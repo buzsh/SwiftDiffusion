@@ -13,6 +13,8 @@ enum ScriptState: Equatable {
   case active
   case isTerminating
   case terminated
+  case unableToLocateScript
+  //case error
 }
 
 extension ScriptManager {
@@ -33,6 +35,8 @@ extension ScriptManager {
       return "Terminating..."
     case .terminated:
       return "Terminated"
+    case .unableToLocateScript:
+      return "Error: Unable to start script"
     }
   }
 }
@@ -45,6 +49,7 @@ extension ScriptState {
     case .active: return Color.green
     case .isTerminating: return Color.yellow
     case .terminated: return Color.red
+    case .unableToLocateScript: return Color.red
     }
   }
   var isActive: Bool {
@@ -62,6 +67,7 @@ extension ScriptState {
     case .active: return false
     case .isTerminating: return true
     case .terminated: return true
+    case .unableToLocateScript: return false
     }
   }
   
@@ -72,6 +78,7 @@ extension ScriptState {
     case .active: return false
     case .isTerminating: return false
     case .terminated: return true
+    case .unableToLocateScript: return true
     }
   }
   
@@ -82,6 +89,7 @@ extension ScriptState {
     case .active: return true
     case .isTerminating: return false
     case .terminated: return false
+    case .unableToLocateScript: return false
     }
   }
 }
