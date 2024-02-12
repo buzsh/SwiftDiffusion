@@ -8,6 +8,10 @@
 import SwiftUI
 import AppKit
 
+extension Constants.Layout {
+  static let detailToolbarSpacing: CGFloat = 5
+}
+
 struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
@@ -44,6 +48,22 @@ struct DetailView: View {
       
       HStack {
         Button(action: {
+            if let previousImageNode = fileHierarchyObject.previousImage(currentPath: lastSelectedImagePath) {
+                if let image = NSImage(contentsOfFile: previousImageNode.fullPath) {
+                    self.selectedImage = image
+                    self.lastSelectedImagePath = previousImageNode.fullPath
+                }
+            }
+        }) {
+            Image(systemName: "arrow.left")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.leading, Constants.Layout.detailToolbarSpacing)
+        //.disabled if no more most-recent images in the directory
+        
+        Divider()
+        
+        Button(action: {
           Task {
             await self.fileHierarchyObject.refresh()
           }
@@ -51,19 +71,14 @@ struct DetailView: View {
           Image(systemName: "arrow.clockwise")
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, 4)
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
         
-        // Reveal in finder
-        Button(action: {
-          Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
-          if !lastSelectedImagePath.isEmpty {
-            NSWorkspace.shared.selectFile(lastSelectedImagePath, inFileViewerRootedAtPath: "")
-          }
-        }) {
-          Image(systemName: "folder")
+        if fileHierarchyObject.isLoading {
+          ProgressView()
+            .progressViewStyle(.circular)
+            .controlSize(.small)
+            .padding(.leading, Constants.Layout.detailToolbarSpacing)
         }
-        .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, 4)
         
         // Most recent image button
         /*
@@ -100,12 +115,17 @@ struct DetailView: View {
         
         Spacer()
         
-        if fileHierarchyObject.isLoading {
-          ProgressView()
-            .progressViewStyle(.circular)
-            .controlSize(.small)
-            .padding(.leading, 5)
+        // Reveal in finder
+        Button(action: {
+          Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
+          if !lastSelectedImagePath.isEmpty {
+            NSWorkspace.shared.selectFile(lastSelectedImagePath, inFileViewerRootedAtPath: "")
+          }
+        }) {
+          Image(systemName: "folder")
         }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
         
         // Fullscreen image button
         Button(action: {
@@ -117,8 +137,26 @@ struct DetailView: View {
         }
         .buttonStyle(BorderlessButtonStyle())
         
+        Divider()
+        
+        Button(action: {
+            if let nextImageNode = fileHierarchyObject.nextImage(currentPath: lastSelectedImagePath) {
+                if let image = NSImage(contentsOfFile: nextImageNode.fullPath) {
+                    self.selectedImage = image
+                    self.lastSelectedImagePath = nextImageNode.fullPath
+                }
+            }
+        }) {
+            Image(systemName: "arrow.right")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
+        //.disabled if no more least-recent images in the directory
+        
+        
+        
       }
-      .padding(.horizontal, 18)
+      .padding(.horizontal, Constants.Layout.detailToolbarSpacing)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)
       .background(.bar)
       

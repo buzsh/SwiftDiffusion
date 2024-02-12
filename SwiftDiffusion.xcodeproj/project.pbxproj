@@ -60,6 +60,8 @@
 		29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */; };
 		29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */; };
 		29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */; };
+		29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36A2B79D2CA0017DD6B /* FileNode.swift */; };
+		29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -127,6 +129,8 @@
 		29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUtility.swift; sourceTree = "<group>"; };
 		29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenImageView.swift; sourceTree = "<group>"; };
 		29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowManager.swift; sourceTree = "<group>"; };
+		29C0F36A2B79D2CA0017DD6B /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
+		29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHierarchy+Control.swift"; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -208,7 +212,7 @@
 				29C0F3612B79C7E90017DD6B /* ImageDetailViews */,
 				29B5718B2B75EAC50057DD50 /* ProgressView.swift */,
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
-				2916F3382B728604001D14B9 /* FileHierarchy.swift */,
+				29C0F3692B79D2BA0017DD6B /* FileHierarchy */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
 				2916F33C2B72867C001D14B9 /* FileRowView.swift */,
 				2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */,
@@ -447,6 +451,16 @@
 			path = ImageDetailViews;
 			sourceTree = "<group>";
 		};
+		29C0F3692B79D2BA0017DD6B /* FileHierarchy */ = {
+			isa = PBXGroup;
+			children = (
+				29C0F36A2B79D2CA0017DD6B /* FileNode.swift */,
+				2916F3382B728604001D14B9 /* FileHierarchy.swift */,
+				29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */,
+			);
+			path = FileHierarchy;
+			sourceTree = "<group>";
+		};
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -548,6 +562,7 @@
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
+				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,
@@ -555,6 +570,7 @@
 				29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				29145E762B77DBDA00BFA64B /* CommonPreviews.swift in Sources */,
+				29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */,
 				29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
