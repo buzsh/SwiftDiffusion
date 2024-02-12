@@ -7,18 +7,46 @@
 
 import SwiftUI
 
+struct AppInfo {
+  static var version: String {
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+  }
+  
+  static var buildString: String {
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+  }
+  
+  static var buildInt: Int {
+    Int(buildString) ?? 0
+  }
+  
+  static var versionAndBuild: String {
+    "v\(version) (\(buildString))"
+  }
+}
+
 struct UpdatesView: View {
+  
   var body: some View {
     VStack {
         ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
       
       Spacer()
       
-      HStack {
-        Image(systemName: "checkmark.circle.fill")
-          .foregroundStyle(Color.green)
-        Text("You are running the latest version.")
-          .bold()
+      HStack(alignment: .top) {
+          Image(systemName: "checkmark.circle.fill")
+            .foregroundStyle(Color.green)
+            .padding(.trailing, 2)
+          VStack(alignment: .leading) {
+            Text("You are running the latest version.")
+              .bold()
+              .padding(.bottom, 1)
+            Text("SwiftDiffusion \(AppInfo.versionAndBuild)")
+              .font(.system(size: 12, weight: .medium))
+              .foregroundStyle(.secondary)
+              
+          }
+        
       }
 
       Spacer()
@@ -41,6 +69,10 @@ struct UpdatesView: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
+          
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
           
           Button(action: {
             Debug.log("Button")
