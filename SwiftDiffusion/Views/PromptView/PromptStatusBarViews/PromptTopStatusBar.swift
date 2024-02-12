@@ -30,7 +30,7 @@ struct PromptTopStatusBar: View {
         
         if currentPrompt.selectedModel != nil {
           Button(action: {
-            copyToClipboard(currentPrompt.getSharablePromptMetadata())
+            currentPrompt.copyMetadataToClipboard()
           }) {
             Image(systemName: "doc.on.clipboard")
           }
@@ -47,11 +47,6 @@ struct PromptTopStatusBar: View {
     return NSPasteboard.general.string(forType: .string)
   }
   
-  func copyToClipboard(_ string: String) {
-      let pasteboard = NSPasteboard.general
-      pasteboard.clearContents()
-      pasteboard.setString(string, forType: .string)
-  }
 }
 
 #Preview {

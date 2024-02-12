@@ -13,7 +13,7 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   @StateObject var scriptManager = ScriptManager.shared
   
-  let promptModel = PromptModel()
+  let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
   
   @State private var showingUpdates = false
@@ -27,7 +27,7 @@ struct SwiftDiffusionApp: App {
       ContentView(scriptManager: scriptManager)
         .frame(minWidth: 600, idealWidth: 900, maxWidth: .infinity,
                minHeight: 400, idealHeight: 800, maxHeight: .infinity)
-        .environmentObject(promptModel)
+        .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
     }
     .commands {
@@ -50,7 +50,7 @@ struct SwiftDiffusionApp: App {
     .commands {
       CommandMenu("Prompt") {
         Button("Copy Generation Data") {
-          Debug.log("[NO FUNC] Copy Generation Data")
+          currentPrompt.copyMetadataToClipboard()
         }
       }
     }
