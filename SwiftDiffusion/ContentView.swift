@@ -50,6 +50,8 @@ struct ContentView: View {
   
   @State private var hasFirstAppeared = false
   
+  @State var imageCountToGenerate: Int = 0
+  
   var body: some View {
     NavigationSplitView {
       // Sidebar
@@ -182,6 +184,7 @@ struct ContentView: View {
           }
           
           Button(action: {
+            
             Task {
               await prepareAndSendAPIRequest()
             }
@@ -236,6 +239,16 @@ struct ContentView: View {
     }
     .onChange(of: userSettings.stableDiffusionModelsPath) {
       attemptLaunchOfPythonEnvironment()
+    }
+    .onChange(of: scriptManager.genStatus) {
+      if scriptManager.genStatus == .generating {
+        imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
+      }
+    }
+    .onChange(of: scriptManager.genStatus) {
+      if scriptManager.genStatus == .done {
+        NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
+      }
     }
   }
   
