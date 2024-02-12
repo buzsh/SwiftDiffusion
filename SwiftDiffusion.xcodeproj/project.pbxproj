@@ -64,6 +64,7 @@
 		29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */; };
 		29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */; };
 		29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3702B7A62180017DD6B /* WindowManager.swift */; };
+		29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -135,6 +136,7 @@
 		29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHierarchy+Control.swift"; sourceTree = "<group>"; };
 		29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesView.swift; sourceTree = "<group>"; };
 		29C0F3702B7A62180017DD6B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyPasteUtility.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -336,8 +338,9 @@
 			isa = PBXGroup;
 			children = (
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
-				29B1D9D32B753AE0009B6F03 /* FileUtility */,
-				29C0F3602B79BDF00017DD6B /* NotificationUtility */,
+				29D362382B72E59F006C57B3 /* FileUtility.swift */,
+				29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */,
+				29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -413,14 +416,6 @@
 			path = ScriptManager;
 			sourceTree = "<group>";
 		};
-		29B1D9D32B753AE0009B6F03 /* FileUtility */ = {
-			isa = PBXGroup;
-			children = (
-				29D362382B72E59F006C57B3 /* FileUtility.swift */,
-			);
-			path = FileUtility;
-			sourceTree = "<group>";
-		};
 		29B1D9D62B755929009B6F03 /* AppStructure */ = {
 			isa = PBXGroup;
 			children = (
@@ -438,14 +433,6 @@
 				29B571832B75B2070057DD50 /* SeedRows.swift */,
 			);
 			path = PromptRows;
-			sourceTree = "<group>";
-		};
-		29C0F3602B79BDF00017DD6B /* NotificationUtility */ = {
-			isa = PBXGroup;
-			children = (
-				29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */,
-			);
-			path = NotificationUtility;
 			sourceTree = "<group>";
 		};
 		29C0F3612B79C7E90017DD6B /* ImageDetailViews */ = {
@@ -623,6 +610,7 @@
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
 				29B5718C2B75EAC50057DD50 /* ProgressView.swift in Sources */,
+				29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
 				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,
 			);
