@@ -11,15 +11,6 @@ struct FilesSection: View {
   @ObservedObject var userSettings: UserSettings
   
   var body: some View {
-    HStack {
-      Text("Automatic Paths")
-        .font(.title2)
-        .padding(.leading, 12)
-        .padding(.bottom, 10)
-        .padding(.top, 20)
-      Spacer()
-    }
-    
     BrowseFileRow(labelText: "webui.sh file",
                   placeholderText: "../stable-diffusion-webui/webui.sh",
                   textValue: $userSettings.webuiShellPath) {

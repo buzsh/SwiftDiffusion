@@ -12,29 +12,30 @@ struct SettingsSectionHeader: View {
   var selectedTab: SettingsTab = .general
   
   var body: some View {
-    if selectedTab.hasHelpIndicators {
+    
       HStack {
         Text(selectedTab.sectionHeaderText)
-          .font(.title2)
+          .font(.title)
           .padding(.leading, 12)
           .padding(.bottom, 10)
           .padding(.top, 20)
         Spacer()
         
-        Spacer()
-        Button(action: {
-          userSettings.alwaysShowSettingsHelp.toggle()
-        }) {
-          HStack {
-            Text(userSettings.alwaysShowSettingsHelp ? "Hide Help" : "Always Show Help")
-              .font(.system(size: 11))
+        if selectedTab.hasHelpIndicators {
+          Button(action: {
+            userSettings.alwaysShowSettingsHelp.toggle()
+          }) {
+            HStack {
+              Text(userSettings.alwaysShowSettingsHelp ? "Hide Help" : "Always Show Help")
+                .font(.system(size: 11))
+            }
+            .padding(.horizontal, 2)
           }
-          .padding(.horizontal, 2)
         }
       }
       .padding(.horizontal, 14)
       .padding(.top)
-    }
+
   }
   
 }
