@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import AppKit
+
+extension Constants.Layout {
+  static let detailToolbarSpacing: CGFloat = 5
+}
 
 struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
   @Binding var lastSelectedImagePath: String
   @ObservedObject var scriptManager: ScriptManager
+  
+  @StateObject private var imageWindowManager = ImageWindowManager()
+  @State private var showingFullscreenImage = false
   
   var body: some View {
     VSplitView {
@@ -40,6 +48,22 @@ struct DetailView: View {
       
       HStack {
         Button(action: {
+            if let previousImageNode = fileHierarchyObject.previousImage(currentPath: lastSelectedImagePath) {
+                if let image = NSImage(contentsOfFile: previousImageNode.fullPath) {
+                    self.selectedImage = image
+                    self.lastSelectedImagePath = previousImageNode.fullPath
+                }
+            }
+        }) {
+            Image(systemName: "arrow.left")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.leading, Constants.Layout.detailToolbarSpacing)
+        //.disabled if no more most-recent images in the directory
+        
+        Divider()
+        
+        Button(action: {
           Task {
             await self.fileHierarchyObject.refresh()
           }
@@ -47,13 +71,32 @@ struct DetailView: View {
           Image(systemName: "arrow.clockwise")
         }
         .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
         
         if fileHierarchyObject.isLoading {
           ProgressView()
             .progressViewStyle(.circular)
             .controlSize(.small)
-            .padding(.leading, 5)
+            .padding(.leading, Constants.Layout.detailToolbarSpacing)
         }
+        
+        // Most recent image button
+        /*
+        Button(action: {
+          Task {
+            if let mostRecentImageNode = await fileHierarchyObject.findMostRecentlyModifiedImageFile() {
+              if let image = NSImage(contentsOfFile: mostRecentImageNode.fullPath) {
+                self.selectedImage = image
+                self.lastSelectedImagePath = mostRecentImageNode.fullPath
+              }
+            }
+          }
+        }) {
+          Image(systemName: "clock.arrow.circlepath")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, 4)
+        */
         
         Spacer()
         
@@ -70,43 +113,50 @@ struct DetailView: View {
             }
         }
         
-        /*
-        if scriptManager.genStatus != .idle {
-          
-              if scriptManager.genStatus == .done {
-                Task {
-                  await self.fileHierarchyObject.refresh()
-                }
-            }
-        }*/
-        
-
-        //Text("\(Int(scriptManager.genProgress * 100))%").padding(.leading, 5)
-        
         Spacer()
         
+        // Reveal in finder
         Button(action: {
-          Task {
-            if let mostRecentImageNode = await fileHierarchyObject.findMostRecentlyModifiedImageFile() {
-              if let image = NSImage(contentsOfFile: mostRecentImageNode.fullPath) {
-                self.selectedImage = image
-                self.lastSelectedImagePath = mostRecentImageNode.fullPath
-              }
-            }
+          Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
+          if !lastSelectedImagePath.isEmpty {
+            NSWorkspace.shared.selectFile(lastSelectedImagePath, inFileViewerRootedAtPath: "")
           }
         }) {
-          Image(systemName: "link")
+          Image(systemName: "folder")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
+        
+        // Fullscreen image button
+        Button(action: {
+          if let image = selectedImage {
+            imageWindowManager.openImageWindow(with: image)
+          }
+        }) {
+          Image(systemName: "arrow.up.left.and.arrow.down.right")
         }
         .buttonStyle(BorderlessButtonStyle())
         
+        Divider()
+        
         Button(action: {
-          Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
+            if let nextImageNode = fileHierarchyObject.nextImage(currentPath: lastSelectedImagePath) {
+                if let image = NSImage(contentsOfFile: nextImageNode.fullPath) {
+                    self.selectedImage = image
+                    self.lastSelectedImagePath = nextImageNode.fullPath
+                }
+            }
         }) {
-          Image(systemName: "questionmark")
+            Image(systemName: "arrow.right")
         }
         .buttonStyle(BorderlessButtonStyle())
+        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
+        //.disabled if no more least-recent images in the directory
+        
+        
+        
       }
-      .padding(.horizontal, 18)
+      .padding(.horizontal, Constants.Layout.detailToolbarSpacing)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)
       .background(.bar)
       
@@ -120,7 +170,6 @@ struct DetailView: View {
   }
 }
 
-/*
 #Preview {
   let mockFileHierarchy = FileHierarchy(rootPath: "/Users/jb/Dev/GitHub/stable-diffusion-webui/outputs")
   @State var selectedImage: NSImage? = nil
@@ -128,9 +177,9 @@ struct DetailView: View {
   let progressViewModel = ProgressViewModel()
   progressViewModel.progress = 20.0
   
-  return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, progressViewModel: progressViewModel).frame(width: 300, height: 600)
+  return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: ScriptManager.preview(withState: .readyToStart)).frame(width: 300, height: 600)
 }
-*/
+
 
 extension FileHierarchy {
   func findMostRecentlyModifiedImageFile() async -> FileNode? {
