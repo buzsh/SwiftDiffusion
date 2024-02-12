@@ -170,7 +170,7 @@ struct ContentView: View {
             Text("\(Int(scriptManager.genProgress * 100))%")
               .font(.system(.body, design: .monospaced))
           } else if scriptManager.genStatus == .finishingUp {
-            Text("Finishing up... \(Int(scriptManager.genProgress * 100))%")
+            Text("Saving")
               .font(.system(.body, design: .monospaced))
           } else if scriptManager.genStatus == .preparingToGenerate {
             ProgressView()
