@@ -15,23 +15,10 @@ struct SettingsView: View {
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       ScrollView {
         VStack {
           VStack(alignment: .leading) {
-            HStack {
-              Text("Settings")
-                .font(.largeTitle)
-                .padding(.vertical, 20)
-                .padding(.horizontal, 14)
-              Spacer()
-              Button(action: {
-                showAllDescriptions.toggle()
-              }) {
-                Text(showAllDescriptions ? "Hide All" : "Show All")
-                Image(systemName: "questionmark.circle")
-              }
-            }
             
             BrowseFileRow(labelText: "webui.sh file",
                           placeholderText: "../stable-diffusion-webui/webui.sh",
@@ -52,6 +39,7 @@ struct SettingsView: View {
             }
             
           }
+          .padding(.top)
           .onChange(of: userSettings.stableDiffusionModelsPath) {
             Task {
               await modelManagerViewModel.loadModels()
@@ -87,7 +75,9 @@ struct SettingsView: View {
           
         }
         .padding(.horizontal, 16)
-      }//scrollview
+      }
+      .frame(maxHeight: .infinity)
+      //scrollview
       VStack {
         HStack {
           Button("Restore Defaults") {
@@ -106,6 +96,30 @@ struct SettingsView: View {
     .padding(2)
     .navigationTitle("Settings")
     .frame(minWidth: 500, idealWidth: 670, minHeight: 350, idealHeight: 700)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .toolbar {
+      ToolbarItemGroup(placement: .automatic) {
+        HStack {
+          
+          Button(action: {
+            Debug.log("Button")
+          }) {
+            Image(systemName: "line.3.horizontal.decrease.circle")
+          }.disabled(true)
+          
+          Button(action: {
+            showAllDescriptions.toggle()
+          }) {
+            HStack {
+              Text(showAllDescriptions ? "Hide Help" : "Show Help")
+              //Image(systemName: "questionmark.circle")
+            }
+            .padding(.horizontal, 2)
+          }
+          
+        }
+      }
+    }
   }
 }
 

@@ -16,6 +16,8 @@ struct SwiftDiffusionApp: App {
   let promptModel = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
   
+  @State private var showingUpdates = false
+  
   init() {
     setupAppFileStructure()
   }
@@ -28,7 +30,30 @@ struct SwiftDiffusionApp: App {
         .environmentObject(promptModel)
         .environmentObject(modelManangerViewModel)
     }
-    .windowToolbarStyle(DefaultWindowToolbarStyle())
+    .commands {
+      CommandGroup(after: .appInfo) {
+        Divider()
+        
+        Button("Check for Updates...") {
+          WindowManager.shared.showUpdatesWindow()
+        }
+        .keyboardShortcut("U", modifiers: [.command])
+        
+        Divider()
+        
+        Button("Settings...") {
+          WindowManager.shared.showSettingsWindow()
+        }
+        .keyboardShortcut(",", modifiers: [.command])
+      }
+    }
+    .commands {
+      CommandMenu("Prompt") {
+        Button("Copy Generation Data") {
+          Debug.log("[NO FUNC] Copy Generation Data")
+        }
+      }
+    }
   }
 }
 
@@ -58,9 +83,16 @@ func setupAppFileStructure() {
 
 // MARK: - AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate {
+  
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
     ScriptManager.shared.terminateImmediately()
     
     return .terminateNow
   }
+  
+  
+  func applicationDidFinishLaunching(_ notification: Notification) {
+    Debug.log("applicationDidFinishLaunching")
+  }
+  
 }
