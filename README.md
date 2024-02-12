@@ -1,46 +1,42 @@
 # SwiftDiffusion
-SwiftUI Stable Diffusion implementation using CoreML and Python (Automatic1111) libraries
+SwiftUI stable diffusion implementation using CoreML and Python libraries.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/105d13ce-80cc-4b65-92ed-f4758b69c2c3">
-    <source media="(prefers-color-scheme: light)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ca9aa1fe-fd14-4f28-a81a-c53eafc18190">
-    <img width="1071" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/105d13ce-80cc-4b65-92ed-f4758b69c2c3">
+    <source media="(prefers-color-scheme: dark)" width="1173" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/439ac3f2-0f24-4778-9b2f-8ae28ac277ae">
+    <source media="(prefers-color-scheme: light)" width="1173" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/0fe22473-2706-4959-b555-e6425928455c">
+    <img width="1173" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/0fe22473-2706-4959-b555-e6425928455c">
   </picture>
+  <sup>One-click paste generation data from sites like Civit.ai</sup>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
 </p>
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59a79363-17bf-4ee6-9d79-1b730ee2758b">
-    <source media="(prefers-color-scheme: light)" width="1071" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/416a84e1-8375-439c-8820-14743516e971">
-    <img width="1071" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59a79363-17bf-4ee6-9d79-1b730ee2758b">
+    <source media="(prefers-color-scheme: dark)" width="1181" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6569e63a-5c31-46d4-8213-3c03a2dd402e">
+    <source media="(prefers-color-scheme: light)" width="1181" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ab3cdbe5-4f85-4921-88e5-ff2ffb67817a">
+    <img width="1181" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ab3cdbe5-4f85-4921-88e5-ff2ffb67817a">
   </picture>
+  <sup>Model checkpoint management. LoRA, ControlNet, AnimateDiff and more on the way.</sup>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
 </p>
 
-<details>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1364" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/3c4d86b4-4a23-409c-aba5-5c6c84ef1bbb">
+    <source media="(prefers-color-scheme: light)" width="1364" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59ef3412-0246-4bd6-aadb-c42d20e7ce1f">
+    <img width="1364" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/59ef3412-0246-4bd6-aadb-c42d20e7ce1f">
+  </picture>
+  <sup>Integrated developer modes for debugging, advanced status monitoring and plugin creation.</sup>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
 
-<summary><h2>Python</h2></summary>
+## TODO
 
-### [automatic1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui/)
-
-```bash
-./webui.sh --api --api-log
-```
-
-cli args: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings
-
-api: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/API
-
-</details>
-
------
-
-<details>
-
-<summary><h2>CoreML</h2></summary>
-
-## [ml-stable-diffusion](https://github.com/apple/ml-stable-diffusion)
-
-https://github.com/apple/ml-stable-diffusion
-
-</details>
+- [ ] README documentation
