@@ -51,4 +51,22 @@ class PromptModel: ObservableObject {
     batchSize = model.preferences.batchSize
     clipSkip = model.preferences.clipSkip
   }
+  
+  func getSharablePromptMetadata() -> String {
+    var modelName = ""
+    if let name = selectedModel?.name { modelName = name }
+    
+    var promptMetadata = "\(positivePrompt)\n"
+    promptMetadata += "Negative prompt: \(negativePrompt)\n"
+    promptMetadata += "Model: \(modelName)\n"
+    promptMetadata += "Size: \(width)x\(height)\n"
+    promptMetadata += "CFG scale: \(cfgScale)\n"
+    promptMetadata += "Steps: \(samplingSteps)\n"
+    promptMetadata += "Clip skip: \(clipSkip)\n"
+    promptMetadata += "Seed: \(seed)\n"
+
+    return promptMetadata
+  }
+  
+  
 }
