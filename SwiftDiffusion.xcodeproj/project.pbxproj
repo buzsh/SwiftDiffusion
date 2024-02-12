@@ -57,6 +57,7 @@
 		29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */; };
 		29B5718C2B75EAC50057DD50 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5718B2B75EAC50057DD50 /* ProgressView.swift */; };
 		29B5718E2B7601960057DD50 /* ContentView+CompositeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */; };
+		29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -121,6 +122,7 @@
 		29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PromptView+ParseCivitai.swift"; sourceTree = "<group>"; };
 		29B5718B2B75EAC50057DD50 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+CompositeImage.swift"; sourceTree = "<group>"; };
+		29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUtility.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 			children = (
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29B1D9D32B753AE0009B6F03 /* FileUtility */,
+				29C0F3602B79BDF00017DD6B /* NotificationUtility */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -420,6 +423,14 @@
 				29B571832B75B2070057DD50 /* SeedRows.swift */,
 			);
 			path = PromptRows;
+			sourceTree = "<group>";
+		};
+		29C0F3602B79BDF00017DD6B /* NotificationUtility */ = {
+			isa = PBXGroup;
+			children = (
+				29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */,
+			);
+			path = NotificationUtility;
 			sourceTree = "<group>";
 		};
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
@@ -537,6 +548,7 @@
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
 				29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */,
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
+				29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */,
 				29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
