@@ -13,8 +13,10 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   @StateObject var scriptManager = ScriptManager.shared
   
-  let promptModel = PromptModel()
+  let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
+  
+  @State private var showingUpdates = false
   
   init() {
     setupAppFileStructure()
@@ -25,10 +27,33 @@ struct SwiftDiffusionApp: App {
       ContentView(scriptManager: scriptManager)
         .frame(minWidth: 600, idealWidth: 900, maxWidth: .infinity,
                minHeight: 400, idealHeight: 800, maxHeight: .infinity)
-        .environmentObject(promptModel)
+        .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
     }
-    .windowToolbarStyle(DefaultWindowToolbarStyle())
+    .commands {
+      CommandGroup(after: .appInfo) {
+        Divider()
+        
+        Button("Check for Updates...") {
+          WindowManager.shared.showUpdatesWindow()
+        }
+        .keyboardShortcut("U", modifiers: [.command])
+        
+        Divider()
+        
+        Button("Settings...") {
+          WindowManager.shared.showSettingsWindow()
+        }
+        .keyboardShortcut(",", modifiers: [.command])
+      }
+    }
+    .commands {
+      CommandMenu("Prompt") {
+        Button("Copy Generation Data") {
+          currentPrompt.copyMetadataToClipboard()
+        }
+      }
+    }
   }
 }
 
@@ -58,9 +83,16 @@ func setupAppFileStructure() {
 
 // MARK: - AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate {
+  
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
     ScriptManager.shared.terminateImmediately()
     
     return .terminateNow
   }
+  
+  
+  func applicationDidFinishLaunching(_ notification: Notification) {
+    Debug.log("applicationDidFinishLaunching")
+  }
+  
 }

@@ -33,8 +33,6 @@ struct ContentView: View {
   
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  // Toolbar
-  @State private var showingSettingsView = false
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
@@ -216,17 +214,13 @@ struct ContentView: View {
           }
           
           Button(action: {
-            showingSettingsView = true
+            WindowManager.shared.showSettingsWindow()
           }) {
             Image(systemName: "gear")
           }
         }
       }
-      
-      
-    }
-    .sheet(isPresented: $showingSettingsView) {
-      SettingsView()
+
     }
     .onAppear {
       if !CanvasPreview && !userHasEnteredBothRequiredFields {

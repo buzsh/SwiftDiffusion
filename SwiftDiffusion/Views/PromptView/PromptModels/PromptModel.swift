@@ -52,7 +52,14 @@ class PromptModel: ObservableObject {
     clipSkip = model.preferences.clipSkip
   }
   
-  func getSharablePromptMetadata() -> String {
+}
+
+extension PromptModel {
+  func copyMetadataToClipboard() {
+    CopyPasteUtility.copyToClipboard(getSharablePromptMetadata())
+  }
+  
+  private func getSharablePromptMetadata() -> String {
     var modelName = ""
     if let name = selectedModel?.name { modelName = name }
     
@@ -67,6 +74,4 @@ class PromptModel: ObservableObject {
 
     return promptMetadata
   }
-  
-  
 }
