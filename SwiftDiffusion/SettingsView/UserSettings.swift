@@ -12,6 +12,10 @@ class UserSettings: ObservableObject {
   static let shared = UserSettings()
   let store = UserDefaults.standard
   
+  @Published var alwaysShowSettingsHelp: Bool {
+    didSet { store.set(alwaysShowSettingsHelp, forKey: "alwaysShowSettingsHelp") }
+  }
+  
   @Published var webuiShellPath: String {
     didSet { store.set(webuiShellPath, forKey: "webuiShellPath") }
   }
@@ -54,6 +58,7 @@ class UserSettings: ObservableObject {
     ]
     store.register(defaults: defaults)
     
+    self.alwaysShowSettingsHelp = store.bool(forKey: "alwaysShowSettingsHelp")
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""

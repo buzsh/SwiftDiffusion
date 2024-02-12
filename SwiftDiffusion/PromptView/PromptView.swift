@@ -203,6 +203,7 @@ struct PromptView: View {
     .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
   }
   
+  // TODO: PROMPT QUEUE
   private var rightPane: some View {
     VStack {
       ConsoleView(scriptManager: scriptManager)
