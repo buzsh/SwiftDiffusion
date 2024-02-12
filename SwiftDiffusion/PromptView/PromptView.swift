@@ -101,15 +101,6 @@ struct PromptView: View {
               }
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
-            .onAppear {
-              modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
-              if scriptManager.scriptState == .readyToStart {
-                Task {
-                  await modelManagerViewModel.loadModels()
-                  
-                }
-              }
-            }
             .onChange(of: scriptManager.scriptState) {
               if scriptManager.scriptState == .active {
                 Task {
@@ -117,6 +108,7 @@ struct PromptView: View {
                 }
               }
             }
+            // TODO: REFACTOR FLOW
             .onChange(of: currentPrompt.selectedModel) { newValue in
               if let newValue = newValue, newValue != previousSelectedModel {
                 if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {

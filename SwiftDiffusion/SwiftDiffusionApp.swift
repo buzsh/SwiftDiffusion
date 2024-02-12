@@ -17,6 +17,7 @@ struct SwiftDiffusionApp: App {
   
   init() {
     setupAppFileStructure()
+    modelManangerViewModel.startObservingModelDirectories()
   }
   
   var body: some Scene {

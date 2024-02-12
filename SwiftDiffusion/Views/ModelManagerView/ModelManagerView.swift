@@ -101,14 +101,6 @@ struct ModelManagerView: View {
         .padding(.horizontal, 4)
       }
     }
-    .onAppear {
-      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
-      if scriptManager.scriptState == .readyToStart {
-        Task {
-          await modelManagerViewModel.loadModels()
-        }
-      }
-    }
     .sheet(item: $selectedModelItem) { modelItem in
       ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
     }

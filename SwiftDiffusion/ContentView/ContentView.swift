@@ -95,15 +95,12 @@ struct ContentView: View {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }
-      
       Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
       
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-      }
-      if scriptManager.scriptState == .readyToStart {
-        modelManagerViewModel.startObservingModelDirectories()
+        await modelManagerViewModel.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -114,14 +111,6 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
       }
-    }
-    .onChange(of: scriptManager.scriptState) {
-      if scriptManager.scriptState == .active {
-        Task {
-          await modelManagerViewModel.loadModels()
-        }
-      }
-      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
     }
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
@@ -208,8 +197,11 @@ struct ContentView: View {
             .foregroundStyle(Color.green)
         }
         
+        Button("Add to Queue") {
+          Debug.log("Add to queue")
+        }.disabled(true)
+        
         Button(action: {
-          
           Task {
             await prepareAndSendAPIRequest()
           }

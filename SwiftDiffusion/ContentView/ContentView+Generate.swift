@@ -50,7 +50,6 @@ extension ContentView {
     ]
     
     Debug.log("Sending API request to \(baseUrl)\n > \(payload)")
-    
     await sendAPIRequest(api: baseUrl, payload: payload)
   }
 }
