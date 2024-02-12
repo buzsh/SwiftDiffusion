@@ -13,6 +13,9 @@ struct DetailView: View {
   @Binding var lastSelectedImagePath: String
   @ObservedObject var scriptManager: ScriptManager
   
+  @StateObject private var imageWindowManager = ImageWindowManager()
+  @State private var showingFullscreenImage = false
+  
   var body: some View {
     VSplitView {
       VStack {
@@ -105,6 +108,34 @@ struct DetailView: View {
           Image(systemName: "questionmark")
         }
         .buttonStyle(BorderlessButtonStyle())
+        
+        //imageWindowManager.openImageWindow(with: imageToShow)
+        Button(action: {
+          if let image = selectedImage {
+            imageWindowManager.openImageWindow(with: image)
+          }
+        }) {
+          Image(systemName: "arrow.up.left.and.arrow.down.right")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        
+        // Fullscreen proper
+        /*
+        Button(action: {
+          self.showingFullscreenImage = true
+        }) {
+          Image(systemName: "arrow.up.left.and.arrow.down.right")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .sheet(isPresented: $showingFullscreenImage) {
+          if let imageToShow = selectedImage {
+            FullscreenImageView(image: imageToShow) {
+              self.showingFullscreenImage = false
+            }
+          }
+        }
+        */
+        
       }
       .padding(.horizontal, 18)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)
