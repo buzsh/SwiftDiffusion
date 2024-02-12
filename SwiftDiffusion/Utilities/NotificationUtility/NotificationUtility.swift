@@ -11,10 +11,10 @@ import UserNotifications
 struct NotificationUtility {
   
   static func showCompletionNotification(imageCount: Int = 1) {
-    var bodyText = "Your image has finished generating!"
+    var bodyText = "Your image has finished generating"
     
     if imageCount > 1 {
-      bodyText = "\(imageCount) images have finished generating!"
+      bodyText = "\(imageCount) images have finished generating"
     }
     
     let center = UNUserNotificationCenter.current()

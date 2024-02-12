@@ -17,34 +17,37 @@ class ImageWindowManager: ObservableObject {
       self.imageWindowController?.close()
       self.imageWindowController = nil // Ensure the window controller is released.
     }
-    
-    let aspectRatio = NSSize(width: image.size.width, height: image.size.height)
     // Calculate the content rect considering the image size
-    let contentRect = NSRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+    var contentRect = NSRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+    
+    if let screen = NSScreen.main {
+      let screenRect = screen.visibleFrame
+      let maxWidth = screenRect.width * 0.8 // Use 80% of screen width as max to ensure margins
+      let maxHeight = screenRect.height * 0.8 // Use 80% of screen height as max to ensure margins
+      
+      // Calculate scaling factor to fit image within screen dimensions
+      let scalingFactor = min(1, min(maxWidth / image.size.width, maxHeight / image.size.height))
+      
+      // Apply scaling factor to contentRect size
+      contentRect.size = NSSize(width: image.size.width * scalingFactor, height: image.size.height * scalingFactor)
+      
+      // Center the window frame within the screen
+      let centerX = screenRect.origin.x + (screenRect.width - contentRect.width) / 2
+      let centerY = screenRect.origin.y + (screenRect.height - contentRect.height) / 2
+      contentRect.origin = CGPoint(x: centerX, y: centerY)
+    }
     
     let window = NSWindow(
       contentRect: contentRect,
       styleMask: [.closable, .resizable, .miniaturizable], // Removed .titled from the style mask
       backing: .buffered, defer: false)
     window.contentView = NSHostingView(rootView: contentView)
-    window.isMovableByWindowBackground = true // Allows the window to be moved by dragging its background
+    window.isMovableByWindowBackground = true
     window.title = "Image Preview"
-    window.aspectRatio = aspectRatio // Set the aspect ratio to match the image
-    
-    // Calculate the center position and adjust the window frame before displaying
-    if let screen = NSScreen.main {
-      let screenRect = screen.visibleFrame
-      let windowSize = window.frame.size
-      let centerX = screenRect.origin.x + (screenRect.width - windowSize.width) / 2
-      let centerY = screenRect.origin.y + (screenRect.height - windowSize.height) / 2
-      let centerFrame = NSRect(x: centerX, y: centerY, width: windowSize.width, height: windowSize.height)
-      
-      window.setFrame(centerFrame, display: true)
-    }
+    window.aspectRatio = contentRect.size // Set the aspect ratio to match the scaled image size
     
     self.imageWindowController = NSWindowController(window: window)
     self.imageWindowController?.showWindow(nil)
   }
-  
   
 }

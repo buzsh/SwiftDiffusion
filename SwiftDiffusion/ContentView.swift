@@ -122,6 +122,7 @@ struct ContentView: View {
           await modelManagerViewModel.loadModels()
         }
       }
+      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
     }
     .navigationTitle(selectedView.title)
     .toolbar {
@@ -147,15 +148,18 @@ struct ContentView: View {
             .frame(width: 10, height: 10)
             .padding(.trailing, 2)
           
-          if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
-            Button(action: {
-              NSWorkspace.shared.open(url)
-            }) {
-              Image(systemName: "network")
+          if userSettings.showDebugMenu {
+            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
+              Button(action: {
+                NSWorkspace.shared.open(url)
+              }) {
+                Image(systemName: "network")
+              }
+              .buttonStyle(.plain)
+              .padding(.leading, 2)
             }
-            .buttonStyle(.plain)
-            .padding(.leading, 2)
           }
+          
         }
       }
       
