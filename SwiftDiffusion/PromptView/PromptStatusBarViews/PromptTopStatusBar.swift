@@ -92,4 +92,3 @@ extension CommonPreviews {
   .environmentObject(promptModelPreview)
   .frame(width: 400)
 }
-

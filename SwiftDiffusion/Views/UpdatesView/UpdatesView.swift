@@ -29,26 +29,24 @@ struct UpdatesView: View {
   
   var body: some View {
     VStack {
-        ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
+      ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
       
       Spacer()
       
       HStack(alignment: .top) {
-          Image(systemName: "checkmark.circle.fill")
-            .foregroundStyle(Color.green)
-            .padding(.trailing, 2)
-          VStack(alignment: .leading) {
-            Text("You are running the latest version.")
-              .bold()
-              .padding(.bottom, 1)
-            Text("SwiftDiffusion \(AppInfo.versionAndBuild)")
-              .font(.system(size: 12, weight: .medium))
-              .foregroundStyle(.secondary)
-              
-          }
-        
+        Image(systemName: "checkmark.circle.fill")
+          .foregroundStyle(Color.green)
+          .padding(.trailing, 2)
+        VStack(alignment: .leading) {
+          Text("You are running the latest version.")
+            .bold()
+            .padding(.bottom, 1)
+          Text("SwiftDiffusion \(AppInfo.versionAndBuild)")
+            .font(.system(size: 12, weight: .medium))
+            .foregroundStyle(.secondary)
+        }
       }
-
+      
       Spacer()
       
       Button(action: {

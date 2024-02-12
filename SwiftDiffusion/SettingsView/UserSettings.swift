@@ -12,6 +12,10 @@ class UserSettings: ObservableObject {
   static let shared = UserSettings()
   let store = UserDefaults.standard
   
+  @Published var alwaysShowSettingsHelp: Bool {
+    didSet { store.set(alwaysShowSettingsHelp, forKey: "alwaysShowSettingsHelp") }
+  }
+  
   @Published var webuiShellPath: String {
     didSet { store.set(webuiShellPath, forKey: "webuiShellPath") }
   }
@@ -54,6 +58,7 @@ class UserSettings: ObservableObject {
     ]
     store.register(defaults: defaults)
     
+    self.alwaysShowSettingsHelp = store.bool(forKey: "alwaysShowSettingsHelp")
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""
@@ -74,43 +79,4 @@ class UserSettings: ObservableObject {
     alwaysShowPasteboardGenerationDataButton = false
     disableModelLoadingRamOptimizations = false
   }
-  
-  
-  // MARK: URLs from Paths
-  
-  var stableDiffusionModelsDirectoryUrl: URL? {
-    guard !stableDiffusionModelsPath.isEmpty else { return nil }
-    let pathUrl = URL(fileURLWithPath: stableDiffusionModelsPath)
-    var isDir: ObjCBool = false
-    if FileManager.default.fileExists(atPath: stableDiffusionModelsPath, isDirectory: &isDir), isDir.boolValue {
-      return pathUrl
-    } else {
-      return nil
-    }
-  }
-  
-  var outputDirectoryUrl: URL? {
-    let fileManager = FileManager.default
-    var directoryUrl: URL?
-    
-    if !outputDirectoryPath.isEmpty {
-      directoryUrl = URL(fileURLWithPath: outputDirectoryPath)
-    } else if let documentsDirectoryUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-      directoryUrl = documentsDirectoryUrl.appendingPathComponent("SwiftDiffusion")
-    }
-    
-    if let url = directoryUrl {
-      do {
-        try FileUtility.ensureDirectoryExists(at: url)
-        return url
-      } catch {
-        Debug.log("Failed to ensure directory exists: \(error.localizedDescription)")
-        return nil
-      }
-    }
-    
-    return nil
-  }
-  
-  
 }
