@@ -14,7 +14,6 @@ struct CommonPreviews {
     let promptModelPreview = PromptModel()
     let modelManagerViewModel = ModelManagerViewModel()
     let scriptManager = ScriptManager.preview(withState: .readyToStart)
-    
     return AnyView(EmptyView())
       .environmentObject(promptModelPreview)
       .environmentObject(modelManagerViewModel)
@@ -26,8 +25,8 @@ struct CommonPreviews {
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
+    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
     let modelManagerViewModel = ModelManagerViewModel()
-    
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
@@ -35,10 +34,32 @@ struct CommonPreviews {
     .environmentObject(modelManagerViewModel)
     .frame(width: 400, height: 600)
   }
+  
+  @MainActor
+  static var contentView: some View {
+    let promptModelPreview = PromptModel()
+    promptModelPreview.positivePrompt = "sample, positive, prompt"
+    promptModelPreview.negativePrompt = "sample, negative, prompt"
+    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
+    let modelManagerViewModel = ModelManagerViewModel()
+    
+    return ContentView(
+      scriptManager: ScriptManager.preview(withState: .readyToStart)
+    )
+    .environmentObject(promptModelPreview)
+    .environmentObject(modelManagerViewModel)
+    .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
+           minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+  }
+  
 }
 
-#Preview {
+#Preview("PromptView") {
   CommonPreviews.promptView
+}
+
+#Preview("ContentView") {
+  CommonPreviews.contentView
 }
 
 /*

@@ -122,10 +122,19 @@ struct ContentView: View {
       }
       modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
     }
-    .navigationTitle(selectedView.title)
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
+          Circle()
+            .fill(scriptManager.scriptState.statusColor)
+            .frame(width: 10, height: 10)
+            .padding(.trailing, 2)
+          
+          Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
+          
+          Divider()
+            .padding(.leading, 6).padding(.trailing, 3)
+          
           Button(action: {
             if scriptManager.scriptState == .readyToStart {
               scriptManager.run()
@@ -141,10 +150,7 @@ struct ContentView: View {
           }
           .disabled(scriptManager.scriptState == .terminated)
           
-          Circle()
-            .fill(scriptManager.scriptState.statusColor)
-            .frame(width: 10, height: 10)
-            .padding(.trailing, 2)
+          Spacer()
           
           if userSettings.showDebugMenu {
             if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
@@ -161,66 +167,68 @@ struct ContentView: View {
         }
       }
       
+      ToolbarItemGroup(placement: .principal) {
+        Picker("Options", selection: $selectedView) {
+          Text("Prompt").tag(ViewManager.prompt)
+          if userSettings.showDebugMenu {
+            Text("Console").tag(ViewManager.console)
+          }
+          Text("Models").tag(ViewManager.models)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        
+        if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+          RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
+        }
+        
+      }
+      
       ToolbarItemGroup(placement: .automatic) {
-        HStack {
+        Spacer()
+        
+        if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
+          Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
+            .font(.system(size: 11, design: .monospaced))
+            .padding(.trailing, 6)
+        }
+        
+        if scriptManager.genStatus == .generating {
+          Text("\(Int(scriptManager.genProgress * 100))%")
+            .font(.system(.body, design: .monospaced))
+        } else if scriptManager.genStatus == .finishingUp {
+          Text("Saving")
+            .font(.system(.body, design: .monospaced))
+        } else if scriptManager.genStatus == .preparingToGenerate {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
+        } else if scriptManager.genStatus == .done {
+          Image(systemName: "checkmark.seal.fill")
+            .foregroundStyle(Color.green)
+        }
+        
+        Button(action: {
           
-          if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
-            Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
-              .font(.system(size: 11, design: .monospaced))
-              .padding(.trailing, 6)
+          Task {
+            await prepareAndSendAPIRequest()
           }
-          
-          if scriptManager.genStatus == .generating {
-            Text("\(Int(scriptManager.genProgress * 100))%")
-              .font(.system(.body, design: .monospaced))
-          } else if scriptManager.genStatus == .finishingUp {
-            Text("Saving")
-              .font(.system(.body, design: .monospaced))
-          } else if scriptManager.genStatus == .preparingToGenerate {
-            ProgressView()
-              .progressViewStyle(CircularProgressViewStyle())
-              .scaleEffect(0.5)
-          } else if scriptManager.genStatus == .done {
-            Image(systemName: "checkmark.seal.fill")
-              .foregroundStyle(Color.green)
-          }
-          
-          Button(action: {
-            
-            Task {
-              await prepareAndSendAPIRequest()
-            }
-          }) {
-            Text("Generate")
-          }
-          .disabled(
-            scriptManager.scriptState != .active ||
-            (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-            (!scriptManager.modelLoadState.allowGeneration) ||
-            currentPrompt.selectedModel == nil
-          )
-          
-          Picker("Options", selection: $selectedView) {
-            Text("Prompt").tag(ViewManager.prompt)
-            if userSettings.showDebugMenu {
-              Text("Console").tag(ViewManager.console)
-            }
-            Text("Models").tag(ViewManager.models)
-          }
-          .pickerStyle(SegmentedPickerStyle())
-          
-          if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
-            RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
-          }
-          
-          Button(action: {
-            WindowManager.shared.showSettingsWindow()
-          }) {
-            Image(systemName: "gear")
-          }
+        }) {
+          Text("Generate")
+        }
+        .disabled(
+          scriptManager.scriptState != .active ||
+          (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+          (!scriptManager.modelLoadState.allowGeneration) ||
+          currentPrompt.selectedModel == nil
+        )
+        
+        Button(action: {
+          WindowManager.shared.showSettingsWindow()
+        }) {
+          Image(systemName: "gear")
         }
       }
-
+      
     }
     .onAppear {
       if !CanvasPreview && !userHasEnteredBothRequiredFields {
@@ -277,17 +285,9 @@ extension ModelLoadState {
 }
 
 #Preview {
-  let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
-  let promptModelPreview = PromptModel()
-  promptModelPreview.positivePrompt = "sample, positive, prompt"
-  promptModelPreview.negativePrompt = "sample, negative, prompt"
-  let modelManagerViewModel = ModelManagerViewModel()
-  return ContentView(scriptManager: scriptManagerPreview)
-    .environmentObject(promptModelPreview)
-    .environmentObject(modelManagerViewModel)
-    .frame(height: 700)
+  CommonPreviews.contentView
+    .navigationTitle("")
 }
-
 
 extension ContentView {
   func handleScriptOnLaunch() {
