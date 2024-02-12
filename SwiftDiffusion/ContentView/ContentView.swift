@@ -250,10 +250,7 @@ struct ContentView: View {
     .onChange(of: scriptManager.genStatus) {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-      }
-    }
-    .onChange(of: scriptManager.genStatus) {
-      if scriptManager.genStatus == .done {
+      } else if scriptManager.genStatus == .done {
         NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
       }
     }
