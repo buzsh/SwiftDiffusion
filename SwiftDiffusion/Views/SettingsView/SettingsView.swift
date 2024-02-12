@@ -7,6 +7,46 @@
 
 import SwiftUI
 
+extension Constants.WindowSize {
+  struct Settings {
+    static let defaultWidth: CGFloat = 670
+    static let defaultHeight: CGFloat = 700
+  }
+}
+
+// Define the sections
+enum SettingsTab: String, CaseIterable, Identifiable {
+  case general = "General"
+  case files = "Files"
+  case prompt = "Prompt"
+  case developer = "Developer"
+  
+  var id: Self { self }
+  
+  // Provide an associated system image name for each tab
+  var systemImageName: String {
+    switch self {
+    case .general: return "gearshape"
+    case .files: return "doc.on.doc"
+    case .prompt: return "text.bubble"
+    case .developer: return "hammer"
+    }
+  }
+}
+
+struct ToolbarButtonStyle: ButtonStyle {
+  var isSelected: Bool
+  
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .foregroundColor(isSelected ? Color.accentColor : Color.primary)
+      .padding(4)
+      .frame(minWidth: 56) // Specify the minimum width here
+      .background(self.isSelected ? Color.gray.opacity(0.2) : Color.clear)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+  }
+}
+
 struct SettingsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
@@ -14,8 +54,31 @@ struct SettingsView: View {
   @Environment(\.presentationMode) var presentationMode
   @AppStorage("showAllDescriptions") var showAllDescriptions: Bool = false
   
+  @State private var selectedTab: SettingsTab = .general
+  
   var body: some View {
     VStack(spacing: 0) {
+      Picker("", selection: $selectedTab) {
+        ForEach(SettingsTab.allCases) { tab in
+          Text(tab.rawValue).tag(tab)
+        }
+      }
+      .pickerStyle(SegmentedPickerStyle())
+      .padding()
+      
+      // Conditionally display the content based on the selected tab
+      switch selectedTab {
+      case .general:
+        FilesSection(userSettings: userSettings)
+      case .files:
+        FilesSection(userSettings: userSettings)
+      case .prompt:
+        PromptSection(userSettings: userSettings)
+      case .developer:
+        DeveloperSection(userSettings: userSettings)
+      }
+      
+      
       ScrollView {
         VStack {
           VStack(alignment: .leading) {
@@ -47,11 +110,26 @@ struct SettingsView: View {
           }
           
           VStack(alignment: .leading) {
-            Text("Prompt")
-              .font(.title)
-              .padding(.vertical, 20)
-              .padding(.horizontal, 14)
+            HStack {
+              Text("Prompt")
+                .font(.title)
+                .padding(.vertical, 20)
+                .padding(.horizontal, 14)
+              
+              
+              Spacer()
+              Button(action: {
+                showAllDescriptions.toggle()
+              }) {
+                HStack {
+                  Text(showAllDescriptions ? "Hide Help" : "Show Help")
+                }
+                .padding(.horizontal, 2)
+              }
+            }
             VStack(alignment: .leading) {
+              
+                
               ToggleWithHeader(isToggled: $userSettings.alwaysStartPythonEnvironmentAtLaunch, header: "Start Python environment at launch", description: "This will automatically ready the Python environment such that you can start generating immediately.", showAllDescriptions: showAllDescriptions)
               
               ToggleWithHeader(isToggled: $userSettings.disablePasteboardParsingForGenerationData, header: "Disable automatic generation data parsing", description: "When you copy generation data from sites like Civit.ai, this will automatically format it and show a button to paste it.", showAllDescriptions: showAllDescriptions)
@@ -101,12 +179,23 @@ struct SettingsView: View {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
           
-          Button(action: {
-            Debug.log("Button")
-          }) {
-            Image(systemName: "line.3.horizontal.decrease.circle")
-          }.disabled(true)
+          ForEach(SettingsTab.allCases, id: \.self) { tab in
+            Button(action: {
+              self.selectedTab = tab
+            }) {
+              VStack {
+                Image(systemName: tab.systemImageName)
+                  .padding(.bottom, 0.1)
+                Text(tab.rawValue)
+                  .font(.system(size: 10))
+                  .fixedSize(horizontal: false, vertical: true) // Ensure text does not truncate
+              }
+            }
+            .buttonStyle(ToolbarButtonStyle(isSelected: selectedTab == tab))
+            
+          }
           
+          /*
           Button(action: {
             showAllDescriptions.toggle()
           }) {
@@ -116,6 +205,7 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 2)
           }
+           */
           
         }
       }
@@ -125,8 +215,45 @@ struct SettingsView: View {
 
 #Preview {
   SettingsView()
-    .frame(width: 500, height: 700)
+    .frame(width: 600, height: 700)
 }
+
+struct GeneralSection: View {
+  @ObservedObject var userSettings: UserSettings
+  
+  var body: some View {
+    // Implement the UI for file settings
+    Text("General settings here")
+  }
+}
+
+struct FilesSection: View {
+  @ObservedObject var userSettings: UserSettings
+  
+  var body: some View {
+    // Implement the UI for file settings
+    Text("Files settings here")
+  }
+}
+
+struct PromptSection: View {
+  @ObservedObject var userSettings: UserSettings
+  
+  var body: some View {
+    // Implement the UI for prompt settings
+    Text("Prompt settings here")
+  }
+}
+
+struct DeveloperSection: View {
+  @ObservedObject var userSettings: UserSettings
+  
+  var body: some View {
+    // Implement the UI for developer settings
+    Text("Developer settings here")
+  }
+}
+
 
 struct ToggleWithHeader: View {
   @Binding var isToggled: Bool
