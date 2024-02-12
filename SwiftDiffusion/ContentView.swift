@@ -137,7 +137,8 @@ struct ContentView: View {
             } else {
               Image(systemName: "stop.fill")
             }
-          }//.disabled(scriptManager.scriptState == .isTerminating)
+          }
+          .disabled(scriptManager.scriptState == .terminated)
           
           Circle()
             .fill(scriptManager.scriptState.statusColor)
