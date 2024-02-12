@@ -50,10 +50,11 @@ struct ContentView: View {
   
   @State var imageCountToGenerate: Int = 0
   
+  @State private var columnVisibility = NavigationSplitViewVisibility.detailOnly
+  
   var body: some View {
-    NavigationSplitView {
+    NavigationSplitView(columnVisibility: $columnVisibility) {
       // Sidebar
-      
       List {
         NavigationLink(value: ViewManager.prompt) {
           Label("New Prompt", systemImage: "text.bubble")
@@ -73,7 +74,6 @@ struct ContentView: View {
         Label("Saved Prompts Folder", systemImage: "folder")
       }
       .listStyle(SidebarListStyle())
-      
     } content: {
       switch selectedView {
       case .prompt:
@@ -90,6 +90,7 @@ struct ContentView: View {
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
+    .navigationSplitViewStyle(.balanced)
     .onAppear {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath

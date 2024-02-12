@@ -51,3 +51,9 @@ struct AppFileStructure {
     completion(nil, nil)
   }
 }
+
+extension AppFileStructure {
+  
+  
+  
+}
