@@ -108,10 +108,30 @@ struct ContentView: View {
             .frame(width: 10, height: 10)
             .padding(.trailing, 2)
           
-          Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
+          //Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
           
-          Divider()
-            .padding(.leading, 6).padding(.trailing, 3)
+          Picker("Options", selection: $selectedView) {
+            Text("Prompt").tag(ViewManager.prompt)
+            if userSettings.showDebugMenu {
+              Text("Console").tag(ViewManager.console)
+            }
+            Text("Models").tag(ViewManager.models)
+          }
+          .pickerStyle(SegmentedPickerStyle())
+          
+          if userSettings.showDebugMenu {
+            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
+              Button(action: {
+                NSWorkspace.shared.open(url)
+              }) {
+                Image(systemName: "network")
+              }
+              .buttonStyle(.plain)
+              .padding(.leading, 2)
+            }
+          }
+          
+          //Divider().padding(.leading, 6).padding(.trailing, 3)
           
           Button(action: {
             if scriptManager.scriptState == .readyToStart {
@@ -127,19 +147,6 @@ struct ContentView: View {
             }
           }
           .disabled(scriptManager.scriptState == .terminated)
-          
-          if userSettings.showDebugMenu {
-            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
-              Button(action: {
-                NSWorkspace.shared.open(url)
-              }) {
-                Image(systemName: "network")
-              }
-              .buttonStyle(.plain)
-              .padding(.leading, 2)
-            }
-          }
-          
         }
       }
       
@@ -159,15 +166,6 @@ struct ContentView: View {
           (!scriptManager.modelLoadState.allowGeneration) ||
           currentPrompt.selectedModel == nil
         )
-        
-        Picker("Options", selection: $selectedView) {
-          Text("Prompt").tag(ViewManager.prompt)
-          if userSettings.showDebugMenu {
-            Text("Console").tag(ViewManager.console)
-          }
-          Text("Models").tag(ViewManager.models)
-        }
-        .pickerStyle(SegmentedPickerStyle())
         
         if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
           RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
@@ -223,7 +221,7 @@ struct ContentView: View {
       if !CanvasPreview && !userHasEnteredBothRequiredFields {
         showingRequiredInputPathsView = true
       } else {
-        attemptLaunchOfPythonEnvironment()
+        handleScriptOnLaunch()
       }
     }
     .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
@@ -232,10 +230,10 @@ struct ContentView: View {
       RequiredInputPathsView()
     }
     .onChange(of: userSettings.webuiShellPath) {
-      attemptLaunchOfPythonEnvironment()
+      handleScriptOnLaunch()
     }
     .onChange(of: userSettings.stableDiffusionModelsPath) {
-      attemptLaunchOfPythonEnvironment()
+      handleScriptOnLaunch()
     }
     .onChange(of: scriptManager.genStatus) {
       if scriptManager.genStatus == .generating {
@@ -275,6 +273,7 @@ extension ModelLoadState {
 #Preview {
   CommonPreviews.contentView
     .navigationTitle("")
+    .frame(width: 900)
 }
 
 extension ContentView {
@@ -282,7 +281,7 @@ extension ContentView {
     if !self.hasFirstAppeared {
       Debug.log("First appearance. Starting script...")
       attemptLaunchOfPythonEnvironment()
-      self.hasFirstAppeared = true
+      self.hasFirstAppeared = userHasEnteredBothRequiredFields
     }
   }
   func attemptLaunchOfPythonEnvironment() {
