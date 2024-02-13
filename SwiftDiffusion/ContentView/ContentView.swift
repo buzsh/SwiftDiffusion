@@ -122,7 +122,7 @@ struct ContentView: View {
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
-            if userSettings.showDebugMenu {
+            if userSettings.showDeveloperInterface {
               Text("Console").tag(ViewManager.console)
             }
             Text("Models").tag(ViewManager.models)

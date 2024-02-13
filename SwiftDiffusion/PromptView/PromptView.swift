@@ -77,7 +77,7 @@ struct PromptView: View {
     .frame(minWidth: 320, idealWidth: 800, maxHeight: .infinity)
     .toolbar {
       ToolbarItem(placement: .automatic) {
-        if userSettings.showDebugMenu {
+        if userSettings.showDeveloperInterface {
           Button(action: {
             isRightPaneVisible.toggle()
           }) {

@@ -39,9 +39,13 @@ class UserSettings: ObservableObject {
   @Published var showPythonEnvironmentControls: Bool {
     didSet { store.set(showPythonEnvironmentControls, forKey: "showPythonEnvironmentControls") }
   }
-  
+  /*
   @Published var showDebugMenu: Bool {
     didSet { store.set(showDebugMenu, forKey: "showDebugMenu") }
+  }
+   */
+  @Published var showDeveloperInterface: Bool {
+    didSet { store.set(showDeveloperInterface, forKey: "showDeveloperInterface") }
   }
   
   @Published var disablePasteboardParsingForGenerationData: Bool {
@@ -69,7 +73,7 @@ class UserSettings: ObservableObject {
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""
     self.killAllPythonProcessesOnTerminate = store.bool(forKey: "killAllPythonProcessesOnTerminate")
     self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch")
-    self.showDebugMenu = store.bool(forKey: "showDebugMenu")
+    self.showDeveloperInterface = store.bool(forKey: "showDeveloperInterface")
     self.showPythonEnvironmentControls = store.bool(forKey: "showPythonEnvironmentControls")
     self.disablePasteboardParsingForGenerationData = store.bool(forKey: "disablePasteboardParsingForGenerationData")
     self.alwaysShowPasteboardGenerationDataButton = store.bool(forKey: "alwaysShowPasteboardGenerationDataButton")
@@ -80,7 +84,7 @@ class UserSettings: ObservableObject {
     outputDirectoryPath = ""
     killAllPythonProcessesOnTerminate = false
     alwaysStartPythonEnvironmentAtLaunch = true
-    showDebugMenu = false
+    showDeveloperInterface = false
     showPythonEnvironmentControls = false
     disablePasteboardParsingForGenerationData = false
     alwaysShowPasteboardGenerationDataButton = false

@@ -15,7 +15,7 @@ struct DebugPromptActionView: View {
   @ObservedObject var userSettings = UserSettings.shared
   
   var body: some View {
-    if userSettings.showDebugMenu {
+    if userSettings.showDeveloperInterface {
       HStack {
         Spacer()
         VStack(alignment: .leading) {

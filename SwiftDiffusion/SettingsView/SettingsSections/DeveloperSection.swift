@@ -16,7 +16,7 @@ struct DeveloperSection: View {
       
       ToggleWithHeader(isToggled: $userSettings.showPythonEnvironmentControls, header: "Show Python environment controls", description: "This will allow you to build and stop the Python environment from the toolbar. Also comes with a little status light!", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
-      ToggleWithHeader(isToggled: $userSettings.showDebugMenu, header: "Show Debug menu", description: "This will show the Debug menu in the top menu bar.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
+      ToggleWithHeader(isToggled: $userSettings.showDeveloperInterface, header: "Show developer interface", description: "This will show the developer tools, live variable states and other debugging information.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
       ToggleWithHeader(isToggled: $userSettings.killAllPythonProcessesOnTerminate, header: "Kill all Python processes on terminate", description: "Will terminate all Python processes on terminate. Useful for Xcode development force stopping.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
