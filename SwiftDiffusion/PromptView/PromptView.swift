@@ -10,29 +10,23 @@ import Combine
 import CompactSlider
 
 extension Constants.Layout {
-  static let listViewPadding: CGFloat = 12
-  static let listViewResizableBarPadding = listViewPadding - halfResizableBarWidth
-  static let resizableBarWidth: CGFloat = 10
-  static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
   static let promptRowPadding: CGFloat = 16
 }
 
 struct PromptView: View {
-  @ObservedObject var userSettings = UserSettings.shared
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isRightPaneVisible: Bool = false
-  
   @State var generationDataInPasteboard: Bool = false
   
   @State private var previousSelectedModel: ModelItem?
-  
   @State var promptViewHasLoadedInitialModel = false
-  
+  /// Sends an API request to load in the currently selected model from the PromptView model menu.
+  /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
     if previousSelectedModel == modelItem {
       Debug.log("Model already loaded. Do not reload.")
@@ -134,7 +128,6 @@ struct PromptView: View {
               }
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
-            // TODO: REFACTOR FLOW
             .onChange(of: currentPrompt.selectedModel) {
               if let modelToSelect = currentPrompt.selectedModel {
                 updateSelectedCheckpointModelItem(withModelItem: modelToSelect)
@@ -174,7 +167,7 @@ struct PromptView: View {
                 }
               }
             }
-            
+            // Sampling Menu
             VStack(alignment: .leading) {
               PromptRowHeading(title: "Sampling")
               Menu {
