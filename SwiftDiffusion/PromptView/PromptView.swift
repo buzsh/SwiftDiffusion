@@ -24,6 +24,8 @@ struct PromptView: View {
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
+  @State private var promptContainerMinWidth: CGFloat = 370
+  @State private var promptChildMinWidth: CGFloat = 370//730
   
   @State private var isRightPaneVisible: Bool = false
   @State private var columnWidth: CGFloat = 200
@@ -34,9 +36,6 @@ struct PromptView: View {
   @State private var previousSelectedModel: ModelItem?
   
   @State var promptViewHasLoadedInitialModel = false
-  
-  let minColumnWidth: CGFloat = 160
-  let minSecondColumnWidth: CGFloat = 160
   
   func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
     if previousSelectedModel == modelItem {
@@ -70,13 +69,15 @@ struct PromptView: View {
   var body: some View {
     HSplitView {
       leftPane
+        .frame(minWidth: promptChildMinWidth)
       if isRightPaneVisible {
         rightPane
+          .frame(minWidth: promptChildMinWidth)
       }
     }
-    .frame(minWidth: 320, idealWidth: 800, maxHeight: .infinity)
+    .frame(minWidth: promptContainerMinWidth)
     .toolbar {
-      ToolbarItem(placement: .automatic) {
+      ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {
           Button(action: {
             isRightPaneVisible.toggle()
@@ -84,6 +85,13 @@ struct PromptView: View {
             Image(systemName: "apple.terminal") // sidebar.squares.right
           }
         }
+      }
+    }
+    .onChange(of: isRightPaneVisible) {
+      if isRightPaneVisible {
+        promptContainerMinWidth = 740
+      } else {
+        promptContainerMinWidth = 370
       }
     }
   }
@@ -231,24 +239,24 @@ struct PromptView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
           // Handle application going to background if needed
-        }
-      }
-      
+        }//Form
+      }//ScrollView
+      .frame(minWidth: promptChildMinWidth)
       //PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
     }
     .background(Color(NSColor.windowBackgroundColor))
-    .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
   }
+  
+  //Total minWidth when rightPane is shown: 740
+  //Otherwise: minWidth: 370
   
   // TODO: PROMPT QUEUE
   private var rightPane: some View {
-    VStack {
-      ConsoleView(scriptManager: scriptManager)
-    }
-    .padding()
-    .background(Color(NSColor.windowBackgroundColor))
+    ConsoleView(scriptManager: scriptManager)
+      .background(Color(NSColor.windowBackgroundColor))
+    
   }
   
 }
