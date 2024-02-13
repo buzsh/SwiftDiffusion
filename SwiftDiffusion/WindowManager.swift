@@ -18,11 +18,10 @@ class WindowManager: NSObject, ObservableObject {
   override private init() { }
   
   func showUpdatesWindow() {
-    // check if the window already exists to avoid creating multiple instances
     if updatesWindow == nil {
       updatesWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: 480, height: 300),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       updatesWindow?.center()
       updatesWindow?.contentView = NSHostingView(rootView: UpdatesView())
@@ -30,6 +29,8 @@ class WindowManager: NSObject, ObservableObject {
       
       updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
+      
+      updatesWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     updatesWindow?.makeKeyAndOrderFront(nil)
   }
@@ -38,7 +39,7 @@ class WindowManager: NSObject, ObservableObject {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
         contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
@@ -47,6 +48,8 @@ class WindowManager: NSObject, ObservableObject {
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
+      
+      settingsWindow?.standardWindowButton(.zoomButton)?.isHidden = true
       
       if withPreferenceStyle {
         if #available(macOS 11.0, *) {
@@ -60,11 +63,10 @@ class WindowManager: NSObject, ObservableObject {
   }
   
   func showModelsManagerWindow(scriptManager: ScriptManager) {
-    // check if the window already exists to avoid creating multiple instances
     if modelsManagerWindow == nil {
       modelsManagerWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       modelsManagerWindow?.center()
       modelsManagerWindow?.contentView = NSHostingView(rootView: ModelManagerView(scriptManager: scriptManager))
@@ -72,6 +74,8 @@ class WindowManager: NSObject, ObservableObject {
       
       modelsManagerWindow?.isReleasedWhenClosed = false
       modelsManagerWindow?.delegate = self
+      
+      modelsManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     modelsManagerWindow?.makeKeyAndOrderFront(nil)
   }
