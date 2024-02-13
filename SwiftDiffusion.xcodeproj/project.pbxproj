@@ -22,6 +22,7 @@
 		2916F33D2B72867C001D14B9 /* FileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33C2B72867C001D14B9 /* FileRowView.swift */; };
 		2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
+		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
 		2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD62B71AEFA002FC885 /* PromptView.swift */; };
 		2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* PromptModel.swift */; };
 		2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */; };
@@ -105,6 +106,7 @@
 		2916F33C2B72867C001D14B9 /* FileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailLoader.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
+		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
 		2952BAD62B71AEFA002FC885 /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		2952BAD82B71B79F002FC885 /* PromptModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptModel.swift; sourceTree = "<group>"; };
 		2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
@@ -286,6 +288,14 @@
 				297196482B7150B5000F7960 /* ConsoleView.swift */,
 			);
 			path = DebugViews;
+			sourceTree = "<group>";
+		};
+		2942B0742B7B2BBA00D1E0DE /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */,
+			);
+			path = CustomViews;
 			sourceTree = "<group>";
 		};
 		2952BADF2B71F64F002FC885 /* CustomViews */ = {
@@ -486,6 +496,7 @@
 		29C0F37A2B7AB22F0017DD6B /* ContentView */ = {
 			isa = PBXGroup;
 			children = (
+				2942B0742B7B2BBA00D1E0DE /* CustomViews */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
 				29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */,
@@ -626,6 +637,7 @@
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
+				2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */,
 				29C0F37D2B7AB3D50017DD6B /* UserSettings+URLs.swift in Sources */,
 				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
