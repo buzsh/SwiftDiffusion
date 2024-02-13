@@ -8,21 +8,27 @@
 import Cocoa
 import SwiftUI
 
+/// `WindowManager` is responsible for managing the application's window instances such as updates, settings, and models manager windows.
+/// It ensures that only one instance of each window is created and shown to the user.
 class WindowManager: NSObject, ObservableObject {
+  /// Shared instance of `WindowManager` for global access.
   static let shared = WindowManager()
-  
+  /// Window instance for UpdatesView.
   private var updatesWindow: NSWindow?
+  /// Window instance for SettingsView.
   private var settingsWindow: NSWindow?
+  /// Window instance for ModelsManagerView.
   private var modelsManagerWindow: NSWindow?
   
+  /// Initializes a new `WindowManager`. It is private to ensure `WindowManager` can only be accessed through its shared instance.
   override private init() { }
   
+  /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
   func showUpdatesWindow() {
-    // check if the window already exists to avoid creating multiple instances
     if updatesWindow == nil {
       updatesWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: 480, height: 300),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       updatesWindow?.center()
       updatesWindow?.contentView = NSHostingView(rootView: UpdatesView())
@@ -30,15 +36,19 @@ class WindowManager: NSObject, ObservableObject {
       
       updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
+      
+      updatesWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     updatesWindow?.makeKeyAndOrderFront(nil)
   }
   
+  /// Shows the settings window containing SettingsView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// - Parameter withPreferenceStyle: A Boolean value indicating whether the window should use a preferences style toolbar.
   func showSettingsWindow(withPreferenceStyle: Bool = false) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
         contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
@@ -47,6 +57,8 @@ class WindowManager: NSObject, ObservableObject {
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
+      
+      settingsWindow?.standardWindowButton(.zoomButton)?.isHidden = true
       
       if withPreferenceStyle {
         if #available(macOS 11.0, *) {
@@ -59,12 +71,13 @@ class WindowManager: NSObject, ObservableObject {
     settingsWindow?.makeKeyAndOrderFront(nil)
   }
   
+  /// Shows the models manager window containing ModelsManagerView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `ModelManagerView`.
   func showModelsManagerWindow(scriptManager: ScriptManager) {
-    // check if the window already exists to avoid creating multiple instances
     if modelsManagerWindow == nil {
       modelsManagerWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
-        styleMask: [.titled, .closable, .resizable],
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       modelsManagerWindow?.center()
       modelsManagerWindow?.contentView = NSHostingView(rootView: ModelManagerView(scriptManager: scriptManager))
@@ -72,14 +85,17 @@ class WindowManager: NSObject, ObservableObject {
       
       modelsManagerWindow?.isReleasedWhenClosed = false
       modelsManagerWindow?.delegate = self
+      
+      modelsManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     modelsManagerWindow?.makeKeyAndOrderFront(nil)
   }
 }
 
 extension WindowManager: NSWindowDelegate {
+  /// Handles window close events by setting the corresponding window instance to nil, effectively releasing it.
+  /// - Parameter notification: The notification object containing information about the window close event.
   func windowWillClose(_ notification: Notification) {
-    // Release the window when it's closed to free up memory
     if let window = notification.object as? NSWindow {
       if window == updatesWindow {
         updatesWindow = nil

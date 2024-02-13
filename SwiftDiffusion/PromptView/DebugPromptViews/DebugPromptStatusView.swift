@@ -12,7 +12,7 @@ struct DebugPromptStatusView: View {
   @ObservedObject var scriptManager: ScriptManager
   
   var body: some View {
-    if userSettings.showDebugMenu {
+    if userSettings.showDeveloperInterface {
       HStack {
         Spacer()
         VStack(alignment: .leading) {

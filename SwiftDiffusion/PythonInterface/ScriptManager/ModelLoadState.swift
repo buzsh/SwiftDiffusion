@@ -27,11 +27,23 @@ extension ModelLoadState {
   }
 }
 
+extension ModelLoadState {
+  var allowGeneration: Bool {
+    switch self {
+    case .idle: return true
+    case .done: return true
+    case .failed: return true
+    case .isLoading: return true
+    case .launching: return true
+    }
+  }
+}
+
 extension ScriptManager {
   
   func parseAndUpdateModelLoadState(output: String) async {
     Debug.log(">> \(output)")
-    // Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
+    // ie. >> Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
     if output.contains("Update successful for model") {
       updateModelLoadStateAndTime(to: .done)
     }
@@ -58,9 +70,6 @@ extension ScriptManager {
     if failureMessages.contains(where: output.contains) {
       updateModelLoadStateAndTime(to: .failed, time: 0)
     }
-    
-    
-      
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
     let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
@@ -68,8 +77,6 @@ extension ScriptManager {
       updateModelLoadStateAndTime(to: .done)
     }
   }
-  
-  
   
   @MainActor
   private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
@@ -93,9 +100,6 @@ extension ScriptManager {
   }
   
 }
-
-
-
 
 // .done:
 // Model loaded in 4.6s (load weights from disk: 0.4s, create model: 0.7s, apply weights to model: 2.8s, move model to device: 0.2s, calculate empty prompt: 0.4s).

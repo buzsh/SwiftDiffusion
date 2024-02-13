@@ -35,9 +35,7 @@ struct SettingsSectionHeader: View {
       }
       .padding(.horizontal, 14)
       .padding(.top)
-
   }
-  
 }
 
 

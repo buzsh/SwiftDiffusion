@@ -15,7 +15,7 @@ struct DebugPromptActionView: View {
   @ObservedObject var userSettings = UserSettings.shared
   
   var body: some View {
-    if userSettings.showDebugMenu {
+    if userSettings.showDeveloperInterface {
       HStack {
         Spacer()
         VStack(alignment: .leading) {
@@ -32,10 +32,10 @@ struct DebugPromptActionView: View {
             }
             .padding(.trailing, 6)
             
-            Button("Log API Model") {
+            Button("Log Model from API") {
               Task {
-                if let modelTitle = await modelManagerViewModel.getModelMatchingSdModelCheckpoint()?.sdModel?.title {
-                  Debug.log(modelTitle)
+                if let modelTitle = await modelManagerViewModel.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.sdModel?.title {
+                  Debug.log("Log Model from API: \(modelTitle)")
                 }
               }
             }

@@ -152,9 +152,6 @@ struct DetailView: View {
         .buttonStyle(BorderlessButtonStyle())
         .padding(.trailing, Constants.Layout.detailToolbarSpacing)
         //.disabled if no more least-recent images in the directory
-        
-        
-        
       }
       .padding(.horizontal, Constants.Layout.detailToolbarSpacing)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)

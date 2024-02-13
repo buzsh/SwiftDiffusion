@@ -1,8 +1,8 @@
 //
-//  ProgressView.swift
+//  ProgressViewModel.swift
 //  SwiftDiffusion
 //
-//  Created by Justin Bush on 2/8/24.
+//  Created by Justin Bush on 2/13/24.
 //
 
 import SwiftUI
@@ -14,4 +14,3 @@ class ProgressViewModel: ObservableObject {
     }
   }
 }
-

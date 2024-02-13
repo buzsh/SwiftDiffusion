@@ -18,7 +18,8 @@ struct ToggleWithHeader: View {
     HStack(alignment: .top) {
       Toggle("", isOn: $isToggled)
         .padding(.trailing, 6)
-        .padding(.top, 2)
+        .frame(width: 60)
+        .toggleStyle(SwitchToggleStyle(tint: .blue))
       
       VStack(alignment: .leading) {
         HStack {
@@ -36,6 +37,8 @@ struct ToggleWithHeader: View {
           .foregroundStyle(Color.secondary)
           .opacity(showAllDescriptions || isHovering ? 1 : 0)
       }
+      
+      Spacer()
     }
     .padding(.bottom, 8)
   }

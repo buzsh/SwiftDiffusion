@@ -16,7 +16,6 @@ enum GenerationStatus {
 }
 
 extension ScriptManager {
-  // Assuming this is your existing init or somewhere you can access ProgressViewModel
   func parseAndUpdateProgress(output: String) {
     let regexPattern = "Total progress: *(\\d+)%|^(\\d+)%"
     

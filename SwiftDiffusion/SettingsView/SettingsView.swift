@@ -20,7 +20,10 @@ struct SettingsView: View {
   
   @Environment(\.presentationMode) var presentationMode
   
-  @State var selectedTab: SettingsTab = .prompt
+  @State var selectedTab: SettingsTab = {
+    let savedValue = UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? ""
+    return SettingsTab(rawValue: savedValue) ?? .engine
+  }()
   
   var body: some View {
     VStack(spacing: 0) {
@@ -28,7 +31,7 @@ struct SettingsView: View {
         
         SettingsSectionHeader(userSettings: userSettings, selectedTab: selectedTab)
         
-        VStack {
+        VStack(alignment: .leading) {
           switch selectedTab {
           case .general:
             GeneralSection(userSettings: userSettings)
@@ -65,7 +68,8 @@ struct SettingsView: View {
       }
       .background(Color(NSColor.windowBackgroundColor))
     }
-    .frame(minWidth: 400, idealWidth: 600, minHeight: 300, idealHeight: 400)
+    .frame(minWidth: 615, idealWidth: Constants.WindowSize.Settings.defaultWidth, maxWidth: 900,
+           minHeight: 300, idealHeight: Constants.WindowSize.Settings.defaultWidth, maxHeight: .infinity)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
@@ -88,6 +92,9 @@ struct SettingsView: View {
           
         }
       }
+    }
+    .onChange(of: selectedTab) {
+      UserDefaults.standard.set(selectedTab.rawValue, forKey: "selectedSettingsTab")
     }
   }
 }

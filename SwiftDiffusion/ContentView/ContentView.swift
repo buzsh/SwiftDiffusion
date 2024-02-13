@@ -29,27 +29,29 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
-  @ObservedObject var userSettings = UserSettings.shared
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
-  @State private var showingModelManagerView = false
-  
+  @ObservedObject var userSettings = UserSettings.shared
+  @ObservedObject var scriptManager: ScriptManager
+
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
   @State private var isPulsating = false
-  // Console
-  @ObservedObject var scriptManager: ScriptManager
-  // Views
+  
+  // TabView
   @State private var selectedView: ViewManager = .prompt
+  
+  @State private var hasLaunchedPythonEnvironmentOnFirstAppearance = false
+  @State private var launchStatusProgressBarValue: Double = 0
+  
   // Detail
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   
-  @State private var hasFirstAppeared = false
+  
   
   @State var imageCountToGenerate: Int = 0
   
@@ -120,7 +122,7 @@ struct ContentView: View {
           
           Picker("Options", selection: $selectedView) {
             Text("Prompt").tag(ViewManager.prompt)
-            if userSettings.showDebugMenu {
+            if userSettings.showDeveloperInterface {
               Text("Console").tag(ViewManager.console)
             }
             Text("Models").tag(ViewManager.models)
@@ -128,6 +130,7 @@ struct ContentView: View {
           .pickerStyle(SegmentedPickerStyle())
           
           //Divider().padding(.leading, 6).padding(.trailing, 3)
+          
           if userSettings.showPythonEnvironmentControls {
             Button(action: {
               if scriptManager.scriptState == .readyToStart {
@@ -144,6 +147,7 @@ struct ContentView: View {
             }
             .disabled(scriptManager.scriptState == .terminated)
           }
+          
         }
       }
       
@@ -197,6 +201,12 @@ struct ContentView: View {
             .foregroundStyle(Color.green)
         }
         
+        if launchStatusProgressBarValue < 0 {
+          ProgressView(value: launchStatusProgressBarValue)
+            .progressViewStyle(LinearProgressViewStyle())
+            .frame(width: 100)
+        }
+        
         Button(action: {
           WindowManager.shared.showSettingsWindow()
         }) {
@@ -233,6 +243,13 @@ struct ContentView: View {
         }
       }
     }
+    .onChange(of: scriptManager.scriptState) {
+      if scriptManager.scriptState == .launching {
+        launchStatusProgressBarValue = -1
+      } else {
+        launchStatusProgressBarValue = 100
+      }
+    }
   }
   
   private var userHasEnteredBothRequiredFields: Bool {
@@ -249,18 +266,6 @@ struct ContentView: View {
   
 }
 
-extension ModelLoadState {
-  var allowGeneration: Bool {
-    switch self {
-    case .idle: return true
-    case .done: return true
-    case .failed: return true
-    case .isLoading: return true
-    case .launching: return true
-    }
-  }
-}
-
 #Preview {
   CommonPreviews.contentView
     .navigationTitle("")
@@ -269,10 +274,10 @@ extension ModelLoadState {
 
 extension ContentView {
   func handleScriptOnLaunch() {
-    if !self.hasFirstAppeared {
+    if !self.hasLaunchedPythonEnvironmentOnFirstAppearance {
       Debug.log("First appearance. Starting script...")
       attemptLaunchOfPythonEnvironment()
-      self.hasFirstAppeared = userHasEnteredBothRequiredFields
+      self.hasLaunchedPythonEnvironmentOnFirstAppearance = userHasEnteredBothRequiredFields
     }
   }
   func attemptLaunchOfPythonEnvironment() {
