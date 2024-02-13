@@ -219,6 +219,11 @@ extension ContentView {
       scriptManager.genStatus = .done
       scriptManager.genStatus = .idle
       scriptManager.genProgress = 0
+      
+      Delay.by(3) {
+        scriptManager.genStatus = .idle
+        scriptManager.genProgress = 0
+      }
     }
   }
 }
