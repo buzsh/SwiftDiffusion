@@ -8,15 +8,22 @@
 import Cocoa
 import SwiftUI
 
+/// `WindowManager` is responsible for managing the application's window instances such as updates, settings, and models manager windows.
+/// It ensures that only one instance of each window is created and shown to the user.
 class WindowManager: NSObject, ObservableObject {
+  /// Shared instance of `WindowManager` for global access.
   static let shared = WindowManager()
-  
+  /// Window instance for UpdatesView.
   private var updatesWindow: NSWindow?
+  /// Window instance for SettingsView.
   private var settingsWindow: NSWindow?
+  /// Window instance for ModelsManagerView.
   private var modelsManagerWindow: NSWindow?
   
+  /// Initializes a new `WindowManager`. It is private to ensure `WindowManager` can only be accessed through its shared instance.
   override private init() { }
   
+  /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
   func showUpdatesWindow() {
     if updatesWindow == nil {
       updatesWindow = NSWindow(
@@ -35,6 +42,8 @@ class WindowManager: NSObject, ObservableObject {
     updatesWindow?.makeKeyAndOrderFront(nil)
   }
   
+  /// Shows the settings window containing SettingsView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// - Parameter withPreferenceStyle: A Boolean value indicating whether the window should use a preferences style toolbar.
   func showSettingsWindow(withPreferenceStyle: Bool = false) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
@@ -62,6 +71,8 @@ class WindowManager: NSObject, ObservableObject {
     settingsWindow?.makeKeyAndOrderFront(nil)
   }
   
+  /// Shows the models manager window containing ModelsManagerView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `ModelManagerView`.
   func showModelsManagerWindow(scriptManager: ScriptManager) {
     if modelsManagerWindow == nil {
       modelsManagerWindow = NSWindow(
@@ -82,8 +93,9 @@ class WindowManager: NSObject, ObservableObject {
 }
 
 extension WindowManager: NSWindowDelegate {
+  /// Handles window close events by setting the corresponding window instance to nil, effectively releasing it.
+  /// - Parameter notification: The notification object containing information about the window close event.
   func windowWillClose(_ notification: Notification) {
-    // Release the window when it's closed to free up memory
     if let window = notification.object as? NSWindow {
       if window == updatesWindow {
         updatesWindow = nil
