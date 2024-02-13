@@ -20,7 +20,8 @@ struct SettingsView: View {
   
   @Environment(\.presentationMode) var presentationMode
   
-  @State var selectedTab: SettingsTab = .prompt
+  //@State var selectedTab: SettingsTab = .prompt
+  @State var selectedTab: SettingsTab = SettingsTab(rawValue: UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? "") ?? .prompt
   
   var body: some View {
     VStack(spacing: 0) {
