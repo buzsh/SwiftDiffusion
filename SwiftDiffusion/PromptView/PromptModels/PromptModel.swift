@@ -10,13 +10,6 @@ import Combine
 @MainActor
 class PromptModel: ObservableObject {
   @Published var selectedModel: ModelItem?
-  /*
-  @Published var selectedModel: ModelItem? {
-    didSet {
-      updatePromptPreferences()
-    }
-  }
-   */
   @Published var samplingMethod: String?
   
   @Published var positivePrompt: String = ""
@@ -34,24 +27,6 @@ class PromptModel: ObservableObject {
   @Published var batchSize: Double = 1
   
   @Published var clipSkip: Double = 1
-  
-  private func updatePromptPreferences() {
-    guard let model = selectedModel else { return }
-    
-    samplingMethod = model.preferences.samplingMethod
-    // Update only if the current values are the default (512x512)
-    if width == 512 && height == 512 {
-      width = model.preferences.width
-      height = model.preferences.height
-    }
-    
-    cfgScale = model.preferences.cfgScale
-    samplingSteps = model.preferences.samplingSteps
-    batchCount = model.preferences.batchCount
-    batchSize = model.preferences.batchSize
-    clipSkip = model.preferences.clipSkip
-  }
-  
 }
 
 extension PromptModel {
@@ -62,16 +37,46 @@ extension PromptModel {
   private func getSharablePromptMetadata() -> String {
     var modelName = ""
     if let name = selectedModel?.name { modelName = name }
+    var samplerName = ""
+    if let samplingMethod = samplingMethod { samplerName = samplingMethod }
     
     var promptMetadata = "\(positivePrompt)\n"
     promptMetadata += "Negative prompt: \(negativePrompt)\n"
     promptMetadata += "Model: \(modelName)\n"
+    promptMetadata += "Sampler: \(samplerName)\n"
     promptMetadata += "Size: \(width)x\(height)\n"
     promptMetadata += "CFG scale: \(cfgScale)\n"
     promptMetadata += "Steps: \(samplingSteps)\n"
     promptMetadata += "Clip skip: \(clipSkip)\n"
     promptMetadata += "Seed: \(seed)\n"
+    promptMetadata += "Batch count: \(batchCount)\n"
+    promptMetadata += "Batch size: \(batchSize)\n"
 
     return promptMetadata
   }
 }
+
+
+
+/*
+@Published var selectedModel: ModelItem? {
+  didSet {
+    updatePromptPreferences()
+  }
+}
+ 
+private func updatePromptPreferences() {
+  guard let model = selectedModel else { return }
+  samplingMethod = model.preferences.samplingMethod
+  // Update only if the current values are the default (512x512)
+  if width == 512 && height == 512 {
+    width = model.preferences.width
+    height = model.preferences.height
+  }
+  cfgScale = model.preferences.cfgScale
+  samplingSteps = model.preferences.samplingSteps
+  batchCount = model.preferences.batchCount
+  batchSize = model.preferences.batchSize
+  clipSkip = model.preferences.clipSkip
+}
+ */
