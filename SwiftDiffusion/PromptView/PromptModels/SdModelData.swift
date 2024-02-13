@@ -43,6 +43,28 @@ struct ValidationErrorResponse: Codable {
   let detail: [ValidationErrorDetail]
 }
 
+enum UpdateModelError: Error {
+  case nilCheckpoint
+  case encodingError(String)
+  case invalidServerResponse
+  case validationError(String)
+  case unexpectedStatusCode(Int)
+  case requestFailure(String)
+}
+
+struct OptionsResponse: Decodable {
+  let samplesSave: Bool
+  let samplesFormat: String
+  // Add other properties as needed...
+  let sdModelCheckpoint: String
+  // Use CodingKeys to match JSON keys with Swift property names
+  enum CodingKeys: String, CodingKey {
+    case samplesSave = "samples_save"
+    case samplesFormat = "samples_format"
+    // Map other properties...
+    case sdModelCheckpoint = "sd_model_checkpoint"
+  }
+}
 
 extension PromptView {
   @MainActor
@@ -98,58 +120,3 @@ extension PromptView {
   
 }
 
-enum UpdateModelError: Error {
-  case nilCheckpoint
-  case encodingError(String)
-  case invalidServerResponse
-  case validationError(String)
-  case unexpectedStatusCode(Int)
-  case requestFailure(String)
-}
-
-
-/*
-extension PromptView {
-  @MainActor
-  func selectModelMatchingSdModelCheckpoint() async {
-    guard let apiUrl = scriptManager.serviceUrl else {
-      Debug.log("Service URL is nil.")
-      return
-    }
-    
-    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
-    do {
-      let (data, _) = try await URLSession.shared.data(from: endpoint)
-      let decoder = JSONDecoder()
-      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
-      
-      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
-      
-      // Now iterate over modelManager.items to find a match
-      if let matchingItem = modelManagerViewModel.items.first(where: { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }) {
-        // SET MODEL TO MATCHED MODEL
-        currentPrompt.selectedModel = matchingItem
-        Debug.log("Selected model: \(matchingItem.name)")
-      } else {
-        Debug.log("No matching model found for sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
-      }
-    } catch {
-      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
-    }
-  }
-}
- */
-
-struct OptionsResponse: Decodable {
-  let samplesSave: Bool
-  let samplesFormat: String
-  // Add other properties as needed...
-  let sdModelCheckpoint: String
-  // Use CodingKeys to match JSON keys with Swift property names
-  enum CodingKeys: String, CodingKey {
-    case samplesSave = "samples_save"
-    case samplesFormat = "samples_format"
-    // Map other properties...
-    case sdModelCheckpoint = "sd_model_checkpoint"
-  }
-}

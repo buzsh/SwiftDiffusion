@@ -14,6 +14,8 @@ class ModelManagerViewModel: ObservableObject {
   
   @Published var items: [ModelItem] = []
   
+  @Published var hasLoadedInitialModelCheckpointsAndAssignedSdModel: Bool = false
+  
   private var coreMlObserver: DirectoryObserver?
   private var pythonObserver: DirectoryObserver?
   
@@ -58,15 +60,20 @@ class ModelManagerViewModel: ObservableObject {
       // Add new items
       self.items.append(contentsOf: newItems)
       // Assign model titles if API is connectable
-      assignNewModelCheckpointTitles()
+      assignLocalModelCheckpointsWithApiSdModelResults()
     } catch {
       Debug.log("Failed to load models: \(error)")
     }
   }
   
-  func assignNewModelCheckpointTitles() {
-    assignSdModelCheckpointTitles {
-      Debug.log("Assignment of SD Model Checkpoint Titles completed.")
+  func assignLocalModelCheckpointsWithApiSdModelResults() {
+    assignSdModelCheckpointTitles { assignedModelsCount in
+      if assignedModelsCount < 1 {
+        Debug.log("No new models were assigned.")
+      } else {
+        Debug.log("New unassigned SdModels returned from the API!\n > \(assignedModelsCount) models were assigned.")
+        self.hasLoadedInitialModelCheckpointsAndAssignedSdModel = true
+      }
     }
   }
   
@@ -155,15 +162,19 @@ extension ModelManagerViewModel {
     let models = try decoder.decode([SdModel].self, from: data)
     return models
   }
-  
+}
+
+extension ModelManagerViewModel {
   @MainActor
-  func assignSdModelCheckpointTitles(completion: @escaping () -> Void) {
+  func assignSdModelCheckpointTitles(completion: @escaping (Int) -> Void) {
     guard let baseUrl = scriptManager.serviceUrl else {
-      completion()
+      completion(0) // no models were assigned because the base URL is nil
       return
     }
     
     Task {
+      var assignedModelsCount = 0
+      
       do {
         let models = try await getSdModelData(baseUrl)
         var unassignedItems: [ModelItem] = []
@@ -177,6 +188,7 @@ extension ModelManagerViewModel {
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
             item.setSdModel(matchingModel)
             Debug.log("Assigned \(matchingModel.title) to \(item.name)")
+            assignedModelsCount += 1
           } else {
             unassignedItems.append(item)
             Debug.log("No match for \(item.name) with filename \(itemFilename)")
@@ -187,20 +199,18 @@ extension ModelManagerViewModel {
           Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
         }
         
-        completion()
+        completion(assignedModelsCount)
       } catch {
         Debug.log("Failed to fetch SD Model Data: \(error)")
-        completion()
+        completion(assignedModelsCount)
       }
     }
   }
-  
 }
 
 extension ModelManagerViewModel {
-  
-  //@MainActor
-  func getModelMatchingSdModelCheckpoint() async -> ModelItem? {
+  @MainActor
+  func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> ModelItem? {
     guard let apiUrl = scriptManager.serviceUrl else {
       Debug.log("Service URL is nil.")
       return nil
@@ -214,7 +224,6 @@ extension ModelManagerViewModel {
       
       Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
       
-      // Find the matching item and return it
       return self.items.first { $0.sdModel?.title == optionsResponse.sdModelCheckpoint }
     } catch {
       Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
