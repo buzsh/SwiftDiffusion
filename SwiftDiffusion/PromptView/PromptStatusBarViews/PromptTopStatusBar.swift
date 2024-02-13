@@ -15,7 +15,7 @@ struct PromptTopStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton || currentPrompt.selectedModel != nil {
+    if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton || (currentPrompt.selectedModel != nil && !currentPrompt.positivePrompt.isEmpty) {
       
       HStack {
         if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {

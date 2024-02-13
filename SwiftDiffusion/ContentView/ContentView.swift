@@ -33,6 +33,9 @@ struct ContentView: View {
   
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  
+  @State private var showingModelManagerView = false
+  
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
@@ -56,22 +59,7 @@ struct ContentView: View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       // Sidebar
       List {
-        NavigationLink(value: ViewManager.prompt) {
-          Label("New Prompt", systemImage: "text.bubble")
-        }
         
-        Divider()
-        
-        Label("Saved Prompt 1", systemImage: "photo")
-        Label("Saved Prompt 2", systemImage: "photo")
-        
-        Divider()
-        
-        Label("Saved Grid 1", systemImage: "photo.on.rectangle.angled") // photo.stack, photo.on.rectangle, photo.on.rectangle.angled
-        
-        Divider()
-        
-        Label("Saved Prompts Folder", systemImage: "folder")
       }
       .listStyle(SidebarListStyle())
     } content: {
@@ -95,15 +83,12 @@ struct ContentView: View {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }
-      
       Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
       
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-      }
-      if scriptManager.scriptState == .readyToStart {
-        modelManagerViewModel.startObservingModelDirectories()
+        await modelManagerViewModel.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -114,14 +99,6 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
       }
-    }
-    .onChange(of: scriptManager.scriptState) {
-      if scriptManager.scriptState == .active {
-        Task {
-          await modelManagerViewModel.loadModels()
-        }
-      }
-      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
     }
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
@@ -151,8 +128,6 @@ struct ContentView: View {
           }
           .disabled(scriptManager.scriptState == .terminated)
           
-          Spacer()
-          
           if userSettings.showDebugMenu {
             if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
               Button(action: {
@@ -169,6 +144,22 @@ struct ContentView: View {
       }
       
       ToolbarItemGroup(placement: .principal) {
+        Button("Add to Queue") {
+          Debug.log("Add to queue")
+        }.disabled(true)
+        
+        Button(action: {
+          fetchAndSaveGeneratedImages()
+        }) {
+          Text("Generate")
+        }
+        .disabled(
+          scriptManager.scriptState != .active ||
+          (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
+          (!scriptManager.modelLoadState.allowGeneration) ||
+          currentPrompt.selectedModel == nil
+        )
+        
         Picker("Options", selection: $selectedView) {
           Text("Prompt").tag(ViewManager.prompt)
           if userSettings.showDebugMenu {
@@ -208,20 +199,17 @@ struct ContentView: View {
             .foregroundStyle(Color.green)
         }
         
+          /*
         Button(action: {
-          
-          Task {
-            await prepareAndSendAPIRequest()
-          }
+          showingModelManagerView = true
+          //WindowManager.shared.showModelsManagerWindow(scriptManager: scriptManager)
         }) {
-          Text("Generate")
+          Image(systemName: "arkit")
         }
-        .disabled(
-          scriptManager.scriptState != .active ||
-          (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-          (!scriptManager.modelLoadState.allowGeneration) ||
-          currentPrompt.selectedModel == nil
-        )
+        .sheet(isPresented: $showingModelManagerView) {
+          ModelManagerView(scriptManager: scriptManager)
+        }
+           */
         
         Button(action: {
           WindowManager.shared.showSettingsWindow()
@@ -234,6 +222,8 @@ struct ContentView: View {
     .onAppear {
       if !CanvasPreview && !userHasEnteredBothRequiredFields {
         showingRequiredInputPathsView = true
+      } else {
+        attemptLaunchOfPythonEnvironment()
       }
     }
     .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {

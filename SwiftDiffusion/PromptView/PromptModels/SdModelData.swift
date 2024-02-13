@@ -43,69 +43,24 @@ struct ValidationErrorResponse: Codable {
   let detail: [ValidationErrorDetail]
 }
 
+
 extension PromptView {
-  func getSdModelData(_ api: URL) async throws -> [SdModel] {
-    let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
-    let (data, _) = try await URLSession.shared.data(from: endpoint)
-    let decoder = JSONDecoder()
-    let models = try decoder.decode([SdModel].self, from: data)
-    return models
-  }
-  
   @MainActor
-  func assignSdModelCheckpointTitles(completion: @escaping () -> Void) {
-    guard let baseUrl = scriptManager.serviceUrl else {
-      completion()
-      return
-    }
-    
-    Task {
-      do {
-        let models = try await getSdModelData(baseUrl)
-        var unassignedItems: [ModelItem] = []
-        
-        // Log all filenames from the API for comparison
-        let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
-        Debug.log("API Filenames: \(apiFilenames)")
-        
-        for item in modelManagerViewModel.items where item.sdModelCheckpoint == nil {
-          let itemFilename = item.url.lastPathComponent
-          if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
-            item.sdModelCheckpoint = matchingModel.title
-            Debug.log("Assigned \(matchingModel.title) to \(item.name)")
-          } else {
-            unassignedItems.append(item)
-            Debug.log("No match for \(item.name) with filename \(itemFilename)")
-          }
-        }
-        
-        // Log unassigned ModelItems
-        for item in unassignedItems {
-          Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
-        }
-        
-        completion()
-      } catch {
-        Debug.log("Failed to fetch SD Model Data: \(error)")
-        completion()
-      }
-    }
-  }
-  
-  
-  @MainActor
+  /// Update automatic1111 currently loaded model checkpoint
   func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
     let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
     var request = URLRequest(url: endpoint)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    guard let sdModelCheckpoint = modelItem.sdModelCheckpoint else {
+    guard let sdModelCheckpoint = modelItem.sdModel else {
       completion(.failure(.nilCheckpoint))
       return
     }
     
-    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint)
+    Debug.log("[API] attempting to POST \(modelItem):\n > \(sdModelCheckpoint.title)")
+    
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint.title)
     do {
       request.httpBody = try JSONEncoder().encode(requestBody)
     } catch {
@@ -140,6 +95,7 @@ extension PromptView {
       }
     }
   }
+  
 }
 
 enum UpdateModelError: Error {
@@ -152,6 +108,7 @@ enum UpdateModelError: Error {
 }
 
 
+/*
 extension PromptView {
   @MainActor
   func selectModelMatchingSdModelCheckpoint() async {
@@ -180,30 +137,8 @@ extension PromptView {
       Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
     }
   }
-  
-  @MainActor
-  func getModelMatchingSdModelCheckpoint() async -> ModelItem? {
-    guard let apiUrl = scriptManager.serviceUrl else {
-      Debug.log("Service URL is nil.")
-      return nil
-    }
-    
-    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
-    do {
-      let (data, _) = try await URLSession.shared.data(from: endpoint)
-      let decoder = JSONDecoder()
-      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
-      
-      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
-      
-      // Find the matching item and return it
-      return modelManagerViewModel.items.first { $0.sdModelCheckpoint == optionsResponse.sdModelCheckpoint }
-    } catch {
-      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
-      return nil
-    }
-  }
 }
+ */
 
 struct OptionsResponse: Decodable {
   let samplesSave: Bool

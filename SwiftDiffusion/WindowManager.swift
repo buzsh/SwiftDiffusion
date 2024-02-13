@@ -13,6 +13,7 @@ class WindowManager: NSObject, ObservableObject {
   
   private var updatesWindow: NSWindow?
   private var settingsWindow: NSWindow?
+  private var modelsManagerWindow: NSWindow?
   
   override private init() { }
   
@@ -57,6 +58,23 @@ class WindowManager: NSObject, ObservableObject {
     }
     settingsWindow?.makeKeyAndOrderFront(nil)
   }
+  
+  func showModelsManagerWindow(scriptManager: ScriptManager) {
+    // check if the window already exists to avoid creating multiple instances
+    if modelsManagerWindow == nil {
+      modelsManagerWindow = NSWindow(
+        contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
+        styleMask: [.titled, .closable, .resizable],
+        backing: .buffered, defer: false)
+      modelsManagerWindow?.center()
+      modelsManagerWindow?.contentView = NSHostingView(rootView: ModelManagerView(scriptManager: scriptManager))
+      modelsManagerWindow?.title = "Models"
+      
+      modelsManagerWindow?.isReleasedWhenClosed = false
+      modelsManagerWindow?.delegate = self
+    }
+    modelsManagerWindow?.makeKeyAndOrderFront(nil)
+  }
 }
 
 extension WindowManager: NSWindowDelegate {
@@ -67,6 +85,8 @@ extension WindowManager: NSWindowDelegate {
         updatesWindow = nil
       } else if window == settingsWindow {
         settingsWindow = nil
+      } else if window == modelsManagerWindow {
+        modelsManagerWindow = nil
       }
     }
   }

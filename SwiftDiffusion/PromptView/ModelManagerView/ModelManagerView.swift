@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ModelManagerView: View {
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var currentPrompt: PromptModel
   
   @ObservedObject var scriptManager: ScriptManager
   @State private var selectedFilter: ModelType? = nil
@@ -30,23 +31,18 @@ struct ModelManagerView: View {
     return modelManagerViewModel.items.filter { $0.type == selectedFilter }
   }
   
-  var isScriptActive: Bool {
-    scriptManager.scriptState != .readyToStart
-  }
-  
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
         Button("Reveal in Finder") {
           openUserModelsFolder()
         }
-        .disabled(isScriptActive)
         
         Button("Refresh") {
           Task {
             await modelManagerViewModel.loadModels()
           }
-        }.disabled(isScriptActive)
+        }
         
         Menu(filterTitle) { // Use the computed property here
           Button("Show All Models", action: { selectedFilter = nil })
@@ -56,7 +52,6 @@ struct ModelManagerView: View {
         Button("Add Model") {
           Debug.log("Adding model")
         }
-        .disabled(isScriptActive)
       }
       .padding(.horizontal)
       .padding(.top, 10)
@@ -83,15 +78,15 @@ struct ModelManagerView: View {
           }
           .buttonStyle(BorderlessButtonStyle())
           
-          if !item.isDefaultModel {
+          // if item is not default or if item is not currently selected model
+          if !item.isDefaultModel || item != currentPrompt.selectedModel {
             Button(action: {
               Task {
                 await modelManagerViewModel.moveToTrash(item: item)
               }
             }) {
-              Image(systemName: isScriptActive ? "lock" : "trash")
+              Image(systemName: "trash")
             }
-            .disabled(isScriptActive)
             .buttonStyle(BorderlessButtonStyle())
           } else {
             Image(systemName: "lock").opacity(0.3)
@@ -101,16 +96,20 @@ struct ModelManagerView: View {
         .padding(.horizontal, 4)
       }
     }
-    .onAppear {
-      modelManagerViewModel.observeScriptManagerState(scriptManager: scriptManager)
-      if scriptManager.scriptState == .readyToStart {
-        Task {
-          await modelManagerViewModel.loadModels()
-        }
-      }
-    }
     .sheet(item: $selectedModelItem) { modelItem in
       ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
+    }
+    .navigationTitle("Models")
+    .toolbar {
+      ToolbarItemGroup(placement: .automatic) {
+        HStack {
+          
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
+          
+        }
+      }
     }
     
   }
@@ -127,7 +126,7 @@ struct ModelManagerView: View {
 
 
 #Preview {
-  ModelManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+  return ModelManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .frame(width: 500, height: 400)
 }
 

@@ -71,7 +71,7 @@ class ModelManagerViewModel: ObservableObject {
   }
   
   private var scriptManagerObservation: AnyCancellable?
-  
+  /// DEPRECATED:
   func observeScriptManagerState(scriptManager: ScriptManager) {
     scriptManagerObservation = scriptManager.$scriptState
       .sink { [weak self] state in
@@ -168,14 +168,14 @@ extension ModelManagerViewModel {
         let models = try await getSdModelData(baseUrl)
         var unassignedItems: [ModelItem] = []
         
-        // Log all filenames from the API for comparison
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
         
-        for item in self.items where item.sdModelCheckpoint == nil {
+        for item in self.items where item.sdModel == nil {
+          
           let itemFilename = item.url.lastPathComponent
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
-            item.sdModelCheckpoint = matchingModel.title
+            item.setSdModel(matchingModel)
             Debug.log("Assigned \(matchingModel.title) to \(item.name)")
           } else {
             unassignedItems.append(item)
@@ -183,7 +183,6 @@ extension ModelManagerViewModel {
           }
         }
         
-        // Log unassigned ModelItems
         for item in unassignedItems {
           Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
         }
@@ -193,6 +192,33 @@ extension ModelManagerViewModel {
         Debug.log("Failed to fetch SD Model Data: \(error)")
         completion()
       }
+    }
+  }
+  
+}
+
+extension ModelManagerViewModel {
+  
+  //@MainActor
+  func getModelMatchingSdModelCheckpoint() async -> ModelItem? {
+    guard let apiUrl = scriptManager.serviceUrl else {
+      Debug.log("Service URL is nil.")
+      return nil
+    }
+    
+    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
+    do {
+      let (data, _) = try await URLSession.shared.data(from: endpoint)
+      let decoder = JSONDecoder()
+      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
+      
+      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
+      
+      // Find the matching item and return it
+      return self.items.first { $0.sdModel?.title == optionsResponse.sdModelCheckpoint }
+    } catch {
+      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
+      return nil
     }
   }
 }

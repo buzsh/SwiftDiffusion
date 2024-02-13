@@ -9,8 +9,8 @@ import SwiftUI
 import Combine
 import AppKit
 
-extension ContentView {
-  func createCompositeImage(from images: [NSImage], withCompressionFactor: Double = 1.0) async -> NSImage? {
+extension ImageSaver {
+  static func createCompositeImageData(from images: [NSImage], withCompressionFactor: Double = 1.0) async -> Data? {
     guard !images.isEmpty else { return nil }
     
     let rowCount = Int(ceil(Double(images.count) / 2.0))
@@ -40,16 +40,12 @@ extension ContentView {
     
     // convert finalImage to a compressed JPEG
     guard let tiffData = finalImage.tiffRepresentation,
-          let imageRep = NSBitmapImageRep(data: tiffData) else {
-      Debug.log("Failed to create image representation")
-      return nil
-    }
-    
-    guard let jpegData = imageRep.representation(using: .jpeg, properties: [.compressionFactor: withCompressionFactor]) else {
+          let imageRep = NSBitmapImageRep(data: tiffData),
+          let jpegData = imageRep.representation(using: .jpeg, properties: [.compressionFactor: withCompressionFactor]) else {
       Debug.log("Failed to compress image")
       return nil
     }
     
-    return NSImage(data: jpegData)
+    return jpegData
   }
 }
