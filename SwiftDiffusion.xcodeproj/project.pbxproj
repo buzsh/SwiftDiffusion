@@ -537,9 +537,9 @@
 			isa = PBXGroup;
 			children = (
 				29C0F38A2B7AC25C0017DD6B /* SettingsSectionHeader.swift */,
+				29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */,
 				29C0F38C2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift */,
 				29C0F38E2B7AC3380017DD6B /* BrowseFileRow.swift */,
-				29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";

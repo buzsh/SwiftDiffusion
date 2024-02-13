@@ -14,7 +14,7 @@ struct DeveloperSection: View {
     VStack(alignment: .leading) {
       ToggleWithHeader(isToggled: $userSettings.alwaysStartPythonEnvironmentAtLaunch, header: "Start Python environment at launch", description: "This will automatically ready the Python environment such that you can start generating immediately.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
-      ToggleWithHeader(isToggled: $userSettings.showPythonEnvironmentControls, header: "Show Python environment controls", description: "This will allow you to build and stop the Python environment from the toolbar. Also comes with a little status light!", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
+      ToggleWithHeader(isToggled: $userSettings.showPythonEnvironmentControls, header: "Show Python environment controls", description: "This will allow you to build and stop the Python environment from the toolbar. Also comes with a little status light!", showAllDescriptions: userSettings.alwaysShowSettingsHelp).disabled(userSettings.showDeveloperInterface) 
       
       ToggleWithHeader(isToggled: $userSettings.showDeveloperInterface, header: "Show developer interface", description: "This will show the developer tools, live variable states and other debugging information.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       

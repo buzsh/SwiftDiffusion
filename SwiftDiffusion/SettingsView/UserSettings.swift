@@ -16,6 +16,7 @@ class UserSettings: ObservableObject {
     didSet { store.set(alwaysShowSettingsHelp, forKey: "alwaysShowSettingsHelp") }
   }
   
+  // MARK: - File Path Settings
   @Published var webuiShellPath: String {
     didSet { store.set(webuiShellPath, forKey: "webuiShellPath") }
   }
@@ -28,6 +29,7 @@ class UserSettings: ObservableObject {
     didSet { store.set(outputDirectoryPath, forKey: "outputDirectoryPath") }
   }
   
+  // MARK: - Developer Settings
   @Published var killAllPythonProcessesOnTerminate: Bool {
     didSet { store.set(killAllPythonProcessesOnTerminate, forKey: "killAllPythonProcessesOnTerminate") }
   }
@@ -35,19 +37,32 @@ class UserSettings: ObservableObject {
   @Published var alwaysStartPythonEnvironmentAtLaunch: Bool {
     didSet { store.set(alwaysStartPythonEnvironmentAtLaunch, forKey: "alwaysStartPythonEnvironmentAtLaunch") }
   }
-  
+
   @Published var showPythonEnvironmentControls: Bool {
     didSet { store.set(showPythonEnvironmentControls, forKey: "showPythonEnvironmentControls") }
   }
-  /*
-  @Published var showDebugMenu: Bool {
-    didSet { store.set(showDebugMenu, forKey: "showDebugMenu") }
-  }
-   */
-  @Published var showDeveloperInterface: Bool {
-    didSet { store.set(showDeveloperInterface, forKey: "showDeveloperInterface") }
+  
+  private let initialShowPythonEnvironmentControlsKey = "initialShowPythonEnvironmentControls"
+  private var initialShowPythonEnvironmentControls: Bool? {
+    get {
+      if let value = store.value(forKey: initialShowPythonEnvironmentControlsKey) as? Bool {
+        return value
+      }
+      return nil
+    }
+    set {
+      store.set(newValue, forKey: initialShowPythonEnvironmentControlsKey)
+    }
   }
   
+  @Published var showDeveloperInterface: Bool {
+    didSet {
+      store.set(showDeveloperInterface, forKey: "showDeveloperInterface")
+      updateEnvironmentControlsBasedOnDeveloperInterface()
+    }
+  }
+  
+  // MARK: - Prompt Settings
   @Published var disablePasteboardParsingForGenerationData: Bool {
     didSet { store.set(disablePasteboardParsingForGenerationData, forKey: "disablePasteboardParsingForGenerationData") }
   }
@@ -56,10 +71,13 @@ class UserSettings: ObservableObject {
     didSet { store.set(alwaysShowPasteboardGenerationDataButton, forKey: "alwaysShowPasteboardGenerationDataButton") }
   }
   
+  // MARK: Engine Settings
   @Published var disableModelLoadingRamOptimizations: Bool {
     didSet { store.set(disableModelLoadingRamOptimizations, forKey: "disableModelLoadingRamOptimizations") }
   }
   
+  
+  // MARK: - Init Default Values
   private init() {
     let defaults: [String: Any] = [ // default settings
       "alwaysStartPythonEnvironmentAtLaunch": true,
@@ -89,5 +107,21 @@ class UserSettings: ObservableObject {
     disablePasteboardParsingForGenerationData = false
     alwaysShowPasteboardGenerationDataButton = false
     disableModelLoadingRamOptimizations = false
+  }
+}
+
+extension UserSettings {
+  func updateEnvironmentControlsBasedOnDeveloperInterface() {
+    if showDeveloperInterface {
+      if initialShowPythonEnvironmentControls == nil {
+        initialShowPythonEnvironmentControls = showPythonEnvironmentControls
+      }
+      showPythonEnvironmentControls = true
+    } else {
+      if let initialState = initialShowPythonEnvironmentControls {
+        showPythonEnvironmentControls = initialState
+        store.removeObject(forKey: initialShowPythonEnvironmentControlsKey)
+      }
+    }
   }
 }
