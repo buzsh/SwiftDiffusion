@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */; };
 		29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */; };
 		29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */; };
 		29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */; };
@@ -91,6 +92,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProgressBar.swift; sourceTree = "<group>"; };
 		29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateDebugInfo.swift; sourceTree = "<group>"; };
 		29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPromptStatusView.swift; sourceTree = "<group>"; };
 		29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTopStatusBar.swift; sourceTree = "<group>"; };
@@ -508,6 +510,7 @@
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
 				29B5718D2B7601960057DD50 /* ContentView+CompositeImage.swift */,
+				290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */,
 			);
 			path = ContentView;
 			sourceTree = "<group>";
@@ -670,6 +673,7 @@
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
 				29F0D3052B76D12400BF56CE /* SdModelData.swift in Sources */,
+				290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */,
 				29145E7A2B77DCEB00BFA64B /* DebugPromptActionView.swift in Sources */,
 				2916F33B2B728633001D14B9 /* FileOutlineView.swift in Sources */,
 				29623E3A2B79888500EC719F /* RequiredInputPathsPulsatingButton.swift in Sources */,
