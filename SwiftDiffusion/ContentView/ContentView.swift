@@ -224,6 +224,8 @@ struct ContentView: View {
     .onAppear {
       if !CanvasPreview && !userHasEnteredBothRequiredFields {
         showingRequiredInputPathsView = true
+      } else {
+        attemptLaunchOfPythonEnvironment()
       }
     }
     .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
