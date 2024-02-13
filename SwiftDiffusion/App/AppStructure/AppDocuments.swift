@@ -26,7 +26,6 @@ extension AppDocuments {
       Debug.log("Error: Unable to find Documents directory.")
       return nil
     }
-    Debug.log("appDocumentsUrl.appendingPathComponent(self.rawValue): \(appDocumentsUrl.appendingPathComponent(self.rawValue))")
     return appDocumentsUrl.appendingPathComponent(self.rawValue)
   }
 }

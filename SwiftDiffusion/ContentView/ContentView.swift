@@ -51,11 +51,9 @@ struct ContentView: View {
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   
-  
-  
   @State var imageCountToGenerate: Int = 0
   
-  @State private var columnVisibility = NavigationSplitViewVisibility.detailOnly
+  @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -75,8 +73,11 @@ struct ContentView: View {
     } detail: {
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
     }
+    .onChange(of: columnVisibility) {
+      Debug.log("columnVisibility: \(columnVisibility)")
+    }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
-    .navigationSplitViewStyle(.balanced)
+    .navigationSplitViewStyle(.automatic)
     .onAppear {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath

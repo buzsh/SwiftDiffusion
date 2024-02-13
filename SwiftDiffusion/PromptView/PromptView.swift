@@ -10,34 +10,23 @@ import Combine
 import CompactSlider
 
 extension Constants.Layout {
-  static let listViewPadding: CGFloat = 12
-  static let listViewResizableBarPadding = listViewPadding - halfResizableBarWidth
-  static let resizableBarWidth: CGFloat = 10
-  static let halfResizableBarWidth: CGFloat = resizableBarWidth/2
   static let promptRowPadding: CGFloat = 16
 }
 
 struct PromptView: View {
-  @ObservedObject var userSettings = UserSettings.shared
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isRightPaneVisible: Bool = false
-  @State private var columnWidth: CGFloat = 200
-  
   @State var generationDataInPasteboard: Bool = false
   
-  @State private var appIsActive = true
   @State private var previousSelectedModel: ModelItem?
-  
   @State var promptViewHasLoadedInitialModel = false
-  
-  let minColumnWidth: CGFloat = 160
-  let minSecondColumnWidth: CGFloat = 160
-  
+  /// Sends an API request to load in the currently selected model from the PromptView model menu.
+  /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
     if previousSelectedModel == modelItem {
       Debug.log("Model already loaded. Do not reload.")
@@ -70,18 +59,20 @@ struct PromptView: View {
   var body: some View {
     HSplitView {
       leftPane
+        .frame(minWidth: 370)
       if isRightPaneVisible {
         rightPane
+          .frame(minWidth: 370)
       }
     }
-    .frame(minWidth: 320, idealWidth: 800, maxHeight: .infinity)
+    .frame(minWidth: isRightPaneVisible ? 740 : 370)
     .toolbar {
-      ToolbarItem(placement: .automatic) {
+      ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {
           Button(action: {
             isRightPaneVisible.toggle()
           }) {
-            Image(systemName: "apple.terminal") // sidebar.squares.right
+            Image(systemName: "apple.terminal")
           }
         }
       }
@@ -103,7 +94,7 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            // Models
+            // Models Menu
             VStack(alignment: .leading) {
               HStack {
                 PromptRowHeading(title: "Model")
@@ -137,7 +128,6 @@ struct PromptView: View {
               }
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
-            // TODO: REFACTOR FLOW
             .onChange(of: currentPrompt.selectedModel) {
               if let modelToSelect = currentPrompt.selectedModel {
                 updateSelectedCheckpointModelItem(withModelItem: modelToSelect)
@@ -177,7 +167,7 @@ struct PromptView: View {
                 }
               }
             }
-            
+            // Sampling Menu
             VStack(alignment: .leading) {
               PromptRowHeading(title: "Sampling")
               Menu {
@@ -224,31 +214,27 @@ struct PromptView: View {
           }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-          Debug.log("[PromptView] willBecomeActiveNotification")
           Task {
             await checkPasteboardAndUpdateFlag()
           }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
           // Handle application going to background if needed
-        }
-      }
+        }//Form
+      }//ScrollView
       
       //PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
     }
     .background(Color(NSColor.windowBackgroundColor))
-    .frame(minWidth: 240, idealWidth: 320, maxHeight: .infinity)
   }
   
   // TODO: PROMPT QUEUE
   private var rightPane: some View {
-    VStack {
-      ConsoleView(scriptManager: scriptManager)
-    }
-    .padding()
-    .background(Color(NSColor.windowBackgroundColor))
+    ConsoleView(scriptManager: scriptManager)
+      .background(Color(NSColor.windowBackgroundColor))
+    
   }
   
 }

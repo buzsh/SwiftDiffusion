@@ -82,6 +82,7 @@ extension ScriptManager {
   static func preview(withState state: ScriptState) -> ScriptManager {
     let previewManager = ScriptManager()
     previewManager.scriptState = state
+    previewManager.serviceUrl = URL(string: "http://127.0.0.1:7860")
     return previewManager
   }
 }
