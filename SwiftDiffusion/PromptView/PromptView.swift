@@ -247,19 +247,3 @@ struct PromptView: View {
 #Preview {
   CommonPreviews.promptView
 }
-
-#Preview("Model.isLoading") {
-  let scriptManager: ScriptManager = .preview(withState: .active)
-  scriptManager.modelLoadState = .isLoading
-  let promptModelPreview = PromptModel()
-  promptModelPreview.positivePrompt = "sample, positive, prompt"
-  promptModelPreview.negativePrompt = "sample, negative, prompt"
-  promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
-  let modelManagerViewModel = ModelManagerViewModel()
-  return PromptView(
-    scriptManager: scriptManager
-  )
-  .environmentObject(promptModelPreview)
-  .environmentObject(modelManagerViewModel)
-  .frame(width: 400, height: 600)
-}

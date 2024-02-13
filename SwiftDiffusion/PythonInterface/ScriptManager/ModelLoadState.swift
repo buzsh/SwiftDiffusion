@@ -33,18 +33,18 @@ extension ScriptManager {
     Debug.log(">> \(output)")
     // Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
     if output.contains("Update successful for model") {
-      await updateModelLoadStateAndTime(to: .done)
+      updateModelLoadStateAndTime(to: .done)
     }
     //Debug.log(output)
     // Check for model loading time
-    if let loadedRange = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
+    if let _ = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
       let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
       let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
       if let match = regex.firstMatch(in: output, options: [], range: nsRange),
          let timeRange = Range(match.range(at: 1), in: output) {
         let timeString = String(output[timeRange])
         if let time = Double(timeString) {
-          await updateModelLoadStateAndTime(to: .done, time: time)
+          updateModelLoadStateAndTime(to: .done, time: time)
         }
       }
     }
@@ -56,7 +56,7 @@ extension ScriptManager {
     ]
     
     if failureMessages.contains(where: output.contains) {
-      await updateModelLoadStateAndTime(to: .failed, time: 0)
+      updateModelLoadStateAndTime(to: .failed, time: 0)
     }
     
     
@@ -64,8 +64,8 @@ extension ScriptManager {
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
     let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-    if let successMatch = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
-      await updateModelLoadStateAndTime(to: .done)
+    if let _ = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
+      updateModelLoadStateAndTime(to: .done)
     }
   }
   

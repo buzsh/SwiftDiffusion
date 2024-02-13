@@ -240,6 +240,9 @@ struct ContentView: View {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
       } else if scriptManager.genStatus == .done {
         NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
+        Task {
+          await fileHierarchy.refresh()
+        }
       }
     }
   }

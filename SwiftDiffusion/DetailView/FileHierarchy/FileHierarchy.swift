@@ -25,7 +25,7 @@ class FileHierarchy: ObservableObject {
     await MainActor.run {
       self.rootNodes = loadedFiles
       self.isLoading = false
-      let allImageFiles = self.getAllImageFiles()
+      //let allImageFiles = self.getAllImageFiles()
     }
   }
   
