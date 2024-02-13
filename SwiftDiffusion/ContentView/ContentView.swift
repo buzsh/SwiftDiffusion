@@ -57,10 +57,7 @@ struct ContentView: View {
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
-      // Sidebar
-      List {
-        
-      }
+      List {}
       .listStyle(SidebarListStyle())
     } content: {
       switch selectedView {
@@ -74,7 +71,6 @@ struct ContentView: View {
         SettingsView()
       }
     } detail: {
-      // Image, FileSelect DetailView
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
@@ -83,8 +79,6 @@ struct ContentView: View {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }
-      Debug.log("[onAppear] fileHierarchy.rootPath: \(fileHierarchy.rootPath)")
-      
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
@@ -153,13 +147,16 @@ struct ContentView: View {
       ToolbarItemGroup(placement: .principal) {
         Button("Add to Queue") {
           Debug.log("Add to queue")
-        }.disabled(true)
+        }
+        .buttonStyle(BorderBackgroundButtonStyle())
+        .disabled(true)
         
         Button(action: {
           fetchAndSaveGeneratedImages()
         }) {
           Text("Generate")
         }
+        .buttonStyle(BlueBackgroundButtonStyle())
         .disabled(
           scriptManager.scriptState != .active ||
           (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
@@ -196,18 +193,6 @@ struct ContentView: View {
           Image(systemName: "checkmark.seal.fill")
             .foregroundStyle(Color.green)
         }
-        
-          /*
-        Button(action: {
-          showingModelManagerView = true
-          //WindowManager.shared.showModelsManagerWindow(scriptManager: scriptManager)
-        }) {
-          Image(systemName: "arkit")
-        }
-        .sheet(isPresented: $showingModelManagerView) {
-          ModelManagerView(scriptManager: scriptManager)
-        }
-           */
         
         Button(action: {
           WindowManager.shared.showSettingsWindow()
