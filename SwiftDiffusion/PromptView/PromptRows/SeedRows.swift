@@ -164,6 +164,8 @@ struct ExportSelectionRow: View {
           Spacer()
           Text("\(Int(batchCount))")
         }
+        .disabled(true)
+        
         CompactSlider(value: $batchSize, in: 1...8, step: 1) {
           Text("Batch Size")
           Spacer()

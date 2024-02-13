@@ -111,9 +111,10 @@ extension ContentView {
 }
 
 struct ImageSaver {
-  static func saveImages(images base64EncodedImages: [String], to directoryURL: URL) async -> (Data?, String) {
+  static func saveImages(images base64EncodedImages: [String], to directoryURL: URL) async -> (Data?, String, [URL]) {
     let fileManager = FileManager.default
     var nextImageNumber = 1
+    var outputImageUrlList: [URL] = []
     do {
       let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
       let imageFiles = fileURLs.filter { $0.pathExtension == "png" }
@@ -126,47 +127,71 @@ struct ImageSaver {
       Debug.log("Error listing directory contents: \(error.localizedDescription)")
     }
     
-    var imagesForComposite: [NSImage] = []
-    
-    for base64Image in base64EncodedImages {
-      guard let imageData = Data(base64Encoded: base64Image), let nsImage = NSImage(data: imageData) else {
-        Debug.log("Invalid image data")
-        continue
+    // Handle logic for single image generation (batch count == 1)
+    if base64EncodedImages.count == 1 {
+      guard let imageData = Data(base64Encoded: base64EncodedImages.first!), let nsImage = NSImage(data: imageData) else {
+        Debug.log("Invalid image data for the single image")
+        return (nil, "", outputImageUrlList)
       }
       
-      imagesForComposite.append(nsImage)
+      let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
+      do {
+        try imageData.write(to: filePath)
+        Debug.log("Single image saved to \(filePath)")
+        outputImageUrlList.append(filePath)
+        return (imageData, filePath.path, outputImageUrlList)
+      } catch {
+        Debug.log("Failed to save single image \("\(nextImageNumber).png") to \(filePath): \(error.localizedDescription)")
+        return (nil, "", outputImageUrlList)
+      }
+    } else {
       
-      // Directly save each image if not creating a composite
-      if base64EncodedImages.count == 1 {
-        let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
-        do {
-          try imageData.write(to: filePath)
-          Debug.log("Image saved to \(filePath)")
-          return (imageData, filePath.path)
-        } catch {
-          Debug.log("Failed to save image: \(error.localizedDescription)")
-          return (nil, "")
+      // Handle logic for multiple images generated (batch count > 1)
+      var imagesForComposite: [NSImage] = []
+      let alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+      
+      for (index, base64Image) in base64EncodedImages.enumerated() {
+        guard let imageData = Data(base64Encoded: base64Image), let nsImage = NSImage(data: imageData) else {
+          Debug.log("Invalid image data")
+          continue
+        }
+        
+        imagesForComposite.append(nsImage)
+        
+        if index < alphabet.count {
+          // Save individual images
+          let individualFileName = "\(nextImageNumber)\(alphabet[index]).png"
+          let individualFilePath = directoryURL.appendingPathComponent(individualFileName)
+          do {
+            try imageData.write(to: individualFilePath)
+            Debug.log("Individual image saved to \(individualFilePath)")
+            outputImageUrlList.append(individualFilePath)
+          } catch {
+            Debug.log("Failed to save image \(individualFileName) to \(individualFilePath): \(error.localizedDescription)")
+            // Optionally, return or handle the error
+          }
+        } else {
+          Debug.log("Index exceeds alphabet array bounds, cannot save more individual images uniquely.")
         }
       }
-    }
-    
-    // Proceed to create a composite image if there are multiple images
-    if imagesForComposite.count > 1 {
+      
+      // Create and save the composite image
       if let compositeImageData = await createCompositeImageData(from: imagesForComposite, withCompressionFactor: Constants.API.compositeImageCompressionFactor) {
         let compositeImageName = "\(nextImageNumber)-grid.png"
         let compositeImagePath = directoryURL.appendingPathComponent(compositeImageName)
         do {
           try compositeImageData.write(to: compositeImagePath)
           Debug.log("Composite image saved to \(compositeImagePath)")
-          return (compositeImageData, compositeImagePath.path)
+          outputImageUrlList.append(compositeImagePath)
+          return (compositeImageData, compositeImagePath.path, outputImageUrlList)
         } catch {
-          Debug.log("Failed to save composite image: \(error.localizedDescription)")
-          return (nil, "")
+          Debug.log("Failed to save composite image \(compositeImageName) to \(compositeImagePath): \(error.localizedDescription)")
+          return (nil, "", outputImageUrlList)
         }
       }
     }
     
-    return (nil, "")
+    return (nil, "", outputImageUrlList)
   }
   
   static func getOutputDirectoryUrl(forEndpoint endpoint: Constants.API.Endpoint) -> URL? {
@@ -209,14 +234,15 @@ extension ContentView {
     }
   }
   
-  private func updateUIWithImageResult(_ result: (Data?, String)) async {
-    let (imageData, imagePath) = result
+  private func updateUIWithImageResult(_ result: (Data?, String, [URL])) async {
+    let (imageData, imagePath, savedImageUrls) = result
     // Convert Data? to NSImage?
     let image: NSImage? = imageData.flatMap { NSImage(data: $0) }
     
     await MainActor.run {
       self.selectedImage = image
       self.lastSelectedImagePath = imagePath
+      self.lastSavedImageUrls = savedImageUrls
       scriptManager.genStatus = .done
       
       Delay.by(3) {
