@@ -14,8 +14,7 @@ import CompactSlider
   let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
-  
-  
+
   return PromptView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .environmentObject(promptModelPreview)
     .frame(width: 400, height: 600)

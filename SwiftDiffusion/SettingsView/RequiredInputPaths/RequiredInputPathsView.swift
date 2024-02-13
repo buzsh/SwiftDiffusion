@@ -149,7 +149,7 @@ struct BrowseRequiredFileRow: View {
       }
       .padding(.bottom, 14)
     }
-    .onChange(of: textValue) { newValue in
+    .onChange(of: textValue) { newValue, _ in
       updateIndicator(for: newValue)
     }
     .onAppear {
