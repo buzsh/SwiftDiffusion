@@ -111,7 +111,7 @@ extension ContentView {
 }
 
 struct ImageSaver {
-  static func saveImages(images base64EncodedImages: [String], to directoryURL: URL) async -> (Data?, String) {
+  static func saveImages(images base64EncodedImages: [String], to directoryURL: URL) async -> (Data?, String, [URL]) {
     let fileManager = FileManager.default
     var nextImageNumber = 1
     var outputImageUrlList: [URL] = []
@@ -131,7 +131,7 @@ struct ImageSaver {
     if base64EncodedImages.count == 1 {
       guard let imageData = Data(base64Encoded: base64EncodedImages.first!), let nsImage = NSImage(data: imageData) else {
         Debug.log("Invalid image data for the single image")
-        return (nil, "")
+        return (nil, "", outputImageUrlList)
       }
       
       let filePath = directoryURL.appendingPathComponent("\(nextImageNumber).png")
@@ -139,10 +139,10 @@ struct ImageSaver {
         try imageData.write(to: filePath)
         Debug.log("Single image saved to \(filePath)")
         outputImageUrlList.append(filePath)
-        return (imageData, filePath.path)
+        return (imageData, filePath.path, outputImageUrlList)
       } catch {
         Debug.log("Failed to save single image \("\(nextImageNumber).png") to \(filePath): \(error.localizedDescription)")
-        return (nil, "")
+        return (nil, "", outputImageUrlList)
       }
     } else {
       
@@ -183,15 +183,15 @@ struct ImageSaver {
           try compositeImageData.write(to: compositeImagePath)
           Debug.log("Composite image saved to \(compositeImagePath)")
           outputImageUrlList.append(compositeImagePath)
-          return (compositeImageData, compositeImagePath.path)
+          return (compositeImageData, compositeImagePath.path, outputImageUrlList)
         } catch {
           Debug.log("Failed to save composite image \(compositeImageName) to \(compositeImagePath): \(error.localizedDescription)")
-          return (nil, "")
+          return (nil, "", outputImageUrlList)
         }
       }
     }
     
-    return (nil, "")
+    return (nil, "", outputImageUrlList)
   }
   
   static func getOutputDirectoryUrl(forEndpoint endpoint: Constants.API.Endpoint) -> URL? {
@@ -234,14 +234,15 @@ extension ContentView {
     }
   }
   
-  private func updateUIWithImageResult(_ result: (Data?, String)) async {
-    let (imageData, imagePath) = result
+  private func updateUIWithImageResult(_ result: (Data?, String, [URL])) async {
+    let (imageData, imagePath, savedImageUrls) = result
     // Convert Data? to NSImage?
     let image: NSImage? = imageData.flatMap { NSImage(data: $0) }
     
     await MainActor.run {
       self.selectedImage = image
       self.lastSelectedImagePath = imagePath
+      self.lastSavedImageUrls = savedImageUrls
       scriptManager.genStatus = .done
       
       Delay.by(3) {
