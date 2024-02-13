@@ -31,11 +31,9 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   
   @State private var appIsActive = true
-  @State private var userDidSelectModel = false
-  @State var shouldPostNewlySelectedModelCheckpointToApi = false
   @State private var previousSelectedModel: ModelItem?
   
-  @State var hasLoadedInitialModel = false
+  @State var promptViewHasLoadedInitialModel = false
   
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
@@ -54,14 +52,12 @@ struct PromptView: View {
       updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
         switch result {
         case .success(let successMessage):
-          // Handle success - you already set scriptManager.modelLoadState = .done in the function
           Debug.log("[updateSdModelCheckpoint] Success: \(successMessage)")
           scriptManager.modelLoadState = .done
         case .failure(let error):
-          // Handle failure
           Debug.log("[updateSdModelCheckpoint] Failure: \(error)")
-          if hasLoadedInitialModel {
-            scriptManager.modelLoadState = .failed // Set the model load state to failed here
+          if promptViewHasLoadedInitialModel {
+            scriptManager.modelLoadState = .failed
           }
         }
       }
@@ -117,7 +113,6 @@ struct PromptView: View {
                   Section(header: Text("􀢇 CoreML")) {
                     ForEach(modelManagerViewModel.items.filter { $0.type == .coreMl }) { item in
                       Button(item.name) {
-                        userDidSelectModel = true
                         currentPrompt.selectedModel = item
                         Debug.log("Selected CoreML Model: \(item.name)")
                       }
@@ -126,14 +121,13 @@ struct PromptView: View {
                   Section(header: Text("􁻴 Python")) {
                     ForEach(modelManagerViewModel.items.filter { $0.type == .python }) { item in
                       Button(item.name) {
-                        userDidSelectModel = true
                         currentPrompt.selectedModel = item
                         Debug.log("Selected Python Model: \(item.name)")
                       }
                     }
                   }
                 } label: {
-                  Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit") // "skew", "rotate.3d"
+                  Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
                 }
                 if scriptManager.modelLoadState == .isLoading {
                   ProgressView()
@@ -153,9 +147,8 @@ struct PromptView: View {
               if scriptManager.scriptState == .active {
                 Task {
                   await modelManagerViewModel.loadModels()
-                  //let apiLoadedModel = await getModelMatchingSdModelCheckpoint()
                 }
-                // if user has already selected a model, load that model
+                // if user has already selected a checkpoint model, load that model
                 if let newSelectedModel = currentPrompt.selectedModel {
                   Debug.log("User already selected model. Loading \(newSelectedModel.name)")
                   updateSelectedCheckpointModelItem(withModelItem: newSelectedModel)
@@ -163,9 +156,25 @@ struct PromptView: View {
               }
             }
             .onChange(of: scriptManager.modelLoadState) {
-              // if first load state done, hasLoadedInitialModel = true
+              // if first load state done, promptViewHasLoadedInitialModel = true
               if scriptManager.modelLoadState == .done {
-                hasLoadedInitialModel = true
+                promptViewHasLoadedInitialModel = true
+              }
+            }
+            .onChange(of: modelManagerViewModel.hasLoadedInitialModelCheckpointsAndAssignedSdModel) {
+              Debug.log("modelManagerViewModel.hasLoadedInitialModelCheckpointsAndAssignedSdModel: \(modelManagerViewModel.hasLoadedInitialModelCheckpointsAndAssignedSdModel)")
+              if modelManagerViewModel.hasLoadedInitialModelCheckpointsAndAssignedSdModel {
+                // if user hasn't yet selected a checkpoint model, fill the menu with the loaded model
+                if currentPrompt.selectedModel == nil {
+                  Debug.log("User hasn't yet selected a model. Attempting to fill with API loaded model checkpoint...")
+                  Task {
+                    if let apiLoadedModel = await modelManagerViewModel.getModelCheckpointMatchingApiLoadedModelCheckpoint() {
+                      currentPrompt.selectedModel = apiLoadedModel
+                      Debug.log(" - apiLoadedModel: \(String(describing: apiLoadedModel.sdModel?.title))")
+                      Debug.log(" - currentPrompt.selectedModel: \(String(describing: currentPrompt.selectedModel?.sdModel?.title))")
+                    }
+                  }
+                }
               }
             }
             
