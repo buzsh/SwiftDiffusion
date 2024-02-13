@@ -65,7 +65,8 @@ struct SettingsView: View {
       }
       .background(Color(NSColor.windowBackgroundColor))
     }
-    .frame(minWidth: 615, idealWidth: 600, minHeight: 300, idealHeight: 400)
+    .frame(minWidth: 615, idealWidth: Constants.WindowSize.Settings.defaultWidth, maxWidth: 900,
+           minHeight: 300, idealHeight: Constants.WindowSize.Settings.defaultWidth, maxHeight: .infinity)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
