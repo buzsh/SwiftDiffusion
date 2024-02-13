@@ -79,7 +79,7 @@ class ScriptManager: ObservableObject {
   func newRunScriptState() {
     Debug.log("Starting ./webui.sh")
     updateScriptState(.launching)
-    modelLoadState = .launching
+    //modelLoadState = .launching
     serviceUrl = nil
   }
   
@@ -87,12 +87,10 @@ class ScriptManager: ObservableObject {
     guard !userSettings.webuiShellPath.isEmpty else {
       Debug.log("[run] userSettings.webuiShellPath is empty")
       updateScriptState(.unableToLocateScript)
-      modelLoadState = .failed
       return
     }
     guard !userSettings.stableDiffusionModelsPath.isEmpty else {
       Debug.log("[run] userSettings.stableDiffusionModelsPath is empty")
-      updateScriptState(.unableToLocateScript)
       modelLoadState = .failed
       return
     }

@@ -35,8 +35,41 @@ struct PromptView: View {
   @State var shouldPostNewlySelectedModelCheckpointToApi = false
   @State private var previousSelectedModel: ModelItem?
   
+  @State var hasLoadedInitialModel = false
+  
   let minColumnWidth: CGFloat = 160
   let minSecondColumnWidth: CGFloat = 160
+  
+  func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
+    if previousSelectedModel == modelItem {
+      Debug.log("SAME MODEL, DO NOTHING")
+      return
+    }
+    
+    if scriptManager.scriptState == .active {
+      scriptManager.modelLoadState = .isLoading
+    }
+    
+    if let modelItem = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+      updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
+        switch result {
+        case .success(let successMessage):
+          // Handle success - you already set scriptManager.modelLoadState = .done in the function
+          Debug.log("[updateSdModelCheckpoint] Success: \(successMessage)")
+          scriptManager.modelLoadState = .done
+        case .failure(let error):
+          // Handle failure
+          Debug.log("[updateSdModelCheckpoint] Failure: \(error)")
+          if hasLoadedInitialModel {
+            scriptManager.modelLoadState = .failed // Set the model load state to failed here
+          }
+        }
+      }
+    }
+    if scriptManager.scriptState == .active {
+      previousSelectedModel = modelItem
+    }
+  }
   
   var body: some View {
     HSplitView {
@@ -101,35 +134,29 @@ struct PromptView: View {
               }
             }
             .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
+            // TODO: REFACTOR FLOW
+            .onChange(of: currentPrompt.selectedModel) {
+              if let modelToSelect = currentPrompt.selectedModel {
+                updateSelectedCheckpointModelItem(withModelItem: modelToSelect)
+              }
+            }
             .onChange(of: scriptManager.scriptState) {
               if scriptManager.scriptState == .active {
                 Task {
-                  await selectModelMatchingSdModelCheckpoint()
+                  await modelManagerViewModel.loadModels()
+                  //let apiLoadedModel = await getModelMatchingSdModelCheckpoint()
                 }
-              }
-            }
-            // TODO: REFACTOR FLOW
-            .onChange(of: currentPrompt.selectedModel) { newValue in
-              if let newValue = newValue, newValue != previousSelectedModel {
-                if userDidSelectModel || shouldPostNewlySelectedModelCheckpointToApi {
-                  scriptManager.modelLoadState = .isLoading
-                  if let modelItem = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
-                    updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
-                      Debug.log(result)
-                    }
-                  }
-                  userDidSelectModel = false
-                  shouldPostNewlySelectedModelCheckpointToApi = false
-                  previousSelectedModel = newValue
+                // if user has already selected a model, load that model
+                if let newSelectedModel = currentPrompt.selectedModel {
+                  Debug.log("User already selected model. Loading \(newSelectedModel.name)")
+                  updateSelectedCheckpointModelItem(withModelItem: newSelectedModel)
                 }
               }
             }
             .onChange(of: scriptManager.modelLoadState) {
-              Debug.log("scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
+              // if first load state done, hasLoadedInitialModel = true
               if scriptManager.modelLoadState == .done {
-                Task {
-                  await selectModelMatchingSdModelCheckpoint()
-                }
+                hasLoadedInitialModel = true
               }
             }
             VStack(alignment: .leading) {

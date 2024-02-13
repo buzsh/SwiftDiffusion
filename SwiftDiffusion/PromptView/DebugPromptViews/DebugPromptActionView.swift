@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DebugPromptActionView: View {
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
@@ -18,10 +19,19 @@ struct DebugPromptActionView: View {
       HStack {
         Spacer()
         VStack(alignment: .leading) {
-          Button("Log Prompt") {
-            logPromptProperties()
+          HStack {
+            Button("Log Prompt") {
+              logPromptProperties()
+            }
+            .padding(.trailing, 6)
+            
+            Button("Load Models") {
+              Task {
+                await modelManagerViewModel.loadModels()
+                //let apiLoadedModel = await getModelMatchingSdModelCheckpoint()
+              }
+            }
           }
-          //.padding(.trailing, 6)
         }
         .padding(.horizontal)
         .font(.system(size: 12, design: .monospaced))
