@@ -23,17 +23,19 @@ struct ConsoleView: View {
       .padding(.horizontal, Constants.Layout.verticalPadding)
       .padding(.top, 10)
       // API test output
+      /*
       if let outputImage = outputImage {
         outputImage
           .resizable()
           .scaledToFit()
       }
+       */
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .font(.system(.body, design: .monospaced))
         .border(Color.gray.opacity(0.3), width: 1)
-        .padding(.vertical, 10)
+        .padding(.bottom, 10)
         .padding(.horizontal, Constants.Layout.verticalPadding)
       
       HStack {
@@ -48,6 +50,7 @@ struct ConsoleView: View {
             Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
         
+        /*
         if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
           Button(action: {
             NSWorkspace.shared.open(url)
@@ -57,7 +60,8 @@ struct ConsoleView: View {
           .buttonStyle(.plain)
           .padding(.leading, 2)
         }
-        
+         */
+        /*
         if let url = scriptManager.serviceUrl {
           Button("Send API") {
             Task {
@@ -65,6 +69,7 @@ struct ConsoleView: View {
             }
           }
         }
+         */
         
         Spacer()
         
@@ -97,7 +102,9 @@ struct ConsoleView: View {
       }
       .padding(.horizontal, Constants.Layout.verticalPadding)
     }
-    .padding(14)
+    //.padding(14)
+    .padding(.horizontal, 4)
+    .padding(.bottom, 10)
   }
   
   // https://github.com/AUTOMATIC1111/stable-diffusion-webui/discussions/3734
@@ -114,7 +121,6 @@ struct ConsoleView: View {
       "prompt": "astronaut",
       "steps": 20
     ]
-    //let payload = jsonPayload
     
     do {
       let requestData = try JSONSerialization.data(withJSONObject: payload, options: [])
@@ -148,3 +154,8 @@ let jsonPayload: [String: Any] = [
   "steps": 20,
   "batch_size": 2
 ]
+
+#Preview {
+  ConsoleView(userSettings: UserSettings.shared, scriptManager: ScriptManager.preview(withState: .active))
+    .frame(width: 370)
+}
