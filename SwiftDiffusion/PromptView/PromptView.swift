@@ -24,15 +24,11 @@ struct PromptView: View {
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
-  @State private var promptContainerMinWidth: CGFloat = 370
-  @State private var promptChildMinWidth: CGFloat = 370//730
   
   @State private var isRightPaneVisible: Bool = false
-  @State private var columnWidth: CGFloat = 200
   
   @State var generationDataInPasteboard: Bool = false
   
-  @State private var appIsActive = true
   @State private var previousSelectedModel: ModelItem?
   
   @State var promptViewHasLoadedInitialModel = false
@@ -69,29 +65,22 @@ struct PromptView: View {
   var body: some View {
     HSplitView {
       leftPane
-        .frame(minWidth: promptChildMinWidth)
+        .frame(minWidth: 370)
       if isRightPaneVisible {
         rightPane
-          .frame(minWidth: promptChildMinWidth)
+          .frame(minWidth: 370)
       }
     }
-    .frame(minWidth: promptContainerMinWidth)
+    .frame(minWidth: isRightPaneVisible ? 740 : 370)
     .toolbar {
       ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {
           Button(action: {
             isRightPaneVisible.toggle()
           }) {
-            Image(systemName: "apple.terminal") // sidebar.squares.right
+            Image(systemName: "apple.terminal")
           }
         }
-      }
-    }
-    .onChange(of: isRightPaneVisible) {
-      if isRightPaneVisible {
-        promptContainerMinWidth = 740
-      } else {
-        promptContainerMinWidth = 370
       }
     }
   }
@@ -111,7 +100,7 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            // Models
+            // Models Menu
             VStack(alignment: .leading) {
               HStack {
                 PromptRowHeading(title: "Model")
@@ -232,7 +221,6 @@ struct PromptView: View {
           }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-          Debug.log("[PromptView] willBecomeActiveNotification")
           Task {
             await checkPasteboardAndUpdateFlag()
           }
@@ -241,16 +229,13 @@ struct PromptView: View {
           // Handle application going to background if needed
         }//Form
       }//ScrollView
-      .frame(minWidth: promptChildMinWidth)
+      
       //PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
     }
     .background(Color(NSColor.windowBackgroundColor))
   }
-  
-  //Total minWidth when rightPane is shown: 740
-  //Otherwise: minWidth: 370
   
   // TODO: PROMPT QUEUE
   private var rightPane: some View {
