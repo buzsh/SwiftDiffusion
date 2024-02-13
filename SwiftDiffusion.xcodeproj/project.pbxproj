@@ -268,6 +268,7 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
+				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
 				29145E712B77D95600BFA64B /* PromptModels */,
@@ -311,7 +312,6 @@
 				29145E742B77DBCE00BFA64B /* CommonPreviews */,
 				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
 				29145E7B2B78110200BFA64B /* ToolbarViews */,
-				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
 				2952BADF2B71F64F002FC885 /* CustomViews */,
 				293336482B72A67C007237AA /* DebugViews */,
 			);

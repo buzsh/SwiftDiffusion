@@ -168,14 +168,14 @@ extension ModelManagerViewModel {
         let models = try await getSdModelData(baseUrl)
         var unassignedItems: [ModelItem] = []
         
-        // Log all filenames from the API for comparison
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
         
-        for item in self.items where item.sdModelCheckpoint == nil {
+        for item in self.items where item.sdModel == nil {
+          
           let itemFilename = item.url.lastPathComponent
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
-            item.sdModelCheckpoint = matchingModel.title
+            item.setSdModel(matchingModel)
             Debug.log("Assigned \(matchingModel.title) to \(item.name)")
           } else {
             unassignedItems.append(item)
@@ -183,7 +183,6 @@ extension ModelManagerViewModel {
           }
         }
         
-        // Log unassigned ModelItems
         for item in unassignedItems {
           Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
         }
