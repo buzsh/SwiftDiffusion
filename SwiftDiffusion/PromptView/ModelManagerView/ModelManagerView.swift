@@ -79,7 +79,7 @@ struct ModelManagerView: View {
           .buttonStyle(BorderlessButtonStyle())
           
           // if item is not default or if item is not currently selected model
-          if !item.isDefaultModel || item != currentPrompt.selectedModel {
+          if !item.isDefaultModel && item != currentPrompt.selectedModel {
             Button(action: {
               Task {
                 await modelManagerViewModel.moveToTrash(item: item)
