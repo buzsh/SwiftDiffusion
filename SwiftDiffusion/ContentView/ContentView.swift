@@ -190,7 +190,7 @@ struct ContentView: View {
             .progressViewStyle(CircularProgressViewStyle())
             .scaleEffect(0.5)
         } else if scriptManager.genStatus == .done {
-          Image(systemName: "checkmark.seal.fill")
+          Image(systemName: "checkmark")
             .foregroundStyle(Color.green)
         }
         
