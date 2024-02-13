@@ -202,9 +202,7 @@ struct ContentView: View {
         }.disabled(true)
         
         Button(action: {
-          Task {
-            await prepareAndSendAPIRequest()
-          }
+          fetchAndSaveGeneratedImages()
         }) {
           Text("Generate")
         }
