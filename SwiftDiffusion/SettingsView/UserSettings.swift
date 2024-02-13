@@ -36,6 +36,10 @@ class UserSettings: ObservableObject {
     didSet { store.set(alwaysStartPythonEnvironmentAtLaunch, forKey: "alwaysStartPythonEnvironmentAtLaunch") }
   }
   
+  @Published var showPythonEnvironmentControls: Bool {
+    didSet { store.set(showPythonEnvironmentControls, forKey: "showPythonEnvironmentControls") }
+  }
+  
   @Published var showDebugMenu: Bool {
     didSet { store.set(showDebugMenu, forKey: "showDebugMenu") }
   }
@@ -65,6 +69,7 @@ class UserSettings: ObservableObject {
     self.killAllPythonProcessesOnTerminate = store.bool(forKey: "killAllPythonProcessesOnTerminate")
     self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch")
     self.showDebugMenu = store.bool(forKey: "showDebugMenu")
+    self.showPythonEnvironmentControls = store.bool(forKey: "showPythonEnvironmentControls")
     self.disablePasteboardParsingForGenerationData = store.bool(forKey: "disablePasteboardParsingForGenerationData")
     self.alwaysShowPasteboardGenerationDataButton = store.bool(forKey: "alwaysShowPasteboardGenerationDataButton")
     self.disableModelLoadingRamOptimizations = store.bool(forKey: "disableModelLoadingRamOptimizations")
@@ -75,6 +80,7 @@ class UserSettings: ObservableObject {
     killAllPythonProcessesOnTerminate = false
     alwaysStartPythonEnvironmentAtLaunch = true
     showDebugMenu = false
+    showPythonEnvironmentControls = false
     disablePasteboardParsingForGenerationData = false
     alwaysShowPasteboardGenerationDataButton = false
     disableModelLoadingRamOptimizations = false

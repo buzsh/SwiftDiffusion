@@ -97,10 +97,24 @@ struct ContentView: View {
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
-          Circle()
-            .fill(scriptManager.scriptState.statusColor)
-            .frame(width: 10, height: 10)
-            .padding(.trailing, 2)
+          
+          if userSettings.showPythonEnvironmentControls {
+            Circle()
+              .fill(scriptManager.scriptState.statusColor)
+              .frame(width: 10, height: 10)
+              .padding(.trailing, 2)
+          }
+          
+          if userSettings.showPythonEnvironmentControls {
+            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
+              Button(action: {
+                NSWorkspace.shared.open(url)
+              }) {
+                Image(systemName: "network")
+              }
+              .padding(.vertical, 3)
+            }
+          }
           
           //Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
           
@@ -113,34 +127,23 @@ struct ContentView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
           
-          if userSettings.showDebugMenu {
-            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
-              Button(action: {
-                NSWorkspace.shared.open(url)
-              }) {
-                Image(systemName: "network")
-              }
-              .buttonStyle(.plain)
-              .padding(.leading, 2)
-            }
-          }
-          
           //Divider().padding(.leading, 6).padding(.trailing, 3)
-          
-          Button(action: {
-            if scriptManager.scriptState == .readyToStart {
-              scriptManager.run()
-            } else {
-              scriptManager.terminate()
+          if userSettings.showPythonEnvironmentControls {
+            Button(action: {
+              if scriptManager.scriptState == .readyToStart {
+                scriptManager.run()
+              } else {
+                scriptManager.terminate()
+              }
+            }) {
+              if scriptManager.scriptState == .readyToStart {
+                Image(systemName: "play.fill")
+              } else {
+                Image(systemName: "stop.fill")
+              }
             }
-          }) {
-            if scriptManager.scriptState == .readyToStart {
-              Image(systemName: "play.fill")
-            } else {
-              Image(systemName: "stop.fill")
-            }
+            .disabled(scriptManager.scriptState == .terminated)
           }
-          .disabled(scriptManager.scriptState == .terminated)
         }
       }
       
