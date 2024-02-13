@@ -28,7 +28,15 @@ struct DebugPromptActionView: View {
             Button("Load Models") {
               Task {
                 await modelManagerViewModel.loadModels()
-                //let apiLoadedModel = await getModelMatchingSdModelCheckpoint()
+              }
+            }
+            .padding(.trailing, 6)
+            
+            Button("Log API Model") {
+              Task {
+                if let modelTitle = await modelManagerViewModel.getModelMatchingSdModelCheckpoint()?.sdModel?.title {
+                  Debug.log(modelTitle)
+                }
               }
             }
           }

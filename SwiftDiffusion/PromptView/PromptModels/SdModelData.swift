@@ -96,28 +96,6 @@ extension PromptView {
     }
   }
   
-  @MainActor
-  func getModelMatchingSdModelCheckpoint() async -> ModelItem? {
-    guard let apiUrl = scriptManager.serviceUrl else {
-      Debug.log("Service URL is nil.")
-      return nil
-    }
-    
-    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
-    do {
-      let (data, _) = try await URLSession.shared.data(from: endpoint)
-      let decoder = JSONDecoder()
-      let optionsResponse = try decoder.decode(OptionsResponse.self, from: data)
-      
-      Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
-      
-      // Find the matching item and return it
-      return modelManagerViewModel.items.first { $0.sdModel?.title == optionsResponse.sdModelCheckpoint }
-    } catch {
-      Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
-      return nil
-    }
-  }
 }
 
 enum UpdateModelError: Error {

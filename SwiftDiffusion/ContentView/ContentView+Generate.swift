@@ -225,6 +225,9 @@ extension ContentView {
 
 extension ContentView {
   func fetchAndSaveGeneratedImages() {
+    scriptManager.genStatus = .preparingToGenerate
+    scriptManager.genProgress = -1
+    
     let payload = prepareImageGenerationPayloadFromPrompt() // Assuming this prepares your API request payload correctly
     
     guard let baseAPI = scriptManager.serviceUrl else {
