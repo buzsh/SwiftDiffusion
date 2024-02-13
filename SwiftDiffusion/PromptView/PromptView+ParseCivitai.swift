@@ -173,7 +173,6 @@ extension PromptView {
       return isMatch
     }) {
       Debug.log("[processModelParameter] match: \(matchingModel.name)")
-      shouldPostNewlySelectedModelCheckpointToApi = true
       currentPrompt.selectedModel = matchingModel
     } else {
       parseLog("No matching model found for \(parsedModelSubstrings)")

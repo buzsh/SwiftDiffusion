@@ -44,6 +44,7 @@ class ScriptManager: ObservableObject {
   }
   
   func updateScriptState(_ state: ScriptState) {
+    Debug.log("[ScriptManager] updateScriptState: \(state.debugInfo)")
     self.scriptState = state
     
     if state == .terminated || state == .unableToLocateScript {
@@ -199,7 +200,7 @@ class ScriptManager: ObservableObject {
           self.serviceUrl = URL(string: url)
           DispatchQueue.main.async {
             self.updateScriptState(.active)
-            Debug.log("URL successfully parsed and state updated to active: \(url)")
+            Debug.log("serviceURL successfully parsed from console: \(url)")
           }
         } else {
           Debug.log("No URL match found.")
