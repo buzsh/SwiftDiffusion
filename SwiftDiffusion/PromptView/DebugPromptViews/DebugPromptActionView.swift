@@ -32,10 +32,10 @@ struct DebugPromptActionView: View {
             }
             .padding(.trailing, 6)
             
-            Button("Log API Model") {
+            Button("Log Model from API") {
               Task {
-                if let modelTitle = await modelManagerViewModel.getModelMatchingSdModelCheckpoint()?.sdModel?.title {
-                  Debug.log(modelTitle)
+                if let modelTitle = await modelManagerViewModel.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.sdModel?.title {
+                  Debug.log("Log Model from API: \(modelTitle)")
                 }
               }
             }
