@@ -58,7 +58,8 @@ class UserSettings: ObservableObject {
   
   private init() {
     let defaults: [String: Any] = [ // default settings
-      "alwaysStartPythonEnvironmentAtLaunch": true
+      "alwaysStartPythonEnvironmentAtLaunch": true,
+      "alwaysShowSettingsHelp": true
     ]
     store.register(defaults: defaults)
     
