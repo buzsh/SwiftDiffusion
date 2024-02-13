@@ -9,7 +9,12 @@ import SwiftUI
 import AppKit
 
 extension Constants.Layout {
-  static let detailToolbarSpacing: CGFloat = 5
+  static let detailToolbarSpacing: CGFloat = 0
+  
+  struct Toolbar {
+    static let itemHeight: CGFloat = 30
+    static let itemWidth: CGFloat = 30
+  }
 }
 
 struct DetailView: View {
@@ -46,7 +51,7 @@ struct DetailView: View {
       }
       .frame(minHeight: 200, idealHeight: 400)
       
-      HStack {
+      HStack(spacing: 0) {
         Button(action: {
             if let previousImageNode = fileHierarchyObject.previousImage(currentPath: lastSelectedImagePath) {
                 if let image = NSImage(contentsOfFile: previousImageNode.fullPath) {
@@ -58,30 +63,32 @@ struct DetailView: View {
             Image(systemName: "arrow.left")
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(.leading, Constants.Layout.detailToolbarSpacing)
-        //.disabled if no more most-recent images in the directory
+        .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
         
         Divider()
         
-        Button(action: {
-          Task {
-            await self.fileHierarchyObject.refresh()
-          }
-        }) {
-          Image(systemName: "arrow.clockwise")
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
+        Spacer()
         
         if fileHierarchyObject.isLoading {
           ProgressView()
             .progressViewStyle(.circular)
             .controlSize(.small)
-            .padding(.leading, Constants.Layout.detailToolbarSpacing)
+            .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
+        } else {
+          Button(action: {
+            Task {
+              await self.fileHierarchyObject.refresh()
+            }
+          }) {
+            Image(systemName: "arrow.clockwise")
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
         }
         
+        Spacer()
+        
         // Most recent image button
-        /*
         Button(action: {
           Task {
             if let mostRecentImageNode = await fileHierarchyObject.findMostRecentlyModifiedImageFile() {
@@ -95,23 +102,7 @@ struct DetailView: View {
           Image(systemName: "clock.arrow.circlepath")
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, 4)
-        */
-        
-        Spacer()
-        
-        if scriptManager.genStatus != .idle {
-          ProgressView(value: scriptManager.genProgress)
-            .progressViewStyle(LinearProgressViewStyle())
-            .frame(width: 100)
-            .onChange(of: scriptManager.genStatus) {
-              if scriptManager.genStatus == .done {
-                Task {
-                  await self.fileHierarchyObject.refresh()
-                }
-              }
-            }
-        }
+        .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
         
         Spacer()
         
@@ -125,7 +116,9 @@ struct DetailView: View {
           Image(systemName: "folder")
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
+        .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
+        
+        Spacer()
         
         // Fullscreen image button
         Button(action: {
@@ -135,7 +128,10 @@ struct DetailView: View {
         }) {
           Image(systemName: "arrow.up.left.and.arrow.down.right")
         }
+        .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
         .buttonStyle(BorderlessButtonStyle())
+        
+        Spacer()
         
         Divider()
         
@@ -150,10 +146,8 @@ struct DetailView: View {
             Image(systemName: "arrow.right")
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(.trailing, Constants.Layout.detailToolbarSpacing)
-        //.disabled if no more least-recent images in the directory
+        .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
       }
-      .padding(.horizontal, Constants.Layout.detailToolbarSpacing)
       .frame(minWidth: 0, maxWidth: .infinity, minHeight: 30, maxHeight: 30)
       .background(.bar)
       
@@ -175,48 +169,4 @@ struct DetailView: View {
   progressViewModel.progress = 20.0
   
   return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: ScriptManager.preview(withState: .readyToStart)).frame(width: 300, height: 600)
-}
-
-
-extension FileHierarchy {
-  func findMostRecentlyModifiedImageFile() async -> FileNode? {
-    func isImageFile(_ path: String) -> Bool {
-      let imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff"]
-      return imageExtensions.contains((path as NSString).pathExtension.lowercased())
-    }
-    
-    func searchDirectory(_ directory: String) async -> FileNode? {
-      var mostRecentImageNode: FileNode? = nil
-      let fileManager = FileManager.default
-      do {
-        let items = try fileManager.contentsOfDirectory(atPath: directory)
-        for item in items {
-          let itemPath = (directory as NSString).appendingPathComponent(item)
-          var isDir: ObjCBool = false
-          fileManager.fileExists(atPath: itemPath, isDirectory: &isDir)
-          if isDir.boolValue {
-            // Recursively search in directories
-            if let foundNode = await searchDirectory(itemPath) {
-              if mostRecentImageNode == nil || foundNode.lastModified > mostRecentImageNode!.lastModified {
-                mostRecentImageNode = foundNode
-              }
-            }
-          } else if isImageFile(itemPath) {
-            let attributes = try fileManager.attributesOfItem(atPath: itemPath)
-            if let modificationDate = attributes[FileAttributeKey.modificationDate] as? Date {
-              let fileNode = FileNode(name: item, fullPath: itemPath, lastModified: modificationDate)
-              if mostRecentImageNode == nil || fileNode.lastModified > mostRecentImageNode!.lastModified {
-                mostRecentImageNode = fileNode
-              }
-            }
-          }
-        }
-      } catch {
-        Debug.log("Failed to list directory: \(error.localizedDescription)")
-      }
-      return mostRecentImageNode
-    }
-    
-    return await searchDirectory(self.rootPath)
-  }
 }
