@@ -44,7 +44,7 @@ struct ContentView: View {
   @State private var selectedView: ViewManager = .prompt
   
   @State private var hasLaunchedPythonEnvironmentOnFirstAppearance = false
-  @State private var launchStatusProgressBarValue: Double = 0
+  
   
   // Detail
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
@@ -199,13 +199,10 @@ struct ContentView: View {
             .scaleEffect(0.5)
         } else if scriptManager.genStatus == .done {
           Image(systemName: "checkmark")
-            .foregroundStyle(Color.green)
         }
         
-        if launchStatusProgressBarValue < 0 {
-          ProgressView(value: launchStatusProgressBarValue)
-            .progressViewStyle(LinearProgressViewStyle())
-            .frame(width: 100)
+        if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {
+          ContentProgressBar(scriptManager: scriptManager)
         }
         
         Button(action: {
@@ -244,13 +241,7 @@ struct ContentView: View {
         }
       }
     }
-    .onChange(of: scriptManager.scriptState) {
-      if scriptManager.scriptState == .launching {
-        launchStatusProgressBarValue = -1
-      } else {
-        launchStatusProgressBarValue = 100
-      }
-    }
+    
   }
   
   private var userHasEnteredBothRequiredFields: Bool {

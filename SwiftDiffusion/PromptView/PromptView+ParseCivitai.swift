@@ -210,6 +210,14 @@ extension PromptView {
       if let clipSkipValue = Double(value) {
         currentPrompt.clipSkip = clipSkipValue
       }
+    case "Batch count":
+      if let batchCount = Double(value) {
+        currentPrompt.batchCount = batchCount
+      }
+    case "Batch size":
+      if let batchSize = Double(value) {
+        currentPrompt.batchSize = batchSize
+      }
       
     default:
       break
