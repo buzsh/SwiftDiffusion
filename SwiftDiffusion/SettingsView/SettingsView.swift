@@ -20,7 +20,10 @@ struct SettingsView: View {
   
   @Environment(\.presentationMode) var presentationMode
   
-  @State var selectedTab: SettingsTab = SettingsTab(rawValue: UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? "") ?? .engine
+  @State var selectedTab: SettingsTab = {
+    let savedValue = UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? ""
+    return SettingsTab(rawValue: savedValue) ?? .engine
+  }()
   
   var body: some View {
     VStack(spacing: 0) {
@@ -89,6 +92,9 @@ struct SettingsView: View {
           
         }
       }
+    }
+    .onChange(of: selectedTab) {
+      UserDefaults.standard.set(selectedTab.rawValue, forKey: "selectedSettingsTab")
     }
   }
 }
