@@ -26,6 +26,7 @@ class SidebarItem: Identifiable {
 
 @Model
 class AppPromptModel {
+  @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
   @Attribute var width: Double = 512
@@ -40,7 +41,8 @@ class AppPromptModel {
   
   
   
-  init(positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+    self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
     self.width = width
@@ -52,8 +54,6 @@ class AppPromptModel {
     self.batchSize = batchSize
     self.clipSkip = clipSkip
     self.selectedModel = selectedModel
-
-    
   }
 }
 

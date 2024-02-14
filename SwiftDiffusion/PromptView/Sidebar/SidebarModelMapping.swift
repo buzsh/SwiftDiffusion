@@ -79,7 +79,8 @@ struct ModelDataMapping {
   @MainActor
   func mapPromptModelToAppPromptModel(_ promptModel: PromptModel) -> AppPromptModel? {
     guard let selectedModel = mapModelItemToAppModelItem(promptModel.selectedModel) else { return nil }
-    return AppPromptModel(positivePrompt: promptModel.positivePrompt,
+    return AppPromptModel(samplingMethod: promptModel.samplingMethod,
+                          positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
                           width: promptModel.width,
                           height: promptModel.height,
@@ -95,6 +96,7 @@ struct ModelDataMapping {
   @MainActor
   func mapAppPromptModelToPromptModel(_ appPromptModel: AppPromptModel) -> PromptModel {
     let promptModel = PromptModel()
+    promptModel.samplingMethod = appPromptModel.samplingMethod
     promptModel.positivePrompt = appPromptModel.positivePrompt
     promptModel.negativePrompt = appPromptModel.negativePrompt
     promptModel.width = appPromptModel.width
