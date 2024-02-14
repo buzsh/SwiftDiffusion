@@ -24,7 +24,7 @@ class SidebarViewModel: ObservableObject {
     do {
       try model.save()
     } catch {
-      print("Error saving context after deletion: \(error)")
+      Debug.log("Error saving context after deletion: \(error)")
     }
   }
   

@@ -15,6 +15,7 @@ struct SwiftDiffusionApp: App {
   
   let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
+  let sidebarViewModel = SidebarViewModel()
   
   var modelContainer: ModelContainer
   
@@ -55,6 +56,7 @@ struct SwiftDiffusionApp: App {
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
+        .environmentObject(sidebarViewModel)
     }
     .modelContainer(modelContainer)
     .windowToolbarStyle(.unified(showsTitle: false))

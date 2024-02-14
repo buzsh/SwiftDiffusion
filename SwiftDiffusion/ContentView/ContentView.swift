@@ -33,6 +33,7 @@ struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager
