@@ -29,6 +29,7 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
+  @Environment(\.modelContext) private var context
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   

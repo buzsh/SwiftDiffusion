@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SwiftDiffusionApp: App {
@@ -15,10 +16,37 @@ struct SwiftDiffusionApp: App {
   let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
   
+  var modelContainer: ModelContainer
+  
   init() {
+    
+    
+    let fileManager = FileManager.default
+    guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+      fatalError("Application Support directory not found.")
+    }
+    let storeURL = appSupportURL
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
+      .appendingPathComponent("UserData").appendingPathComponent("Local")
+      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
+    
+    // Ensure the directory exists before initializing the ModelContainer
+    let subfolderURL = storeURL.deletingLastPathComponent()
+    if !fileManager.fileExists(atPath: subfolderURL.path) {
+      try! fileManager.createDirectory(at: subfolderURL, withIntermediateDirectories: true)
+    }
+    
+    do {
+      // Initialize the ModelContainer with your model types
+      modelContainer = try ModelContainer(for: SidebarItem.self, SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
+    } catch {
+      fatalError("Failed to configure SwiftData container: \(error)")
+    }
+    
     setupAppFileStructure()
     modelManangerViewModel.startObservingModelDirectories()
   }
+  
   
   var body: some Scene {
     WindowGroup {
