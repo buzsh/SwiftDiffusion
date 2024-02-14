@@ -18,6 +18,13 @@ enum KeyCodes {
   }
 }
 
+extension Constants.Layout {
+  struct SidebarToolbar {
+    static let itemHeight: CGFloat = 20
+    static let itemWidth: CGFloat = 30
+  }
+}
+
 struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
@@ -115,11 +122,39 @@ struct SidebarView: View {
   }
   
   var body: some View {
+    Divider()
+    
+    HStack(spacing: 0) {
+      Spacer()
+      
+      // Show model name
+      Button(action: {
+      }) {
+        Image(systemName: "arkit")
+      }
+      .buttonStyle(BorderlessButtonStyle())
+      .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+      Spacer()
+      
+      // Show thumbnails
+      Button(action: {
+      }) {
+        Image(systemName: "photo")
+      }
+      .buttonStyle(BorderlessButtonStyle())
+      .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+      
+      Spacer()
+    }
+    .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
+    
+    Divider()
+    
     List(selection: $selectedItemID) {
       /*
-      Section(header: Text("Unsaved")) {
-        Text("New Prompt")
-      }
+       Section(header: Text("Unsaved")) {
+       Text("New Prompt")
+       }
        */
       Section(header: Text("Folders")) {
         ForEach(sidebarFolders) { folder in
@@ -146,30 +181,59 @@ struct SidebarView: View {
             .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
             .cornerRadius(5)
           } else {
-            Text(item.title)
-              .tag(item.id)
-              .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
-              .gesture(TapGesture(count: 1).onEnded {
-                if editingItemId == nil {
-                  if selectedItemID == item.id {
-                    // The item is already selected, enter edit mode
-                    editingItemId = item.id
-                    draftTitle = item.title
-                    selectedItemID = nil
-                  } else {
-                    // The item is not selected, select it
-                    selectedItemID = item.id
+            HStack {
+              
+              // Conditional based on image select
+              if let lastImageUrl = item.imageUrls.last {
+                AsyncImage(url: lastImageUrl) { image in
+                  image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shadow(color: .black, radius: 1, x: 0, y: 1)
+                } placeholder: {
+                  ProgressView()
+                }
+              }
+              
+              VStack(alignment: .leading) {
+                Text(item.title)
+                // Show this if arkit selected
+                if let prompt = item.prompt {
+                  if let modelName = prompt.selectedModel?.name {
+                    Text(modelName)
+                      .font(.system(size: 10, weight: .light, design: .rounded))
                   }
                 }
-              }.simultaneously(with: TapGesture(count: 2).onEnded {
-                // This block ensures that double-tap has priority over single-tap
-                // Prevent double-tap from affecting selection if already editing
-                if editingItemId == nil {
-                  selectedItemID = nil // Clear selection here to enter edit mode
+                
+              }
+            }
+            //.frame(height: 30)
+            
+            .tag(item.id)
+            .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
+            .gesture(TapGesture(count: 1).onEnded {
+              if editingItemId == nil {
+                if selectedItemID == item.id {
+                  // The item is already selected, enter edit mode
                   editingItemId = item.id
                   draftTitle = item.title
+                  selectedItemID = nil
+                } else {
+                  // The item is not selected, select it
+                  selectedItemID = item.id
                 }
-              }))
+              }
+            }.simultaneously(with: TapGesture(count: 2).onEnded {
+              // This block ensures that double-tap has priority over single-tap
+              // Prevent double-tap from affecting selection if already editing
+              if editingItemId == nil {
+                selectedItemID = nil // Clear selection here to enter edit mode
+                editingItemId = item.id
+                draftTitle = item.title
+              }
+            }))
           }
         }
       }
