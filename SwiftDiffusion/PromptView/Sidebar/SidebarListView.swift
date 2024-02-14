@@ -8,18 +8,33 @@
 import SwiftUI
 import SwiftData
 
+enum KeyCodes {
+  case deleteKey
+  
+  var code: UInt16 {
+    switch self {
+    case .deleteKey: return 51
+    }
+  }
+}
+
 struct SidebarListView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   
   @Query private var sidebarItems: [SidebarItem]
   @Query private var sidebarFolders: [SidebarFolder]
-  @State private var selectedItemID: UUID?
-  @State private var editingItemId: UUID? = nil
-  @State private var draftTitle: String = ""
   
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
+  
+  @State private var selectedItemID: UUID?
+  @State private var selectedItemName: String?
+  @State private var editingItemId: UUID? = nil
+  @State private var draftTitle: String = ""
+  
+  @State private var showDeletionAlert: Bool = false
+  @State private var itemToDelete: SidebarItem?
   
   func saveEditedTitle(_ id: UUID, _ title: String) {
     if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
@@ -40,11 +55,7 @@ struct SidebarListView: View {
     let mapping = ModelDataMapping()
     let promptData = mapping.toArchive(promptModel: currentPrompt)
     let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
-    
     Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
-    // TODO: Debug why this crashes:
-    //print("savePromptToData promptData.SdModel \(String(describing: promptData?.selectedModel?.name))")
-    
     modelContext.insert(newItem)
     saveData()
   }
@@ -55,10 +66,15 @@ struct SidebarListView: View {
     saveData()
   }
   
-  private func deleteItem(withId id: UUID) {
-    guard let index = sidebarItems.firstIndex(where: { $0.id == id }) else { return }
-    let itemToDelete = sidebarItems[index]
-    modelContext.delete(itemToDelete)
+  private func promptForDeletion(item: SidebarItem) {
+    itemToDelete = item
+    showDeletionAlert = true
+  }
+  
+  private func deleteItem() {
+    guard let itemToDelete = itemToDelete,
+          let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
+    modelContext.delete(sidebarItems[index])
     do {
       try modelContext.save()
     } catch {
@@ -66,6 +82,7 @@ struct SidebarListView: View {
     }
     let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
     updateSelection(to: nextSelectionIndex)
+    self.itemToDelete = nil
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
@@ -105,13 +122,20 @@ struct SidebarListView: View {
   
   var body: some View {
     List(selection: $selectedItemID) {
-      Section {
+      Section(header: Text("Unsaved")) {
+        /*
+        ForEach(sidebarItems) { item in
+          HStack {
+            Text(item.title)
+          }
+        }
+         */
         Text("New Prompt")
       }
       Section(header: Text("Folders")) {
         ForEach(sidebarFolders) { folder in
           HStack {
-            Image(systemName: "folder.badge.plus")
+            Image(systemName: "folder")
             Text(folder.name)
           }
         }
@@ -127,9 +151,11 @@ struct SidebarListView: View {
             .onAppear {
               draftTitle = item.title
             }
+            //.background(Color.clear)
           } else {
             Text(item.title)
               .tag(item.id)
+              .opacity(editingItemId == nil ? 1 : 0.5)
               .gesture(TapGesture(count: 1).onEnded {
                 self.selectedItemID = item.id
               }.simultaneously(with: TapGesture(count: 2).onEnded {
@@ -139,6 +165,18 @@ struct SidebarListView: View {
           }
         }
       }
+      Spacer()
+    }
+    .alert(isPresented: $showDeletionAlert) {
+      Alert(
+        title: Text("Are you sure you want to delete this item?"),
+        primaryButton: .destructive(Text("Delete")) {
+          self.deleteItem()
+        },
+        secondaryButton: .cancel() {
+          self.itemToDelete = nil
+        }
+      )
     }
     .listStyle(SidebarListStyle())
     .onChange(of: selectedItemID) { currentItem, newItemID in
@@ -146,13 +184,9 @@ struct SidebarListView: View {
       if let newItemID = newItemID,
          let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
         Debug.log("onChange selectItem: \(selectedItem.title)")
-        
+        selectedItemName = selectedItem.title
         let modelDataMapping = ModelDataMapping()
         if let appPromptModel = selectedItem.prompt {
-          Debug.log("onChange appPromptModel.selectedModel.name: \(String(describing: appPromptModel.selectedModel?.name))")
-          Debug.log("onChange jsonModelCheckpointTitle: \(String(describing: appPromptModel.selectedModel?.jsonModelCheckpointTitle))")
-          Debug.log("onChange jsonModelCheckpointHash: \(String(describing: appPromptModel.selectedModel?.jsonModelCheckpointHash))")
-          
           let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
           updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
         }
@@ -160,15 +194,16 @@ struct SidebarListView: View {
     }
     .onAppear {
       NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-        if event.keyCode == 51 {
-          if let selectedItemID = selectedItemID {
-            deleteItem(withId: selectedItemID)
+        if event.keyCode == KeyCodes.deleteKey.code {
+          if self.editingItemId == nil,
+             let selectedItemID = self.selectedItemID,
+             let itemToDelete = self.sidebarItems.first(where: { $0.id == selectedItemID }) {
+            self.promptForDeletion(item: itemToDelete)
           }
         }
         return event
       }
     }
-    Spacer()
     HStack {
       Button(action: {
         newFolderToData(title: "Some Folder")
@@ -177,12 +212,12 @@ struct SidebarListView: View {
       }
       
       Button(action: {
-        saveCurrentPromptToData(title: "Some Prompt")
+        saveCurrentPromptToData(title: currentPrompt.positivePrompt)
       }) {
         Image(systemName: "plus.bubble")
       }
     }
-    .frame(height: 40)
+    .frame(height: 30).padding(.bottom, 10)
   }
 }
 
