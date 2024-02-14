@@ -36,23 +36,37 @@ struct ModelDataMapping {
     }
   }
   
+  func mapJsonDataToSdModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> SdModel {
+    return SdModel(title: title,
+                   modelName: modelName,
+                   hash: hash,
+                   sha256: sha256,
+                   filename: filename,
+                   config: config)
+  }
+  
   @MainActor
   func mapModelItemToAppModelItem(_ modelItem: ModelItem?) -> AppModelItem? {
     guard let modelItem = modelItem else { return nil }
-    let appSdModel = mapSdModelToAppSdModel(modelItem.sdModel)
     let appModelType = mapModelTypeToAppModelType(modelItem.type)
     return AppModelItem(name: modelItem.name,
                         type: appModelType,
                         url: modelItem.url,
                         isDefaultModel: modelItem.isDefaultModel,
-                        sdModel: appSdModel)
+                        jsonModelCheckpointTitle: modelItem.sdModel?.title ?? "",
+                        jsonModelCheckpointName: modelItem.sdModel?.modelName ?? "",
+                        jsonModelCheckpointHash: modelItem.sdModel?.hash,
+                        jsonModelCheckpointSha256: modelItem.sdModel?.sha256,
+                        jsonModelCheckpointFilename: modelItem.sdModel?.filename ?? "",
+                        jsonModelCheckpointConfig: modelItem.sdModel?.config)
   }
   
   @MainActor
   func mapAppModelItemToModelItem(_ appModelItem: AppModelItem?) -> ModelItem? {
     guard let appModelItem = appModelItem else { return nil }
     let modelType = mapAppModelTypeToModelType(appModelItem.type)
-    let sdModel = mapAppSdModelToSdModel(appModelItem.sdModel)
+    let sdModel = mapJsonDataToSdModel(title: appModelItem.jsonModelCheckpointTitle, modelName: appModelItem.jsonModelCheckpointName, hash: appModelItem.jsonModelCheckpointHash, sha256: appModelItem.jsonModelCheckpointSha256, filename: appModelItem.jsonModelCheckpointFilename, config: appModelItem.jsonModelCheckpointConfig)
+    
     return ModelItem(name: appModelItem.name,
                      type: modelType,
                      url: appModelItem.url,
@@ -100,7 +114,7 @@ struct ModelDataMapping {
     
     return promptModel
   }
-  
+  /*
   func mapSdModelToAppSdModel(_ sdModel: SdModel?) -> AppSdModel? {
     guard let sdModel = sdModel else { return nil }
     return AppSdModel(title: sdModel.title,
@@ -113,6 +127,7 @@ struct ModelDataMapping {
   
   func mapAppSdModelToSdModel(_ appSdModel: AppSdModel?) -> SdModel? {
     guard let appSdModel = appSdModel else { return nil }
+    
     return SdModel(title: appSdModel.title,
                    modelName: appSdModel.modelName,
                    hash: appSdModel.hash,
@@ -120,6 +135,6 @@ struct ModelDataMapping {
                    filename: appSdModel.filename,
                    config: appSdModel.config)
   }
-  
+  */
   
 }

@@ -29,7 +29,7 @@ class MockDataController {
   init() {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     do {
-      container = try ModelContainer(for: SidebarItem.self, AppPromptModel.self, AppModelItem.self, AppSdModel.self, SidebarFolder.self, configurations: config)
+      container = try ModelContainer(for: SidebarItem.self, AppPromptModel.self, AppModelItem.self, SidebarFolder.self, configurations: config)
       insertMockData()
     } catch {
       fatalError("Failed to initialize the mock ModelContainer: \(error)")
@@ -39,10 +39,10 @@ class MockDataController {
   func insertMockData() {
     let context = container.mainContext
     
-    let appModelItem = AppModelItem(name: "Example Model", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true)
+    let appModelItem = AppModelItem(name: "Example Model", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
 
-    let appSdModel = AppSdModel(title: "SD Model", modelName: "Example SD Model", filename: "example.sdmodel")
-    appModelItem.sdModel = appSdModel
+    //let appSdModel = AppSdModel(title: "SD Model", modelName: "Example SD Model", filename: "example.sdmodel")
+    //appModelItem.sdModel = appSdModel
     
     let appPromptModel = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem)
     
@@ -51,7 +51,7 @@ class MockDataController {
     let sidebarFolder = SidebarFolder(name: "Folder 1", contents: [sidebarItem])
     
     context.insert(appModelItem)
-    context.insert(appSdModel)
+    //context.insert(appSdModel)
     context.insert(appPromptModel)
     context.insert(sidebarItem)
     context.insert(sidebarFolder)

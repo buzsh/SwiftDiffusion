@@ -145,9 +145,14 @@ struct SidebarListView: View {
       Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
       if let newItemID = newItemID,
          let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-        let modelDataMapping = ModelDataMapping()
+        Debug.log("onChange selectItem: \(selectedItem.title)")
         
+        let modelDataMapping = ModelDataMapping()
         if let appPromptModel = selectedItem.prompt {
+          Debug.log("onChange appPromptModel.selectedModel.name: \(String(describing: appPromptModel.selectedModel?.name))")
+          Debug.log("onChange jsonModelCheckpointTitle: \(String(describing: appPromptModel.selectedModel?.jsonModelCheckpointTitle))")
+          Debug.log("onChange jsonModelCheckpointHash: \(String(describing: appPromptModel.selectedModel?.jsonModelCheckpointHash))")
+          
           let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
           updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
         }
@@ -187,6 +192,7 @@ struct SidebarListView: View {
     lastSavedImageUrls: .constant(MockDataController.shared.mockImageUrls)
   )
   .modelContainer(MockDataController.shared.container)
+  .frame(width: 200)
 }
 
 /*

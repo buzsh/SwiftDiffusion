@@ -38,6 +38,8 @@ class AppPromptModel {
   @Attribute var clipSkip: Double = 1
   @Relationship var selectedModel: AppModelItem?
   
+  
+  
   init(positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
@@ -50,6 +52,8 @@ class AppPromptModel {
     self.batchSize = batchSize
     self.clipSkip = clipSkip
     self.selectedModel = selectedModel
+
+    
   }
 }
 
@@ -59,14 +63,26 @@ class AppModelItem {
   @Attribute var type: AppModelType
   @Attribute var url: URL
   @Attribute var isDefaultModel: Bool = false
-  @Relationship var sdModel: AppSdModel?
   
-  init(name: String, type: AppModelType, url: URL, isDefaultModel: Bool = false, sdModel: AppSdModel? = nil) {
+  @Attribute var jsonModelCheckpointTitle: String
+  @Attribute var jsonModelCheckpointName: String
+  @Attribute var jsonModelCheckpointHash: String?
+  @Attribute var jsonModelCheckpointSha256: String?
+  @Attribute var jsonModelCheckpointFilename: String
+  @Attribute var jsonModelCheckpointConfig: String?
+  
+  init(name: String, type: AppModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
     self.name = name
     self.type = type
     self.url = url
     self.isDefaultModel = isDefaultModel
-    self.sdModel = sdModel
+    
+    self.jsonModelCheckpointTitle = jsonModelCheckpointTitle
+    self.jsonModelCheckpointName = jsonModelCheckpointName
+    self.jsonModelCheckpointHash = jsonModelCheckpointHash
+    self.jsonModelCheckpointSha256 = jsonModelCheckpointSha256
+    self.jsonModelCheckpointFilename = jsonModelCheckpointFilename
+    self.jsonModelCheckpointConfig = jsonModelCheckpointConfig
   }
 }
 
@@ -85,6 +101,7 @@ enum AppModelType: String, Codable {
   case python = "python"
 }
 
+/*
 @Model
 class AppSdModel {
   @Attribute var title: String
@@ -103,6 +120,7 @@ class AppSdModel {
     self.config = config
   }
 }
+ */
 
 @Model
 class SidebarFolder {
