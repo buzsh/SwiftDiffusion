@@ -19,12 +19,12 @@ class ModelItem: ObservableObject, Identifiable {
 
   @Published var preferences: ModelPreferences
   
-  init(name: String, type: ModelType, url: URL, isDefaultModel: Bool = false) {
+  init(name: String, type: ModelType, url: URL, isDefaultModel: Bool = false, sdModel: SdModel? = nil) {
     self.name = name
     self.type = type
     self.url = url
     self.isDefaultModel = isDefaultModel
-    self.sdModel = nil
+    self.sdModel = sdModel
     self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
   }
   
