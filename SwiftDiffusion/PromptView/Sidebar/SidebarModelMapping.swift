@@ -39,23 +39,27 @@ struct ModelDataMapping {
   @MainActor
   func mapModelItemToAppModelItem(_ modelItem: ModelItem?) -> AppModelItem? {
     guard let modelItem = modelItem else { return nil }
+    let appSdModel = mapSdModelToAppSdModel(modelItem.sdModel)
     let appModelType = mapModelTypeToAppModelType(modelItem.type)
     return AppModelItem(name: modelItem.name,
                         type: appModelType,
                         url: modelItem.url,
                         isDefaultModel: modelItem.isDefaultModel,
-                        sdModel: nil)
+                        sdModel: appSdModel)
   }
   
   @MainActor
-  func mapAppModelItemToModelItem(_ appModelItem: AppModelItem) -> ModelItem {
+  func mapAppModelItemToModelItem(_ appModelItem: AppModelItem?) -> ModelItem? {
+    guard let appModelItem = appModelItem else { return nil }
     let modelType = mapAppModelTypeToModelType(appModelItem.type)
-    let modelItem = ModelItem(name: appModelItem.name,
-                              type: modelType,
-                              url: appModelItem.url,
-                              isDefaultModel: appModelItem.isDefaultModel)
-    return modelItem
+    let sdModel = mapAppSdModelToSdModel(appModelItem.sdModel)
+    return ModelItem(name: appModelItem.name,
+                     type: modelType,
+                     url: appModelItem.url,
+                     isDefaultModel: appModelItem.isDefaultModel,
+                     sdModel: sdModel)
   }
+  
   
   
   @MainActor
@@ -97,7 +101,8 @@ struct ModelDataMapping {
     return promptModel
   }
   
-  func mapSdModelToAppSdModel(_ sdModel: SdModel) -> AppSdModel {
+  func mapSdModelToAppSdModel(_ sdModel: SdModel?) -> AppSdModel? {
+    guard let sdModel = sdModel else { return nil }
     return AppSdModel(title: sdModel.title,
                       modelName: sdModel.modelName,
                       hash: sdModel.hash,
@@ -106,7 +111,8 @@ struct ModelDataMapping {
                       config: sdModel.config)
   }
   
-  func mapAppSdModelToSdModel(_ appSdModel: AppSdModel) -> SdModel {
+  func mapAppSdModelToSdModel(_ appSdModel: AppSdModel?) -> SdModel? {
+    guard let appSdModel = appSdModel else { return nil }
     return SdModel(title: appSdModel.title,
                    modelName: appSdModel.modelName,
                    hash: appSdModel.hash,
@@ -114,5 +120,6 @@ struct ModelDataMapping {
                    filename: appSdModel.filename,
                    config: appSdModel.config)
   }
+  
   
 }
