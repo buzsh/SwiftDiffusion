@@ -29,7 +29,7 @@ extension ViewManager: Hashable, Identifiable {
 }
 
 struct ContentView: View {
-  @Environment(\.modelContext) private var context
+  @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
@@ -59,6 +59,52 @@ struct ContentView: View {
   
   func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
     return (currentPrompt, lastSavedImageUrls)
+  }
+  
+  func addNewFolderOrItem() {
+    // Example of getting data from getCurrentPromptToArchive
+    let (promptModel, urls) = getCurrentPromptToArchive()
+    
+    
+    
+    
+    let selectedModel = currentPrompt.selectedModel
+    
+    let selectedModelType = selectedModel?.type
+    
+    
+    let archiveType = AppModelType(
+    )
+    let archiveModel = AppModelItem(name: selectedModel?.name,
+                                    type: selectedModel?.type,
+                                    url: selectedModel?.url)
+    
+    let archivePrompt = AppPromptModel(selectedModel: currentPrompt.selectedModel,
+                                       positivePrompt: promptModel.positivePrompt,
+                                       negativePrompt: promptModel.negativePrompt,
+                                       
+                                       
+    
+    // Create a new SidebarItem with the returned AppPromptModel
+    let newItem = SidebarItem(title: "New Item", timestamp: Date(), prompt: promptModel)
+    
+    // Insert the new item into the context
+    modelContext.insert(newItem)
+    
+    // Assuming you want to add a new folder as well
+    let newFolder = SidebarFolder(name: "New Folder")
+    newFolder.contents.append(newItem) // Add the item to the folder's contents
+    
+    // Insert the new folder into the context
+    modelContext.insert(newFolder)
+    
+    // Save changes to persist them
+    do {
+      try modelContext.save()
+    } catch {
+      // Handle any errors
+      print("Error saving context: \(error)")
+    }
   }
   
   var body: some View {

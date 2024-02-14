@@ -8,11 +8,6 @@
 import Foundation
 import SwiftData
 
-enum AppModelType: Codable {
-  case coreMl
-  case python
-}
-
 @Model
 class SidebarItem {
   @Attribute var title: String
@@ -70,6 +65,21 @@ class AppModelItem {
       self.isDefaultModel = isDefaultModel
       self.sdModel = sdModel
     }
+}
+
+func mapModelTypeToAppModelType(_ type: ModelType?) -> AppModelType? {
+  guard let type = type else { return nil }
+  switch type {
+  case .coreMl:
+    return .coreMl
+  case .python:
+    return .python
+  }
+}
+
+enum AppModelType: String, Codable {
+  case coreMl = "coreMl"
+  case python = "python"
 }
 
 @Model
