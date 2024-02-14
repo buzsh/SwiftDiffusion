@@ -146,25 +146,33 @@ struct SidebarListView: View {
             TextField("Title", text: $draftTitle, onCommit: {
               saveEditedTitle(item.id, draftTitle)
               editingItemId = nil
+              // Optionally reselect the item here if desired
+              // selectedItemID = item.id
             })
             .textFieldStyle(RoundedBorderTextFieldStyle())
             .onAppear {
               draftTitle = item.title
             }
-            //.background(Color.clear)
           } else {
             Text(item.title)
               .tag(item.id)
-              .opacity(editingItemId == nil ? 1 : 0.5)
               .gesture(TapGesture(count: 1).onEnded {
-                self.selectedItemID = item.id
+                // Prevent changing the selected item if an item is being edited
+                if self.editingItemId == nil {
+                  self.selectedItemID = item.id
+                }
               }.simultaneously(with: TapGesture(count: 2).onEnded {
-                editingItemId = item.id
-                draftTitle = item.title
+                // Prevent double-tap from affecting selection if already editing
+                if self.editingItemId == nil {
+                  self.selectedItemID = nil // Clear selection here
+                  editingItemId = item.id
+                  draftTitle = item.title
+                }
               }))
           }
         }
       }
+
       Spacer()
     }
     .alert(isPresented: $showDeletionAlert) {
