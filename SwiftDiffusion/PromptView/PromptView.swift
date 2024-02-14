@@ -40,6 +40,7 @@ struct PromptView: View {
     }
     
     if let modelItem = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+      Debug.log("Attempting to updateSdModelCheckpoint with modelItem: \(String(describing: modelItem.name))")
       updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
         switch result {
         case .success(let successMessage):

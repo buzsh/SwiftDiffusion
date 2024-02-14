@@ -31,6 +31,9 @@ class PromptModel: ObservableObject {
 
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
+    Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
+    Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
+    
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
     
