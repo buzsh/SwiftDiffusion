@@ -150,35 +150,35 @@ struct SidebarListView: View {
                 selectedItemID = item.id
               })
               .textFieldStyle(RoundedBorderTextFieldStyle())
-              
-              Button(action: {
-                // Same actions as onCommit to save the title and exit edit mode
-                saveEditedTitle(item.id, draftTitle)
-                editingItemId = nil
-                selectedItemID = item.id
-              }) {
-                Image(systemName: "checkmark.circle")
-                  .foregroundColor(.green)
-              }
             }
             .onAppear {
               draftTitle = item.title
             }
+            .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
+            .cornerRadius(5)
           } else {
             Text(item.title)
               .tag(item.id)
+              .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
               .gesture(TapGesture(count: 1).onEnded {
-                // Prevent changing the selected item if an item is being edited
-                if editingItemId == nil {
-                  selectedItemID = item.id
-                  
+                if self.editingItemId == nil {
+                  if self.selectedItemID == item.id {
+                    // The item is already selected, enter edit mode
+                    self.editingItemId = item.id
+                    self.draftTitle = item.title
+                    self.selectedItemID = nil
+                  } else {
+                    // The item is not selected, select it
+                    self.selectedItemID = item.id
+                  }
                 }
               }.simultaneously(with: TapGesture(count: 2).onEnded {
+                // This block ensures that double-tap has priority over single-tap
                 // Prevent double-tap from affecting selection if already editing
-                if editingItemId == nil {
-                  selectedItemID = nil // Clear selection here
-                  editingItemId = item.id
-                  draftTitle = item.title
+                if self.editingItemId == nil {
+                  self.selectedItemID = nil // Clear selection here to enter edit mode
+                  self.editingItemId = item.id
+                  self.draftTitle = item.title
                 }
               }))
           }
@@ -249,28 +249,3 @@ struct SidebarListView: View {
   .modelContainer(MockDataController.shared.container)
   .frame(width: 200)
 }
-
-/*
- struct SidebarListView_Previews: PreviewProvider {
- // Mock data models
- static let mockPromptModel = PromptModel() // Configure with default or mock values
- static let mockSidebarItems = [SidebarItem]() // Populate with mock `SidebarItem` instances
- static let mockSidebarFolders = [SidebarFolder]() // Populate with mock `SidebarFolder` instances
- 
- static var previews: some View {
- // Provide mock environment and objects
- SidebarListView(
- selectedImage: .constant(NSImage()), // Provide a default or mock NSImage
- lastSavedImageUrls: .constant([URL]()) // Provide a default or mock array of URLs
- )
- .environment(\.modelContext, MockModelContext()) // Mock your ModelContext
- .environmentObject(mockPromptModel) // Provide the mock environment object
- }
- 
- // Mock ModelContext or any other required environments
- static func MockModelContext() -> some ModelContext {
- // Implement a mock version of your ModelContext
- // This might involve creating a mock database or a simple in-memory store
- }
- }
- */
