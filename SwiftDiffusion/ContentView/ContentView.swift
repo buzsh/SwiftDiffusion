@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 extension Constants.Layout {
   static let verticalPadding: CGFloat = 8
@@ -35,6 +36,9 @@ struct ContentView: View {
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager
+  
+  @Query private var sidebarItems: [SidebarItem]
+  @Query private var sidebarFolders: [SidebarFolder]
 
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
@@ -55,62 +59,68 @@ struct ContentView: View {
   
   @State var imageCountToGenerate: Int = 0
   
-  @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
+  @State private var columnVisibility = NavigationSplitViewVisibility.all//.doubleColumn
   
   func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
     return (currentPrompt, lastSavedImageUrls)
   }
   
-  func addNewFolderOrItem() {
-    // Example of getting data from getCurrentPromptToArchive
-    let (promptModel, urls) = getCurrentPromptToArchive()
-    
-    
-    
-    
-    let selectedModel = currentPrompt.selectedModel
-    
-    let selectedModelType = selectedModel?.type
-    
-    
-    let archiveType = AppModelType(
-    )
-    let archiveModel = AppModelItem(name: selectedModel?.name,
-                                    type: selectedModel?.type,
-                                    url: selectedModel?.url)
-    
-    let archivePrompt = AppPromptModel(selectedModel: currentPrompt.selectedModel,
-                                       positivePrompt: promptModel.positivePrompt,
-                                       negativePrompt: promptModel.negativePrompt,
-                                       
-                                       
-    
-    // Create a new SidebarItem with the returned AppPromptModel
-    let newItem = SidebarItem(title: "New Item", timestamp: Date(), prompt: promptModel)
-    
-    // Insert the new item into the context
+  func saveCurrentPromptToData(title: String) {
+    savePromptToData(title: "Some Prompt", prompt: currentPrompt, imageUrls: lastSavedImageUrls)
+  }
+  
+  func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL]) {
+    let mapping = ModelDataMapping()
+    let promptData = mapping.toArchive(promptModel: currentPrompt)
+    let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
     modelContext.insert(newItem)
-    
-    // Assuming you want to add a new folder as well
-    let newFolder = SidebarFolder(name: "New Folder")
-    newFolder.contents.append(newItem) // Add the item to the folder's contents
-    
-    // Insert the new folder into the context
+    saveData()
+  }
+  
+  func newFolderToData(title: String) {
+    let newFolder = SidebarFolder(name: title)
     modelContext.insert(newFolder)
-    
-    // Save changes to persist them
+    saveData()
+  }
+  
+  func saveData() {
     do {
       try modelContext.save()
     } catch {
-      // Handle any errors
-      print("Error saving context: \(error)")
+      Debug.log("Error saving context: \(error)")
     }
+  }
+  
+  func fetchAllEntities<T: PersistentModel>(_ entityType: T.Type) throws -> [T] {
+    let fetchDescriptor = FetchDescriptor<T>()
+    return try modelContext.fetch(fetchDescriptor)
   }
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
-      List {}
+      List {
+        
+        
+        Section(header: Text("Folders")) {
+          ForEach(sidebarFolders) { folder in
+            Text(folder.name)
+          }
+        }
+        Section(header: Text("Items")) {
+          ForEach(sidebarItems) { item in
+            Text(item.title)
+          }
+        }
+      }
       .listStyle(SidebarListStyle())
+      HStack {
+        Button(action: {
+          saveCurrentPromptToData(title: "Some Prompt")
+        }) {
+          Image(systemName: "plus")
+        }
+      }
+      .frame(height: 40)
     } content: {
       switch selectedView {
       case .prompt:
