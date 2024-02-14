@@ -56,6 +56,7 @@ struct SwiftDiffusionApp: App {
         .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
     }
+    .modelContainer(modelContainer)
     .windowToolbarStyle(.unified(showsTitle: false))
     .commands {
       CommandGroup(after: .appInfo) {
