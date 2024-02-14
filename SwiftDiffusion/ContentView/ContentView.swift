@@ -56,6 +56,10 @@ struct ContentView: View {
   
   @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
   
+  func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
+    return (currentPrompt, lastSavedImageUrls)
+  }
+  
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       List {}
