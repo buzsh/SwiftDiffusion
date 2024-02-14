@@ -38,23 +38,26 @@ class MockDataController {
   
   func insertMockData() {
     let context = container.mainContext
+    let appModelItem1 = AppModelItem(name: "DreamShaperXL_v2.0", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let appPromptModel1 = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem1)
     
-    let appModelItem = AppModelItem(name: "Example Model", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-
-    //let appSdModel = AppSdModel(title: "SD Model", modelName: "Example SD Model", filename: "example.sdmodel")
-    //appModelItem.sdModel = appSdModel
+    let appModelItem2 = AppModelItem(name: "Animerge 1.6.2", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let appPromptModel2 = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem2)
     
-    let appPromptModel = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem)
+    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: appPromptModel1)
+    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, prompt: appPromptModel2)
     
-    let sidebarItem = SidebarItem(title: "Item 1", imageUrls: mockImageUrls, prompt: appPromptModel)
+    let sidebarFolder1 = SidebarFolder(name: "Personal", contents: [sidebarItem1, sidebarItem2])
+    let sidebarFolder2 = SidebarFolder(name: "Shared", contents: [sidebarItem1, sidebarItem2])
     
-    let sidebarFolder = SidebarFolder(name: "Folder 1", contents: [sidebarItem])
-    
-    context.insert(appModelItem)
-    //context.insert(appSdModel)
-    context.insert(appPromptModel)
-    context.insert(sidebarItem)
-    context.insert(sidebarFolder)
+    context.insert(appModelItem1)
+    context.insert(appModelItem2)
+    context.insert(appPromptModel1)
+    context.insert(appPromptModel2)
+    context.insert(sidebarItem1)
+    context.insert(sidebarItem2)
+    context.insert(sidebarFolder1)
+    context.insert(sidebarFolder2)
     
     do {
       try context.save()
