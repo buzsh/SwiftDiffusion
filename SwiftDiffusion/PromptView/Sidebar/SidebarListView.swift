@@ -42,6 +42,7 @@ struct SidebarListView: View {
     let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
     
     Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
+    // TODO: Debug why this crashes:
     //print("savePromptToData promptData.SdModel \(String(describing: promptData?.selectedModel?.name))")
     
     modelContext.insert(newItem)
@@ -104,9 +105,15 @@ struct SidebarListView: View {
   
   var body: some View {
     List(selection: $selectedItemID) {
+      Section {
+        Text("New Prompt")
+      }
       Section(header: Text("Folders")) {
         ForEach(sidebarFolders) { folder in
-          Text(folder.name)
+          HStack {
+            Image(systemName: "folder.badge.plus")
+            Text(folder.name)
+          }
         }
       }
       Section(header: Text("Uncategorized")) {
@@ -148,7 +155,7 @@ struct SidebarListView: View {
     }
     .onAppear {
       NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-        if event.keyCode == 51 { // 51 is the delete key code
+        if event.keyCode == 51 {
           if let selectedItemID = selectedItemID {
             deleteItem(withId: selectedItemID)
           }
@@ -174,8 +181,35 @@ struct SidebarListView: View {
   }
 }
 
+#Preview {
+  SidebarListView(
+    selectedImage: .constant(MockDataController.shared.lastImage),
+    lastSavedImageUrls: .constant(MockDataController.shared.mockImageUrls)
+  )
+  .modelContainer(MockDataController.shared.container)
+}
+
 /*
- #Preview {
- SidebarListView()
- }
- */
+struct SidebarListView_Previews: PreviewProvider {
+  // Mock data models
+  static let mockPromptModel = PromptModel() // Configure with default or mock values
+  static let mockSidebarItems = [SidebarItem]() // Populate with mock `SidebarItem` instances
+  static let mockSidebarFolders = [SidebarFolder]() // Populate with mock `SidebarFolder` instances
+  
+  static var previews: some View {
+    // Provide mock environment and objects
+    SidebarListView(
+      selectedImage: .constant(NSImage()), // Provide a default or mock NSImage
+      lastSavedImageUrls: .constant([URL]()) // Provide a default or mock array of URLs
+    )
+    .environment(\.modelContext, MockModelContext()) // Mock your ModelContext
+    .environmentObject(mockPromptModel) // Provide the mock environment object
+  }
+  
+  // Mock ModelContext or any other required environments
+  static func MockModelContext() -> some ModelContext {
+    // Implement a mock version of your ModelContext
+    // This might involve creating a mock database or a simple in-memory store
+  }
+}
+*/
