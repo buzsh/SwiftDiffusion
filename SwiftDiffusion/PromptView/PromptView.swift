@@ -20,8 +20,6 @@ struct PromptView: View {
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
   
-  var archivedPrompt: SidebarItem?
-  
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   
@@ -30,7 +28,7 @@ struct PromptView: View {
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
-    if previousSelectedModel == modelItem {
+    if previousSelectedModel?.sdModel?.title == modelItem.sdModel?.title {
       Debug.log("Model already loaded. Do not reload.")
       return
     }
@@ -58,11 +56,6 @@ struct PromptView: View {
       previousSelectedModel = modelItem
     }
   }
-  
-  init(scriptManager: ScriptManager, archivedPrompt: SidebarItem? = nil) {
-      self.scriptManager = scriptManager
-      self.archivedPrompt = archivedPrompt
-    }
   
   var body: some View {
     HSplitView {
