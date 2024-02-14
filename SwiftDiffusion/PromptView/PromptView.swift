@@ -20,6 +20,8 @@ struct PromptView: View {
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
   
+  var archivedPrompt: SidebarItem?
+  
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   
@@ -55,6 +57,11 @@ struct PromptView: View {
       previousSelectedModel = modelItem
     }
   }
+  
+  init(scriptManager: ScriptManager, archivedPrompt: SidebarItem? = nil) {
+      self.scriptManager = scriptManager
+      self.archivedPrompt = archivedPrompt
+    }
   
   var body: some View {
     HSplitView {

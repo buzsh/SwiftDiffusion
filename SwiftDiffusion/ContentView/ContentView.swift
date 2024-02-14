@@ -61,6 +61,8 @@ struct ContentView: View {
   
   @State private var columnVisibility = NavigationSplitViewVisibility.all//.doubleColumn
   
+  @State private var selectedItemID: UUID?
+  
   func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
     return (currentPrompt, lastSavedImageUrls)
   }
@@ -91,16 +93,9 @@ struct ContentView: View {
     }
   }
   
-  func fetchAllEntities<T: PersistentModel>(_ entityType: T.Type) throws -> [T] {
-    let fetchDescriptor = FetchDescriptor<T>()
-    return try modelContext.fetch(fetchDescriptor)
-  }
-  
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
-      List {
-        
-        
+      List(selection: $selectedItemID) {
         Section(header: Text("Folders")) {
           ForEach(sidebarFolders) { folder in
             Text(folder.name)
@@ -109,15 +104,38 @@ struct ContentView: View {
         Section(header: Text("Items")) {
           ForEach(sidebarItems) { item in
             Text(item.title)
+              .tag(item.id) // Ensure your model has an 'id' property
           }
         }
       }
       .listStyle(SidebarListStyle())
+      .onChange(of: selectedItemID) { newItemID, _ in
+        if let newItemID = newItemID,
+           let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
+          // Update currentPrompt with the selected item's prompt
+          let modelDataMapping = ModelDataMapping()
+          
+          if let appPromptModel = selectedItem.prompt {
+            let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
+            currentPrompt.updateProperties(from: newPrompt)
+            
+            if let lastImageUrl = selectedItem.imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
+              selectedImage = image
+            }
+          }
+        }
+      }
       HStack {
+        Button(action: {
+          newFolderToData(title: "Some Folder")
+        }) {
+          Image(systemName: "folder.badge.plus")
+        }
+        
         Button(action: {
           saveCurrentPromptToData(title: "Some Prompt")
         }) {
-          Image(systemName: "plus")
+          Image(systemName: "plus.bubble")
         }
       }
       .frame(height: 40)
