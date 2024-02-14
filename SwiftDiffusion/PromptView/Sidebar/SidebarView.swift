@@ -21,6 +21,7 @@ enum KeyCodes {
 struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
   @Query private var sidebarItems: [SidebarItem]
   @Query private var sidebarFolders: [SidebarFolder]
@@ -39,7 +40,7 @@ struct SidebarView: View {
   func saveEditedTitle(_ id: UUID, _ title: String) {
     if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
       sidebarItems[index].title = title
-      saveData()
+      sidebarViewModel.saveData(in: modelContext)
     }
   }
   
@@ -48,22 +49,13 @@ struct SidebarView: View {
   }
   
   func saveCurrentPromptToData(title: String) {
-    savePromptToData(title: title, prompt: currentPrompt, imageUrls: lastSavedImageUrls)
-  }
-  
-  func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL]) {
-    let mapping = ModelDataMapping()
-    let promptData = mapping.toArchive(promptModel: currentPrompt)
-    let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
-    Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
-    modelContext.insert(newItem)
-    saveData()
+    sidebarViewModel.savePromptToData(title: title, prompt: currentPrompt, imageUrls: lastSavedImageUrls, in: modelContext)
   }
   
   func newFolderToData(title: String) {
     let newFolder = SidebarFolder(name: title)
     modelContext.insert(newFolder)
-    saveData()
+    sidebarViewModel.saveData(in: modelContext)
   }
   
   private func promptForDeletion(item: SidebarItem) {
@@ -101,14 +93,6 @@ struct SidebarView: View {
       selectedItemID = sidebarItems[newIndex].id
     } else {
       selectedItemID = nil
-    }
-  }
-  
-  func saveData() {
-    do {
-      try modelContext.save()
-    } catch {
-      Debug.log("Error saving context: \(error)")
     }
   }
   

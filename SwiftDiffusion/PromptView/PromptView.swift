@@ -15,6 +15,7 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager

@@ -12,6 +12,7 @@
 		290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */; };
 		290A34B22B7C894500963C6E /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B12B7C894500963C6E /* SidebarView.swift */; };
 		290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B32B7D283600963C6E /* SidebarMockDataController.swift */; };
+		290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B52B7D597C00963C6E /* SidebarViewModel.swift */; };
 		29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */; };
 		29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */; };
 		29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */; };
@@ -101,6 +102,7 @@
 		290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModelMapping.swift; sourceTree = "<group>"; };
 		290A34B12B7C894500963C6E /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		290A34B32B7D283600963C6E /* SidebarMockDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMockDataController.swift; sourceTree = "<group>"; };
+		290A34B52B7D597C00963C6E /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
 		29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateDebugInfo.swift; sourceTree = "<group>"; };
 		29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPromptStatusView.swift; sourceTree = "<group>"; };
 		29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTopStatusBar.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
+				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
 				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
 				290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */,
 				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
@@ -740,6 +743,7 @@
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
+				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
 				29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */,
