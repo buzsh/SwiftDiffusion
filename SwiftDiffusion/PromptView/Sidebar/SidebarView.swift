@@ -36,6 +36,10 @@ struct SidebarView: View {
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
   
+  @AppStorage("modelNameButtonToggled") private var modelNameButtonToggled: Bool = true
+  @AppStorage("thumbnailButtonToggled") private var thumbnailButtonToggled: Bool = true
+  @AppStorage("detailedListItemButtonToggled") private var detailedListItemButtonToggled: Bool = false
+  
   @State private var selectedItemID: UUID?
   @State private var selectedItemName: String?
   @State private var editingItemId: UUID? = nil
@@ -129,8 +133,10 @@ struct SidebarView: View {
       
       // Show model name
       Button(action: {
+        modelNameButtonToggled.toggle()
       }) {
         Image(systemName: "arkit")
+          .foregroundColor(modelNameButtonToggled ? .blue : .primary)
       }
       .buttonStyle(BorderlessButtonStyle())
       .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
@@ -138,13 +144,29 @@ struct SidebarView: View {
       
       // Show thumbnails
       Button(action: {
+        thumbnailButtonToggled.toggle()
       }) {
-        Image(systemName: "photo")
+        Image(systemName: "square.fill.text.grid.1x2")
+          .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
       }
       .buttonStyle(BorderlessButtonStyle())
       .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
       
       Spacer()
+      
+      // Show enlarged thumbnails
+      if thumbnailButtonToggled {
+        Button(action: {
+          detailedListItemButtonToggled.toggle()
+        }) {
+          Image(systemName: "text.below.photo")
+            .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+        
+        Spacer()
+      }
     }
     .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
     
@@ -166,74 +188,112 @@ struct SidebarView: View {
       }
       Section(header: Text("Uncategorized")) {
         ForEach(sidebarItems) { item in
-          if editingItemId == item.id {
-            HStack {
-              TextField("Title", text: $draftTitle, onCommit: {
-                saveEditedTitle(item.id, draftTitle)
-                editingItemId = nil
-                selectedItemID = item.id
-              })
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-            }
-            .onAppear {
-              draftTitle = item.title
-            }
-            .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
-            .cornerRadius(5)
-          } else {
-            HStack {
-              
+          
+          if detailedListItemButtonToggled {
+            
+            if thumbnailButtonToggled {
               // Conditional based on image select
               if let lastImageUrl = item.imageUrls.last {
                 AsyncImage(url: lastImageUrl) { image in
                   image
                     .resizable()
                     .scaledToFit()
-                    .frame(maxHeight: 50)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .shadow(color: .black, radius: 1, x: 0, y: 1)
                 } placeholder: {
                   ProgressView()
                 }
               }
-              
-              VStack(alignment: .leading) {
-                Text(item.title)
-                // Show this if arkit selected
+            }
+            
+            VStack(alignment: .leading) {
+              Text(item.title)
+              // Show this if arkit selected
+              if modelNameButtonToggled {
                 if let prompt = item.prompt {
                   if let modelName = prompt.selectedModel?.name {
                     Text(modelName)
                       .font(.system(size: 10, weight: .light, design: .rounded))
+                      .foregroundStyle(Color.secondary)
+                  }
+                }
+              }
+            }
+            .padding(.bottom, 12)
+            .padding(.top, detailedListItemButtonToggled ? 12 : 0)
+            
+          } else {
+            
+            if editingItemId == item.id {
+              HStack {
+                TextField("Title", text: $draftTitle, onCommit: {
+                  saveEditedTitle(item.id, draftTitle)
+                  editingItemId = nil
+                  selectedItemID = item.id
+                })
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+              }
+              .onAppear {
+                draftTitle = item.title
+              }
+              .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
+              .cornerRadius(5)
+            } else {
+              HStack {
+                if thumbnailButtonToggled {
+                  // Conditional based on image select
+                  if let lastImageUrl = item.imageUrls.last {
+                    AsyncImage(url: lastImageUrl) { image in
+                      image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 50)
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                        .shadow(color: .black, radius: 1, x: 0, y: 1)
+                    } placeholder: {
+                      ProgressView()
+                    }
                   }
                 }
                 
-              }
-            }
-            //.frame(height: 30)
-            
-            .tag(item.id)
-            .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
-            .gesture(TapGesture(count: 1).onEnded {
-              if editingItemId == nil {
-                if selectedItemID == item.id {
-                  // The item is already selected, enter edit mode
-                  editingItemId = item.id
-                  draftTitle = item.title
-                  selectedItemID = nil
-                } else {
-                  // The item is not selected, select it
-                  selectedItemID = item.id
+                VStack(alignment: .leading) {
+                  Text(item.title)
+                  // Show this if arkit selected
+                  if modelNameButtonToggled {
+                    if let prompt = item.prompt {
+                      if let modelName = prompt.selectedModel?.name {
+                        Text(modelName)
+                          .font(.system(size: 10, weight: .light, design: .rounded))
+                          .foregroundStyle(Color.secondary)
+                      }
+                    }
+                  }
                 }
               }
-            }.simultaneously(with: TapGesture(count: 2).onEnded {
-              // This block ensures that double-tap has priority over single-tap
-              // Prevent double-tap from affecting selection if already editing
-              if editingItemId == nil {
-                selectedItemID = nil // Clear selection here to enter edit mode
-                editingItemId = item.id
-                draftTitle = item.title
-              }
-            }))
+              .tag(item.id)
+              .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
+              .gesture(TapGesture(count: 1).onEnded {
+                if editingItemId == nil {
+                  if selectedItemID == item.id {
+                    // The item is already selected, enter edit mode
+                    editingItemId = item.id
+                    draftTitle = item.title
+                    selectedItemID = nil
+                  } else {
+                    // The item is not selected, select it
+                    selectedItemID = item.id
+                  }
+                }
+              }.simultaneously(with: TapGesture(count: 2).onEnded {
+                // This block ensures that double-tap has priority over single-tap
+                // Prevent double-tap from affecting selection if already editing
+                if editingItemId == nil {
+                  selectedItemID = nil // Clear selection here to enter edit mode
+                  editingItemId = item.id
+                  draftTitle = item.title
+                }
+              }))
+            }
           }
         }
       }
