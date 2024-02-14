@@ -48,8 +48,18 @@ struct SidebarView: View {
     return (currentPrompt, lastSavedImageUrls)
   }
   
-  func saveCurrentPromptToData(title: String) {
+  func saveCurrentPromptToData(withTitle title: String) {
     sidebarViewModel.savePromptToData(title: title, prompt: currentPrompt, imageUrls: lastSavedImageUrls, in: modelContext)
+  }
+  
+  func saveCurrentPromptToData() {
+    var promptTitle = "My Prompt"
+    if !currentPrompt.positivePrompt.isEmpty {
+      promptTitle = currentPrompt.positivePrompt.prefix(35).appending("…")
+    } else if let selectedModel = currentPrompt.selectedModel {
+      promptTitle = selectedModel.name
+    }
+    sidebarViewModel.savePromptToData(title: promptTitle, prompt: currentPrompt, imageUrls: lastSavedImageUrls, in: modelContext)
   }
   
   func newFolderToData(title: String) {
@@ -106,16 +116,11 @@ struct SidebarView: View {
   
   var body: some View {
     List(selection: $selectedItemID) {
+      /*
       Section(header: Text("Unsaved")) {
-        /*
-         ForEach(sidebarItems) { item in
-         HStack {
-         Text(item.title)
-         }
-         }
-         */
         Text("New Prompt")
       }
+       */
       Section(header: Text("Folders")) {
         ForEach(sidebarFolders) { folder in
           HStack {
@@ -145,24 +150,24 @@ struct SidebarView: View {
               .tag(item.id)
               .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
               .gesture(TapGesture(count: 1).onEnded {
-                if self.editingItemId == nil {
-                  if self.selectedItemID == item.id {
+                if editingItemId == nil {
+                  if selectedItemID == item.id {
                     // The item is already selected, enter edit mode
-                    self.editingItemId = item.id
-                    self.draftTitle = item.title
-                    self.selectedItemID = nil
+                    editingItemId = item.id
+                    draftTitle = item.title
+                    selectedItemID = nil
                   } else {
                     // The item is not selected, select it
-                    self.selectedItemID = item.id
+                    selectedItemID = item.id
                   }
                 }
               }.simultaneously(with: TapGesture(count: 2).onEnded {
                 // This block ensures that double-tap has priority over single-tap
                 // Prevent double-tap from affecting selection if already editing
-                if self.editingItemId == nil {
-                  self.selectedItemID = nil // Clear selection here to enter edit mode
-                  self.editingItemId = item.id
-                  self.draftTitle = item.title
+                if editingItemId == nil {
+                  selectedItemID = nil // Clear selection here to enter edit mode
+                  editingItemId = item.id
+                  draftTitle = item.title
                 }
               }))
           }
@@ -216,7 +221,7 @@ struct SidebarView: View {
       }
       
       Button(action: {
-        saveCurrentPromptToData(title: currentPrompt.positivePrompt)
+        saveCurrentPromptToData()
       }) {
         Image(systemName: "plus.bubble")
       }
