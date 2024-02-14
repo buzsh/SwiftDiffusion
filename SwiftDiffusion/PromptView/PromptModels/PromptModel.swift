@@ -34,6 +34,8 @@ extension PromptModel {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
     Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
     
+    // TODO: FIX selectedModel?.SdModel?.title = nil -> TEMP WORKAROUND, ROOT LVL create PromptModel.sdModelCheckpointTitle to set
+    // TODO: FIX case where nil selectedModel locks out user
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
     

@@ -94,6 +94,14 @@ struct SidebarListView: View {
     }
   }
   
+  func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
+    currentPrompt.updateProperties(from: newPrompt)
+    
+    if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
+      selectedImage = image
+    }
+  }
+  
   var body: some View {
     List(selection: $selectedItemID) {
       Section(header: Text("Folders")) {
@@ -134,11 +142,7 @@ struct SidebarListView: View {
         
         if let appPromptModel = selectedItem.prompt {
           let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
-          currentPrompt.updateProperties(from: newPrompt)
-          
-          if let lastImageUrl = selectedItem.imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
-            selectedImage = image
-          }
+          updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
         }
       }
     }
