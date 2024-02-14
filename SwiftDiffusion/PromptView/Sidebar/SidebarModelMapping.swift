@@ -8,6 +8,16 @@
 import Foundation
 
 struct ModelDataMapping {
+  @MainActor
+  func toArchive(promptModel: PromptModel) -> AppPromptModel? {
+    return mapPromptModelToAppPromptModel(promptModel)
+  }
+  
+  @MainActor
+  func fromArchive(appPromptModel: AppPromptModel) -> PromptModel {
+    return mapAppPromptModelToPromptModel(appPromptModel)
+  }
+  
   func mapModelTypeToAppModelType(_ type: ModelType) -> AppModelType {
     switch type {
     case .coreMl:
@@ -50,23 +60,23 @@ struct ModelDataMapping {
   
   @MainActor
   func mapPromptModelToAppPromptModel(_ promptModel: PromptModel) -> AppPromptModel? {
-      guard let selectedModel = mapModelItemToAppModelItem(promptModel.selectedModel) else { return nil }
-      return AppPromptModel(positivePrompt: promptModel.positivePrompt,
-                            negativePrompt: promptModel.negativePrompt,
-                            width: promptModel.width,
-                            height: promptModel.height,
-                            cfgScale: promptModel.cfgScale,
-                            samplingSteps: promptModel.samplingSteps,
-                            seed: promptModel.seed,
-                            batchCount: promptModel.batchCount,
-                            batchSize: promptModel.batchSize,
-                            clipSkip: promptModel.clipSkip,
-                            selectedModel: selectedModel)
+    guard let selectedModel = mapModelItemToAppModelItem(promptModel.selectedModel) else { return nil }
+    return AppPromptModel(positivePrompt: promptModel.positivePrompt,
+                          negativePrompt: promptModel.negativePrompt,
+                          width: promptModel.width,
+                          height: promptModel.height,
+                          cfgScale: promptModel.cfgScale,
+                          samplingSteps: promptModel.samplingSteps,
+                          seed: promptModel.seed,
+                          batchCount: promptModel.batchCount,
+                          batchSize: promptModel.batchSize,
+                          clipSkip: promptModel.clipSkip,
+                          selectedModel: selectedModel)
   }
   
   @MainActor
   func mapAppPromptModelToPromptModel(_ appPromptModel: AppPromptModel) -> PromptModel {
-    let promptModel = PromptModel() // Assuming default initializer
+    let promptModel = PromptModel()
     promptModel.positivePrompt = appPromptModel.positivePrompt
     promptModel.negativePrompt = appPromptModel.negativePrompt
     promptModel.width = appPromptModel.width
