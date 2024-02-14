@@ -1,5 +1,5 @@
 //
-//  SidebarListView.swift
+//  SidebarView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/13/24.
@@ -18,7 +18,7 @@ enum KeyCodes {
   }
 }
 
-struct SidebarListView: View {
+struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   
@@ -242,7 +242,7 @@ struct SidebarListView: View {
 }
 
 #Preview {
-  SidebarListView(
+  SidebarView(
     selectedImage: .constant(MockDataController.shared.lastImage),
     lastSavedImageUrls: .constant(MockDataController.shared.mockImageUrls)
   )
