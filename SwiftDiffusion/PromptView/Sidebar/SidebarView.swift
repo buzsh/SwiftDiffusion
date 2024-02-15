@@ -288,9 +288,9 @@ struct SidebarView: View {
                         AsyncImage(url: lastImageUrl) { image in
                           image
                             .resizable()
-                            .aspectRatio(contentMode: .fill) // Fill the frame, maintaining aspect ratio
-                            .frame(width: 40, height: 50) // Set fixed frame size
-                            .clipped() // Ensure image does not extend beyond the frame
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 40, height: 50)
+                            .clipped()
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                             .shadow(color: .black, radius: 1, x: 0, y: 1)
                         } placeholder: {

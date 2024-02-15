@@ -40,7 +40,7 @@ struct ThemeConstants {
         nonSelectedHoverBackgroundOpacity: 0.5,
         selectedBackgroundColor: Color.blue,
         nonSelectedHoverBackgroundColor: Color.gray.opacity(0.5),
-        strokeColor: Color.secondary.opacity(0.8))
+        strokeColor: Color.secondary.opacity(0.5))
     default:
       return ThemeConstants(
         buttonItemWidth: 30.0,
@@ -84,6 +84,7 @@ struct SegmentedDisplayOptions: View {
       ForEach(0..<3, id: \.self) { index in
         Button(action: {
           withAnimation {
+            isHovering = [false, false, false]
             noPreviewsItemButtonToggled = index == 0
             smallPreviewsButtonToggled = index == 1
             largePreviewsButtonToggled = index == 2
