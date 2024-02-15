@@ -42,9 +42,10 @@ struct SidebarView: View {
   @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
   @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
   @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
+  
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
-  @AppStorage("selectedSidebarItemIDString") private var selectedItemIDString: String?
+  //@AppStorage("selectedSidebarItemIDString") private var selectedItemIDString: String?
   @State private var selectedItemID: UUID?
   
   @State private var selectedItemName: String?
@@ -314,7 +315,6 @@ struct SidebarView: View {
                   }
                   .tag(item.id)
                   .opacity(editingItemId == nil ? 1 : 0.5)
-                  /*
                   .gesture(TapGesture(count: 1).onEnded {
                     if editingItemId == nil {
                       if selectedItemID == item.id {
@@ -326,14 +326,15 @@ struct SidebarView: View {
                         // The item is not selected, select it
                         selectedItemID = item.id
                       }
-                    }*/
-                  }.simultaneously(with: TapGesture(count: 2).onEnded {
-                    if editingItemId == nil {
-                      selectedItemID = nil
-                      editingItemId = item.id
-                      draftTitle = item.title
                     }
-                  }))
+                  }
+                    .simultaneously(with: TapGesture(count: 2).onEnded {
+                      if editingItemId == nil {
+                        selectedItemID = nil
+                        editingItemId = item.id
+                        draftTitle = item.title
+                      }
+                    }))
                 }
               }
             }
@@ -421,51 +422,51 @@ struct SidebarView: View {
             Spacer()
             
             HStack {
-                Button(action: {
+              Button(action: {
                 noPreviewsItemButtonToggled = true
                 smallPreviewsButtonToggled = false
                 largePreviewsButtonToggled = false
-                }) {
-                    Image(systemName: "list.bullet")
-                        .foregroundColor(noPreviewsItemButtonToggled ? .blue : .primary)
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-                .background(noPreviewsItemButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-                .cornerRadius(10)
-                
-                Button(action: {
-                  noPreviewsItemButtonToggled = false
-                  smallPreviewsButtonToggled = true
-                  largePreviewsButtonToggled = false
-                }) {
-                    Image(systemName: "square.fill.text.grid.1x2")
-                        .foregroundColor(smallPreviewsButtonToggled ? .blue : .primary)
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-                .background(smallPreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-                .cornerRadius(10)
-                
-                Button(action: {
-                  noPreviewsItemButtonToggled = false
-                  smallPreviewsButtonToggled = false
-                  largePreviewsButtonToggled = true
-                }) {
-                    Image(systemName: "text.below.photo")
-                        .foregroundColor(largePreviewsButtonToggled ? .blue : .primary)
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-                .background(largePreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-                .cornerRadius(10)
+              }) {
+                Image(systemName: "list.bullet")
+                  .foregroundColor(noPreviewsItemButtonToggled ? .blue : .primary)
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+              .background(noPreviewsItemButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+              .cornerRadius(10)
+              
+              Button(action: {
+                noPreviewsItemButtonToggled = false
+                smallPreviewsButtonToggled = true
+                largePreviewsButtonToggled = false
+              }) {
+                Image(systemName: "square.fill.text.grid.1x2")
+                  .foregroundColor(smallPreviewsButtonToggled ? .blue : .primary)
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+              .background(smallPreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+              .cornerRadius(10)
+              
+              Button(action: {
+                noPreviewsItemButtonToggled = false
+                smallPreviewsButtonToggled = false
+                largePreviewsButtonToggled = true
+              }) {
+                Image(systemName: "text.below.photo")
+                  .foregroundColor(largePreviewsButtonToggled ? .blue : .primary)
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+              .background(largePreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+              .cornerRadius(10)
             }
             .padding(5) // Add some padding inside the HStack
             .background(Color.gray.opacity(0.1)) // Semi-transparent background for the whole HStack
             .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for the HStack
             .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(Color.secondary, lineWidth: 1) // Border for the HStack
+              RoundedRectangle(cornerRadius: 15)
+                .stroke(Color.secondary, lineWidth: 1).opacity(0.7) // Border for the HStack
             )
             
             Spacer()
@@ -528,33 +529,37 @@ struct SidebarView: View {
   
 }
 
+
 #Preview {
   SidebarView(
     selectedImage: .constant(MockDataController.shared.lastImage),
     lastSavedImageUrls: .constant(MockDataController.shared.mockImageUrls)
   )
   .modelContainer(MockDataController.shared.container)
+  .environmentObject(PromptModel())
+  .environmentObject(SidebarViewModel())
   .frame(width: 200)
 }
+
 
 
 import SwiftUI
 import AppKit
 
 struct VisualEffectView: NSViewRepresentable {
-    var material: NSVisualEffectView.Material
-    var blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = blendingMode
-        view.state = .active
-        return view
-    }
-
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
-    }
+  var material: NSVisualEffectView.Material
+  var blendingMode: NSVisualEffectView.BlendingMode
+  
+  func makeNSView(context: Context) -> NSVisualEffectView {
+    let view = NSVisualEffectView()
+    view.material = material
+    view.blendingMode = blendingMode
+    view.state = .active
+    return view
+  }
+  
+  func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+    nsView.material = material
+    nsView.blendingMode = blendingMode
+  }
 }
