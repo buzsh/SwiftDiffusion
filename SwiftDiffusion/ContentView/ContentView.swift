@@ -48,7 +48,6 @@ struct ContentView: View {
   
   @State private var hasLaunchedPythonEnvironmentOnFirstAppearance = false
   
-  
   // Detail
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
   @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
@@ -157,11 +156,20 @@ struct ContentView: View {
       }
       
       ToolbarItemGroup(placement: .principal) {
+        /*
         Button("Add to Queue") {
           Debug.log("Add to queue")
         }
         .buttonStyle(BorderBackgroundButtonStyle())
         .disabled(true)
+         */
+        
+        if !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
+          Button("Save Last Generated Prompt") {
+            sidebarViewModel.saveMostRecentArchivablePromptToSidebar(in: modelContext)
+          }
+          .buttonStyle(BorderBackgroundButtonStyle())
+        }
         
         Button(action: {
           fetchAndSaveGeneratedImages()
@@ -239,13 +247,20 @@ struct ContentView: View {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
       } else if scriptManager.genStatus == .done {
-        NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
-        Task {
-          await fileHierarchy.refresh()
-        }
+        imagesDidGenerateSuccessfully()
+        
       }
     }
     
+  }
+  
+  func imagesDidGenerateSuccessfully() {
+    NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
+    sidebarViewModel.addPromptArchivable(currentPrompt: currentPrompt, imageUrls: lastSavedImageUrls)
+    
+    Task {
+      await fileHierarchy.refresh()
+    }
   }
   
   private var userHasEnteredBothRequiredFields: Bool {
