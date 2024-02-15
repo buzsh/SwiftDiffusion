@@ -402,36 +402,7 @@ struct SidebarView: View {
           updateWorkspaceItemTitle()
         }
       }
-      VisualEffectView(material: .sidebar, blendingMode: .withinWindow)
-        .frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
-        .edgesIgnoringSafeArea(.bottom)
-        .overlay(
-          HStack {
-            
-            Spacer()
-            // Show model name
-            Button(action: {
-              modelNameButtonToggled.toggle()
-            }) {
-              Image(systemName: "arkit")
-                .foregroundColor(modelNameButtonToggled ? .blue : .primary)
-            }
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-            .padding(.leading, 4)
-            
-            Spacer()
-            
-            SegmentedDisplayOptions(
-                noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled,
-                smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
-                largePreviewsButtonToggled: $largePreviewsButtonToggled)
-            .padding(.trailing, 4)
-            
-            Spacer()
-            
-          }
-        )
+      DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
     }//ZStack
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
