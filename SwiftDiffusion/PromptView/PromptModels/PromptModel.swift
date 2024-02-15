@@ -9,6 +9,8 @@ import Combine
 
 @MainActor
 class PromptModel: ObservableObject {
+  @Published var selectedSidebarItem: SidebarItem?
+  
   @Published var selectedModel: ModelItem?
   @Published var samplingMethod: String?
   
@@ -27,6 +29,33 @@ class PromptModel: ObservableObject {
   @Published var batchSize: Double = 1
   
   @Published var clipSkip: Double = 1
+}
+
+extension PromptModel {
+  func updateProperties(from model: PromptModel) {
+    Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
+    Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
+    
+    // TODO: FIX selectedModel?.SdModel?.title = nil -> TEMP WORKAROUND, ROOT LVL create PromptModel.sdModelCheckpointTitle to set
+    self.selectedModel = model.selectedModel
+    self.samplingMethod = model.samplingMethod
+    
+    self.positivePrompt = model.positivePrompt
+    self.negativePrompt = model.negativePrompt
+    
+    self.width = model.width
+    self.height = model.height
+    
+    self.cfgScale = model.cfgScale
+    self.samplingSteps = model.samplingSteps
+    
+    self.seed = model.seed
+    
+    self.batchCount = model.batchCount
+    self.batchSize = model.batchSize
+    
+    self.clipSkip = model.clipSkip
+  }
 }
 
 extension PromptModel {
@@ -51,7 +80,7 @@ extension PromptModel {
     promptMetadata += "Seed: \(seed)\n"
     promptMetadata += "Batch count: \(batchCount)\n"
     promptMetadata += "Batch size: \(batchSize)\n"
-
+    
     return promptMetadata
   }
 }
@@ -59,24 +88,24 @@ extension PromptModel {
 
 
 /*
-@Published var selectedModel: ModelItem? {
-  didSet {
-    updatePromptPreferences()
-  }
-}
+ @Published var selectedModel: ModelItem? {
+ didSet {
+ updatePromptPreferences()
+ }
+ }
  
-private func updatePromptPreferences() {
-  guard let model = selectedModel else { return }
-  samplingMethod = model.preferences.samplingMethod
-  // Update only if the current values are the default (512x512)
-  if width == 512 && height == 512 {
-    width = model.preferences.width
-    height = model.preferences.height
-  }
-  cfgScale = model.preferences.cfgScale
-  samplingSteps = model.preferences.samplingSteps
-  batchCount = model.preferences.batchCount
-  batchSize = model.preferences.batchSize
-  clipSkip = model.preferences.clipSkip
-}
+ private func updatePromptPreferences() {
+ guard let model = selectedModel else { return }
+ samplingMethod = model.preferences.samplingMethod
+ // Update only if the current values are the default (512x512)
+ if width == 512 && height == 512 {
+ width = model.preferences.width
+ height = model.preferences.height
+ }
+ cfgScale = model.preferences.cfgScale
+ samplingSteps = model.preferences.samplingSteps
+ batchCount = model.preferences.batchCount
+ batchSize = model.preferences.batchSize
+ clipSkip = model.preferences.clipSkip
+ }
  */

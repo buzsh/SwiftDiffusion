@@ -9,8 +9,6 @@ import SwiftUI
 import AppKit
 
 extension Constants.Layout {
-  static let detailToolbarSpacing: CGFloat = 0
-  
   struct Toolbar {
     static let itemHeight: CGFloat = 30
     static let itemWidth: CGFloat = 30

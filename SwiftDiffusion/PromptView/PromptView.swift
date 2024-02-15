@@ -15,6 +15,7 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
@@ -28,7 +29,7 @@ struct PromptView: View {
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModelItem(withModelItem modelItem: ModelItem) {
-    if previousSelectedModel == modelItem {
+    if previousSelectedModel?.sdModel?.title == modelItem.sdModel?.title {
       Debug.log("Model already loaded. Do not reload.")
       return
     }
@@ -38,6 +39,7 @@ struct PromptView: View {
     }
     
     if let modelItem = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+      Debug.log("Attempting to updateSdModelCheckpoint with modelItem: \(String(describing: modelItem.name))")
       updateSdModelCheckpoint(forModel: modelItem, apiUrl: serviceUrl) { result in
         switch result {
         case .success(let successMessage):

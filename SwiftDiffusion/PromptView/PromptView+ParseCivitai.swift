@@ -79,7 +79,7 @@ extension PromptView {
   /// Determines if the pasteboard content contains generation data by looking for specific keywords.
   func userHasGenerationDataInPasteboard(from pasteboardContent: String) -> Bool {
     var relevantKeywordCounter = 0
-    let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:"]
+    let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:", "Model hash:"]
     
     for keyword in keywords {
       if pasteboardContent.contains(keyword) {
@@ -99,23 +99,34 @@ extension PromptView {
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
     // Loop through each line of the pasteboard content
+    var matchedModelCheckpoint: ModelItem?
     for line in lines {
       if line.contains("Model hash:") {
-        parseModelHash(from: String(line))
+        matchedModelCheckpoint = parseModelHash(from: String(line))
       }
+
       if line.starts(with: "Negative prompt:") {
         let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
         currentPrompt.negativePrompt = negativePrompt
       } else {
         let parameters = line.split(separator: ",").map(String.init)
-        if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
-          processModelParameter(modelParameter)
+        // Continue parsing for model
+        if matchedModelCheckpoint == nil {
+          if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
+            matchedModelCheckpoint = processModelParameter(modelParameter)
+          }
         }
+        // Continue parsing for other parameters (excluding those starting with Model)
         for parameter in parameters where !parameter.trimmingCharacters(in: .whitespaces).starts(with: "Model:") {
           processParameter(parameter)
         }
       }
     }
+    
+    if let modelToSelect = matchedModelCheckpoint {
+      currentPrompt.selectedModel = modelToSelect
+    }
+    
   }
   
   func buildPositivePrompt(from lines: [String.SubSequence]) -> String {
@@ -138,7 +149,7 @@ extension PromptView {
   /// // to
   /// ["4726d3bab1", "dreamshaperXL_v2TurboDpmppSDE"]
   /// ```
-  func parseModelHash(from line: String) {
+  func parseModelHash(from line: String) -> ModelItem? {
     let regexPattern = "Model hash: ([^,]+(?:, [^,]+(?= Version:))*)"
     let regex = try! NSRegularExpression(pattern: regexPattern, options: [])
     let nsLine = line as NSString
@@ -146,37 +157,60 @@ extension PromptView {
     
     guard let match = matches.first else {
       parseLog("No model hash found in the line.")
-      return
+      return nil
     }
+    
     let modelHashesString = nsLine.substring(with: match.range(at: 1))
     let modelHashes = modelHashesString.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
     for modelHash in modelHashes {
-      parseLog("Processing model hash: \(modelHash)")
-      processModelParameter("Model hash: \(modelHash)")
+      Debug.log("modelHash: \(modelHash)")
+      
+      var potentialHashMatch: String?
+      for model in modelManagerViewModel.items {
+        if let sdModelCheckpointTitle = model.sdModel?.title {
+          if let startIndex = sdModelCheckpointTitle.firstIndex(of: "["),
+             let endIndex = sdModelCheckpointTitle.firstIndex(of: "]") {
+            let range = sdModelCheckpointTitle.index(after: startIndex)..<endIndex
+            let extractedHash = String(sdModelCheckpointTitle[range])
+            potentialHashMatch = extractedHash
+          }
+        } else if let sdModelCheckpointHash = model.sdModel?.hash {
+          potentialHashMatch = sdModelCheckpointHash
+        }
+        
+        if potentialHashMatch?.lowercased() == modelHash.lowercased() {
+          return model
+        }
+      }
+      
+      return processModelParameter("Model hash: \(modelHash)")
     }
+    return nil
   }
   /// Processes a model parameter by extracting the value from a key-value pair and attempting to match it with a model in the model manager.
-  func processModelParameter(_ parameter: String) {
+  func processModelParameter(_ parameter: String) -> ModelItem? {
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
-    guard keyValue.count == 2 else { return }
+    guard keyValue.count == 2 else { return nil }
     let value = keyValue[1].trimmingCharacters(in: .whitespaces)
     
     parseLog(value)
     let parsedModelName = value
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
     parseLog("Parsed model substrings: \(parsedModelSubstrings)")
-    if let matchingModel = modelManagerViewModel.items.first(where: { item in
-      let itemSubstrings = splitAndFilterModelName(item.name)
-      parseLog("Model item substrings: \(itemSubstrings) for model: \(item.name)")
-      let isMatch = parsedModelSubstrings.contains(where: itemSubstrings.contains)
-      parseLog("Attempting to match \(parsedModelSubstrings) with \(itemSubstrings): \(isMatch)")
-      return isMatch
-    }) {
-      Debug.log("[processModelParameter] match: \(matchingModel.name)")
-      currentPrompt.selectedModel = matchingModel
-    } else {
-      parseLog("No matching model found for \(parsedModelSubstrings)")
+    
+    for model in modelManagerViewModel.items {
+      let itemSubstrings = splitAndFilterModelName(model.name)
+      parseLog("Model item substrings: \(itemSubstrings) for model: \(model.name)")
+      if parsedModelSubstrings.contains(where: itemSubstrings.contains) {
+        parseLog("Match \(parsedModelSubstrings) with \(itemSubstrings)")
+        return model
+      }
     }
+    
+    parseLog("No matching model found for \(parsedModelSubstrings)")
+    let allTitles = modelManagerViewModel.items.compactMap { $0.sdModel?.title }.joined(separator: ", ")
+    Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
+    return nil
   }
   
   // Helper function to process all other parameters
