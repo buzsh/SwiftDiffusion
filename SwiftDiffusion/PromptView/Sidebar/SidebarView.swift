@@ -230,112 +230,53 @@ struct SidebarView: View {
           
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
-              
-              if largePreviewsButtonToggled {
-                
-                if smallPreviewsButtonToggled {
-                  // Conditional based on image select
-                  if let lastImageUrl = item.imageUrls.last {
-                    AsyncImage(url: lastImageUrl) { image in
-                      image
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .shadow(color: .black, radius: 1, x: 0, y: 1)
-                    } placeholder: {
-                      ProgressView()
-                    }
+              HStack(alignment: .center, spacing: 8) {
+                if smallPreviewsButtonToggled, let lastImageUrl = item.imageUrls.last {
+                  AsyncImage(url: lastImageUrl) { image in
+                    image
+                      .resizable()
+                      .aspectRatio(contentMode: .fill)
+                      .frame(width: 40, height: 50)
+                      .clipped()
+                      .clipShape(RoundedRectangle(cornerRadius: 8))
+                      .shadow(color: .black, radius: 1, x: 0, y: 1)
+                  } placeholder: {
+                    ProgressView()
                   }
                 }
                 
                 VStack(alignment: .leading) {
+                  if largePreviewsButtonToggled {
+                    if let lastImageUrl = item.imageUrls.last {
+                      AsyncImage(url: lastImageUrl) { image in
+                        image
+                          .resizable()
+                          .scaledToFit()
+                          .clipShape(RoundedRectangle(cornerRadius: 12))
+                          .shadow(color: .black, radius: 1, x: 0, y: 1)
+                      } placeholder: {
+                        ProgressView()
+                      }
+                      .padding(.bottom, 8)
+                    }
+                  }
+                  
                   Text(item.title)
-                  // Show this if arkit selected
-                  if modelNameButtonToggled {
-                    if let prompt = item.prompt {
-                      if let modelName = prompt.selectedModel?.name {
-                        Text(modelName)
-                          .font(.system(size: 10, weight: .light, design: .rounded))
-                          .foregroundStyle(Color.secondary)
-                      }
-                    }
+                    .lineLimit(modelNameButtonToggled ? 1 : 2)
+                  
+                  if modelNameButtonToggled, let modelName = item.prompt?.selectedModel?.name {
+                    Text(modelName)
+                      .font(.system(size: 10, weight: .light, design: .monospaced))
+                      .foregroundStyle(Color.secondary)
+                      .padding(.top, 1)
                   }
                 }
-                .padding(.bottom, 12)
-                .padding(.top, largePreviewsButtonToggled ? 12 : 0)
-                
-              } else {
-                
-                if editingItemId == item.id {
-                  HStack {
-                    TextField("Title", text: $draftTitle, onCommit: {
-                      saveEditedTitle(item.id, draftTitle)
-                      editingItemId = nil
-                      selectedItemID = item.id
-                    })
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                  }
-                  .onAppear {
-                    draftTitle = item.title
-                  }
-                  .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
-                  .cornerRadius(5)
-                } else {
-                  HStack {
-                    if smallPreviewsButtonToggled {
-                      // Conditional based on image select
-                      if let lastImageUrl = item.imageUrls.last {
-                        AsyncImage(url: lastImageUrl) { image in
-                          image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 40, height: 50)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .shadow(color: .black, radius: 1, x: 0, y: 1)
-                        } placeholder: {
-                          ProgressView()
-                        }
-                      }
-                    }
-                    
-                    VStack(alignment: .leading) {
-                      Text(item.title)
-                      // Show this if arkit selected
-                      if modelNameButtonToggled {
-                        if let prompt = item.prompt {
-                          if let modelName = prompt.selectedModel?.name {
-                            Text(modelName)
-                              .font(.system(size: 10, weight: .light, design: .rounded))
-                              .foregroundStyle(Color.secondary)
-                          }
-                        }
-                      }
-                    }
-                  }
-                  .tag(item.id)
-                  .opacity(editingItemId == nil ? 1 : 0.5)
-                  .gesture(TapGesture(count: 1).onEnded {
-                    if editingItemId == nil {
-                      if selectedItemID == item.id {
-                        // The item is already selected, enter edit mode
-                        editingItemId = item.id
-                        draftTitle = item.title
-                        selectedItemID = nil
-                      } else {
-                        // The item is not selected, select it
-                        selectedItemID = item.id
-                      }
-                    }
-                  }
-                    .simultaneously(with: TapGesture(count: 2).onEnded {
-                      if editingItemId == nil {
-                        selectedItemID = nil
-                        editingItemId = item.id
-                        draftTitle = item.title
-                      }
-                    }))
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+              }
+              .padding(.vertical, 4)
+              .contentShape(Rectangle())
+              .onTapGesture {
+                selectedItemID = item.id
               }
             }
           }//Section("Uncategorized")
@@ -471,6 +412,7 @@ struct SidebarView: View {
   .environmentObject(PromptModel())
   .environmentObject(SidebarViewModel())
   .frame(width: 200)
+  .frame(height: 600)
 }
 
 
