@@ -17,6 +17,11 @@ struct ThemeConstants {
   var overlayStrokeLineWidth: CGFloat
   var overlayStrokeOpacity: CGFloat
   var hoverBackgroundOpacity: CGFloat
+  var selectedBackgroundOpacity: CGFloat = 0.2
+  var nonSelectedHoverBackgroundOpacity: CGFloat = 0.2
+  var selectedBackgroundColor: Color = Color.blue
+  var nonSelectedHoverBackgroundColor: Color = Color.gray
+  var strokeColor: Color = Color.secondary
   
   static func forTheme(_ colorScheme: ColorScheme) -> ThemeConstants {
     switch colorScheme {
@@ -30,7 +35,12 @@ struct ThemeConstants {
         overlayCornerRadius: 15.0,
         overlayStrokeLineWidth: 1.2,
         overlayStrokeOpacity: 0.8,
-        hoverBackgroundOpacity: 0.3)
+        hoverBackgroundOpacity: 0.3,
+        selectedBackgroundOpacity: 0.3,
+        nonSelectedHoverBackgroundOpacity: 0.5,
+        selectedBackgroundColor: Color.blue,
+        nonSelectedHoverBackgroundColor: Color.gray.opacity(0.5),
+        strokeColor: Color.secondary.opacity(0.8))
     default:
       return ThemeConstants(
         buttonItemWidth: 30.0,
@@ -41,12 +51,16 @@ struct ThemeConstants {
         overlayCornerRadius: 15.0,
         overlayStrokeLineWidth: 1.0,
         overlayStrokeOpacity: 0.7,
-        hoverBackgroundOpacity: 0.2)
+        hoverBackgroundOpacity: 0.2,
+        selectedBackgroundOpacity: 0.2,
+        nonSelectedHoverBackgroundOpacity: 0.5,
+        selectedBackgroundColor: Color.blue,
+        nonSelectedHoverBackgroundColor: Color.gray.opacity(0.5),
+        strokeColor: Color.secondary.opacity(0.5))
     }
   }
 }
 
-// Segmented Display Options View
 struct SegmentedDisplayOptions: View {
   @Binding var noPreviewsItemButtonToggled: Bool
   @Binding var smallPreviewsButtonToggled: Bool
@@ -74,10 +88,12 @@ struct SegmentedDisplayOptions: View {
         }
         .buttonStyle(BorderlessButtonStyle())
         .frame(width: constants.buttonItemWidth, height: constants.buttonItemHeight)
-        .background(isHovering[index] ? Color.blue.opacity(constants.hoverBackgroundOpacity) : Color.clear)
+        .background(self.backgroundColor(for: index))
         .cornerRadius(constants.buttonCornerRadius)
         .onHover { hovering in
-          isHovering[index] = hovering
+          if !self.isSelected(index: index) {
+            isHovering[index] = hovering
+          }
         }
       }
     }
@@ -86,9 +102,26 @@ struct SegmentedDisplayOptions: View {
     .clipShape(RoundedRectangle(cornerRadius: constants.overlayCornerRadius))
     .overlay(
       RoundedRectangle(cornerRadius: constants.overlayCornerRadius)
-        .stroke(Color.secondary, lineWidth: constants.overlayStrokeLineWidth)
+        .stroke(constants.strokeColor, lineWidth: constants.overlayStrokeLineWidth)
         .opacity(constants.overlayStrokeOpacity)
     )
+  }
+  
+  private func isSelected(index: Int) -> Bool {
+    switch index {
+    case 0: return noPreviewsItemButtonToggled
+    case 1: return smallPreviewsButtonToggled
+    case 2: return largePreviewsButtonToggled
+    default: return false
+    }
+  }
+  
+  private func backgroundColor(for index: Int) -> Color {
+    if isSelected(index: index) {
+      return constants.selectedBackgroundColor.opacity(constants.selectedBackgroundOpacity)
+    } else {
+      return isHovering[index] ? constants.nonSelectedHoverBackgroundColor.opacity(constants.nonSelectedHoverBackgroundOpacity) : Color.clear
+    }
   }
   
   private func symbol(for index: Int) -> String {
