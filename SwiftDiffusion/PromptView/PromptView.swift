@@ -105,7 +105,7 @@ struct PromptView: View {
                 if currentPrompt.isArchived {
                   
                   Button(action: {
-                    sidebarViewModel.deleteCurrentlySelectedSidebarItem(in: modelContext)
+                    sidebarViewModel.queueSelectedSidebarItemForDeletion()
                   }) {
                     Image(systemName: "trash")
                     Text("Delete Prompt")
