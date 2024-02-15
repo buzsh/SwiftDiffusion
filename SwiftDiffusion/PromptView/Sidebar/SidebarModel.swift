@@ -38,6 +38,7 @@ class SidebarItem: Identifiable {
 
 @Model
 class AppPromptModel {
+  @Attribute var isArchived: Bool = true
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
@@ -53,7 +54,8 @@ class AppPromptModel {
   
   
   
-  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+  init(isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+    self.isArchived = isArchived
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt

@@ -14,6 +14,7 @@ extension Constants.Layout {
 }
 
 struct PromptView: View {
+  @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
@@ -95,6 +96,49 @@ struct PromptView: View {
       
       ScrollView {
         Form {
+          
+          if currentPrompt.isArchived || !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
+            
+            VStack {
+              HStack {
+                
+                if currentPrompt.isArchived {
+                  
+                  Button(action: {
+                    sidebarViewModel.deleteCurrentlySelectedSidebarItem(in: modelContext)
+                  }) {
+                    Image(systemName: "trash")
+                    Text("Delete Prompt")
+                  }
+                  
+                  Spacer()
+                  /*
+                  Button(action: {
+                    
+                  }) {
+                    Image(systemName: "checkmark")
+                    Text("Update Prompt")
+                  }
+                  */
+                } else if !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
+                  Spacer()
+                  Button(action: {
+                    sidebarViewModel.saveMostRecentArchivablePromptToSidebar(in: modelContext)
+                  }) {
+                    Image(systemName: "square.and.arrow.down")
+                    Text("Save Generated Prompt")
+                  }
+                  
+                }
+              }
+              .padding(.top, 16)
+              .padding(.bottom, 10)
+              
+              Divider()
+            }
+            
+          }
+          
           HStack {
             // Models Menu
             VStack(alignment: .leading) {

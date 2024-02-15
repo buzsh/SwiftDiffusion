@@ -10,6 +10,8 @@ import SwiftData
 
 class SidebarViewModel: ObservableObject {
   
+  @Published var selectedSidebarItem: SidebarItem? = nil
+  
   @Published var recentlyGeneratedAndArchivablePrompts: [SidebarItem] = []
   
   private func addToRecentlyGeneratedPromptArchivables(_ item: SidebarItem) {
@@ -58,6 +60,12 @@ class SidebarViewModel: ObservableObject {
       try model.save()
     } catch {
       Debug.log("Error saving context after deletion: \(error)")
+    }
+  }
+  
+  func deleteCurrentlySelectedSidebarItem(in model: ModelContext) {
+    if let sidebarItem = selectedSidebarItem {
+      deleteItem(sidebarItem, in: model)
     }
   }
   

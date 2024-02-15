@@ -9,7 +9,7 @@ import Combine
 
 @MainActor
 class PromptModel: ObservableObject {
-  @Published var selectedSidebarItem: SidebarItem?
+  @Published var isArchived: Bool = false
   
   @Published var selectedModel: ModelItem?
   @Published var samplingMethod: String?
@@ -36,7 +36,34 @@ extension PromptModel {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
     Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
     
-    // TODO: FIX selectedModel?.SdModel?.title = nil -> TEMP WORKAROUND, ROOT LVL create PromptModel.sdModelCheckpointTitle to set
+    self.isArchived = model.isArchived
+    
+    self.selectedModel = model.selectedModel
+    self.samplingMethod = model.samplingMethod
+    
+    self.positivePrompt = model.positivePrompt
+    self.negativePrompt = model.negativePrompt
+    
+    self.width = model.width
+    self.height = model.height
+    
+    self.cfgScale = model.cfgScale
+    self.samplingSteps = model.samplingSteps
+    
+    self.seed = model.seed
+    
+    self.batchCount = model.batchCount
+    self.batchSize = model.batchSize
+    
+    self.clipSkip = model.clipSkip
+  }
+}
+
+extension PromptModel {
+  func updatePropertiesFromData(_ model: PromptModel) {
+    Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
+    Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
+    
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
     

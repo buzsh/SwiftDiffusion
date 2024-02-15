@@ -136,6 +136,7 @@ struct SidebarView: View {
   
   func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
     currentPrompt.updateProperties(from: newPrompt)
+    
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image
     }
@@ -415,6 +416,7 @@ struct SidebarView: View {
         if let newItemID = newItemID,
            let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
           Debug.log("onChange selectItem: \(selectedItem.title)")
+          sidebarViewModel.selectedSidebarItem = selectedItem
           selectedItemName = selectedItem.title
           let modelDataMapping = ModelDataMapping()
           if let appPromptModel = selectedItem.prompt {
