@@ -136,7 +136,6 @@ struct SidebarView: View {
   
   func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
     currentPrompt.updateProperties(from: newPrompt)
-    
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image
     }

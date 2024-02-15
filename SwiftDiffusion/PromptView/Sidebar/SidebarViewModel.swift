@@ -10,6 +10,39 @@ import SwiftData
 
 class SidebarViewModel: ObservableObject {
   
+  @Published var recentlyGeneratedAndArchivablePrompts: [SidebarItem] = []
+  
+  private func addToRecentlyGeneratedPromptArchivables(_ item: SidebarItem) {
+    recentlyGeneratedAndArchivablePrompts.append(item)
+  }
+  
+  /// Save most recently generated prompt archivable to the sidebar
+  func saveMostRecentArchivablePromptToSidebar(in model: ModelContext) {
+    if let latestGenerated = recentlyGeneratedAndArchivablePrompts.last {
+      model.insert(latestGenerated)
+      saveData(in: model)
+      // Directly remove the last item assuming saveData was successful
+      recentlyGeneratedAndArchivablePrompts.removeLast()
+    }
+  }
+  
+  /// After every new image generation, add potential new prompt archivable to the list
+  @MainActor
+  func addPromptArchivable(currentPrompt: PromptModel, imageUrls: [URL]) {
+    var promptTitle = "My Prompt"
+    if !currentPrompt.positivePrompt.isEmpty {
+      promptTitle = currentPrompt.positivePrompt.prefix(35).appending("…")
+    } else if let selectedModel = currentPrompt.selectedModel {
+      promptTitle = selectedModel.name
+    }
+    
+    let modelDataMapping = ModelDataMapping()
+    let newPromptArchive = modelDataMapping.toArchive(promptModel: currentPrompt)
+    
+    let newSidebarItem = SidebarItem(title: promptTitle, timestamp: Date(), imageUrls: imageUrls, prompt: newPromptArchive)
+    addToRecentlyGeneratedPromptArchivables(newSidebarItem)
+  }
+  
   func saveData(in model: ModelContext) {
     do {
       try model.save()
@@ -37,4 +70,7 @@ class SidebarViewModel: ObservableObject {
     model.insert(newItem)
     saveData(in: model)
   }
+  
+ 
+  
 }
