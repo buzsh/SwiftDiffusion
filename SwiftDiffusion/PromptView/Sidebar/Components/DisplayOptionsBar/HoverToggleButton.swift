@@ -7,11 +7,22 @@
 
 import SwiftUI
 
+// Constants for HoverToggleButton customization
+private struct HoverToggleButtonConstants {
+  static let defaultSymbol: String = "arkit"
+  static let itemWidth: CGFloat = 30.0
+  static let itemHeight: CGFloat = 30.0
+  static let cornerRadius: CGFloat = 10.0
+  static let hoverBackgroundOpacity: CGFloat = 0.2
+  static let nonHoverBackgroundOpacity: CGFloat = 0.0
+  static let paddingLeading: CGFloat = 4.0
+}
+
 struct HoverToggleButton: View {
   @Binding var buttonToggled: Bool
-  var symbol: String = "arkit"
-  let itemWidth: CGFloat = Constants.Layout.SidebarToolbar.itemWidth
-  let itemHeight: CGFloat = Constants.Layout.SidebarToolbar.itemHeight
+  var symbol: String = HoverToggleButtonConstants.defaultSymbol
+  let itemWidth: CGFloat = HoverToggleButtonConstants.itemWidth
+  let itemHeight: CGFloat = HoverToggleButtonConstants.itemHeight
   @State private var isHovering: Bool = false
   
   var body: some View {
@@ -23,14 +34,15 @@ struct HoverToggleButton: View {
     }
     .buttonStyle(BorderlessButtonStyle())
     .frame(width: itemWidth, height: itemHeight)
-    .background(isHovering ? RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.2)) : RoundedRectangle(cornerRadius: 10).fill(Color.clear))
-    .clipShape(RoundedRectangle(cornerRadius: 10))
-    .padding(.leading, 4)
+    .background(isHovering ? RoundedRectangle(cornerRadius: HoverToggleButtonConstants.cornerRadius).fill(Color.gray.opacity(HoverToggleButtonConstants.hoverBackgroundOpacity)) : RoundedRectangle(cornerRadius: HoverToggleButtonConstants.cornerRadius).fill(Color.clear.opacity(HoverToggleButtonConstants.nonHoverBackgroundOpacity)))
+    .clipShape(RoundedRectangle(cornerRadius: HoverToggleButtonConstants.cornerRadius))
+    .padding(.leading, HoverToggleButtonConstants.paddingLeading)
     .onHover { hovering in
       isHovering = hovering
     }
   }
 }
+
 
 #Preview {
   @State var toggle: Bool = true

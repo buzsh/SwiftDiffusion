@@ -402,7 +402,9 @@ struct SidebarView: View {
           updateWorkspaceItemTitle()
         }
       }
+      
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
+      
     }//ZStack
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
