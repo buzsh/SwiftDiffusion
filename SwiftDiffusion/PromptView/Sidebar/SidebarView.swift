@@ -245,8 +245,6 @@ struct SidebarView: View {
           
           Divider()
           
-          
-          
           if filterToolsButtonToggled {
             
             Section(header: Text("Sorting")) {
@@ -455,8 +453,56 @@ struct SidebarView: View {
         .edgesIgnoringSafeArea(.bottom)
         .overlay(
           HStack {
-            Text("Bottom Bar Content")
-              .padding(.leading, 10)
+            Spacer()
+            
+            // Show model name
+            Button(action: {
+              modelNameButtonToggled.toggle()
+            }) {
+              Image(systemName: "arkit")
+                .foregroundColor(modelNameButtonToggled ? .blue : .primary)
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            Spacer()
+            
+            //list.bullet
+            Button(action: {
+              thumbnailButtonToggled.toggle()
+            }) {
+              Image(systemName: "list.bullet")
+                .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            
+            Spacer()
+            
+            // Show thumbnails
+            Button(action: {
+              thumbnailButtonToggled.toggle()
+            }) {
+              Image(systemName: "square.fill.text.grid.1x2")
+                .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            
+            Spacer()
+            
+            // Show enlarged thumbnails
+            if thumbnailButtonToggled {
+              Button(action: {
+                detailedListItemButtonToggled.toggle()
+              }) {
+                Image(systemName: "text.below.photo")
+                  .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+              
+              Spacer()
+            }
           }
         )
     }//ZStack
