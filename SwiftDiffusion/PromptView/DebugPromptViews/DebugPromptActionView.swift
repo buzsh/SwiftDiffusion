@@ -39,6 +39,10 @@ struct DebugPromptActionView: View {
                 }
               }
             }
+            
+            Button("Log isArchived") {
+              Debug.log("PromptModel.isArchived: \(currentPrompt.isArchived)")
+            }
           }
         }
         .padding(.horizontal)

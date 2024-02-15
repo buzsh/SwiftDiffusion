@@ -47,6 +47,12 @@ class ScriptManager: ObservableObject {
     Debug.log("[ScriptManager] updateScriptState: \(state.debugInfo)")
     self.scriptState = state
     
+    if scriptState == .active {
+      Delay.by(3) {
+        self.restoreLaunchBrowserInConfigJson()
+      }
+    }
+    
     if state == .terminated || state == .unableToLocateScript {
       handleUiOnTermination()
       Delay.by(Constants.Delays.secondsBetweenTerminatedAndReadyState) {

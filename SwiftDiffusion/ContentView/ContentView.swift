@@ -156,13 +156,6 @@ struct ContentView: View {
       }
       
       ToolbarItemGroup(placement: .principal) {
-        if !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
-          Button("Save Last Prompt") {
-            sidebarViewModel.saveMostRecentArchivablePromptToSidebar(in: modelContext)
-          }
-          .buttonStyle(BorderBackgroundButtonStyle())
-        }
-        
         /*
         Button("Add to Queue") {
           Debug.log("Add to queue")

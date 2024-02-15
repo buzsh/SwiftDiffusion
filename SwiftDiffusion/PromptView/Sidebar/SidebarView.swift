@@ -48,7 +48,6 @@ struct SidebarView: View {
   @State private var draftTitle: String = ""
   
   @State private var showDeletionAlert: Bool = false
-  @State private var itemToDelete: SidebarItem?
   
   @State private var sortingOrder: SortingOrder = .mostRecent
   
@@ -96,13 +95,15 @@ struct SidebarView: View {
     sidebarViewModel.saveData(in: modelContext)
   }
   
+  /*
   private func promptForDeletion(item: SidebarItem) {
-    itemToDelete = item
+    sidebarViewModel.itemToDelete = item
     showDeletionAlert = true
   }
+   */
   
   private func deleteItem() {
-    guard let itemToDelete = itemToDelete,
+    guard let itemToDelete = sidebarViewModel.itemToDelete,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
     modelContext.delete(sidebarItems[index])
     do {
@@ -112,7 +113,7 @@ struct SidebarView: View {
     }
     let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
     updateSelection(to: nextSelectionIndex)
-    self.itemToDelete = nil
+    sidebarViewModel.itemToDelete = nil
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
@@ -136,6 +137,7 @@ struct SidebarView: View {
   
   func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
     currentPrompt.updateProperties(from: newPrompt)
+    
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image
     }
@@ -398,6 +400,11 @@ struct SidebarView: View {
           }
         }
       }
+      .onChange(of: sidebarViewModel.itemToDelete) {
+        if sidebarViewModel.itemToDelete != nil {
+          showDeletionAlert = true
+        }
+      }
       .alert(isPresented: $showDeletionAlert) {
         Alert(
           title: Text("Are you sure you want to delete this item?"),
@@ -405,7 +412,7 @@ struct SidebarView: View {
             self.deleteItem()
           },
           secondaryButton: .cancel() {
-            self.itemToDelete = nil
+            sidebarViewModel.itemToDelete = nil
           }
         )
       }
@@ -415,24 +422,13 @@ struct SidebarView: View {
         if let newItemID = newItemID,
            let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
           Debug.log("onChange selectItem: \(selectedItem.title)")
+          sidebarViewModel.selectedSidebarItem = selectedItem
           selectedItemName = selectedItem.title
           let modelDataMapping = ModelDataMapping()
           if let appPromptModel = selectedItem.prompt {
             let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
-        }
-      }
-      .onAppear {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-          if event.keyCode == KeyCodes.deleteKey.code {
-            if self.editingItemId == nil,
-               let selectedItemID = self.selectedItemID,
-               let itemToDelete = self.sidebarItems.first(where: { $0.id == selectedItemID }) {
-              self.promptForDeletion(item: itemToDelete)
-            }
-          }
-          return event
         }
       }
     }
