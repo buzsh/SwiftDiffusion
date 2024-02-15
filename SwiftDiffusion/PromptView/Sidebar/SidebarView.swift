@@ -159,269 +159,281 @@ struct SidebarView: View {
   }
   
   var body: some View {
-    Divider()
     
-    HStack(spacing: 0) {
+    if sortedAndFilteredItems.isEmpty {
       Spacer()
       
-      // Show model name
-      Button(action: {
-        modelNameButtonToggled.toggle()
-      }) {
-        Image(systemName: "arkit")
-          .foregroundColor(modelNameButtonToggled ? .blue : .primary)
+      HStack(alignment: .center) {
+        Text("Saved prompts will appear here!")
+          .foregroundStyle(Color.secondary)
+          .multilineTextAlignment(.center)
       }
-      .buttonStyle(BorderlessButtonStyle())
-      .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
       Spacer()
       
-      // Show thumbnails
-      Button(action: {
-        thumbnailButtonToggled.toggle()
-      }) {
-        Image(systemName: "square.fill.text.grid.1x2")
-          .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
-      }
-      .buttonStyle(BorderlessButtonStyle())
-      .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+    } else {
       
-      Spacer()
-      
-      // Show enlarged thumbnails
-      if thumbnailButtonToggled {
+      Divider()
+      HStack(spacing: 0) {
+        Spacer()
+        
+        // Show model name
         Button(action: {
-          detailedListItemButtonToggled.toggle()
+          modelNameButtonToggled.toggle()
         }) {
-          Image(systemName: "text.below.photo")
-            .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
+          Image(systemName: "arkit")
+            .foregroundColor(modelNameButtonToggled ? .blue : .primary)
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+        Spacer()
+        
+        // Show thumbnails
+        Button(action: {
+          thumbnailButtonToggled.toggle()
+        }) {
+          Image(systemName: "square.fill.text.grid.1x2")
+            .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
         }
         .buttonStyle(BorderlessButtonStyle())
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
         
         Spacer()
         
-        Button(action: {
-          createdDateButtonToggled.toggle()
-          sortingOrder = createdDateButtonToggled ? .mostRecent : .leastRecent
-        }) {
-          Image(systemName: "calendar")
-            .foregroundColor(createdDateButtonToggled ? .blue : .primary)
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-
-        Spacer()
-        
-        Button(action: {
-          filterToolsButtonToggled.toggle()
-        }) {
-          Image(systemName: "line.3.horizontal.decrease.circle")
-            .foregroundColor(filterToolsButtonToggled ? .blue : .primary)
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-        
-        Spacer()
-      }
-    }
-    .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
-    
-    Divider()
-    
-    List(selection: $selectedItemID) {
-      
-      if filterToolsButtonToggled {
-        
-        Section(header: Text("Sorting")) {
-          Menu(sortingOrder.rawValue) {
-            Button("Most Recent") {
-              sortingOrder = .mostRecent
-            }
-            Button("Least Recent") {
-              sortingOrder = .leastRecent
-            }
+        // Show enlarged thumbnails
+        if thumbnailButtonToggled {
+          Button(action: {
+            detailedListItemButtonToggled.toggle()
+          }) {
+            Image(systemName: "text.below.photo")
+              .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
           }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+          
+          Spacer()
+          
+          Button(action: {
+            createdDateButtonToggled.toggle()
+            sortingOrder = createdDateButtonToggled ? .mostRecent : .leastRecent
+          }) {
+            Image(systemName: "calendar")
+              .foregroundColor(createdDateButtonToggled ? .blue : .primary)
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+          
+          Spacer()
+          
+          Button(action: {
+            filterToolsButtonToggled.toggle()
+          }) {
+            Image(systemName: "line.3.horizontal.decrease.circle")
+              .foregroundColor(filterToolsButtonToggled ? .blue : .primary)
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+          
+          Spacer()
         }
+      }
+      .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
+      
+      Divider()
+      
+      List(selection: $selectedItemID) {
         
-        Section(header: Text("Filters")) {
-          Menu(selectedModelName ?? "Filter by Model") {
-            Button("Show All") {
-              selectedModelName = nil
-            }
-            Divider()
-            ForEach(uniqueModelNames, id: \.self) { modelName in
-              Button(modelName) {
-                selectedModelName = modelName
+        if filterToolsButtonToggled {
+          
+          Section(header: Text("Sorting")) {
+            Menu(sortingOrder.rawValue) {
+              Button("Most Recent") {
+                sortingOrder = .mostRecent
+              }
+              Button("Least Recent") {
+                sortingOrder = .leastRecent
               }
             }
           }
-        }
-      }
-      
-      /*
-       Section(header: Text("Unsaved")) {
-       Text("New Prompt")
-       }
-       */
-      /*
-      Section(header: Text("Folders")) {
-        ForEach(sidebarFolders) { folder in
-          HStack {
-            Image(systemName: "folder")
-            Text(folder.name)
-          }
-        }
-      }
-       */
-      Section(header: Text("Uncategorized")) {
-        ForEach(sortedAndFilteredItems) { item in
           
-          if detailedListItemButtonToggled {
-            
-            if thumbnailButtonToggled {
-              // Conditional based on image select
-              if let lastImageUrl = item.imageUrls.last {
-                AsyncImage(url: lastImageUrl) { image in
-                  image
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shadow(color: .black, radius: 1, x: 0, y: 1)
-                } placeholder: {
-                  ProgressView()
+          Section(header: Text("Filters")) {
+            Menu(selectedModelName ?? "Filter by Model") {
+              Button("Show All") {
+                selectedModelName = nil
+              }
+              Divider()
+              ForEach(uniqueModelNames, id: \.self) { modelName in
+                Button(modelName) {
+                  selectedModelName = modelName
                 }
               }
             }
+          }
+        }
+        
+        /*
+         Section(header: Text("Unsaved")) {
+         Text("New Prompt")
+         }
+         */
+        /*
+         Section(header: Text("Folders")) {
+         ForEach(sidebarFolders) { folder in
+         HStack {
+         Image(systemName: "folder")
+         Text(folder.name)
+         }
+         }
+         }
+         */
+        Section(header: Text("Uncategorized")) {
+          ForEach(sortedAndFilteredItems) { item in
             
-            VStack(alignment: .leading) {
-              Text(item.title)
-              // Show this if arkit selected
-              if modelNameButtonToggled {
-                if let prompt = item.prompt {
-                  if let modelName = prompt.selectedModel?.name {
-                    Text(modelName)
-                      .font(.system(size: 10, weight: .light, design: .rounded))
-                      .foregroundStyle(Color.secondary)
+            if detailedListItemButtonToggled {
+              
+              if thumbnailButtonToggled {
+                // Conditional based on image select
+                if let lastImageUrl = item.imageUrls.last {
+                  AsyncImage(url: lastImageUrl) { image in
+                    image
+                      .resizable()
+                      .scaledToFit()
+                      .clipShape(RoundedRectangle(cornerRadius: 12))
+                      .shadow(color: .black, radius: 1, x: 0, y: 1)
+                  } placeholder: {
+                    ProgressView()
                   }
                 }
               }
-            }
-            .padding(.bottom, 12)
-            .padding(.top, detailedListItemButtonToggled ? 12 : 0)
-            
-          } else {
-            
-            if editingItemId == item.id {
-              HStack {
-                TextField("Title", text: $draftTitle, onCommit: {
-                  saveEditedTitle(item.id, draftTitle)
-                  editingItemId = nil
-                  selectedItemID = item.id
-                })
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-              }
-              .onAppear {
-                draftTitle = item.title
-              }
-              .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
-              .cornerRadius(5)
-            } else {
-              HStack {
-                if thumbnailButtonToggled {
-                  // Conditional based on image select
-                  if let lastImageUrl = item.imageUrls.last {
-                    AsyncImage(url: lastImageUrl) { image in
-                      image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 50)
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                        .shadow(color: .black, radius: 1, x: 0, y: 1)
-                    } placeholder: {
-                      ProgressView()
+              
+              VStack(alignment: .leading) {
+                Text(item.title)
+                // Show this if arkit selected
+                if modelNameButtonToggled {
+                  if let prompt = item.prompt {
+                    if let modelName = prompt.selectedModel?.name {
+                      Text(modelName)
+                        .font(.system(size: 10, weight: .light, design: .rounded))
+                        .foregroundStyle(Color.secondary)
                     }
                   }
                 }
-                
-                VStack(alignment: .leading) {
-                  Text(item.title)
-                  // Show this if arkit selected
-                  if modelNameButtonToggled {
-                    if let prompt = item.prompt {
-                      if let modelName = prompt.selectedModel?.name {
-                        Text(modelName)
-                          .font(.system(size: 10, weight: .light, design: .rounded))
-                          .foregroundStyle(Color.secondary)
+              }
+              .padding(.bottom, 12)
+              .padding(.top, detailedListItemButtonToggled ? 12 : 0)
+              
+            } else {
+              
+              if editingItemId == item.id {
+                HStack {
+                  TextField("Title", text: $draftTitle, onCommit: {
+                    saveEditedTitle(item.id, draftTitle)
+                    editingItemId = nil
+                    selectedItemID = item.id
+                  })
+                  .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                .onAppear {
+                  draftTitle = item.title
+                }
+                .background(editingItemId == item.id ? Color.blue.opacity(0.2) : Color.clear)
+                .cornerRadius(5)
+              } else {
+                HStack {
+                  if thumbnailButtonToggled {
+                    // Conditional based on image select
+                    if let lastImageUrl = item.imageUrls.last {
+                      AsyncImage(url: lastImageUrl) { image in
+                        image
+                          .resizable()
+                          .aspectRatio(contentMode: .fill) // Fill the frame, maintaining aspect ratio
+                          .frame(width: 40, height: 50) // Set fixed frame size
+                          .clipped() // Ensure image does not extend beyond the frame
+                          .clipShape(RoundedRectangle(cornerRadius: 4))
+                          .shadow(color: .black, radius: 1, x: 0, y: 1)
+                      } placeholder: {
+                        ProgressView()
+                      }
+                    }
+                  }
+                  
+                  VStack(alignment: .leading) {
+                    Text(item.title)
+                    // Show this if arkit selected
+                    if modelNameButtonToggled {
+                      if let prompt = item.prompt {
+                        if let modelName = prompt.selectedModel?.name {
+                          Text(modelName)
+                            .font(.system(size: 10, weight: .light, design: .rounded))
+                            .foregroundStyle(Color.secondary)
+                        }
                       }
                     }
                   }
                 }
-              }
-              .tag(item.id)
-              .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
-              .gesture(TapGesture(count: 1).onEnded {
-                if editingItemId == nil {
-                  if selectedItemID == item.id {
-                    // The item is already selected, enter edit mode
+                .tag(item.id)
+                .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
+                .gesture(TapGesture(count: 1).onEnded {
+                  if editingItemId == nil {
+                    if selectedItemID == item.id {
+                      // The item is already selected, enter edit mode
+                      editingItemId = item.id
+                      draftTitle = item.title
+                      selectedItemID = nil
+                    } else {
+                      // The item is not selected, select it
+                      selectedItemID = item.id
+                    }
+                  }
+                }.simultaneously(with: TapGesture(count: 2).onEnded {
+                  // This block ensures that double-tap has priority over single-tap
+                  // Prevent double-tap from affecting selection if already editing
+                  if editingItemId == nil {
+                    selectedItemID = nil // Clear selection here to enter edit mode
                     editingItemId = item.id
                     draftTitle = item.title
-                    selectedItemID = nil
-                  } else {
-                    // The item is not selected, select it
-                    selectedItemID = item.id
                   }
-                }
-              }.simultaneously(with: TapGesture(count: 2).onEnded {
-                // This block ensures that double-tap has priority over single-tap
-                // Prevent double-tap from affecting selection if already editing
-                if editingItemId == nil {
-                  selectedItemID = nil // Clear selection here to enter edit mode
-                  editingItemId = item.id
-                  draftTitle = item.title
-                }
-              }))
+                }))
+              }
             }
           }
         }
       }
-      
-      Spacer()
-    }
-    .alert(isPresented: $showDeletionAlert) {
-      Alert(
-        title: Text("Are you sure you want to delete this item?"),
-        primaryButton: .destructive(Text("Delete")) {
-          self.deleteItem()
-        },
-        secondaryButton: .cancel() {
-          self.itemToDelete = nil
-        }
-      )
-    }
-    .listStyle(SidebarListStyle())
-    .onChange(of: selectedItemID) { currentItem, newItemID in
-      Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
-      if let newItemID = newItemID,
-         let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-        Debug.log("onChange selectItem: \(selectedItem.title)")
-        selectedItemName = selectedItem.title
-        let modelDataMapping = ModelDataMapping()
-        if let appPromptModel = selectedItem.prompt {
-          let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
-          updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
-        }
+      .alert(isPresented: $showDeletionAlert) {
+        Alert(
+          title: Text("Are you sure you want to delete this item?"),
+          primaryButton: .destructive(Text("Delete")) {
+            self.deleteItem()
+          },
+          secondaryButton: .cancel() {
+            self.itemToDelete = nil
+          }
+        )
       }
-    }
-    .onAppear {
-      NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-        if event.keyCode == KeyCodes.deleteKey.code {
-          if self.editingItemId == nil,
-             let selectedItemID = self.selectedItemID,
-             let itemToDelete = self.sidebarItems.first(where: { $0.id == selectedItemID }) {
-            self.promptForDeletion(item: itemToDelete)
+      .listStyle(SidebarListStyle())
+      .onChange(of: selectedItemID) { currentItem, newItemID in
+        Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
+        if let newItemID = newItemID,
+           let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
+          Debug.log("onChange selectItem: \(selectedItem.title)")
+          selectedItemName = selectedItem.title
+          let modelDataMapping = ModelDataMapping()
+          if let appPromptModel = selectedItem.prompt {
+            let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
+            updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }
-        return event
+      }
+      .onAppear {
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+          if event.keyCode == KeyCodes.deleteKey.code {
+            if self.editingItemId == nil,
+               let selectedItemID = self.selectedItemID,
+               let itemToDelete = self.sidebarItems.first(where: { $0.id == selectedItemID }) {
+              self.promptForDeletion(item: itemToDelete)
+            }
+          }
+          return event
+        }
       }
     }
     /*
