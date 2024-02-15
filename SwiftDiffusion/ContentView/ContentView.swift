@@ -45,7 +45,6 @@ struct ContentView: View {
   
   // TabView
   @State private var selectedView: ViewManager = .prompt
-  
   @State private var hasLaunchedPythonEnvironmentOnFirstAppearance = false
   
   // Detail
@@ -239,6 +238,9 @@ struct ContentView: View {
     .onChange(of: scriptManager.genStatus) {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
+        
+        sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
+        
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
         
@@ -249,7 +251,12 @@ struct ContentView: View {
   
   func imagesDidGenerateSuccessfully() {
     NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
-    sidebarViewModel.addPromptArchivable(currentPrompt: currentPrompt, imageUrls: lastSavedImageUrls)
+    
+    if let savableSidebarItem = sidebarViewModel.sidebarItemCurrentlyGeneratingOut {
+      sidebarViewModel.prepareGeneratedPromptForSaving(sideBarItem: savableSidebarItem, imageUrls: lastSavedImageUrls)
+    }
+    
+    sidebarViewModel.sidebarItemCurrentlyGeneratingOut = nil
     
     Task {
       await fileHierarchy.refresh()

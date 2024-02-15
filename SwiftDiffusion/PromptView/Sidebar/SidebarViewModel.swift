@@ -16,8 +16,16 @@ class SidebarViewModel: ObservableObject {
   @Published var itemToDelete: SidebarItem? = nil
   
   @Published var allSidebarItems: [SidebarItem] = []
-  @Published var workspaceItems: [SidebarItem] = []
   @Published var savedItems: [SidebarItem] = []
+  @Published var workspaceItems: [SidebarItem] = []
+  
+  @Published var savableSidebarItems: [SidebarItem] = []
+  @Published var itemToSave: SidebarItem? = nil
+  
+  
+  @Published var blankNewPromptItem: SidebarItem? = nil
+  
+  @Published var sidebarItemCurrentlyGeneratingOut: SidebarItem? = nil
   
   var blankNewPromptExists: Bool {
     workspaceItems.contains { $0.title == "New Prompt" }
@@ -30,6 +38,30 @@ class SidebarViewModel: ObservableObject {
   func queueSelectedSidebarItemForDeletion() {
     itemToDelete = selectedSidebarItem
   }
+  
+  func queueSelectedSidebarItemForSaving() {
+    if let queuedItem = selectedSidebarItem {
+      itemToSave = queuedItem
+      removeSidebarItemFromSavableQueue(sidebarItem: queuedItem)
+    }
+  }
+  
+  private func removeSidebarItemFromSavableQueue(sidebarItem: SidebarItem) {
+    if savableSidebarItems.contains(where: { $0.id == sidebarItem.id }) {
+      savableSidebarItems.removeAll { $0.id == sidebarItem.id }
+    }
+  }
+  
+  func prepareGeneratedPromptForSaving(sideBarItem: SidebarItem, imageUrls: [URL]) {
+    sideBarItem.imageUrls = imageUrls
+    savableSidebarItems.append(sideBarItem)
+  }
+  
+  /*
+  func queueGeneratedPromptForSaving(sideBarItem: SidebarItem, imageUrls: [URL]) {
+    sideBarItem.imageUrls = imageUrls
+    savableSidebarItems.append(sideBarItem)
+  }*/
   
   /// Save most recently generated prompt archivable to the sidebar
   func saveMostRecentArchivablePromptToSidebar(in model: ModelContext) {
@@ -56,6 +88,13 @@ class SidebarViewModel: ObservableObject {
     
     let newSidebarItem = SidebarItem(title: promptTitle, timestamp: Date(), imageUrls: imageUrls, prompt: newPromptArchive)
     addToRecentlyGeneratedPromptArchivables(newSidebarItem)
+  }
+  
+  
+  
+  func moveGeneratedItemFromWorkspace(sidebarItem: SidebarItem) {
+    sidebarItem.prompt?.isWorkspaceItem = false
+    removeSidebarItemFromSavableQueue(sidebarItem: sidebarItem)
   }
   
   func saveSidebarItem(_ sidebarItem: SidebarItem, in model: ModelContext) -> SidebarItem {

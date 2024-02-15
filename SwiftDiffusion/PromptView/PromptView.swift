@@ -97,46 +97,37 @@ struct PromptView: View {
       ScrollView {
         Form {
           
-          if currentPrompt.isArchived || !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
+          //if currentPrompt.isWorkspaceItem && sidebarViewModel.selectedSidebarItem != sidebarViewModel.blankNewPromptItem {
             
+          if !currentPrompt.positivePrompt.isEmpty {
             VStack {
               HStack {
                 
-                if currentPrompt.isArchived {
-                  
-                  Button(action: {
-                    sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                  }) {
-                    Image(systemName: "trash")
-                    Text("Delete Prompt")
+                Button(action: {
+                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
+                }) {
+                  Image(systemName: "trash")
+                  Text(currentPrompt.isWorkspaceItem ? "Close" : "Delete Prompt")
+                }
+                
+                if currentPrompt.isWorkspaceItem {
+                  if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+                     sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+                    Spacer()
+                    Button(action: {
+                      sidebarViewModel.queueSelectedSidebarItemForSaving()
+                    }) {
+                      Image(systemName: "square.and.arrow.down")
+                      Text("Save Generated Prompt")
+                    }
                   }
-                  
-                  Spacer()
-                  /*
-                  Button(action: {
-                    
-                  }) {
-                    Image(systemName: "checkmark")
-                    Text("Update Prompt")
-                  }
-                  */
-                } else if !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
-                  Spacer()
-                  Button(action: {
-                    sidebarViewModel.saveMostRecentArchivablePromptToSidebar(in: modelContext)
-                  }) {
-                    Image(systemName: "square.and.arrow.down")
-                    Text("Save Generated Prompt")
-                  }
-                  
                 }
               }
-              .padding(.top, 16)
-              .padding(.bottom, 10)
-              
-              Divider()
             }
+            .padding(.top, 16)
+            .padding(.bottom, 10)
             
+            Divider()
           }
           
           HStack {

@@ -109,6 +109,17 @@ struct SidebarView: View {
     sidebarViewModel.itemToDelete = nil
   }
   
+  private func moveSavableItemFromWorkspace() {
+    guard let itemToSave = sidebarViewModel.itemToSave else { return }
+    let mapModel = ModelDataMapping()
+    
+    itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
+    itemToSave.timestamp = Date()
+    itemToSave.prompt?.isWorkspaceItem = false
+    selectedItemID = itemToSave.id
+    sidebarViewModel.itemToSave = nil
+  }
+  
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
     if index > 0 {
       return index - 1  // Select the item above if available
@@ -159,25 +170,12 @@ struct SidebarView: View {
   
   var workspaceItems: [SidebarItem] {
     sidebarItems.filter {
-      // Only include items where isWorkspaceItem is true
       $0.prompt?.isWorkspaceItem == true
     }
   }
   
   var body: some View {
     List(selection: $selectedItemID) {
-      
-      if UserSettings.shared.showDeveloperInterface {
-        Section(header: Text("Debug")) {
-          HStack {
-            Button("New Prompt Workspace") {
-              if let newWorkspaceItem = createNewPromptWorkspaceSidebarItemIfNeeded() {
-                Debug.log("New Prompt Workspace with UUID: \(newWorkspaceItem.id)")
-              }
-            }
-          }
-        }
-      }
       
       Section(header: Text("Workspace")) {
         ForEach(workspaceItems) { item in
@@ -399,6 +397,11 @@ struct SidebarView: View {
         }
       }
     }
+    .onChange(of: sidebarViewModel.itemToSave) {
+      if sidebarViewModel.itemToSave != nil {
+        moveSavableItemFromWorkspace()
+      }
+    }
     .onChange(of: sidebarViewModel.itemToDelete) {
       if sidebarViewModel.itemToDelete != nil {
         showDeletionAlert = true
@@ -448,13 +451,15 @@ struct SidebarView: View {
       Debug.log("SidebarView.onChange of: sidebarViewModel.workspaceItems")
     }
     .onChange(of: currentPrompt.positivePrompt) {
-      updateWorkspaceItemTitle()
+      if !currentPrompt.positivePrompt.isEmpty {
+        updateWorkspaceItemTitle()
+      }
     }
   }
   
   func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
     if !sidebarViewModel.blankNewPromptExists {
-      let appPromptModel = AppPromptModel(isWorkspaceItem: true)
+      let appPromptModel = AppPromptModel(isWorkspaceItem: true, selectedModel: nil)
       let imageUrls: [URL] = []
       let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", appPrompt: appPromptModel, imageUrls: imageUrls, in: modelContext)
       return newSidebarItem
@@ -469,7 +474,6 @@ struct SidebarView: View {
       if let newItem = createNewPromptWorkspaceSidebarItemIfNeeded() {
         selectedItemID = newItem.id
       }
-      
     }
   }
   
@@ -486,7 +490,7 @@ struct SidebarView: View {
       // Save the changes.
       sidebarViewModel.saveData(in: modelContext)
       
-      _ = createNewPromptWorkspaceSidebarItemIfNeeded()
+      sidebarViewModel.blankNewPromptItem = createNewPromptWorkspaceSidebarItemIfNeeded()
     }
   }
   

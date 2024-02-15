@@ -20,8 +20,6 @@ struct SwiftDiffusionApp: App {
   var modelContainer: ModelContainer
   
   init() {
-    
-    
     let fileManager = FileManager.default
     guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
       fatalError("Application Support directory not found.")
