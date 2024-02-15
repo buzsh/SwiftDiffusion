@@ -42,7 +42,9 @@ struct SidebarView: View {
   @AppStorage("createdDateButtonToggled") private var createdDateButtonToggled: Bool = true
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
+  @AppStorage("selectedSidebarItemIDString") private var selectedItemIDString: String?
   @State private var selectedItemID: UUID?
+  
   @State private var selectedItemName: String?
   @State private var editingItemId: UUID? = nil
   @State private var draftTitle: String = ""
@@ -155,89 +157,105 @@ struct SidebarView: View {
     }
   }
   
+  var workspaceItems: [SidebarItem] {
+    sidebarItems.filter {
+      // Only include items where isWorkspaceItem is true
+      $0.prompt?.isWorkspaceItem == true
+    }
+  }
+  
   var body: some View {
-    
-    if sortedAndFilteredItems.isEmpty {
-      Spacer()
+    List(selection: $selectedItemID) {
       
-      HStack(alignment: .center) {
-        Text("Saved prompts will appear here!")
-          .foregroundStyle(Color.secondary)
-          .multilineTextAlignment(.center)
-      }
-      Spacer()
-      
-    } else {
-      
-      Divider()
-      HStack(spacing: 0) {
-        Spacer()
-        
-        // Show model name
-        Button(action: {
-          modelNameButtonToggled.toggle()
-        }) {
-          Image(systemName: "arkit")
-            .foregroundColor(modelNameButtonToggled ? .blue : .primary)
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-        Spacer()
-        
-        // Show thumbnails
-        Button(action: {
-          thumbnailButtonToggled.toggle()
-        }) {
-          Image(systemName: "square.fill.text.grid.1x2")
-            .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-        
-        Spacer()
-        
-        // Show enlarged thumbnails
-        if thumbnailButtonToggled {
-          Button(action: {
-            detailedListItemButtonToggled.toggle()
-          }) {
-            Image(systemName: "text.below.photo")
-              .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
+      if UserSettings.shared.showDeveloperInterface {
+        Section(header: Text("Debug")) {
+          HStack {
+            Button("New Prompt Workspace") {
+              if let newWorkspaceItem = createNewPromptWorkspaceSidebarItemIfNeeded() {
+                Debug.log("New Prompt Workspace with UUID: \(newWorkspaceItem.id)")
+              }
+            }
           }
-          .buttonStyle(BorderlessButtonStyle())
-          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-          
-          Spacer()
-          
-          Button(action: {
-            createdDateButtonToggled.toggle()
-            sortingOrder = createdDateButtonToggled ? .mostRecent : .leastRecent
-          }) {
-            Image(systemName: "calendar")
-              .foregroundColor(createdDateButtonToggled ? .blue : .primary)
-          }
-          .buttonStyle(BorderlessButtonStyle())
-          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-          
-          Spacer()
-          
-          Button(action: {
-            filterToolsButtonToggled.toggle()
-          }) {
-            Image(systemName: "line.3.horizontal.decrease.circle")
-              .foregroundColor(filterToolsButtonToggled ? .blue : .primary)
-          }
-          .buttonStyle(BorderlessButtonStyle())
-          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-          
-          Spacer()
         }
       }
-      .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
       
-      Divider()
+      Section(header: Text("Workspace")) {
+        ForEach(workspaceItems) { item in
+          Text(item.title)
+        }
+      }
       
-      List(selection: $selectedItemID) {
+      
+      if sortedAndFilteredItems.isEmpty {
+        Spacer()
+        
+        HStack(alignment: .center) {
+          Text("Saved prompts will appear here!")
+            .foregroundStyle(Color.secondary)
+            .multilineTextAlignment(.center)
+        }
+        Spacer()
+        
+      } else {
+        
+        Divider()
+        
+        HStack(spacing: 0) {
+          Spacer()
+          
+          // Show model name
+          Button(action: {
+            modelNameButtonToggled.toggle()
+          }) {
+            Image(systemName: "arkit")
+              .foregroundColor(modelNameButtonToggled ? .blue : .primary)
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+          Spacer()
+          
+          // Show thumbnails
+          Button(action: {
+            thumbnailButtonToggled.toggle()
+          }) {
+            Image(systemName: "square.fill.text.grid.1x2")
+              .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
+          }
+          .buttonStyle(BorderlessButtonStyle())
+          .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+          
+          Spacer()
+          
+          // Show enlarged thumbnails
+          if thumbnailButtonToggled {
+            Button(action: {
+              detailedListItemButtonToggled.toggle()
+            }) {
+              Image(systemName: "text.below.photo")
+                .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            
+            Spacer()
+            
+            Button(action: {
+              filterToolsButtonToggled.toggle()
+            }) {
+              Image(systemName: "line.3.horizontal.decrease.circle")
+                .foregroundColor(filterToolsButtonToggled ? .blue : .primary)
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            
+            Spacer()
+          }
+        }
+        .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
+        
+        Divider()
+        
+        
         
         if filterToolsButtonToggled {
           
@@ -267,21 +285,6 @@ struct SidebarView: View {
           }
         }
         
-        /*
-         Section(header: Text("Unsaved")) {
-         Text("New Prompt")
-         }
-         */
-        /*
-         Section(header: Text("Folders")) {
-         ForEach(sidebarFolders) { folder in
-         HStack {
-         Image(systemName: "folder")
-         Text(folder.name)
-         }
-         }
-         }
-         */
         Section(header: Text("Uncategorized")) {
           ForEach(sortedAndFilteredItems) { item in
             
@@ -395,62 +398,98 @@ struct SidebarView: View {
           }
         }
       }
-      .onChange(of: sidebarViewModel.itemToDelete) {
-        if sidebarViewModel.itemToDelete != nil {
-          showDeletionAlert = true
+    }
+    .onChange(of: sidebarViewModel.itemToDelete) {
+      if sidebarViewModel.itemToDelete != nil {
+        showDeletionAlert = true
+      }
+    }
+    .alert(isPresented: $showDeletionAlert) {
+      Alert(
+        title: Text("Are you sure you want to delete this item?"),
+        primaryButton: .destructive(Text("Delete")) {
+          self.deleteItem()
+        },
+        secondaryButton: .cancel() {
+          sidebarViewModel.itemToDelete = nil
         }
-      }
-      .alert(isPresented: $showDeletionAlert) {
-        Alert(
-          title: Text("Are you sure you want to delete this item?"),
-          primaryButton: .destructive(Text("Delete")) {
-            self.deleteItem()
-          },
-          secondaryButton: .cancel() {
-            sidebarViewModel.itemToDelete = nil
-          }
-        )
-      }
-      .listStyle(SidebarListStyle())
-      .onChange(of: selectedItemID) { currentItem, newItemID in
-        Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
-        if let newItemID = newItemID,
-           let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-          Debug.log("onChange selectItem: \(selectedItem.title)")
-          sidebarViewModel.selectedSidebarItem = selectedItem
-          selectedItemName = selectedItem.title
-          let modelDataMapping = ModelDataMapping()
-          if let appPromptModel = selectedItem.prompt {
-            let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
-            updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
-          }
-        }
-      }
-      .onAppear {
-        for sidebarItem in sortedAndFilteredItems {
-          if let prompt = sidebarItem.prompt {
-            prompt.isWorkspaceItem = false
-          }
+      )
+    }
+    .listStyle(SidebarListStyle())
+    .onChange(of: selectedItemID) { currentItem, newItemID in
+      Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
+      if let newItemID = newItemID,
+         let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
+        Debug.log("onChange selectItem: \(selectedItem.title)")
+        sidebarViewModel.selectedSidebarItem = selectedItem
+        selectedItemName = selectedItem.title
+        let modelDataMapping = ModelDataMapping()
+        if let appPromptModel = selectedItem.prompt {
+          let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
+          updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
         }
       }
     }
-    /*
-    HStack {
-      Button(action: {
-        newFolderToData(title: "Some Folder")
-      }) {
-        Image(systemName: "folder.badge.plus")
+    .onAppear {
+      ensureNewPromptWorkspaceItemExists()
+      //loadSelectedItemID()
+    }
+    .onChange(of: sidebarItems) {
+      Debug.log("SidebarView.onChange of: sidebarItems")
+      // TODO: Refactor data flow; ie. have List load data from these:
+      sidebarViewModel.allSidebarItems = sidebarItems
+      sidebarViewModel.workspaceItems = workspaceItems
+      sidebarViewModel.savedItems = sortedAndFilteredItems
+      
+      // if New Prompt was deleted, create new prompt
+      ensureNewPromptWorkspaceItemExists()
+    }
+    .onChange(of: sidebarViewModel.workspaceItems) {
+      Debug.log("SidebarView.onChange of: sidebarViewModel.workspaceItems")
+    }
+    .onChange(of: currentPrompt.positivePrompt) {
+      updateWorkspaceItemTitle()
+    }
+  }
+  
+  func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
+    if !sidebarViewModel.blankNewPromptExists {
+      let appPromptModel = AppPromptModel(isWorkspaceItem: true)
+      let imageUrls: [URL] = []
+      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", appPrompt: appPromptModel, imageUrls: imageUrls, in: modelContext)
+      return newSidebarItem
+    }
+    return nil
+  }
+  
+  func ensureNewPromptWorkspaceItemExists() {
+    if workspaceItems.isEmpty {
+      Debug.log("No workspace items. Creating blank new prompt.")
+      
+      if let newItem = createNewPromptWorkspaceSidebarItemIfNeeded() {
+        selectedItemID = newItem.id
       }
       
-      Button(action: {
-        saveCurrentPromptToData()
-      }) {
-        Image(systemName: "plus.bubble")
-      }
     }
-    .frame(height: 30).padding(.bottom, 10)
-     */
   }
+  
+  func updateWorkspaceItemTitle() {
+    // Ensure there's a selected item and the positivePrompt is not empty.
+    guard let selectedItemID = selectedItemID, !currentPrompt.positivePrompt.isEmpty else { return }
+    
+    // Find the selected workspace item in the workspaceItems array.
+    if let index = sidebarViewModel.workspaceItems.firstIndex(where: { $0.id == selectedItemID && $0.prompt?.isWorkspaceItem == true }) {
+      // Use the current positivePrompt directly if it's not empty, applying the character limit if necessary.
+      let newTitle = currentPrompt.positivePrompt
+      sidebarViewModel.workspaceItems[index].title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+      
+      // Save the changes.
+      sidebarViewModel.saveData(in: modelContext)
+      
+      _ = createNewPromptWorkspaceSidebarItemIfNeeded()
+    }
+  }
+  
 }
 
 #Preview {

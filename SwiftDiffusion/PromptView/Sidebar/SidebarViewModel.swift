@@ -15,9 +15,13 @@ class SidebarViewModel: ObservableObject {
   
   @Published var itemToDelete: SidebarItem? = nil
   
-  @Published var workspacePrompts: [SidebarItem] = []
+  @Published var allSidebarItems: [SidebarItem] = []
+  @Published var workspaceItems: [SidebarItem] = []
+  @Published var savedItems: [SidebarItem] = []
   
-  
+  var blankNewPromptExists: Bool {
+    workspaceItems.contains { $0.title == "New Prompt" }
+  }
   
   private func addToRecentlyGeneratedPromptArchivables(_ item: SidebarItem) {
     recentlyGeneratedAndArchivablePrompts.append(item)
@@ -52,6 +56,18 @@ class SidebarViewModel: ObservableObject {
     
     let newSidebarItem = SidebarItem(title: promptTitle, timestamp: Date(), imageUrls: imageUrls, prompt: newPromptArchive)
     addToRecentlyGeneratedPromptArchivables(newSidebarItem)
+  }
+  
+  func saveSidebarItem(_ sidebarItem: SidebarItem, in model: ModelContext) -> SidebarItem {
+    model.insert(sidebarItem)
+    saveData(in: model)
+    return sidebarItem
+  }
+  
+  @MainActor
+  func createSidebarItemAndSaveToData(title: String = "New Prompt", appPrompt: AppPromptModel, imageUrls: [URL], in model: ModelContext) -> SidebarItem {
+    let newSidebarItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: appPrompt)
+    return saveSidebarItem(newSidebarItem, in: model)
   }
   
   func saveData(in model: ModelContext) {
