@@ -39,9 +39,9 @@ struct SidebarView: View {
   @Binding var lastSavedImageUrls: [URL]
   
   @AppStorage("modelNameButtonToggled") private var modelNameButtonToggled: Bool = true
-  @AppStorage("thumbnailButtonToggled") private var thumbnailButtonToggled: Bool = true
-  @AppStorage("detailedListItemButtonToggled") private var detailedListItemButtonToggled: Bool = false
-  @AppStorage("createdDateButtonToggled") private var createdDateButtonToggled: Bool = true
+  @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
+  @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
+  @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @AppStorage("selectedSidebarItemIDString") private var selectedItemIDString: String?
@@ -199,52 +199,6 @@ struct SidebarView: View {
           
         } else {
           
-          Divider()
-          
-          HStack(spacing: 0) {
-            Spacer()
-            
-            // Show model name
-            Button(action: {
-              modelNameButtonToggled.toggle()
-            }) {
-              Image(systemName: "arkit")
-                .foregroundColor(modelNameButtonToggled ? .blue : .primary)
-            }
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-            Spacer()
-            
-            // Show thumbnails
-            Button(action: {
-              thumbnailButtonToggled.toggle()
-            }) {
-              Image(systemName: "square.fill.text.grid.1x2")
-                .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
-            }
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-            
-            Spacer()
-            
-            // Show enlarged thumbnails
-            if thumbnailButtonToggled {
-              Button(action: {
-                detailedListItemButtonToggled.toggle()
-              }) {
-                Image(systemName: "text.below.photo")
-                  .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-              
-              Spacer()
-            }
-          }
-          .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
-          
-          Divider()
-          
           if filterToolsButtonToggled {
             
             Section(header: Text("Sorting")) {
@@ -276,9 +230,9 @@ struct SidebarView: View {
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
               
-              if detailedListItemButtonToggled {
+              if largePreviewsButtonToggled {
                 
-                if thumbnailButtonToggled {
+                if smallPreviewsButtonToggled {
                   // Conditional based on image select
                   if let lastImageUrl = item.imageUrls.last {
                     AsyncImage(url: lastImageUrl) { image in
@@ -307,7 +261,7 @@ struct SidebarView: View {
                   }
                 }
                 .padding(.bottom, 12)
-                .padding(.top, detailedListItemButtonToggled ? 12 : 0)
+                .padding(.top, largePreviewsButtonToggled ? 12 : 0)
                 
               } else {
                 
@@ -327,7 +281,7 @@ struct SidebarView: View {
                   .cornerRadius(5)
                 } else {
                   HStack {
-                    if thumbnailButtonToggled {
+                    if smallPreviewsButtonToggled {
                       // Conditional based on image select
                       if let lastImageUrl = item.imageUrls.last {
                         AsyncImage(url: lastImageUrl) { image in
@@ -359,7 +313,8 @@ struct SidebarView: View {
                     }
                   }
                   .tag(item.id)
-                  .opacity(editingItemId == nil ? 1 : 0.5) // De-emphasize non-editing items
+                  .opacity(editingItemId == nil ? 1 : 0.5)
+                  /*
                   .gesture(TapGesture(count: 1).onEnded {
                     if editingItemId == nil {
                       if selectedItemID == item.id {
@@ -371,12 +326,10 @@ struct SidebarView: View {
                         // The item is not selected, select it
                         selectedItemID = item.id
                       }
-                    }
+                    }*/
                   }.simultaneously(with: TapGesture(count: 2).onEnded {
-                    // This block ensures that double-tap has priority over single-tap
-                    // Prevent double-tap from affecting selection if already editing
                     if editingItemId == nil {
-                      selectedItemID = nil // Clear selection here to enter edit mode
+                      selectedItemID = nil
                       editingItemId = item.id
                       draftTitle = item.title
                     }
@@ -453,8 +406,8 @@ struct SidebarView: View {
         .edgesIgnoringSafeArea(.bottom)
         .overlay(
           HStack {
-            Spacer()
             
+            Spacer()
             // Show model name
             Button(action: {
               modelNameButtonToggled.toggle()
@@ -464,45 +417,59 @@ struct SidebarView: View {
             }
             .buttonStyle(BorderlessButtonStyle())
             .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-            Spacer()
-            
-            //list.bullet
-            Button(action: {
-              thumbnailButtonToggled.toggle()
-            }) {
-              Image(systemName: "list.bullet")
-                .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
-            }
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
             
             Spacer()
             
-            // Show thumbnails
-            Button(action: {
-              thumbnailButtonToggled.toggle()
-            }) {
-              Image(systemName: "square.fill.text.grid.1x2")
-                .foregroundColor(thumbnailButtonToggled ? .blue : .primary)
+            HStack {
+                Button(action: {
+                noPreviewsItemButtonToggled = true
+                smallPreviewsButtonToggled = false
+                largePreviewsButtonToggled = false
+                }) {
+                    Image(systemName: "list.bullet")
+                        .foregroundColor(noPreviewsItemButtonToggled ? .blue : .primary)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+                .background(noPreviewsItemButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+                .cornerRadius(10)
+                
+                Button(action: {
+                  noPreviewsItemButtonToggled = false
+                  smallPreviewsButtonToggled = true
+                  largePreviewsButtonToggled = false
+                }) {
+                    Image(systemName: "square.fill.text.grid.1x2")
+                        .foregroundColor(smallPreviewsButtonToggled ? .blue : .primary)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+                .background(smallPreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+                .cornerRadius(10)
+                
+                Button(action: {
+                  noPreviewsItemButtonToggled = false
+                  smallPreviewsButtonToggled = false
+                  largePreviewsButtonToggled = true
+                }) {
+                    Image(systemName: "text.below.photo")
+                        .foregroundColor(largePreviewsButtonToggled ? .blue : .primary)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+                .background(largePreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
+                .cornerRadius(10)
             }
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            .padding(5) // Add some padding inside the HStack
+            .background(Color.gray.opacity(0.1)) // Semi-transparent background for the whole HStack
+            .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for the HStack
+            .overlay(
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(Color.secondary, lineWidth: 1) // Border for the HStack
+            )
             
             Spacer()
             
-            // Show enlarged thumbnails
-            if thumbnailButtonToggled {
-              Button(action: {
-                detailedListItemButtonToggled.toggle()
-              }) {
-                Image(systemName: "text.below.photo")
-                  .foregroundColor(detailedListItemButtonToggled ? .blue : .primary)
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-              
-              Spacer()
-            }
           }
         )
     }//ZStack
@@ -550,18 +517,11 @@ struct SidebarView: View {
   }
   
   func updateWorkspaceItemTitle() {
-    // Ensure there's a selected item and the positivePrompt is not empty.
     guard let selectedItemID = selectedItemID, !currentPrompt.positivePrompt.isEmpty else { return }
-    
-    // Find the selected workspace item in the workspaceItems array.
     if let index = sidebarViewModel.workspaceItems.firstIndex(where: { $0.id == selectedItemID && $0.prompt?.isWorkspaceItem == true }) {
-      // Use the current positivePrompt directly if it's not empty, applying the character limit if necessary.
       let newTitle = currentPrompt.positivePrompt
       sidebarViewModel.workspaceItems[index].title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
-      
-      // Save the changes.
       sidebarViewModel.saveData(in: modelContext)
-      
       sidebarViewModel.blankNewPromptItem = createNewPromptWorkspaceSidebarItemIfNeeded()
     }
   }
