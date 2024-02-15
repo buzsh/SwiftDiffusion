@@ -62,8 +62,6 @@ struct SidebarView: View {
     Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
   }
   
-  
-  
   func saveEditedTitle(_ id: UUID, _ title: String) {
     if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
       sidebarItems[index].title = title
@@ -94,13 +92,6 @@ struct SidebarView: View {
     modelContext.insert(newFolder)
     sidebarViewModel.saveData(in: modelContext)
   }
-  
-  /*
-  private func promptForDeletion(item: SidebarItem) {
-    sidebarViewModel.itemToDelete = item
-    showDeletionAlert = true
-  }
-   */
   
   private func deleteItem() {
     guard let itemToDelete = sidebarViewModel.itemToDelete,
@@ -144,10 +135,14 @@ struct SidebarView: View {
   }
   
   var filteredItems: [SidebarItem] {
+    let filtered = sidebarItems.filter {
+      let isWorkspaceItem = $0.prompt?.isWorkspaceItem ?? false
+      return !isWorkspaceItem
+    }
     if let selectedModelName = selectedModelName {
-      return sidebarItems.filter { $0.prompt?.selectedModel?.name == selectedModelName }
+      return filtered.filter { $0.prompt?.selectedModel?.name == selectedModelName }
     } else {
-      return sidebarItems
+      return filtered
     }
   }
   
@@ -428,6 +423,13 @@ struct SidebarView: View {
           if let appPromptModel = selectedItem.prompt {
             let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
+          }
+        }
+      }
+      .onAppear {
+        for sidebarItem in sortedAndFilteredItems {
+          if let prompt = sidebarItem.prompt {
+            prompt.isWorkspaceItem = false
           }
         }
       }

@@ -15,6 +15,10 @@ class SidebarViewModel: ObservableObject {
   
   @Published var itemToDelete: SidebarItem? = nil
   
+  @Published var workspacePrompts: [SidebarItem] = []
+  
+  
+  
   private func addToRecentlyGeneratedPromptArchivables(_ item: SidebarItem) {
     recentlyGeneratedAndArchivablePrompts.append(item)
   }
