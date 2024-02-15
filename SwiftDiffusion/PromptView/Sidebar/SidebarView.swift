@@ -432,10 +432,11 @@ struct SidebarView: View {
           updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
         }
       }
+      ensureSelectedSidebarItemForSelectedItemID()
     }
     .onAppear {
       ensureNewPromptWorkspaceItemExists()
-      //loadSelectedItemID()
+      ensureSelectedSidebarItemForSelectedItemID()
     }
     .onChange(of: sidebarItems) {
       Debug.log("SidebarView.onChange of: sidebarItems")
@@ -444,8 +445,8 @@ struct SidebarView: View {
       sidebarViewModel.workspaceItems = workspaceItems
       sidebarViewModel.savedItems = sortedAndFilteredItems
       
-      // if New Prompt was deleted, create new prompt
       ensureNewPromptWorkspaceItemExists()
+      ensureSelectedSidebarItemForSelectedItemID()
     }
     .onChange(of: sidebarViewModel.workspaceItems) {
       Debug.log("SidebarView.onChange of: sidebarViewModel.workspaceItems")
@@ -454,6 +455,18 @@ struct SidebarView: View {
       if !currentPrompt.positivePrompt.isEmpty {
         updateWorkspaceItemTitle()
       }
+    }
+  }
+  
+  private func ensureSelectedSidebarItemForSelectedItemID() {
+    if selectedItemID == nil {
+      selectNewPromptItemIfAvailable()
+    }
+  }
+  
+  private func selectNewPromptItemIfAvailable() {
+    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.prompt?.isWorkspaceItem == true })?.id {
+      selectedItemID = newPromptItemID
     }
   }
   
@@ -471,9 +484,7 @@ struct SidebarView: View {
     if workspaceItems.isEmpty {
       Debug.log("No workspace items. Creating blank new prompt.")
       
-      if let newItem = createNewPromptWorkspaceSidebarItemIfNeeded() {
-        selectedItemID = newItem.id
-      }
+      _ = createNewPromptWorkspaceSidebarItemIfNeeded()
     }
   }
   
