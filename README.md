@@ -3,9 +3,9 @@ SwiftUI stable diffusion implementation using CoreML and Python libraries.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/9d929e4e-f518-4768-9a57-2ecdb7ece63a">
-    <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/611560a8-12fa-4d15-8410-f8273f163625">
-    <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/611560a8-12fa-4d15-8410-f8273f163625">
+    <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/c73dd512-3a74-452b-8944-ce452e0ec2eb">
+    <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/4dec44ea-6b88-4336-86b0-3cdaefc7be9c">
+    <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/4dec44ea-6b88-4336-86b0-3cdaefc7be9c">
   </picture>
   <p>&nbsp;</p>
   <p align="center"><sup><i>Built for your MacOS workflow.</i></sup></p>
@@ -13,6 +13,8 @@ SwiftUI stable diffusion implementation using CoreML and Python libraries.
   <p>&nbsp;</p>
   <p>&nbsp;</p>
 </p>
+
+
 
 <p align="center">
   <picture>
