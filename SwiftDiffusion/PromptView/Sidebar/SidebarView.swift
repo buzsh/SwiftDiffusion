@@ -183,7 +183,14 @@ struct SidebarView: View {
         
         Section(header: Text("Workspace")) {
           ForEach(workspaceItems) { item in
-            Text(item.title)
+            HStack {
+              Text(item.title)
+              
+              if item.title == "New Prompt" {
+                Spacer()
+                Image(systemName: "plus.circle")
+              }
+            }
           }
         }
         
