@@ -39,6 +39,8 @@ struct SidebarView: View {
   @AppStorage("modelNameButtonToggled") private var modelNameButtonToggled: Bool = true
   @AppStorage("thumbnailButtonToggled") private var thumbnailButtonToggled: Bool = true
   @AppStorage("detailedListItemButtonToggled") private var detailedListItemButtonToggled: Bool = false
+  @AppStorage("createdDateButtonToggled") private var createdDateButtonToggled: Bool = true
+  @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
   @State private var selectedItemName: String?
@@ -47,6 +49,21 @@ struct SidebarView: View {
   
   @State private var showDeletionAlert: Bool = false
   @State private var itemToDelete: SidebarItem?
+  
+  @State private var sortingOrder: SortingOrder = .mostRecent
+  
+  enum SortingOrder: String {
+    case mostRecent = "Most Recent"
+    case leastRecent = "Least Recent"
+  }
+  
+  @State private var selectedModelName: String? = nil
+  
+  var uniqueModelNames: [String] {
+    Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
+  }
+  
+  
   
   func saveEditedTitle(_ id: UUID, _ title: String) {
     if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
@@ -125,6 +142,23 @@ struct SidebarView: View {
     }
   }
   
+  var filteredItems: [SidebarItem] {
+    if let selectedModelName = selectedModelName {
+      return sidebarItems.filter { $0.prompt?.selectedModel?.name == selectedModelName }
+    } else {
+      return sidebarItems
+    }
+  }
+  
+  var sortedAndFilteredItems: [SidebarItem] {
+    switch sortingOrder {
+    case .mostRecent:
+      return filteredItems.sorted { $0.timestamp > $1.timestamp }
+    case .leastRecent:
+      return filteredItems.sorted { $0.timestamp < $1.timestamp }
+    }
+  }
+  
   var body: some View {
     Divider()
     
@@ -166,6 +200,29 @@ struct SidebarView: View {
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
         
         Spacer()
+        
+        Button(action: {
+          createdDateButtonToggled.toggle()
+          sortingOrder = createdDateButtonToggled ? .mostRecent : .leastRecent
+        }) {
+          Image(systemName: "calendar")
+            .foregroundColor(createdDateButtonToggled ? .blue : .primary)
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+
+        Spacer()
+        
+        Button(action: {
+          filterToolsButtonToggled.toggle()
+        }) {
+          Image(systemName: "line.3.horizontal.decrease.circle")
+            .foregroundColor(filterToolsButtonToggled ? .blue : .primary)
+        }
+        .buttonStyle(BorderlessButtonStyle())
+        .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+        
+        Spacer()
       }
     }
     .frame(height: Constants.Layout.SidebarToolbar.itemHeight)
@@ -173,11 +230,41 @@ struct SidebarView: View {
     Divider()
     
     List(selection: $selectedItemID) {
+      
+      if filterToolsButtonToggled {
+        
+        Section(header: Text("Sorting")) {
+          Menu(sortingOrder.rawValue) {
+            Button("Most Recent") {
+              sortingOrder = .mostRecent
+            }
+            Button("Least Recent") {
+              sortingOrder = .leastRecent
+            }
+          }
+        }
+        
+        Section(header: Text("Filters")) {
+          Menu(selectedModelName ?? "Filter by Model") {
+            Button("Show All") {
+              selectedModelName = nil
+            }
+            Divider()
+            ForEach(uniqueModelNames, id: \.self) { modelName in
+              Button(modelName) {
+                selectedModelName = modelName
+              }
+            }
+          }
+        }
+      }
+      
       /*
        Section(header: Text("Unsaved")) {
        Text("New Prompt")
        }
        */
+      /*
       Section(header: Text("Folders")) {
         ForEach(sidebarFolders) { folder in
           HStack {
@@ -186,8 +273,9 @@ struct SidebarView: View {
           }
         }
       }
+       */
       Section(header: Text("Uncategorized")) {
-        ForEach(sidebarItems) { item in
+        ForEach(sortedAndFilteredItems) { item in
           
           if detailedListItemButtonToggled {
             
@@ -337,6 +425,7 @@ struct SidebarView: View {
         return event
       }
     }
+    /*
     HStack {
       Button(action: {
         newFolderToData(title: "Some Folder")
@@ -351,6 +440,7 @@ struct SidebarView: View {
       }
     }
     .frame(height: 30).padding(.bottom, 10)
+     */
   }
 }
 

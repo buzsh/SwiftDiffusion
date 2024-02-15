@@ -8,6 +8,18 @@
 import Foundation
 import SwiftData
 
+extension SidebarItem: Equatable {
+  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
+    lhs.id == rhs.id
+  }
+}
+
+extension SidebarFolder: Equatable {
+  static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
+    lhs.name == rhs.name
+  }
+}
+
 @Model
 class SidebarItem: Identifiable {
   @Attribute var id: UUID = UUID()
