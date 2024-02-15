@@ -423,18 +423,6 @@ struct SidebarView: View {
           }
         }
       }
-      .onAppear {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-          if event.keyCode == KeyCodes.deleteKey.code {
-            if self.editingItemId == nil,
-               let selectedItemID = self.selectedItemID,
-               let itemToDelete = self.sidebarItems.first(where: { $0.id == selectedItemID }) {
-              self.promptForDeletion(item: itemToDelete)
-            }
-          }
-          return event
-        }
-      }
     }
     /*
     HStack {
@@ -453,6 +441,7 @@ struct SidebarView: View {
     .frame(height: 30).padding(.bottom, 10)
      */
   }
+  @State private var eventMonitor: Any?
 }
 
 #Preview {
