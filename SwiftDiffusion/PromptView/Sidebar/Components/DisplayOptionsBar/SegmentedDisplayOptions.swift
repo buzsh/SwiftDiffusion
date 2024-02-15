@@ -31,12 +31,12 @@ struct ThemeConstants {
         buttonItemHeight: 25.0,
         buttonCornerRadius: 10.0,
         stackPadding: 5.0,
-        backgroundOpacity: 0.2,
+        backgroundOpacity: 0.1,
         overlayCornerRadius: 15.0,
         overlayStrokeLineWidth: 1.2,
-        overlayStrokeOpacity: 0.8,
+        overlayStrokeOpacity: 1,
         hoverBackgroundOpacity: 0.3,
-        selectedBackgroundOpacity: 0.3,
+        selectedBackgroundOpacity: 0.1,
         nonSelectedHoverBackgroundOpacity: 0.5,
         selectedBackgroundColor: Color.blue,
         nonSelectedHoverBackgroundColor: Color.gray.opacity(0.5),
@@ -61,11 +61,17 @@ struct ThemeConstants {
   }
 }
 
+enum SegmentedSelectedItemStyle {
+  case overlay, outline
+}
+
 struct SegmentedDisplayOptions: View {
   @Binding var noPreviewsItemButtonToggled: Bool
   @Binding var smallPreviewsButtonToggled: Bool
   @Binding var largePreviewsButtonToggled: Bool
   @Environment(\.colorScheme) var colorScheme
+  
+  var selectedItemStyle: SegmentedSelectedItemStyle? = .outline
   
   @State private var isHovering = [false, false, false]
   
@@ -89,6 +95,7 @@ struct SegmentedDisplayOptions: View {
         .buttonStyle(BorderlessButtonStyle())
         .frame(width: constants.buttonItemWidth, height: constants.buttonItemHeight)
         .background(self.backgroundColor(for: index))
+        .overlay(self.selectedItemOverlay(for: index))
         .cornerRadius(constants.buttonCornerRadius)
         .onHover { hovering in
           if !self.isSelected(index: index) {
@@ -139,6 +146,17 @@ struct SegmentedDisplayOptions: View {
     case 1: return smallPreviewsButtonToggled ? .blue : .primary
     case 2: return largePreviewsButtonToggled ? .blue : .primary
     default: return .primary
+    }
+  }
+  
+  private func selectedItemOverlay(for index: Int) -> some View {
+    GeometryReader { geometry in
+      if isSelected(index: index) && selectedItemStyle == .outline {
+        RoundedRectangle(cornerRadius: constants.buttonCornerRadius)
+          .stroke(constants.selectedBackgroundColor, lineWidth: constants.overlayStrokeLineWidth)
+          .opacity(constants.overlayStrokeOpacity)
+          .frame(width: geometry.size.width, height: geometry.size.height)
+      }
     }
   }
 }
