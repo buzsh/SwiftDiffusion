@@ -38,10 +38,10 @@ class MockDataController {
   
   func insertMockData() {
     let context = container.mainContext
-    let appModelItem1 = AppModelItem(name: "DreamShaperXL_v2.0", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let appPromptModel1 = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem1)
+    let appModelItem1 = AppModelItem(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let appPromptModel1 = AppPromptModel(isWorkspaceItem: true, isArchived: true, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem1)
     
-    let appModelItem2 = AppModelItem(name: "Animerge 1.6.2", type: .coreMl, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let appModelItem2 = AppModelItem(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
     let appPromptModel2 = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem2)
     
     let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: appPromptModel1)

@@ -418,56 +418,15 @@ struct SidebarView: View {
             }
             .buttonStyle(BorderlessButtonStyle())
             .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+            .padding(.leading, 4)
             
             Spacer()
             
-            HStack {
-              Button(action: {
-                noPreviewsItemButtonToggled = true
-                smallPreviewsButtonToggled = false
-                largePreviewsButtonToggled = false
-              }) {
-                Image(systemName: "list.bullet")
-                  .foregroundColor(noPreviewsItemButtonToggled ? .blue : .primary)
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-              .background(noPreviewsItemButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-              .cornerRadius(10)
-              
-              Button(action: {
-                noPreviewsItemButtonToggled = false
-                smallPreviewsButtonToggled = true
-                largePreviewsButtonToggled = false
-              }) {
-                Image(systemName: "square.fill.text.grid.1x2")
-                  .foregroundColor(smallPreviewsButtonToggled ? .blue : .primary)
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-              .background(smallPreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-              .cornerRadius(10)
-              
-              Button(action: {
-                noPreviewsItemButtonToggled = false
-                smallPreviewsButtonToggled = false
-                largePreviewsButtonToggled = true
-              }) {
-                Image(systemName: "text.below.photo")
-                  .foregroundColor(largePreviewsButtonToggled ? .blue : .primary)
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
-              .background(largePreviewsButtonToggled ? Color.blue.opacity(0.2) : Color.clear)
-              .cornerRadius(10)
-            }
-            .padding(5) // Add some padding inside the HStack
-            .background(Color.gray.opacity(0.1)) // Semi-transparent background for the whole HStack
-            .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for the HStack
-            .overlay(
-              RoundedRectangle(cornerRadius: 15)
-                .stroke(Color.secondary, lineWidth: 1).opacity(0.7) // Border for the HStack
-            )
+            SegmentedDisplayOptions(
+                noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled,
+                smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
+                largePreviewsButtonToggled: $largePreviewsButtonToggled)
+            .padding(.trailing, 4)
             
             Spacer()
             
