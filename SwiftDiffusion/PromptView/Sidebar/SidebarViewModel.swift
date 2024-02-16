@@ -14,6 +14,7 @@ class SidebarViewModel: ObservableObject {
   @Published var recentlyGeneratedAndArchivablePrompts: [SidebarItem] = []
   
   @Published var itemToDelete: SidebarItem? = nil
+  @Published var workspaceItemToDeleteWithoutPrompt: SidebarItem? = nil
   
   @Published var allSidebarItems: [SidebarItem] = []
   @Published var savedItems: [SidebarItem] = []
@@ -37,6 +38,10 @@ class SidebarViewModel: ObservableObject {
   
   func queueSelectedSidebarItemForDeletion() {
     itemToDelete = selectedSidebarItem
+  }
+  
+  func queueWorkspaceItemForDeletion() {
+    workspaceItemToDeleteWithoutPrompt = selectedSidebarItem
   }
   
   func queueSelectedSidebarItemForSaving() {

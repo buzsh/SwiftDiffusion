@@ -25,7 +25,7 @@ struct PromptView: View {
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   
-  @State private var previousSelectedModel: ModelItem?
+  @State private var previousSelectedModel: ModelItem? = nil
   @State var promptViewHasLoadedInitialModel = false
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
@@ -97,29 +97,49 @@ struct PromptView: View {
       ScrollView {
         Form {
           
-          //if currentPrompt.isWorkspaceItem && sidebarViewModel.selectedSidebarItem != sidebarViewModel.blankNewPromptItem {
-            
           if !currentPrompt.positivePrompt.isEmpty {
             VStack {
               HStack {
                 
-                Button(action: {
-                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                }) {
-                  Image(systemName: "trash")
-                  Text(currentPrompt.isWorkspaceItem ? "Close" : "Delete Prompt")
-                }
+                if currentPrompt.isWorkspaceItem {
+                    
+                    Button(action: {
+                      sidebarViewModel.queueWorkspaceItemForDeletion()
+                    }) {
+                      
+                      Text("Close")
+                    }
+                    
+                    
+                  } else {
+                    
+                    Button(action: {
+                      sidebarViewModel.queueSelectedSidebarItemForDeletion()
+                    }) {
+                      Image(systemName: "trash")
+                      Text("Delete Prompt")
+                    }
+                  }
+
+                
+                Spacer()
                 
                 if currentPrompt.isWorkspaceItem {
                   if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
                      sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
-                    Spacer()
                     Button(action: {
                       sidebarViewModel.queueSelectedSidebarItemForSaving()
                     }) {
                       Image(systemName: "square.and.arrow.down")
                       Text("Save Generated Prompt")
                     }
+                  }
+                } else {
+                  Button(action: {
+                    Debug.log("NO FUNCTIONALITY")//sidebarViewModel.queueSelectedSidebarItemForSaving()
+                  }) {
+                    Image(systemName: "square.and.arrow.down")
+                    Text("Copy to Workspace")
                   }
                 }
               }

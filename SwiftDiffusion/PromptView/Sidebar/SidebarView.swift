@@ -56,6 +56,8 @@ struct SidebarView: View {
   
   @State private var sortingOrder: SortingOrder = .mostRecent
   
+  @State private var lastSelectedSidebarItem: SidebarItem?
+  
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"
@@ -98,6 +100,7 @@ struct SidebarView: View {
     sidebarViewModel.saveData(in: modelContext)
   }
   
+  /*
   private func deleteItem() {
     guard let itemToDelete = sidebarViewModel.itemToDelete,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
@@ -111,6 +114,32 @@ struct SidebarView: View {
     updateSelection(to: nextSelectionIndex)
     sidebarViewModel.itemToDelete = nil
   }
+   */
+  
+  private func deleteSavedItem() {
+    deleteSidebarItem(sidebarViewModel.itemToDelete)
+  }
+  
+  private func deleteWorkspaceItemWithoutPrompt() {
+    deleteSidebarItem(sidebarViewModel.workspaceItemToDeleteWithoutPrompt)
+  }
+  
+  private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {
+    guard let itemToDelete = sidebarItem,
+          let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
+    modelContext.delete(sidebarItems[index])
+    do {
+      try modelContext.save()
+    } catch {
+      Debug.log("Failed to delete item: \(error.localizedDescription)")
+    }
+    let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
+    updateSelection(to: nextSelectionIndex)
+    sidebarViewModel.itemToDelete = nil
+    sidebarViewModel.workspaceItemToDeleteWithoutPrompt = nil
+    
+  }
+  
   
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
@@ -185,13 +214,18 @@ struct SidebarView: View {
           ForEach(workspaceItems) { item in
             HStack {
               Text(item.title)
-              
               if item.title == "New Prompt" {
                 Spacer()
                 Image(systemName: "plus.circle")
               }
             }
           }
+        }
+        .onChange(of: currentPrompt.positivePrompt) {
+          saveChangesToCurrentlySelectedWorkspaceItem()
+        }
+        .onChange(of: currentPrompt.negativePrompt) {
+          saveChangesToCurrentlySelectedWorkspaceItem()
         }
         
         
@@ -301,11 +335,16 @@ struct SidebarView: View {
           showDeletionAlert = true
         }
       }
+      .onChange(of: sidebarViewModel.workspaceItemToDeleteWithoutPrompt) {
+        if sidebarViewModel.workspaceItemToDeleteWithoutPrompt != nil {
+          deleteWorkspaceItemWithoutPrompt()
+        }
+      }
       .alert(isPresented: $showDeletionAlert) {
         Alert(
           title: Text("Are you sure you want to delete this item?"),
           primaryButton: .destructive(Text("Delete")) {
-            self.deleteItem()
+            self.deleteSavedItem()
           },
           secondaryButton: .cancel() {
             sidebarViewModel.itemToDelete = nil
@@ -328,10 +367,6 @@ struct SidebarView: View {
         }
         ensureSelectedSidebarItemForSelectedItemID()
       }
-      .onAppear {
-        ensureNewPromptWorkspaceItemExists()
-        ensureSelectedSidebarItemForSelectedItemID()
-      }
       .onChange(of: sidebarItems) {
         Debug.log("SidebarView.onChange of: sidebarItems")
         // TODO: Refactor data flow; ie. have List load data from these:
@@ -349,6 +384,12 @@ struct SidebarView: View {
         if !currentPrompt.positivePrompt.isEmpty {
           updateWorkspaceItemTitle()
         }
+      }
+      .onAppear {
+        ensureNewPromptWorkspaceItemExists()
+        ensureSelectedSidebarItemForSelectedItemID()
+        
+        saveWorkspaceItemsOnInterval()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -380,7 +421,9 @@ struct SidebarView: View {
   }
   
   func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
-    if !sidebarViewModel.blankNewPromptExists {
+    let listOfBlankNewPrompts = sidebarItems.filter { $0.prompt?.isWorkspaceItem == true && $0.title == "New Prompt" }
+    
+    if listOfBlankNewPrompts.isEmpty {
       let appPromptModel = AppPromptModel(isWorkspaceItem: true, selectedModel: nil)
       let imageUrls: [URL] = []
       let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", appPrompt: appPromptModel, imageUrls: imageUrls, in: modelContext)
@@ -390,20 +433,52 @@ struct SidebarView: View {
   }
   
   func ensureNewPromptWorkspaceItemExists() {
-    if workspaceItems.isEmpty {
-      Debug.log("No workspace items. Creating blank new prompt.")
-      
-      _ = createNewPromptWorkspaceSidebarItemIfNeeded()
+    _ = createNewPromptWorkspaceSidebarItemIfNeeded()
+  }
+  /// Returns the currently selected SidebarItem if has property`.isWorkspaceItem == true`. Else, returns `nil`.
+  var selectedWorkspaceItem: SidebarItem? {
+    if let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true {
+      return workspaceItem
     }
+    return nil
   }
   
   func updateWorkspaceItemTitle() {
-    guard let selectedItemID = selectedItemID, !currentPrompt.positivePrompt.isEmpty else { return }
-    if let index = sidebarViewModel.workspaceItems.firstIndex(where: { $0.id == selectedItemID && $0.prompt?.isWorkspaceItem == true }) {
-      let newTitle = currentPrompt.positivePrompt
-      sidebarViewModel.workspaceItems[index].title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
-      sidebarViewModel.saveData(in: modelContext)
-      sidebarViewModel.blankNewPromptItem = createNewPromptWorkspaceSidebarItemIfNeeded()
+    guard let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true else {
+      return
+    }
+    
+    let newTitle = currentPrompt.positivePrompt
+    workspaceItem.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+    
+    sidebarViewModel.selectedSidebarItem?.title = newTitle
+    
+    ensureNewPromptWorkspaceItemExists()
+  }
+  
+  
+  func saveChangesToWorkspaceItem(for sidebarItem: SidebarItem) {
+    let mapData = ModelDataMapping()
+    let prompt = currentPrompt
+    prompt.isWorkspaceItem = false
+    sidebarItem.prompt = mapData.toArchive(promptModel: currentPrompt)
+  }
+  
+  func saveChangesToCurrentlySelectedWorkspaceItem() {
+    if let selectedItem = selectedWorkspaceItem {
+      saveChangesToWorkspaceItem(for: selectedItem)
+    }
+  }
+  
+  func saveWorkspaceItemsOnInterval() {
+    Delay.repeatEvery(3) {
+      saveChangesToCurrentlySelectedWorkspaceItem()
+    }
+  }
+  /// If the last selected item was a workspace item, save changes made to said workspace item..
+  func saveChangesToLastSelectedWorkplaceItem() {
+    if let workspaceItem = lastSelectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true {
+      saveChangesToWorkspaceItem(for: workspaceItem)
     }
   }
   

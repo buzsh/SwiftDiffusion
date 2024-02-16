@@ -40,8 +40,8 @@ extension PromptModel {
     self.isWorkspaceItem = model.isWorkspaceItem
     self.isArchived = model.isArchived
     
-    if let modelToSelect = selectedModel {
-      self.selectedModel = model.selectedModel
+    if let modelToSelect = model.selectedModel {
+      self.selectedModel = modelToSelect
     }
     
     self.samplingMethod = model.samplingMethod
@@ -63,6 +63,7 @@ extension PromptModel {
     self.clipSkip = model.clipSkip
   }
 }
+
 
 extension PromptModel {
   func copyMetadataToClipboard() {
