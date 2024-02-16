@@ -8,10 +8,11 @@
 import SwiftUI
 import SwiftData
 
+// TODO: REFACTOR DATA FLOW
+
 class SidebarViewModel: ObservableObject {
   
   @Published var selectedSidebarItem: SidebarItem? = nil
-  @Published var recentlyGeneratedAndArchivablePrompts: [SidebarItem] = []
   
   @Published var itemToDelete: SidebarItem? = nil
   @Published var workspaceItemToDeleteWithoutPrompt: SidebarItem? = nil
@@ -23,10 +24,6 @@ class SidebarViewModel: ObservableObject {
   @Published var savableSidebarItems: [SidebarItem] = []
   @Published var itemToSave: SidebarItem? = nil
   @Published var sidebarItemCurrentlyGeneratingOut: SidebarItem? = nil
-  
-  private func addToRecentlyGeneratedPromptArchivables(_ item: SidebarItem) {
-    recentlyGeneratedAndArchivablePrompts.append(item)
-  }
   
   func queueSelectedSidebarItemForDeletion() {
     itemToDelete = selectedSidebarItem

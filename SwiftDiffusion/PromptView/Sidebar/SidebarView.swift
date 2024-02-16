@@ -27,6 +27,8 @@ extension Constants.Layout {
   }
 }
 
+// TODO: REFACTOR DATA FLOW
+
 struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
