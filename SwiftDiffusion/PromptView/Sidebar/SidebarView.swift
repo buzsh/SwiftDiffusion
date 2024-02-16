@@ -111,7 +111,6 @@ struct SidebarView: View {
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
-    
     itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
     itemToSave.isWorkspaceItem = false
