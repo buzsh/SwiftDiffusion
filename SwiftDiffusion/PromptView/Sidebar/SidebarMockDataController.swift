@@ -39,13 +39,13 @@ class MockDataController {
   func insertMockData() {
     let context = container.mainContext
     let storedModelItem1 = StoredModelItem(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let storedPromptModel1 = StoredPromptModel(isWorkspaceItem: true, isArchived: true, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem1)
+    let storedPromptModel1 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem1)
     
     let storedModelItem2 = StoredModelItem(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
     let storedPromptModel2 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem2)
     
-    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: storedPromptModel1)
-    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, prompt: storedPromptModel2)
+    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)
+    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel2)
     
     let sidebarFolder1 = SidebarFolder(name: "Personal", contents: [sidebarItem1, sidebarItem2])
     let sidebarFolder2 = SidebarFolder(name: "Shared", contents: [sidebarItem1, sidebarItem2])

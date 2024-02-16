@@ -37,19 +37,20 @@ class SidebarItem: Identifiable {
   @Attribute var title: String
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]
+  @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], prompt: StoredPromptModel? = nil) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
+    self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
   }
 }
 
 @Model
 class StoredPromptModel {
-  @Attribute var isWorkspaceItem: Bool = false
   @Attribute var isArchived: Bool = true
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
@@ -63,11 +64,9 @@ class StoredPromptModel {
   @Attribute var batchSize: Double = 1
   @Attribute var clipSkip: Double = 1
   @Relationship var selectedModel: StoredModelItem?
-  
-  
-  
-  init(isWorkspaceItem: Bool = false, isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredModelItem? = nil) {
-    self.isWorkspaceItem = isWorkspaceItem
+
+  init(isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredModelItem? = nil) {
+    
     self.isArchived = isArchived
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt

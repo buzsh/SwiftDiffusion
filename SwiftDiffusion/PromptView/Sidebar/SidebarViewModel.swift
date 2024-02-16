@@ -51,16 +51,16 @@ class SidebarViewModel: ObservableObject {
     savableSidebarItems.append(sideBarItem)
   }
   
+  @MainActor
+  func createSidebarItemAndSaveToData(title: String = "New Prompt", storedPrompt: StoredPromptModel, imageUrls: [URL], isWorkspaceItem: Bool, in model: ModelContext) -> SidebarItem {
+    let newSidebarItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, isWorkspaceItem: isWorkspaceItem, prompt: storedPrompt)
+    return saveSidebarItem(newSidebarItem, in: model)
+  }
+  
   func saveSidebarItem(_ sidebarItem: SidebarItem, in model: ModelContext) -> SidebarItem {
     model.insert(sidebarItem)
     saveData(in: model)
     return sidebarItem
-  }
-  
-  @MainActor
-  func createSidebarItemAndSaveToData(title: String = "New Prompt", storedPrompt: StoredPromptModel, imageUrls: [URL], in model: ModelContext) -> SidebarItem {
-    let newSidebarItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: storedPrompt)
-    return saveSidebarItem(newSidebarItem, in: model)
   }
   
   func saveData(in model: ModelContext) {
@@ -71,14 +71,16 @@ class SidebarViewModel: ObservableObject {
     }
   }
   
+  /*
   @MainActor
-  func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL], in model: ModelContext) {
+  func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL], isWorkspaceItem: Bool, in model: ModelContext) {
     let mapModelData = MapModelData()
     let promptData = mapModelData.toArchive(promptModel: prompt)
-    let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
+    let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, isWorkspaceItem: isWorkspaceItem, prompt: promptData)
     Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
     model.insert(newItem)
     saveData(in: model)
   }
+   */
   
 }

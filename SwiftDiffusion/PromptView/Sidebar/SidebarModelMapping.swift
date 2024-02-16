@@ -20,19 +20,15 @@ struct MapModelData {
   
   func mapModelTypeToStoredModelType(_ type: ModelType) -> StoredModelType {
     switch type {
-    case .coreMl:
-      return .coreMl
-    case .python:
-      return .python
+    case .coreMl: return .coreMl
+    case .python: return .python
     }
   }
   
   func mapStoredModelTypeToModelType(_ type: StoredModelType) -> ModelType {
     switch type {
-    case .coreMl:
-      return .coreMl
-    case .python:
-      return .python
+    case .coreMl: return .coreMl
+    case .python: return .python
     }
   }
   
@@ -79,8 +75,7 @@ struct MapModelData {
   @MainActor
   func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
     guard let selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel) else { return nil }
-    return StoredPromptModel(isWorkspaceItem: promptModel.isWorkspaceItem, // workspace item flag
-                          isArchived: true,                             // archive flag
+    return StoredPromptModel(isArchived: true,                             // archive flag
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
@@ -98,7 +93,6 @@ struct MapModelData {
   @MainActor
   func mapStoredPromptModelToPromptModel(_ storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
-    promptModel.isWorkspaceItem = storedPromptModel.isWorkspaceItem
     promptModel.isArchived = storedPromptModel.isArchived
     promptModel.samplingMethod = storedPromptModel.samplingMethod
     promptModel.positivePrompt = storedPromptModel.positivePrompt

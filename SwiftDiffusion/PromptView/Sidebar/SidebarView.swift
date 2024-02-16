@@ -108,14 +108,13 @@ struct SidebarView: View {
     
   }
   
-  
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
     
     itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
-    itemToSave.prompt?.isWorkspaceItem = false
+    itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
   }
@@ -149,7 +148,7 @@ struct SidebarView: View {
   
   var filteredItems: [SidebarItem] {
     let filtered = sidebarItems.filter {
-      let isWorkspaceItem = $0.prompt?.isWorkspaceItem ?? false
+      let isWorkspaceItem = $0.isWorkspaceItem
       return !isWorkspaceItem
     }
     if let selectedModelName = selectedModelName {
@@ -170,7 +169,7 @@ struct SidebarView: View {
   
   var workspaceItems: [SidebarItem] {
     sidebarItems.filter {
-      $0.prompt?.isWorkspaceItem == true
+      $0.isWorkspaceItem == true
     }
   }
   
@@ -234,8 +233,6 @@ struct SidebarView: View {
             Spacer()
           }
         } else {
-          
-          
           
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
@@ -382,18 +379,18 @@ struct SidebarView: View {
   }
   
   private func selectNewPromptItemIfAvailable() {
-    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.prompt?.isWorkspaceItem == true })?.id {
+    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true })?.id {
       selectedItemID = newPromptItemID
     }
   }
   
   func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
-    let listOfBlankNewPrompts = sidebarItems.filter { $0.prompt?.isWorkspaceItem == true && $0.title == "New Prompt" }
+    let listOfBlankNewPrompts = sidebarItems.filter { $0.isWorkspaceItem == true && $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      let storedPromptModel = StoredPromptModel(isWorkspaceItem: true, selectedModel: nil)
+      let storedPromptModel = StoredPromptModel(selectedModel: nil)
       let imageUrls: [URL] = []
-      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, in: modelContext)
+      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: modelContext)
       return newSidebarItem
     }
     return nil
@@ -404,22 +401,21 @@ struct SidebarView: View {
   }
   /// Returns the currently selected SidebarItem if has property`.isWorkspaceItem == true`. Else, returns `nil`.
   var selectedWorkspaceItem: SidebarItem? {
-    if let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true {
-      return workspaceItem
+    if let sidebarItem = sidebarViewModel.selectedSidebarItem, sidebarItem.isWorkspaceItem == true {
+      return sidebarItem
     }
     return nil
   }
   
   func updateWorkspaceItemTitle() {
-    guard let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true else {
+    guard let sidebarItem = sidebarViewModel.selectedSidebarItem, sidebarItem.isWorkspaceItem == true else {
       return
     }
     
     let newTitle = currentPrompt.positivePrompt
-    workspaceItem.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+    sidebarItem.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
     
     sidebarViewModel.selectedSidebarItem?.title = newTitle
-    
     ensureNewPromptWorkspaceItemExists()
   }
   
