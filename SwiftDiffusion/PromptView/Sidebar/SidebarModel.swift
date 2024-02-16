@@ -8,15 +8,26 @@
 import Foundation
 import SwiftData
 
-extension SidebarItem: Equatable {
-  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
-    lhs.id == rhs.id
-  }
-}
-
 extension SidebarFolder: Equatable {
   static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
     lhs.name == rhs.name
+  }
+}
+
+@Model
+class SidebarFolder {
+  @Attribute var name: String
+  @Relationship var contents: [SidebarItem]
+  
+  init(name: String, contents: [SidebarItem] = []) {
+    self.name = name
+    self.contents = contents
+  }
+}
+
+extension SidebarItem: Equatable {
+  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
+    lhs.id == rhs.id
   }
 }
 
@@ -138,26 +149,3 @@ class AppSdModel {
 }
  */
 
-@Model
-class SidebarFolder {
-  @Attribute var name: String
-  @Relationship var contents: [SidebarItem]
-  
-  init(name: String, contents: [SidebarItem] = []) {
-    self.name = name
-    self.contents = contents
-  }
-}
-
-/*
- struct SidebarView: View {
- @Query var folders: [SidebarFolder] // Use the Query property wrapper to fetch folders
- 
- var body: some View {
- List(folders, children: \.contents) { item in
- // Representation of SidebarItem or SidebarFolder
- Text(item.name) // Adjust based on your item or folder properties
- }
- }
- }
- */

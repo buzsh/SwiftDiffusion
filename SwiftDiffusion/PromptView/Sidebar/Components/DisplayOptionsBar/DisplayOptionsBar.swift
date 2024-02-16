@@ -21,15 +21,15 @@ struct DisplayOptionsBar: View {
         HStack {
           
           Spacer()
-          // Show model name
+          
           HoverToggleButton(buttonToggled: $modelNameButtonToggled, symbol: "arkit")
           
           Spacer()
           
           SegmentedDisplayOptions(
-              noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled,
-              smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
-              largePreviewsButtonToggled: $largePreviewsButtonToggled)
+            noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled,
+            smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
+            largePreviewsButtonToggled: $largePreviewsButtonToggled)
           .padding(.trailing, 4)
           
           Spacer()

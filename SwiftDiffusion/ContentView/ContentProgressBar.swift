@@ -12,8 +12,6 @@ struct CustomLinearProgressViewStyle: ProgressViewStyle {
   
   func makeBody(configuration: Configuration) -> some View {
     ProgressView(configuration)
-      //.accentColor(colorScheme == .dark ? .white : .blue)
-      //.background(colorScheme == .dark ? Color.black : Color.gray)
       .shadow(radius: colorScheme == .dark ? 2 : 2)
   }
 }
@@ -29,7 +27,7 @@ struct ContentProgressBar: View {
           .progressViewStyle(CustomLinearProgressViewStyle())
           .frame(minWidth: 75, idealWidth: 120, maxWidth: 120)
         
-          
+        
       } else if launchStatusProgressBarValue < 0 {
         ProgressView(value: launchStatusProgressBarValue)
           .progressViewStyle(CustomLinearProgressViewStyle())
@@ -45,7 +43,7 @@ struct ContentProgressBar: View {
     }
   }
   
-    
+  
 }
 
 #Preview {

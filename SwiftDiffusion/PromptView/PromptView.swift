@@ -97,58 +97,58 @@ struct PromptView: View {
       ScrollView {
         Form {
           
-          if !currentPrompt.positivePrompt.isEmpty {
-            VStack {
-              HStack {
+          VStack {
+            HStack {
+              
+              if currentPrompt.isWorkspaceItem {
                 
-                if currentPrompt.isWorkspaceItem {
-                    
-                    Button(action: {
-                      sidebarViewModel.queueWorkspaceItemForDeletion()
-                    }) {
-                      
-                      Text("Close")
-                    }
-                    
-                    
-                  } else {
-                    
-                    Button(action: {
-                      sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                    }) {
-                      Image(systemName: "trash")
-                      Text("Delete Prompt")
-                    }
-                  }
-
+                Button(action: {
+                  sidebarViewModel.queueWorkspaceItemForDeletion()
+                }) {
+                  
+                  Text("Close")
+                }
                 
-                Spacer()
                 
-                if currentPrompt.isWorkspaceItem {
-                  if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
-                     sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
-                    Button(action: {
-                      sidebarViewModel.queueSelectedSidebarItemForSaving()
-                    }) {
-                      Image(systemName: "square.and.arrow.down")
-                      Text("Save Generated Prompt")
-                    }
-                  }
-                } else {
+              } else {
+                
+                Button(action: {
+                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
+                }) {
+                  Image(systemName: "trash")
+                  Text("Delete Prompt")
+                }
+              }
+              
+              
+              Spacer()
+              
+              if currentPrompt.isWorkspaceItem {
+                if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+                   sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
                   Button(action: {
-                    Debug.log("NO FUNCTIONALITY")//sidebarViewModel.queueSelectedSidebarItemForSaving()
+                    sidebarViewModel.queueSelectedSidebarItemForSaving()
                   }) {
                     Image(systemName: "square.and.arrow.down")
-                    Text("Copy to Workspace")
+                    Text("Save Generated Prompt")
                   }
+                }
+              } else {
+                // TODO: COPY TO WORKSPACE ON DATA REFACTOR
+                Button(action: {
+                  Debug.log("NO FUNCTIONALITY")
+                }) {
+                  Image(systemName: "square.and.arrow.down")
+                  Text("Copy to Workspace")
                 }
               }
             }
-            .padding(.top, 16)
-            .padding(.bottom, 10)
-            
-            Divider()
           }
+          .padding(.top, 16)
+          .padding(.bottom, 10)
+          
+          Divider()
+          //}
           
           HStack {
             // Models Menu
@@ -276,7 +276,7 @@ struct PromptView: View {
           }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
-          // Handle application going to background if needed
+          // handle application going to background
         }//Form
       }//ScrollView
       
