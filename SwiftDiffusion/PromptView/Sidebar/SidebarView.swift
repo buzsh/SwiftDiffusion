@@ -45,7 +45,6 @@ struct SidebarView: View {
   
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
-  //@AppStorage("selectedSidebarItemIDString") private var selectedItemIDString: String?
   @State private var selectedItemID: UUID?
   
   @State private var selectedItemName: String?
@@ -76,20 +75,6 @@ struct SidebarView: View {
   
   func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
     return (currentPrompt, lastSavedImageUrls)
-  }
-  
-  func saveCurrentPromptToData(withTitle title: String) {
-    sidebarViewModel.savePromptToData(title: title, prompt: currentPrompt, imageUrls: lastSavedImageUrls, in: modelContext)
-  }
-  
-  func saveCurrentPromptToData() {
-    var promptTitle = "My Prompt"
-    if !currentPrompt.positivePrompt.isEmpty {
-      promptTitle = currentPrompt.positivePrompt.prefix(35).appending("…")
-    } else if let selectedModel = currentPrompt.selectedModel {
-      promptTitle = selectedModel.name
-    }
-    sidebarViewModel.savePromptToData(title: promptTitle, prompt: currentPrompt, imageUrls: lastSavedImageUrls, in: modelContext)
   }
   
   func newFolderToData(title: String) {
@@ -298,6 +283,7 @@ struct SidebarView: View {
           VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
         }
       }// List
+      .listStyle(SidebarListStyle())
       //.scrollIndicators(.hidden)
       .onChange(of: sidebarViewModel.itemToSave) {
         if sidebarViewModel.itemToSave != nil {
@@ -325,7 +311,7 @@ struct SidebarView: View {
           }
         )
       }
-      .listStyle(SidebarListStyle())
+      
       .onChange(of: selectedItemID) { currentItem, newItemID in
         Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
         if let newItemID = newItemID,
@@ -429,7 +415,6 @@ struct SidebarView: View {
   }
   
 }
-
 
 #Preview {
   SidebarView(
