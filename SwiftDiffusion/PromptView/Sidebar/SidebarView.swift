@@ -56,8 +56,6 @@ struct SidebarView: View {
   
   @State private var sortingOrder: SortingOrder = .mostRecent
   
-  @State private var lastSelectedSidebarItem: SidebarItem?
-  
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"
@@ -99,23 +97,6 @@ struct SidebarView: View {
     modelContext.insert(newFolder)
     sidebarViewModel.saveData(in: modelContext)
   }
-  
-  /*
-  private func deleteItem() {
-    guard let itemToDelete = sidebarViewModel.itemToDelete,
-          let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
-    modelContext.delete(sidebarItems[index])
-    do {
-      try modelContext.save()
-    } catch {
-      Debug.log("Failed to delete item: \(error.localizedDescription)")
-    }
-    let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
-    updateSelection(to: nextSelectionIndex)
-    sidebarViewModel.itemToDelete = nil
-  }
-   */
-  
   private func deleteSavedItem() {
     deleteSidebarItem(sidebarViewModel.itemToDelete)
   }
@@ -221,13 +202,6 @@ struct SidebarView: View {
             }
           }
         }
-        .onChange(of: currentPrompt.positivePrompt) {
-          saveChangesToCurrentlySelectedWorkspaceItem()
-        }
-        .onChange(of: currentPrompt.negativePrompt) {
-          saveChangesToCurrentlySelectedWorkspaceItem()
-        }
-        
         
         if sortedAndFilteredItems.isEmpty {
           Spacer()
@@ -388,8 +362,6 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
-        
-        saveWorkspaceItemsOnInterval()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -454,32 +426,6 @@ struct SidebarView: View {
     sidebarViewModel.selectedSidebarItem?.title = newTitle
     
     ensureNewPromptWorkspaceItemExists()
-  }
-  
-  
-  func saveChangesToWorkspaceItem(for sidebarItem: SidebarItem) {
-    let mapData = ModelDataMapping()
-    let prompt = currentPrompt
-    prompt.isWorkspaceItem = false
-    sidebarItem.prompt = mapData.toArchive(promptModel: currentPrompt)
-  }
-  
-  func saveChangesToCurrentlySelectedWorkspaceItem() {
-    if let selectedItem = selectedWorkspaceItem {
-      saveChangesToWorkspaceItem(for: selectedItem)
-    }
-  }
-  
-  func saveWorkspaceItemsOnInterval() {
-    Delay.repeatEvery(3) {
-      saveChangesToCurrentlySelectedWorkspaceItem()
-    }
-  }
-  /// If the last selected item was a workspace item, save changes made to said workspace item..
-  func saveChangesToLastSelectedWorkplaceItem() {
-    if let workspaceItem = lastSelectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true {
-      saveChangesToWorkspaceItem(for: workspaceItem)
-    }
   }
   
 }

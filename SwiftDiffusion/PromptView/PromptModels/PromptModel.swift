@@ -40,10 +40,7 @@ extension PromptModel {
     self.isWorkspaceItem = model.isWorkspaceItem
     self.isArchived = model.isArchived
     
-    if let modelToSelect = model.selectedModel {
-      self.selectedModel = modelToSelect
-    }
-    
+    self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
     
     self.positivePrompt = model.positivePrompt
