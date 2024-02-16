@@ -74,7 +74,8 @@ struct MapModelData {
   
   @MainActor
   func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
-    guard let selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel) else { return nil }
+    var selectedModel: StoredModelItem?
+    selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel)
     return StoredPromptModel(isArchived: true,                             // archive flag
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
@@ -105,13 +106,7 @@ struct MapModelData {
     promptModel.batchCount = storedPromptModel.batchCount
     promptModel.batchSize = storedPromptModel.batchSize
     promptModel.clipSkip = storedPromptModel.clipSkip
-    
-    if let storedModelItem = storedPromptModel.selectedModel {
-      promptModel.selectedModel = mapStoredModelItemToModelItem(storedModelItem)
-    } else {
-      promptModel.selectedModel = nil
-    }
-    
+    promptModel.selectedModel = mapStoredModelItemToModelItem(storedPromptModel.selectedModel)
     return promptModel
   }
   /*
