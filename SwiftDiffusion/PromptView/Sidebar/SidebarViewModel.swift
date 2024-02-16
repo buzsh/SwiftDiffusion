@@ -58,8 +58,8 @@ class SidebarViewModel: ObservableObject {
   }
   
   @MainActor
-  func createSidebarItemAndSaveToData(title: String = "New Prompt", appPrompt: AppPromptModel, imageUrls: [URL], in model: ModelContext) -> SidebarItem {
-    let newSidebarItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: appPrompt)
+  func createSidebarItemAndSaveToData(title: String = "New Prompt", storedPrompt: StoredPromptModel, imageUrls: [URL], in model: ModelContext) -> SidebarItem {
+    let newSidebarItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: storedPrompt)
     return saveSidebarItem(newSidebarItem, in: model)
   }
   
@@ -73,8 +73,8 @@ class SidebarViewModel: ObservableObject {
   
   @MainActor
   func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL], in model: ModelContext) {
-    let mapping = ModelDataMapping()
-    let promptData = mapping.toArchive(promptModel: prompt)
+    let mapModelData = MapModelData()
+    let promptData = mapModelData.toArchive(promptModel: prompt)
     let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, prompt: promptData)
     Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
     model.insert(newItem)

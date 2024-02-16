@@ -29,7 +29,7 @@ class MockDataController {
   init() {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     do {
-      container = try ModelContainer(for: SidebarItem.self, AppPromptModel.self, AppModelItem.self, SidebarFolder.self, configurations: config)
+      container = try ModelContainer(for: SidebarItem.self, StoredPromptModel.self, StoredModelItem.self, SidebarFolder.self, configurations: config)
       insertMockData()
     } catch {
       fatalError("Failed to initialize the mock ModelContainer: \(error)")
@@ -38,22 +38,22 @@ class MockDataController {
   
   func insertMockData() {
     let context = container.mainContext
-    let appModelItem1 = AppModelItem(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let appPromptModel1 = AppPromptModel(isWorkspaceItem: true, isArchived: true, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem1)
+    let storedModelItem1 = StoredModelItem(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let storedPromptModel1 = StoredPromptModel(isWorkspaceItem: true, isArchived: true, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem1)
     
-    let appModelItem2 = AppModelItem(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let appPromptModel2 = AppPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: appModelItem2)
+    let storedModelItem2 = StoredModelItem(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let storedPromptModel2 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem2)
     
-    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: appPromptModel1)
-    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, prompt: appPromptModel2)
+    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: storedPromptModel1)
+    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, prompt: storedPromptModel2)
     
     let sidebarFolder1 = SidebarFolder(name: "Personal", contents: [sidebarItem1, sidebarItem2])
     let sidebarFolder2 = SidebarFolder(name: "Shared", contents: [sidebarItem1, sidebarItem2])
     
-    context.insert(appModelItem1)
-    context.insert(appModelItem2)
-    context.insert(appPromptModel1)
-    context.insert(appPromptModel2)
+    context.insert(storedModelItem1)
+    context.insert(storedModelItem2)
+    context.insert(storedPromptModel1)
+    context.insert(storedPromptModel2)
     context.insert(sidebarItem1)
     context.insert(sidebarItem2)
     context.insert(sidebarFolder1)

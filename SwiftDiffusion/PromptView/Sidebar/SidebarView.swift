@@ -111,7 +111,7 @@ struct SidebarView: View {
   
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
-    let mapModel = ModelDataMapping()
+    let mapModel = MapModelData()
     
     itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
@@ -321,9 +321,9 @@ struct SidebarView: View {
           Debug.log("onChange selectItem: \(selectedItem.title)")
           sidebarViewModel.selectedSidebarItem = selectedItem
           selectedItemName = selectedItem.title
-          let modelDataMapping = ModelDataMapping()
-          if let appPromptModel = selectedItem.prompt {
-            let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
+          let mapModelData = MapModelData()
+          if let storedPromptModel = selectedItem.prompt {
+            let newPrompt = mapModelData.fromArchive(storedPromptModel: storedPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }
@@ -384,9 +384,9 @@ struct SidebarView: View {
     let listOfBlankNewPrompts = sidebarItems.filter { $0.prompt?.isWorkspaceItem == true && $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      let appPromptModel = AppPromptModel(isWorkspaceItem: true, selectedModel: nil)
+      let storedPromptModel = StoredPromptModel(isWorkspaceItem: true, selectedModel: nil)
       let imageUrls: [URL] = []
-      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", appPrompt: appPromptModel, imageUrls: imageUrls, in: modelContext)
+      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, in: modelContext)
       return newSidebarItem
     }
     return nil
