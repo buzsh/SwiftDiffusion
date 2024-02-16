@@ -335,7 +335,6 @@ struct SidebarView: View {
       }
       .onChange(of: sidebarItems) {
         Debug.log("SidebarView.onChange of: sidebarItems")
-        // TODO: Refactor data flow; ie. have List load data from these:
         sidebarViewModel.allSidebarItems = sidebarItems
         sidebarViewModel.workspaceItems = workspaceItems
         sidebarViewModel.savedItems = sortedAndFilteredItems
@@ -343,13 +342,8 @@ struct SidebarView: View {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
       }
-      .onChange(of: sidebarViewModel.workspaceItems) {
-        Debug.log("SidebarView.onChange of: sidebarViewModel.workspaceItems")
-      }
       .onChange(of: currentPrompt.positivePrompt) {
-        if !currentPrompt.positivePrompt.isEmpty {
-          updateWorkspaceItemTitle()
-        }
+        ensureNewPromptWorkspaceItemExists()
       }
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
@@ -377,46 +371,19 @@ struct SidebarView: View {
       selectNewPromptItemIfAvailable()
     }
   }
-  
+  /// Will select the "New Prompt" item from workspace items.
   private func selectNewPromptItemIfAvailable() {
     if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true })?.id {
       selectedItemID = newPromptItemID
     }
   }
-  
-  func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
-    let listOfBlankNewPrompts = sidebarItems.filter { $0.isWorkspaceItem == true && $0.title == "New Prompt" }
+  /// Creates a "New Prompt" item if the existing one was overwritten.
+  func ensureNewPromptWorkspaceItemExists() {
+    let listOfBlankNewPrompts = workspaceItems.filter { $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      let storedPromptModel = StoredPromptModel(selectedModel: nil)
-      let imageUrls: [URL] = []
-      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: modelContext)
-      return newSidebarItem
+      _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
     }
-    return nil
-  }
-  
-  func ensureNewPromptWorkspaceItemExists() {
-    _ = createNewPromptWorkspaceSidebarItemIfNeeded()
-  }
-  /// Returns the currently selected SidebarItem if has property`.isWorkspaceItem == true`. Else, returns `nil`.
-  var selectedWorkspaceItem: SidebarItem? {
-    if let sidebarItem = sidebarViewModel.selectedSidebarItem, sidebarItem.isWorkspaceItem == true {
-      return sidebarItem
-    }
-    return nil
-  }
-  
-  func updateWorkspaceItemTitle() {
-    guard let sidebarItem = sidebarViewModel.selectedSidebarItem, sidebarItem.isWorkspaceItem == true else {
-      return
-    }
-    
-    let newTitle = currentPrompt.positivePrompt
-    sidebarItem.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
-    
-    sidebarViewModel.selectedSidebarItem?.title = newTitle
-    ensureNewPromptWorkspaceItemExists()
   }
   
 }
@@ -431,27 +398,4 @@ struct SidebarView: View {
   .environmentObject(SidebarViewModel())
   .frame(width: 200)
   .frame(height: 600)
-}
-
-
-
-import SwiftUI
-import AppKit
-
-struct VisualEffectView: NSViewRepresentable {
-  var material: NSVisualEffectView.Material
-  var blendingMode: NSVisualEffectView.BlendingMode
-  
-  func makeNSView(context: Context) -> NSVisualEffectView {
-    let view = NSVisualEffectView()
-    view.material = material
-    view.blendingMode = blendingMode
-    view.state = .active
-    return view
-  }
-  
-  func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-    nsView.material = material
-    nsView.blendingMode = blendingMode
-  }
 }
