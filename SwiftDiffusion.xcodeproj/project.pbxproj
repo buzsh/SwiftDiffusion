@@ -40,6 +40,7 @@
 		296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296AA9EF2B769B2A00CF0658 /* UserSettings.swift */; };
 		29708F8D2B7EB2BE004A95AD /* HoverToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */; };
 		29708F902B7EB632004A95AD /* DisplayOptionsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */; };
+		29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F912B7FBECB004A95AD /* VisualEffectView.swift */; };
 		297196492B7150B5000F7960 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196482B7150B5000F7960 /* ConsoleView.swift */; };
 		2971964C2B715191000F7960 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964B2B715191000F7960 /* Constants.swift */; };
 		297196532B71538C000F7960 /* FilePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196522B71538C000F7960 /* FilePickerService.swift */; };
@@ -133,6 +134,7 @@
 		296AA9EF2B769B2A00CF0658 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverToggleButton.swift; sourceTree = "<group>"; };
 		29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayOptionsBar.swift; sourceTree = "<group>"; };
+		29708F912B7FBECB004A95AD /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		297196482B7150B5000F7960 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
 		2971964B2B715191000F7960 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		297196522B71538C000F7960 /* FilePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerService.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 				29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */,
 				29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */,
 				291635A52B7EAEE200D47EEF /* SegmentedDisplayOptions.swift */,
+				29708F912B7FBECB004A95AD /* VisualEffectView.swift */,
 			);
 			path = DisplayOptionsBar;
 			sourceTree = "<group>";
@@ -696,6 +699,7 @@
 				29B571822B75AE410057DD50 /* PromptRows.swift in Sources */,
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
+				29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
 				2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */,
 				290A34AD2B7C360100963C6E /* SidebarModel.swift in Sources */,
