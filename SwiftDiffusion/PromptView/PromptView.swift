@@ -59,6 +59,10 @@ struct PromptView: View {
     }
   }
   
+  func storeChangesOfSelectedSidebarItem() {
+    sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+  }
+  
   var body: some View {
     HSplitView {
       leftPane
@@ -79,6 +83,45 @@ struct PromptView: View {
           }
         }
       }
+    }
+    .onChange(of: currentPrompt.isWorkspaceItem) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.selectedModel) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.samplingMethod) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.positivePrompt) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.negativePrompt) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.width) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.height) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.cfgScale) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.samplingSteps) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.seed) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.batchCount) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.batchSize) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.clipSkip) {
+      storeChangesOfSelectedSidebarItem()
     }
   }
   
