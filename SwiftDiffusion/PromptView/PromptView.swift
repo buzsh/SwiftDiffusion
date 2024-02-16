@@ -243,8 +243,13 @@ struct PromptView: View {
           .padding(.vertical, Constants.Layout.promptRowPadding)
           .frame(minHeight: 90)
           
-          PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
-          PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
+          VStack {
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+              .onChange(of: currentPrompt.positivePrompt) {
+                sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+              }
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
+          }
             .padding(.bottom, 6)
           
           DimensionSelectionRow(width: $currentPrompt.width, height: $currentPrompt.height)
