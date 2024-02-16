@@ -37,17 +37,19 @@ class SidebarViewModel: ObservableObject {
   
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
-    let mapModelData = MapModelData()
-    let updatedPrompt = mapModelData.toArchive(promptModel: prompt)
-    
-    if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
-      if let newTitle = updatedPrompt?.positivePrompt {
-        selectedSidebarItem?.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      let mapModelData = MapModelData()
+      let updatedPrompt = mapModelData.toArchive(promptModel: prompt)
+      
+      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
+        if let newTitle = updatedPrompt?.positivePrompt {
+          selectedSidebarItem?.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+        }
       }
+      selectedSidebarItem?.prompt = updatedPrompt
+      selectedSidebarItem?.timestamp = Date()
+      saveData(in: model)
     }
-    selectedSidebarItem?.prompt = updatedPrompt
-    selectedSidebarItem?.timestamp = Date()
-    saveData(in: model)
   }
   
   private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
