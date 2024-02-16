@@ -3,9 +3,9 @@ SwiftUI stable diffusion implementation using CoreML and Python libraries.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/c73dd512-3a74-452b-8944-ce452e0ec2eb">
-    <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/4dec44ea-6b88-4336-86b0-3cdaefc7be9c">
-    <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/4dec44ea-6b88-4336-86b0-3cdaefc7be9c">
+    <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7e54164f-b231-4192-9317-c716b2bcdfba">
+    <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
+    <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
   </picture>
   <p>&nbsp;</p>
   <p align="center"><sup><i>Built for your MacOS workflow.</i></sup></p>
@@ -16,20 +16,20 @@ SwiftUI stable diffusion implementation using CoreML and Python libraries.
 
 
 
+
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="dark-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/12210b69-8c1c-4d79-89f1-a78315459012">
-    <source media="(prefers-color-scheme: light)" alt="light-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/0e180d89-9747-4327-ac09-7e21c47489a4">
-    <img alt="light-min" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/0e180d89-9747-4327-ac09-7e21c47489a4">
+    <source media="(prefers-color-scheme: dark)" alt="dark-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8fd96e4a-2ae5-4706-b905-2a3ba07fecd8">
+    <source media="(prefers-color-scheme: light)" alt="light-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/e2a926aa-a9a4-457b-aea8-7dc347189d2f">
+    <img alt="light-min" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/e2a926aa-a9a4-457b-aea8-7dc347189d2f">
   </picture>
   <p>&nbsp;</p>
-  <p align="center"><sup><i>Currently in active development. Bugs are to be expected.</i></sup></p>
+  <p align="center"><sup><i>Currently in active development.</i></sup></p>
   <p>&nbsp;</p>
   <hr />
   <p>&nbsp;</p>
   <p>&nbsp;</p>
 </p>
-
 
 
 
