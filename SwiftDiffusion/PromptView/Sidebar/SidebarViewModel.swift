@@ -10,6 +10,12 @@ import SwiftData
 
 // TODO: REFACTOR DATA FLOW
 
+extension Constants {
+  struct Sidebar {
+    static let itemTitleLength: Int = 45
+  }
+}
+
 class SidebarViewModel: ObservableObject {
   
   @Published var selectedSidebarItem: SidebarItem? = nil
@@ -24,6 +30,32 @@ class SidebarViewModel: ObservableObject {
   @Published var savableSidebarItems: [SidebarItem] = []
   @Published var itemToSave: SidebarItem? = nil
   @Published var sidebarItemCurrentlyGeneratingOut: SidebarItem? = nil
+  
+  func queueChangesToStore(for sidebarItem: SidebarItem, in model: ModelContext) {
+    
+  }
+  
+  @MainActor
+  func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
+    let mapModelData = MapModelData()
+    let updatedPrompt = mapModelData.toArchive(promptModel: prompt)
+    
+    if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
+      if let newTitle = updatedPrompt?.positivePrompt {
+        selectedSidebarItem?.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+      }
+    }
+    selectedSidebarItem?.prompt = updatedPrompt
+    selectedSidebarItem?.timestamp = Date()
+    saveData(in: model)
+  }
+  
+  private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
+    if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
+      return promptTitle.prefix(Constants.Sidebar.itemTitleLength) == sidebarItemTitle.prefix(Constants.Sidebar.itemTitleLength)
+    }
+    return false
+  }
   
   func queueSelectedSidebarItemForDeletion() {
     itemToDelete = selectedSidebarItem
@@ -83,4 +115,16 @@ class SidebarViewModel: ObservableObject {
   }
    */
   
+}
+
+extension SidebarViewModel {
+  @MainActor
+  func createNewPromptSidebarWorkspaceItem(in model: ModelContext) -> SidebarItem? {
+    let mapModelData = MapModelData()
+    let newPrompt = PromptModel()
+    guard let storedPromptModel = mapModelData.toArchive(promptModel: newPrompt) else { return nil }
+    let imageUrls: [URL] = []
+    let newSidebarItem = createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: model)
+    return newSidebarItem
+  }
 }
