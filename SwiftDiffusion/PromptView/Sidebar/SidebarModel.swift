@@ -8,15 +8,26 @@
 import Foundation
 import SwiftData
 
-extension SidebarItem: Equatable {
-  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
-    lhs.id == rhs.id
-  }
-}
-
 extension SidebarFolder: Equatable {
   static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
     lhs.name == rhs.name
+  }
+}
+
+@Model
+class SidebarFolder {
+  @Attribute var name: String
+  @Relationship var contents: [SidebarItem]
+  
+  init(name: String, contents: [SidebarItem] = []) {
+    self.name = name
+    self.contents = contents
+  }
+}
+
+extension SidebarItem: Equatable {
+  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
+    lhs.id == rhs.id
   }
 }
 
@@ -38,6 +49,7 @@ class SidebarItem: Identifiable {
 
 @Model
 class AppPromptModel {
+  @Attribute var isWorkspaceItem: Bool = false
   @Attribute var isArchived: Bool = true
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
@@ -54,7 +66,8 @@ class AppPromptModel {
   
   
   
-  init(isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+  init(isWorkspaceItem: Bool = false, isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
+    self.isWorkspaceItem = isWorkspaceItem
     self.isArchived = isArchived
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
@@ -136,26 +149,3 @@ class AppSdModel {
 }
  */
 
-@Model
-class SidebarFolder {
-  @Attribute var name: String
-  @Relationship var contents: [SidebarItem]
-  
-  init(name: String, contents: [SidebarItem] = []) {
-    self.name = name
-    self.contents = contents
-  }
-}
-
-/*
- struct SidebarView: View {
- @Query var folders: [SidebarFolder] // Use the Query property wrapper to fetch folders
- 
- var body: some View {
- List(folders, children: \.contents) { item in
- // Representation of SidebarItem or SidebarFolder
- Text(item.name) // Adjust based on your item or folder properties
- }
- }
- }
- */

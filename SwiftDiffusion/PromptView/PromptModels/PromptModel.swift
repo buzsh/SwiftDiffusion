@@ -9,6 +9,7 @@ import Combine
 
 @MainActor
 class PromptModel: ObservableObject {
+  @Published var isWorkspaceItem: Bool = true
   @Published var isArchived: Bool = false
   
   @Published var selectedModel: ModelItem?
@@ -36,6 +37,7 @@ extension PromptModel {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
     Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
     
+    self.isWorkspaceItem = model.isWorkspaceItem
     self.isArchived = model.isArchived
     
     self.selectedModel = model.selectedModel
@@ -59,31 +61,6 @@ extension PromptModel {
   }
 }
 
-extension PromptModel {
-  func updatePropertiesFromData(_ model: PromptModel) {
-    Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
-    Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
-    
-    self.selectedModel = model.selectedModel
-    self.samplingMethod = model.samplingMethod
-    
-    self.positivePrompt = model.positivePrompt
-    self.negativePrompt = model.negativePrompt
-    
-    self.width = model.width
-    self.height = model.height
-    
-    self.cfgScale = model.cfgScale
-    self.samplingSteps = model.samplingSteps
-    
-    self.seed = model.seed
-    
-    self.batchCount = model.batchCount
-    self.batchSize = model.batchSize
-    
-    self.clipSkip = model.clipSkip
-  }
-}
 
 extension PromptModel {
   func copyMetadataToClipboard() {

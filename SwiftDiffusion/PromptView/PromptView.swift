@@ -25,7 +25,7 @@ struct PromptView: View {
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   
-  @State private var previousSelectedModel: ModelItem?
+  @State private var previousSelectedModel: ModelItem? = nil
   @State var promptViewHasLoadedInitialModel = false
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
@@ -97,47 +97,58 @@ struct PromptView: View {
       ScrollView {
         Form {
           
-          if currentPrompt.isArchived || !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
-            
-            VStack {
-              HStack {
+          VStack {
+            HStack {
+              
+              if currentPrompt.isWorkspaceItem {
                 
-                if currentPrompt.isArchived {
+                Button(action: {
+                  sidebarViewModel.queueWorkspaceItemForDeletion()
+                }) {
                   
+                  Text("Close")
+                }
+                
+                
+              } else {
+                
+                Button(action: {
+                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
+                }) {
+                  Image(systemName: "trash")
+                  Text("Delete Prompt")
+                }
+              }
+              
+              
+              Spacer()
+              
+              if currentPrompt.isWorkspaceItem {
+                if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+                   sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
                   Button(action: {
-                    sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                  }) {
-                    Image(systemName: "trash")
-                    Text("Delete Prompt")
-                  }
-                  
-                  Spacer()
-                  /*
-                  Button(action: {
-                    
-                  }) {
-                    Image(systemName: "checkmark")
-                    Text("Update Prompt")
-                  }
-                  */
-                } else if !sidebarViewModel.recentlyGeneratedAndArchivablePrompts.isEmpty {
-                  Spacer()
-                  Button(action: {
-                    sidebarViewModel.saveMostRecentArchivablePromptToSidebar(in: modelContext)
+                    sidebarViewModel.queueSelectedSidebarItemForSaving()
                   }) {
                     Image(systemName: "square.and.arrow.down")
                     Text("Save Generated Prompt")
                   }
-                  
+                }
+              } else {
+                // TODO: COPY TO WORKSPACE ON DATA REFACTOR
+                Button(action: {
+                  Debug.log("NO FUNCTIONALITY")
+                }) {
+                  Image(systemName: "square.and.arrow.down")
+                  Text("Copy to Workspace")
                 }
               }
-              .padding(.top, 16)
-              .padding(.bottom, 10)
-              
-              Divider()
             }
-            
           }
+          .padding(.top, 16)
+          .padding(.bottom, 10)
+          
+          Divider()
+          //}
           
           HStack {
             // Models Menu
@@ -265,7 +276,7 @@ struct PromptView: View {
           }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
-          // Handle application going to background if needed
+          // handle application going to background
         }//Form
       }//ScrollView
       

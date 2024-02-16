@@ -43,6 +43,10 @@ struct DebugPromptActionView: View {
             Button("Log isArchived") {
               Debug.log("PromptModel.isArchived: \(currentPrompt.isArchived)")
             }
+            
+            Button("Log isWorkspaceItem") {
+              Debug.log("PromptModel.isWorkspace: \(currentPrompt.isWorkspaceItem)")
+            }
           }
         }
         .padding(.horizontal)

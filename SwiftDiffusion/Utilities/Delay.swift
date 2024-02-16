@@ -14,4 +14,10 @@ struct Delay {
       closure()
     }
   }
+  
+  static func repeatEvery(_ seconds: Double, closure: @escaping () -> Void) {
+    Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { _ in
+      closure()
+    }
+  }
 }
