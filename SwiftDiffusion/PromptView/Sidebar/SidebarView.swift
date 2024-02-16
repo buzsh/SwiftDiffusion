@@ -175,6 +175,37 @@ struct SidebarView: View {
   }
   
   var body: some View {
+    if filterToolsButtonToggled {
+      List {
+        Section(header: Text("Sorting")) {
+          Menu(sortingOrder.rawValue) {
+            Button("Most Recent") {
+              sortingOrder = .mostRecent
+            }
+            Button("Least Recent") {
+              sortingOrder = .leastRecent
+            }
+          }
+        }
+        
+        Section(header: Text("Filters")) {
+          Menu(selectedModelName ?? "Filter by Model") {
+            Button("Show All") {
+              selectedModelName = nil
+            }
+            Divider()
+            ForEach(uniqueModelNames, id: \.self) { modelName in
+              Button(modelName) {
+                selectedModelName = modelName
+              }
+            }
+          }
+        }
+      }.frame(height: 110)
+      Divider()
+        .padding(.horizontal).padding(.bottom, 4)
+    }
+    
     ZStack(alignment: .bottom) {
       List(selection: $selectedItemID) {
         
@@ -191,44 +222,20 @@ struct SidebarView: View {
         }
         
         if sortedAndFilteredItems.isEmpty {
-          Spacer()
-          
-          HStack(alignment: .center) {
-            Text("Saved prompts will appear here!")
-              .foregroundStyle(Color.secondary)
-              .multilineTextAlignment(.center)
+          VStack(alignment: .center) {
+            Spacer(minLength: 100)
+            HStack(alignment: .center) {
+              Spacer()
+              Text("Saved prompts will appear here!")
+                .foregroundStyle(Color.secondary)
+                .multilineTextAlignment(.center)
+              Spacer()
+            }
+            Spacer()
           }
-          Spacer()
-          
         } else {
           
-          if filterToolsButtonToggled {
-            
-            Section(header: Text("Sorting")) {
-              Menu(sortingOrder.rawValue) {
-                Button("Most Recent") {
-                  sortingOrder = .mostRecent
-                }
-                Button("Least Recent") {
-                  sortingOrder = .leastRecent
-                }
-              }
-            }
-            
-            Section(header: Text("Filters")) {
-              Menu(selectedModelName ?? "Filter by Model") {
-                Button("Show All") {
-                  selectedModelName = nil
-                }
-                Divider()
-                ForEach(uniqueModelNames, id: \.self) { modelName in
-                  Button(modelName) {
-                    selectedModelName = modelName
-                  }
-                }
-              }
-            }
-          }
+          
           
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
