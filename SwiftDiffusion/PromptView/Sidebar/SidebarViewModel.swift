@@ -8,8 +8,6 @@
 import SwiftUI
 import SwiftData
 
-// TODO: REFACTOR DATA FLOW
-
 extension Constants {
   struct Sidebar {
     static let itemTitleLength: Int = 45
@@ -31,9 +29,7 @@ class SidebarViewModel: ObservableObject {
   @Published var itemToSave: SidebarItem? = nil
   @Published var sidebarItemCurrentlyGeneratingOut: SidebarItem? = nil
   
-  func queueChangesToStore(for sidebarItem: SidebarItem, in model: ModelContext) {
-    
-  }
+  @Published var newlyCreatedSidebarWorkspaceItemIdToSelect: UUID?
   
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
@@ -104,19 +100,6 @@ class SidebarViewModel: ObservableObject {
       Debug.log("Error saving context: \(error)")
     }
   }
-  
-  /*
-  @MainActor
-  func savePromptToData(title: String, prompt: PromptModel, imageUrls: [URL], isWorkspaceItem: Bool, in model: ModelContext) {
-    let mapModelData = MapModelData()
-    let promptData = mapModelData.toArchive(promptModel: prompt)
-    let newItem = SidebarItem(title: title, timestamp: Date(), imageUrls: imageUrls, isWorkspaceItem: isWorkspaceItem, prompt: promptData)
-    Debug.log("savePromptToData prompt.SdModel: \(String(describing: prompt.selectedModel?.sdModel?.title))")
-    model.insert(newItem)
-    saveData(in: model)
-  }
-   */
-  
 }
 
 extension SidebarViewModel {

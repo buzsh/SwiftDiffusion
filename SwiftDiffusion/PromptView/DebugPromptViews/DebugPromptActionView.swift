@@ -31,6 +31,8 @@ struct DebugPromptActionView: View {
               Text("isWorkspaceItem: false")
             }
             
+            Divider()
+            
             if let timestamp = sidebarViewModel.selectedSidebarItem?.timestamp {
               Text("Created: \(timestamp.description)")
             }
@@ -38,6 +40,7 @@ struct DebugPromptActionView: View {
             Spacer()
             
           }
+          .frame(height: 24)
           
           HStack {
             Button("Log Prompt") {

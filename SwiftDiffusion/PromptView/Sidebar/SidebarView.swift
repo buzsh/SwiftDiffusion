@@ -27,8 +27,6 @@ extension Constants.Layout {
   }
 }
 
-// TODO: REFACTOR DATA FLOW
-
 struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
@@ -172,6 +170,12 @@ struct SidebarView: View {
     }
   }
   
+  var sortedWorkspaceItems: [SidebarItem] {
+    let regularItems = workspaceItems.filter { $0.title != "New Prompt" }
+    let newPromptItems = workspaceItems.filter { $0.title == "New Prompt" }
+    return regularItems + newPromptItems
+  }
+  
   var body: some View {
     if filterToolsButtonToggled {
       List {
@@ -208,12 +212,18 @@ struct SidebarView: View {
       List(selection: $selectedItemID) {
         
         Section(header: Text("Workspace")) {
-          ForEach(workspaceItems) { item in
+          ForEach(sortedWorkspaceItems) { item in
             HStack {
               Text(item.title)
               if item.title == "New Prompt" {
                 Spacer()
                 Image(systemName: "plus.circle")
+              }
+            }
+            .onChange(of: sortedWorkspaceItems) {
+              if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
+                selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
+                sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
               }
             }
           }
@@ -347,6 +357,7 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
+        //setNewPromptSidebarItemOnAppear()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -384,6 +395,14 @@ struct SidebarView: View {
       _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
     }
   }
+  
+  /*
+  func setNewPromptSidebarItemOnAppear() {
+    if let newPromptSidebarItem = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true }) {
+      sidebarViewModel.newPromptModelSidebarItem = newPromptItem
+    }
+  }
+   */
   
 }
 

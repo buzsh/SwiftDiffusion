@@ -143,8 +143,7 @@ struct PromptView: View {
           VStack {
             HStack {
               
-              if currentPrompt.isWorkspaceItem {
-                
+              if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
                 Button(action: {
                   sidebarViewModel.queueWorkspaceItemForDeletion()
                 }) {
@@ -166,7 +165,7 @@ struct PromptView: View {
               
               Spacer()
               
-              if currentPrompt.isWorkspaceItem {
+              if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
                 if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
                    sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
                   Button(action: {
@@ -177,11 +176,17 @@ struct PromptView: View {
                   }
                 }
               } else {
-                // TODO: COPY TO WORKSPACE ON DATA REFACTOR
+                
                 Button(action: {
-                  Debug.log("NO FUNCTIONALITY")
+                  
+                  if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
+                    let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
+                    let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
+                    newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
+                    sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
+                  }
                 }) {
-                  Image(systemName: "square.and.arrow.down")
+                  Image(systemName: "tray.and.arrow.up")
                   Text("Copy to Workspace")
                 }
               }
