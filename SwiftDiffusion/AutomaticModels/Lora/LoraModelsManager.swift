@@ -7,6 +7,18 @@
 
 import Foundation
 
+/* Boilerplat code:
+func someFunction() async {
+  do {
+    try await LoraService.refreshLoras()
+    // Proceed with refreshed data
+  } catch {
+    // Handle errors (e.g., network issues, decoding failures)
+    print("Failed to refresh Loras: \(error)")
+  }
+}
+ */
+
 extension Constants.API.Endpoint {
   static let getLoras = "/sdapi/v1/loras"
   static let postRefreshLoras = "/sdapi/v1/refresh-loras"
@@ -17,12 +29,6 @@ class LoraModelsManager: ObservableObject {
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
   private let scriptManager = ScriptManager.shared
-  
-  func loadInitialModels() {
-    Task {
-      await getLorasFromApi()
-    }
-  }
   
   func startObservingLoraDirectory() {
     guard let loraDirectoryUrl = userSettings.loraDirectoryUrl else { return }
@@ -39,6 +45,33 @@ class LoraModelsManager: ObservableObject {
   
   func stopObservingLoraDirectory() {
     directoryObserver?.stopObserving()
+  }
+}
+
+extension LoraModelsManager {
+  func loadInitialModels() {
+    Task {
+      do {
+        let loras = try await LoraService.fetchLoras()
+        DispatchQueue.main.async {
+          self.loraModels = loras
+        }
+      } catch {
+        Debug.log("Error fetching Loras: \(error.localizedDescription)")
+      }
+    }
+  }
+}
+
+class LoraService {
+  static func fetchLoras() async throws -> [LoraModel] {
+    let data = try await AutomaticApiService.shared.request(endpoint: Constants.API.Endpoint.getLoras)
+    let loras = try JSONDecoder().decode([LoraModel].self, from: data)
+    return loras
+  }
+  
+  static func refreshLoras() async throws {
+    _ = try await AutomaticApiService.shared.request(endpoint: Constants.API.Endpoint.postRefreshLoras, httpMethod: "POST")
   }
 }
 
@@ -96,4 +129,3 @@ extension LoraModelsManager {
     }
   }
 }
-
