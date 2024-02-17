@@ -85,7 +85,7 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings)
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, modelManagerViewModel: modelManagerViewModel, loraModelsManager: loraModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
