@@ -37,20 +37,20 @@ class SidebarItem: Identifiable {
   @Attribute var title: String
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]
-  @Relationship var prompt: AppPromptModel?
+  @Attribute var isWorkspaceItem: Bool = true
+  @Relationship var prompt: StoredPromptModel?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], prompt: AppPromptModel? = nil) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
+    self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
   }
 }
 
 @Model
-class AppPromptModel {
-  @Attribute var isWorkspaceItem: Bool = false
-  @Attribute var isArchived: Bool = true
+class StoredPromptModel {
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
@@ -62,13 +62,9 @@ class AppPromptModel {
   @Attribute var batchCount: Double = 1
   @Attribute var batchSize: Double = 1
   @Attribute var clipSkip: Double = 1
-  @Relationship var selectedModel: AppModelItem?
-  
-  
-  
-  init(isWorkspaceItem: Bool = false, isArchived: Bool = true, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: AppModelItem? = nil) {
-    self.isWorkspaceItem = isWorkspaceItem
-    self.isArchived = isArchived
+  @Relationship var selectedModel: StoredModelItem?
+
+  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredModelItem? = nil) {
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
@@ -85,9 +81,9 @@ class AppPromptModel {
 }
 
 @Model
-class AppModelItem {
+class StoredModelItem {
   @Attribute var name: String
-  @Attribute var type: AppModelType
+  @Attribute var type: StoredModelType
   @Attribute var url: URL
   @Attribute var isDefaultModel: Bool = false
   
@@ -98,7 +94,7 @@ class AppModelItem {
   @Attribute var jsonModelCheckpointFilename: String
   @Attribute var jsonModelCheckpointConfig: String?
   
-  init(name: String, type: AppModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
+  init(name: String, type: StoredModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
     self.name = name
     self.type = type
     self.url = url
@@ -113,7 +109,7 @@ class AppModelItem {
   }
 }
 
-func mapModelTypeToAppModelType(_ type: ModelType?) -> AppModelType? {
+func mapModelTypeToStoredModelType(_ type: ModelType?) -> StoredModelType? {
   guard let type = type else { return nil }
   switch type {
   case .coreMl:
@@ -123,14 +119,14 @@ func mapModelTypeToAppModelType(_ type: ModelType?) -> AppModelType? {
   }
 }
 
-enum AppModelType: String, Codable {
+enum StoredModelType: String, Codable {
   case coreMl = "coreMl"
   case python = "python"
 }
 
 /*
 @Model
-class AppSdModel {
+class StoredSdModel {
   @Attribute var title: String
   @Attribute var modelName: String
   @Attribute var hash: String?

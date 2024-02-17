@@ -26,7 +26,7 @@ struct SwiftDiffusionApp: App {
     }
     let storeURL = appSupportURL
       .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
-      .appendingPathComponent("UserData").appendingPathComponent("Local")
+      .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
       .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
     
     let subfolderURL = storeURL.deletingLastPathComponent()

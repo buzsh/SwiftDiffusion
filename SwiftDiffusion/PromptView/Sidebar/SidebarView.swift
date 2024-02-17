@@ -27,8 +27,6 @@ extension Constants.Layout {
   }
 }
 
-// TODO: REFACTOR DATA FLOW
-
 struct SidebarView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
@@ -108,14 +106,12 @@ struct SidebarView: View {
     
   }
   
-  
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
-    let mapModel = ModelDataMapping()
-    
+    let mapModel = MapModelData()
     itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
-    itemToSave.prompt?.isWorkspaceItem = false
+    itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
   }
@@ -149,7 +145,7 @@ struct SidebarView: View {
   
   var filteredItems: [SidebarItem] {
     let filtered = sidebarItems.filter {
-      let isWorkspaceItem = $0.prompt?.isWorkspaceItem ?? false
+      let isWorkspaceItem = $0.isWorkspaceItem
       return !isWorkspaceItem
     }
     if let selectedModelName = selectedModelName {
@@ -170,16 +166,53 @@ struct SidebarView: View {
   
   var workspaceItems: [SidebarItem] {
     sidebarItems.filter {
-      $0.prompt?.isWorkspaceItem == true
+      $0.isWorkspaceItem == true
     }
   }
   
+  var sortedWorkspaceItems: [SidebarItem] {
+    let regularItems = workspaceItems.filter { $0.title != "New Prompt" }
+    let newPromptItems = workspaceItems.filter { $0.title == "New Prompt" }
+    return regularItems + newPromptItems
+  }
+  
   var body: some View {
+    if filterToolsButtonToggled {
+      List {
+        Section(header: Text("Sorting")) {
+          Menu(sortingOrder.rawValue) {
+            Button("Most Recent") {
+              sortingOrder = .mostRecent
+            }
+            Button("Least Recent") {
+              sortingOrder = .leastRecent
+            }
+          }
+        }
+        
+        Section(header: Text("Filters")) {
+          Menu(selectedModelName ?? "Filter by Model") {
+            Button("Show All") {
+              selectedModelName = nil
+            }
+            Divider()
+            ForEach(uniqueModelNames, id: \.self) { modelName in
+              Button(modelName) {
+                selectedModelName = modelName
+              }
+            }
+          }
+        }
+      }.frame(height: 110)
+      Divider()
+        .padding(.horizontal).padding(.bottom, 4)
+    }
+    
     ZStack(alignment: .bottom) {
       List(selection: $selectedItemID) {
         
         Section(header: Text("Workspace")) {
-          ForEach(workspaceItems) { item in
+          ForEach(sortedWorkspaceItems) { item in
             HStack {
               Text(item.title)
               if item.title == "New Prompt" {
@@ -187,48 +220,28 @@ struct SidebarView: View {
                 Image(systemName: "plus.circle")
               }
             }
+            .onChange(of: sortedWorkspaceItems) {
+              if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
+                selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
+                sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+              }
+            }
           }
         }
         
         if sortedAndFilteredItems.isEmpty {
-          Spacer()
-          
-          HStack(alignment: .center) {
-            Text("Saved prompts will appear here!")
-              .foregroundStyle(Color.secondary)
-              .multilineTextAlignment(.center)
+          VStack(alignment: .center) {
+            Spacer(minLength: 100)
+            HStack(alignment: .center) {
+              Spacer()
+              Text("Saved prompts will appear here!")
+                .foregroundStyle(Color.secondary)
+                .multilineTextAlignment(.center)
+              Spacer()
+            }
+            Spacer()
           }
-          Spacer()
-          
         } else {
-          
-          if filterToolsButtonToggled {
-            
-            Section(header: Text("Sorting")) {
-              Menu(sortingOrder.rawValue) {
-                Button("Most Recent") {
-                  sortingOrder = .mostRecent
-                }
-                Button("Least Recent") {
-                  sortingOrder = .leastRecent
-                }
-              }
-            }
-            
-            Section(header: Text("Filters")) {
-              Menu(selectedModelName ?? "Filter by Model") {
-                Button("Show All") {
-                  selectedModelName = nil
-                }
-                Divider()
-                ForEach(uniqueModelNames, id: \.self) { modelName in
-                  Button(modelName) {
-                    selectedModelName = modelName
-                  }
-                }
-              }
-            }
-          }
           
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
@@ -321,9 +334,9 @@ struct SidebarView: View {
           Debug.log("onChange selectItem: \(selectedItem.title)")
           sidebarViewModel.selectedSidebarItem = selectedItem
           selectedItemName = selectedItem.title
-          let modelDataMapping = ModelDataMapping()
-          if let appPromptModel = selectedItem.prompt {
-            let newPrompt = modelDataMapping.fromArchive(appPromptModel: appPromptModel)
+          let mapModelData = MapModelData()
+          if let storedPromptModel = selectedItem.prompt {
+            let newPrompt = mapModelData.fromArchive(storedPromptModel: storedPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }
@@ -331,7 +344,6 @@ struct SidebarView: View {
       }
       .onChange(of: sidebarItems) {
         Debug.log("SidebarView.onChange of: sidebarItems")
-        // TODO: Refactor data flow; ie. have List load data from these:
         sidebarViewModel.allSidebarItems = sidebarItems
         sidebarViewModel.workspaceItems = workspaceItems
         sidebarViewModel.savedItems = sortedAndFilteredItems
@@ -339,17 +351,13 @@ struct SidebarView: View {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
       }
-      .onChange(of: sidebarViewModel.workspaceItems) {
-        Debug.log("SidebarView.onChange of: sidebarViewModel.workspaceItems")
-      }
       .onChange(of: currentPrompt.positivePrompt) {
-        if !currentPrompt.positivePrompt.isEmpty {
-          updateWorkspaceItemTitle()
-        }
+        ensureNewPromptWorkspaceItemExists()
       }
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
+        //setNewPromptSidebarItemOnAppear()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -373,48 +381,28 @@ struct SidebarView: View {
       selectNewPromptItemIfAvailable()
     }
   }
-  
+  /// Will select the "New Prompt" item from workspace items.
   private func selectNewPromptItemIfAvailable() {
-    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.prompt?.isWorkspaceItem == true })?.id {
+    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true })?.id {
       selectedItemID = newPromptItemID
     }
   }
-  
-  func createNewPromptWorkspaceSidebarItemIfNeeded() -> SidebarItem? {
-    let listOfBlankNewPrompts = sidebarItems.filter { $0.prompt?.isWorkspaceItem == true && $0.title == "New Prompt" }
+  /// Creates a "New Prompt" item if the existing one was overwritten.
+  func ensureNewPromptWorkspaceItemExists() {
+    let listOfBlankNewPrompts = workspaceItems.filter { $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      let appPromptModel = AppPromptModel(isWorkspaceItem: true, selectedModel: nil)
-      let imageUrls: [URL] = []
-      let newSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: "New Prompt", appPrompt: appPromptModel, imageUrls: imageUrls, in: modelContext)
-      return newSidebarItem
+      _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
     }
-    return nil
   }
   
-  func ensureNewPromptWorkspaceItemExists() {
-    _ = createNewPromptWorkspaceSidebarItemIfNeeded()
-  }
-  /// Returns the currently selected SidebarItem if has property`.isWorkspaceItem == true`. Else, returns `nil`.
-  var selectedWorkspaceItem: SidebarItem? {
-    if let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true {
-      return workspaceItem
+  /*
+  func setNewPromptSidebarItemOnAppear() {
+    if let newPromptSidebarItem = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true }) {
+      sidebarViewModel.newPromptModelSidebarItem = newPromptItem
     }
-    return nil
   }
-  
-  func updateWorkspaceItemTitle() {
-    guard let workspaceItem = sidebarViewModel.selectedSidebarItem, workspaceItem.prompt?.isWorkspaceItem == true else {
-      return
-    }
-    
-    let newTitle = currentPrompt.positivePrompt
-    workspaceItem.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
-    
-    sidebarViewModel.selectedSidebarItem?.title = newTitle
-    
-    ensureNewPromptWorkspaceItemExists()
-  }
+   */
   
 }
 
@@ -428,27 +416,4 @@ struct SidebarView: View {
   .environmentObject(SidebarViewModel())
   .frame(width: 200)
   .frame(height: 600)
-}
-
-
-
-import SwiftUI
-import AppKit
-
-struct VisualEffectView: NSViewRepresentable {
-  var material: NSVisualEffectView.Material
-  var blendingMode: NSVisualEffectView.BlendingMode
-  
-  func makeNSView(context: Context) -> NSVisualEffectView {
-    let view = NSVisualEffectView()
-    view.material = material
-    view.blendingMode = blendingMode
-    view.state = .active
-    return view
-  }
-  
-  func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-    nsView.material = material
-    nsView.blendingMode = blendingMode
-  }
 }

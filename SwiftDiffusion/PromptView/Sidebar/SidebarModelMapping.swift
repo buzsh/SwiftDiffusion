@@ -1,5 +1,5 @@
 //
-//  SidebarModelMapping.swift
+//  SidebarModelMstoreding.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/13/24.
@@ -7,32 +7,28 @@
 
 import Foundation
 
-struct ModelDataMapping {
+struct MapModelData {
   @MainActor
-  func toArchive(promptModel: PromptModel) -> AppPromptModel? {
-    return mapPromptModelToAppPromptModel(promptModel)
+  func toArchive(promptModel: PromptModel) -> StoredPromptModel? {
+    return mapPromptModelToStoredPromptModel(promptModel)
   }
   
   @MainActor
-  func fromArchive(appPromptModel: AppPromptModel) -> PromptModel {
-    return mapAppPromptModelToPromptModel(appPromptModel)
+  func fromArchive(storedPromptModel: StoredPromptModel) -> PromptModel {
+    return mapStoredPromptModelToPromptModel(storedPromptModel)
   }
   
-  func mapModelTypeToAppModelType(_ type: ModelType) -> AppModelType {
+  func mapModelTypeToStoredModelType(_ type: ModelType) -> StoredModelType {
     switch type {
-    case .coreMl:
-      return .coreMl
-    case .python:
-      return .python
+    case .coreMl: return .coreMl
+    case .python: return .python
     }
   }
   
-  func mapAppModelTypeToModelType(_ type: AppModelType) -> ModelType {
+  func mapStoredModelTypeToModelType(_ type: StoredModelType) -> ModelType {
     switch type {
-    case .coreMl:
-      return .coreMl
-    case .python:
-      return .python
+    case .coreMl: return .coreMl
+    case .python: return .python
     }
   }
   
@@ -46,11 +42,11 @@ struct ModelDataMapping {
   }
   
   @MainActor
-  func mapModelItemToAppModelItem(_ modelItem: ModelItem?) -> AppModelItem? {
+  func mapModelItemToStoredModelItem(_ modelItem: ModelItem?) -> StoredModelItem? {
     guard let modelItem = modelItem else { return nil }
-    let appModelType = mapModelTypeToAppModelType(modelItem.type)
-    return AppModelItem(name: modelItem.name,
-                        type: appModelType,
+    let storedModelType = mapModelTypeToStoredModelType(modelItem.type)
+    return StoredModelItem(name: modelItem.name,
+                        type: storedModelType,
                         url: modelItem.url,
                         isDefaultModel: modelItem.isDefaultModel,
                         jsonModelCheckpointTitle: modelItem.sdModel?.title ?? "",
@@ -62,25 +58,25 @@ struct ModelDataMapping {
   }
   
   @MainActor
-  func mapAppModelItemToModelItem(_ appModelItem: AppModelItem?) -> ModelItem? {
-    guard let appModelItem = appModelItem else { return nil }
-    let modelType = mapAppModelTypeToModelType(appModelItem.type)
-    let sdModel = mapJsonDataToSdModel(title: appModelItem.jsonModelCheckpointTitle, modelName: appModelItem.jsonModelCheckpointName, hash: appModelItem.jsonModelCheckpointHash, sha256: appModelItem.jsonModelCheckpointSha256, filename: appModelItem.jsonModelCheckpointFilename, config: appModelItem.jsonModelCheckpointConfig)
+  func mapStoredModelItemToModelItem(_ storedModelItem: StoredModelItem?) -> ModelItem? {
+    guard let storedModelItem = storedModelItem else { return nil }
+    let modelType = mapStoredModelTypeToModelType(storedModelItem.type)
+    let sdModel = mapJsonDataToSdModel(title: storedModelItem.jsonModelCheckpointTitle, modelName: storedModelItem.jsonModelCheckpointName, hash: storedModelItem.jsonModelCheckpointHash, sha256: storedModelItem.jsonModelCheckpointSha256, filename: storedModelItem.jsonModelCheckpointFilename, config: storedModelItem.jsonModelCheckpointConfig)
     
-    return ModelItem(name: appModelItem.name,
+    return ModelItem(name: storedModelItem.name,
                      type: modelType,
-                     url: appModelItem.url,
-                     isDefaultModel: appModelItem.isDefaultModel,
+                     url: storedModelItem.url,
+                     isDefaultModel: storedModelItem.isDefaultModel,
                      sdModel: sdModel)
   }
   
   
   
   @MainActor
-  func mapPromptModelToAppPromptModel(_ promptModel: PromptModel) -> AppPromptModel? {
-    guard let selectedModel = mapModelItemToAppModelItem(promptModel.selectedModel) else { return nil }
-    return AppPromptModel(isWorkspaceItem: promptModel.isWorkspaceItem, // workspace item flag
-                          isArchived: true,                             // archive flag
+  func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
+    var selectedModel: StoredModelItem?
+    selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel)
+    return StoredPromptModel(
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
@@ -96,34 +92,26 @@ struct ModelDataMapping {
   }
   
   @MainActor
-  func mapAppPromptModelToPromptModel(_ appPromptModel: AppPromptModel) -> PromptModel {
+  func mapStoredPromptModelToPromptModel(_ storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
-    promptModel.isWorkspaceItem = appPromptModel.isWorkspaceItem
-    promptModel.isArchived = appPromptModel.isArchived
-    promptModel.samplingMethod = appPromptModel.samplingMethod
-    promptModel.positivePrompt = appPromptModel.positivePrompt
-    promptModel.negativePrompt = appPromptModel.negativePrompt
-    promptModel.width = appPromptModel.width
-    promptModel.height = appPromptModel.height
-    promptModel.cfgScale = appPromptModel.cfgScale
-    promptModel.samplingSteps = appPromptModel.samplingSteps
-    promptModel.seed = appPromptModel.seed
-    promptModel.batchCount = appPromptModel.batchCount
-    promptModel.batchSize = appPromptModel.batchSize
-    promptModel.clipSkip = appPromptModel.clipSkip
-    
-    if let appModelItem = appPromptModel.selectedModel {
-      promptModel.selectedModel = mapAppModelItemToModelItem(appModelItem)
-    } else {
-      promptModel.selectedModel = nil
-    }
-    
+    promptModel.samplingMethod = storedPromptModel.samplingMethod
+    promptModel.positivePrompt = storedPromptModel.positivePrompt
+    promptModel.negativePrompt = storedPromptModel.negativePrompt
+    promptModel.width = storedPromptModel.width
+    promptModel.height = storedPromptModel.height
+    promptModel.cfgScale = storedPromptModel.cfgScale
+    promptModel.samplingSteps = storedPromptModel.samplingSteps
+    promptModel.seed = storedPromptModel.seed
+    promptModel.batchCount = storedPromptModel.batchCount
+    promptModel.batchSize = storedPromptModel.batchSize
+    promptModel.clipSkip = storedPromptModel.clipSkip
+    promptModel.selectedModel = mapStoredModelItemToModelItem(storedPromptModel.selectedModel)
     return promptModel
   }
   /*
-  func mapSdModelToAppSdModel(_ sdModel: SdModel?) -> AppSdModel? {
+  func mapSdModelToStoredSdModel(_ sdModel: SdModel?) -> StoredSdModel? {
     guard let sdModel = sdModel else { return nil }
-    return AppSdModel(title: sdModel.title,
+    return StoredSdModel(title: sdModel.title,
                       modelName: sdModel.modelName,
                       hash: sdModel.hash,
                       sha256: sdModel.sha256,
@@ -131,15 +119,15 @@ struct ModelDataMapping {
                       config: sdModel.config)
   }
   
-  func mapAppSdModelToSdModel(_ appSdModel: AppSdModel?) -> SdModel? {
-    guard let appSdModel = appSdModel else { return nil }
+  func mapStoredSdModelToSdModel(_ storedSdModel: StoredSdModel?) -> SdModel? {
+    guard let storedSdModel = storedSdModel else { return nil }
     
-    return SdModel(title: appSdModel.title,
-                   modelName: appSdModel.modelName,
-                   hash: appSdModel.hash,
-                   sha256: appSdModel.sha256,
-                   filename: appSdModel.filename,
-                   config: appSdModel.config)
+    return SdModel(title: storedSdModel.title,
+                   modelName: storedSdModel.modelName,
+                   hash: storedSdModel.hash,
+                   sha256: storedSdModel.sha256,
+                   filename: storedSdModel.filename,
+                   config: storedSdModel.config)
   }
   */
   

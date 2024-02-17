@@ -1,5 +1,5 @@
 //
-//  DiffusionModel.swift
+//  ModelManagerViewModel.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.

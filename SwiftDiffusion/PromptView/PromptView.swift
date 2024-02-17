@@ -59,6 +59,10 @@ struct PromptView: View {
     }
   }
   
+  func storeChangesOfSelectedSidebarItem() {
+    sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+  }
+  
   var body: some View {
     HSplitView {
       leftPane
@@ -80,6 +84,45 @@ struct PromptView: View {
         }
       }
     }
+    .onChange(of: currentPrompt.isWorkspaceItem) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.selectedModel) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.samplingMethod) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.positivePrompt) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.negativePrompt) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.width) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.height) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.cfgScale) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.samplingSteps) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.seed) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.batchCount) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.batchSize) {
+      storeChangesOfSelectedSidebarItem()
+    }
+    .onChange(of: currentPrompt.clipSkip) {
+      storeChangesOfSelectedSidebarItem()
+    }
   }
   
   private var leftPane: some View {
@@ -96,60 +139,6 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          
-          VStack {
-            HStack {
-              
-              if currentPrompt.isWorkspaceItem {
-                
-                Button(action: {
-                  sidebarViewModel.queueWorkspaceItemForDeletion()
-                }) {
-                  
-                  Text("Close")
-                }
-                
-                
-              } else {
-                
-                Button(action: {
-                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                }) {
-                  Image(systemName: "trash")
-                  Text("Delete Prompt")
-                }
-              }
-              
-              
-              Spacer()
-              
-              if currentPrompt.isWorkspaceItem {
-                if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
-                   sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
-                  Button(action: {
-                    sidebarViewModel.queueSelectedSidebarItemForSaving()
-                  }) {
-                    Image(systemName: "square.and.arrow.down")
-                    Text("Save Generated Prompt")
-                  }
-                }
-              } else {
-                // TODO: COPY TO WORKSPACE ON DATA REFACTOR
-                Button(action: {
-                  Debug.log("NO FUNCTIONALITY")
-                }) {
-                  Image(systemName: "square.and.arrow.down")
-                  Text("Copy to Workspace")
-                }
-              }
-            }
-          }
-          .padding(.top, 16)
-          .padding(.bottom, 10)
-          
-          Divider()
-          //}
-          
           HStack {
             // Models Menu
             VStack(alignment: .leading) {
@@ -243,8 +232,13 @@ struct PromptView: View {
           .padding(.vertical, Constants.Layout.promptRowPadding)
           .frame(minHeight: 90)
           
-          PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
-          PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
+          VStack {
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+              .onChange(of: currentPrompt.positivePrompt) {
+                sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+              }
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
+          }
             .padding(.bottom, 6)
           
           DimensionSelectionRow(width: $currentPrompt.width, height: $currentPrompt.height)
@@ -279,6 +273,13 @@ struct PromptView: View {
           // handle application going to background
         }//Form
       }//ScrollView
+      
+      PasteGenerationDataStatusBar(
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
+        }
+      )
       
       //PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)

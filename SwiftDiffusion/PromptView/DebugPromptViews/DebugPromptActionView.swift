@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DebugPromptActionView: View {
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
@@ -19,6 +20,28 @@ struct DebugPromptActionView: View {
       HStack {
         Spacer()
         VStack(alignment: .leading) {
+          
+          HStack {
+            
+            Spacer()
+            
+            if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+              Text("isWorkspaceItem: true")
+            } else {
+              Text("isWorkspaceItem: false")
+            }
+            
+            Divider()
+            
+            if let timestamp = sidebarViewModel.selectedSidebarItem?.timestamp {
+              Text("Created: \(timestamp.description)")
+            }
+            
+            Spacer()
+            
+          }
+          .frame(height: 24)
+          
           HStack {
             Button("Log Prompt") {
               logPromptProperties()
@@ -38,10 +61,6 @@ struct DebugPromptActionView: View {
                   Debug.log("Log Model from API: \(modelTitle)")
                 }
               }
-            }
-            
-            Button("Log isArchived") {
-              Debug.log("PromptModel.isArchived: \(currentPrompt.isArchived)")
             }
             
             Button("Log isWorkspaceItem") {
