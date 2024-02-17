@@ -139,65 +139,6 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          
-          VStack {
-            HStack {
-              
-              if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-                Button(action: {
-                  sidebarViewModel.queueWorkspaceItemForDeletion()
-                }) {
-                  
-                  Text("Close")
-                }
-                
-                
-              } else {
-                
-                Button(action: {
-                  sidebarViewModel.queueSelectedSidebarItemForDeletion()
-                }) {
-                  Image(systemName: "trash")
-                  Text("Delete Prompt")
-                }
-              }
-              
-              
-              Spacer()
-              
-              if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-                if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
-                   sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
-                  Button(action: {
-                    sidebarViewModel.queueSelectedSidebarItemForSaving()
-                  }) {
-                    Image(systemName: "square.and.arrow.down")
-                    Text("Save Generated Prompt")
-                  }
-                }
-              } else {
-                
-                Button(action: {
-                  
-                  if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
-                    let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
-                    let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
-                    newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
-                    sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
-                  }
-                }) {
-                  Image(systemName: "tray.and.arrow.up")
-                  Text("Copy to Workspace")
-                }
-              }
-            }
-          }
-          .padding(.top, 16)
-          .padding(.bottom, 10)
-          
-          Divider()
-          //}
-          
           HStack {
             // Models Menu
             VStack(alignment: .leading) {

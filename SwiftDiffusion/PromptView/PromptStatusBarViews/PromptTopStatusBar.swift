@@ -8,41 +8,91 @@
 import SwiftUI
 
 struct PromptTopStatusBar: View {
+  @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @ObservedObject var userSettings = UserSettings.shared
   
   var generationDataInPasteboard: Bool
   var onPaste: (String) -> Void
   
   var body: some View {
-    if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton || (currentPrompt.selectedModel != nil && !currentPrompt.positivePrompt.isEmpty) {
+    HStack(alignment: .center) {
       
-      HStack {
-        if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-          Button("Paste Generation Data") {
-            if let pasteboardContent = getPasteboardString() {
-              onPaste(pasteboardContent)
-            }
-          }
-          .buttonStyle(.accessoryBar)
-        }
+      if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
         
-        Spacer()
-        
-        if currentPrompt.selectedModel != nil {
+        if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
           Button(action: {
-            currentPrompt.copyMetadataToClipboard()
+            sidebarViewModel.queueWorkspaceItemForDeletion()
           }) {
-            Image(systemName: "doc.on.clipboard")
+            Image(systemName: "xmark")
+            Text("Close")
           }
-          .buttonStyle(BorderlessButtonStyle())
+          .buttonStyle(.accessoryBar)
+        } else {
+          Button(action: {
+            sidebarViewModel.queueSelectedSidebarItemForDeletion()
+          }) {
+            Image(systemName: "trash")
+            Text("Delete")
+          }
           .buttonStyle(.accessoryBar)
         }
+        
       }
-      .padding(.horizontal, 12)
-      .frame(height: 24)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
+      
+      Spacer()
+      
+      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
+        Button(action: {
+          if let pasteboardContent = getPasteboardString() {
+            onPaste(pasteboardContent)
+          }
+        }) {
+          Image(systemName: "arrow.up.doc.on.clipboard")
+          Text("Paste Generation Data")
+        }
+        .buttonStyle(.accessoryBar)
+      }
+      
+      if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
+        
+        if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+          Spacer()
+          
+          if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+             sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+            Button(action: {
+              sidebarViewModel.queueSelectedSidebarItemForSaving()
+            }) {
+              Image(systemName: "square.and.arrow.down")
+              Text("Save Generated Prompt")
+            }
+            .buttonStyle(.accessoryBar)
+          }
+        } else {
+          
+          Button(action: {
+            
+            if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
+              let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
+              let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
+              newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
+              sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
+            }
+          }) {
+            Image(systemName: "tray.and.arrow.up")
+            Text("Copy to Workspace")
+          }
+          .buttonStyle(.accessoryBar)
+        }
+        
+      }
+      
     }
+    .padding(.horizontal, 12)
+    .frame(height: 30)
+    .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
   }
   
   func getPasteboardString() -> String? {
