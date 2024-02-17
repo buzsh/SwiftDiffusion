@@ -210,7 +210,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		290A34AE2B7C432100963C6E /* Sidebar */ = {
+		290A34AE2B7C432100963C6E /* SidebarView */ = {
 			isa = PBXGroup;
 			children = (
 				291635A42B7EAEAB00D47EEF /* Components */,
@@ -220,7 +220,7 @@
 				290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */,
 				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
 			);
-			path = Sidebar;
+			path = SidebarView;
 			sourceTree = "<group>";
 		};
 		29145E6D2B77D80400BFA64B /* DebugPromptViews */ = {
@@ -315,7 +315,6 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
-				290A34AE2B7C432100963C6E /* Sidebar */,
 				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
@@ -471,6 +470,7 @@
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29C0F37A2B7AB22F0017DD6B /* ContentView */,
+				290A34AE2B7C432100963C6E /* SidebarView */,
 				293336472B72A5CE007237AA /* PromptView */,
 				2916F3352B728586001D14B9 /* DetailView */,
 				2916F3322B7278D4001D14B9 /* SettingsView */,
