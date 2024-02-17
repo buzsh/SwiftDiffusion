@@ -476,11 +476,11 @@
 		2996D0922B6ED5B000B487D5 /* SwiftDiffusion */ = {
 			isa = PBXGroup;
 			children = (
-				29A1E0C02B810C8C00B18AC1 /* Observers */,
-				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
+				29A1E0C02B810C8C00B18AC1 /* Observers */,
+				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
 				29C0F37A2B7AB22F0017DD6B /* ContentView */,
 				290A34AE2B7C432100963C6E /* SidebarView */,
 				293336472B72A5CE007237AA /* PromptView */,
