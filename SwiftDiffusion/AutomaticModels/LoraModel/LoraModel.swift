@@ -9,8 +9,10 @@ import Foundation
 import Combine
 
 extension Constants.API.Endpoint {
-  static let getLoras = "/sdapi/v1/loras"
-  static let postRefreshLoras = "/sdapi/v1/refresh-loras"
+  struct Loras {
+    static let get = "/sdapi/v1/loras"
+    static let postRefresh = "/sdapi/v1/refresh-loras"
+  }
 }
 
 struct LoraModel: Identifiable, Decodable {
@@ -26,10 +28,10 @@ struct LoraModel: Identifiable, Decodable {
 
 extension LoraModel: EndpointRepresentable {
   static var fetchEndpoint: String {
-    Constants.API.Endpoint.getLoras
+    Constants.API.Endpoint.Loras.get
   }
   
   static var refreshEndpoint: String? {
-    Constants.API.Endpoint.postRefreshLoras
+    Constants.API.Endpoint.Loras.postRefresh
   }
 }

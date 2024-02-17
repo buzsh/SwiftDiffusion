@@ -13,7 +13,7 @@ class DirectoryObserver {
   private var observationTask: Task<(), Never>?
   
   func startObserving(url: URL, onChange: @escaping () async -> Void) {
-    stopObserving() // Ensure not already observing
+    stopObserving()
     
     fileDescriptor = open(url.path, O_EVTONLY)
     guard fileDescriptor != -1 else {
