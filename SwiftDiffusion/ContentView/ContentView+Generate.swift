@@ -129,7 +129,7 @@ struct ImageSaver {
     
     // Handle logic for single image generation (batch count == 1)
     if base64EncodedImages.count == 1 {
-      guard let imageData = Data(base64Encoded: base64EncodedImages.first!), let nsImage = NSImage(data: imageData) else {
+      guard let imageData = Data(base64Encoded: base64EncodedImages.first!), let _ = NSImage(data: imageData) else {
         Debug.log("Invalid image data for the single image")
         return (nil, "", outputImageUrlList)
       }
