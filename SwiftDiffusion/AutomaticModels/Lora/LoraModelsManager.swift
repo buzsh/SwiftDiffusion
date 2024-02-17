@@ -39,7 +39,6 @@ class LoraModelsManager: ObservableObject {
           self.loraModels = models
         }
       } catch {
-        // Handle or log error appropriately
         Debug.log("Error in refreshing or fetching Loras: \(error.localizedDescription)")
       }
     }

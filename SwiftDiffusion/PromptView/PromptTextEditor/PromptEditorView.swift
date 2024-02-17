@@ -64,7 +64,6 @@ struct PromptEditorView: View {
             Label("Add LoRA", systemImage: "plus.circle")
           }
         }
-        .frame(height: 30)
         .opacity(showMenu ? 1 : 0)
         .scaleEffect(showMenu ? 1 : 0.95)
       }

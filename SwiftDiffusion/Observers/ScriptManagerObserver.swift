@@ -69,6 +69,6 @@ class ScriptManagerObserver {
   }
   
   deinit {
-      print("ScriptManagerObserver is being deinitialized")
+    Debug.log("ScriptManagerObserver is being deinitialized")
   }
 }
