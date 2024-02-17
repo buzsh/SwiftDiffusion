@@ -7,6 +7,11 @@
 
 import Foundation
 
+protocol EndpointRepresentable {
+  static var fetchEndpoint: String { get }
+  static var refreshEndpoint: String? { get }
+}
+
 class AutomaticApiService {
   static let shared = AutomaticApiService()
   private let scriptManager = ScriptManager.shared
@@ -32,6 +37,25 @@ class AutomaticApiService {
     }
     
     return data
+  }
+  
+}
+
+extension AutomaticApiService {
+  
+  func fetchDataItem<T: Decodable & EndpointRepresentable>(for type: T.Type) async throws -> T {
+    let data = try await request(endpoint: T.fetchEndpoint)
+    return try JSONDecoder().decode(T.self, from: data)
+  }
+  
+  func fetchData<T: Decodable & EndpointRepresentable>(for type: [T].Type) async throws -> [T] {
+    let data = try await request(endpoint: T.fetchEndpoint)
+    return try JSONDecoder().decode([T].self, from: data)
+  }
+  
+  func refreshData<T: EndpointRepresentable>(for type: T.Type) async throws {
+    guard let endpoint = T.refreshEndpoint else { return }
+    _ = try await request(endpoint: endpoint, httpMethod: .post)
   }
   
 }

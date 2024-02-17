@@ -11,7 +11,6 @@ class LoraModelsManager: ObservableObject {
   @Published var loraModels: [LoraModel] = []
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
-  private var scriptManager = ScriptManager.shared
   
   func startObservingLoraDirectory() {
     guard let loraDirectoryUrl = userSettings.loraDirectoryUrl else { return }
@@ -33,14 +32,26 @@ class LoraModelsManager: ObservableObject {
   func loadInitialModels() {
     Task {
       do {
-        let loras = try await LoraService.fetchLoras()
-        await MainActor.run {
-          self.loraModels = loras
+        try await AutomaticApiService.shared.refreshData(for: LoraModel.self)
+        
+        let models = try await AutomaticApiService.shared.fetchData(for: [LoraModel].self)
+        DispatchQueue.main.async {
+          self.loraModels = models
         }
       } catch {
-        await MainActor.run {
-          Debug.log("Error fetching Loras: \(error.localizedDescription)")
-        }
+        // Handle or log error appropriately
+        Debug.log("Error in refreshing or fetching Loras: \(error.localizedDescription)")
+      }
+    }
+  }
+  
+  func refreshLoras() {
+    Task {
+      do {
+        try await AutomaticApiService.shared.refreshData(for: LoraModel.self)
+        self.loadInitialModels()
+      } catch {
+        Debug.log("Error refreshing Loras: \(error.localizedDescription)")
       }
     }
   }
