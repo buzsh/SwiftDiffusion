@@ -17,11 +17,7 @@ class LoraModelsManager: ObservableObject {
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
   private let scriptManager = ScriptManager.shared
-  
-  init() {
-    //loadInitialModels()
-    startObservingLoraDirectory()
-  }
+
   
   func loadInitialModels() {
     Task {
@@ -32,13 +28,13 @@ class LoraModelsManager: ObservableObject {
   func startObservingLoraDirectory() {
     guard let loraDirectoryUrl = userSettings.loraDirectoryUrl else { return }
     
+    loadInitialModels()
+    
     directoryObserver = DirectoryObserver()
     directoryObserver?.startObserving(url: loraDirectoryUrl) { [weak self] in
-      
       DispatchQueue.main.async {
         self?.loadInitialModels()
       }
-      
     }
   }
   
