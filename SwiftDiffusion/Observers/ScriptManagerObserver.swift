@@ -9,17 +9,20 @@ import SwiftUI
 import Combine
 
 class ScriptManagerObserver {
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var loraModelsManager: LoraModelsManager
-  
+  var scriptManager: ScriptManager
   var userSettings: UserSettings
   
-  var scriptManager: ScriptManager
+  var modelManagerViewModel: ModelManagerViewModel
+  var loraModelsManager: LoraModelsManager
+  
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, loraModelsManager: LoraModelsManager) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
+    self.modelManagerViewModel = modelManagerViewModel
+    self.loraModelsManager = loraModelsManager
+    
     setupObservers()
   }
   
