@@ -76,7 +76,7 @@ struct MapModelData {
   func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
     var selectedModel: StoredModelItem?
     selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel)
-    return StoredPromptModel(isArchived: true,                             // archive flag
+    return StoredPromptModel(
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
@@ -94,7 +94,6 @@ struct MapModelData {
   @MainActor
   func mapStoredPromptModelToPromptModel(_ storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
-    promptModel.isArchived = storedPromptModel.isArchived
     promptModel.samplingMethod = storedPromptModel.samplingMethod
     promptModel.positivePrompt = storedPromptModel.positivePrompt
     promptModel.negativePrompt = storedPromptModel.negativePrompt

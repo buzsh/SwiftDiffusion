@@ -10,7 +10,6 @@ import Combine
 @MainActor
 class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
-  @Published var isArchived: Bool = false
   
   @Published var selectedModel: ModelItem?
   @Published var samplingMethod: String?
@@ -38,7 +37,6 @@ extension PromptModel {
     Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
     
     self.isWorkspaceItem = model.isWorkspaceItem
-    self.isArchived = model.isArchived
     
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
