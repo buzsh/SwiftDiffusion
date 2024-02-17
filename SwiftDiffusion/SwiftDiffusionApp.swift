@@ -43,7 +43,6 @@ struct SwiftDiffusionApp: App {
     }
     
     setupAppFileStructure()
-    modelManangerViewModel.startObservingModelDirectories()
   }
   
   

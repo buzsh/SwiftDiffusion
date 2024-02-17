@@ -15,12 +15,14 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @Environment(\.modelContext) private var modelContext
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
   
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
+  
+  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var loraModelsManager: LoraModelsManager
   
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
