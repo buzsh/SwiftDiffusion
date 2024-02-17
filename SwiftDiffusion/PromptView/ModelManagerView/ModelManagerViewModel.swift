@@ -8,7 +8,6 @@
 import Combine
 import SwiftUI
 
-@MainActor
 class ModelManagerViewModel: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
