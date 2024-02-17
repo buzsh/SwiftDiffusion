@@ -270,6 +270,7 @@
 		291635A42B7EAEAB00D47EEF /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				29708F912B7FBECB004A95AD /* VisualEffectView.swift */,
 				29708F8E2B7EB600004A95AD /* DisplayOptionsBar */,
 			);
 			path = Components;
@@ -375,7 +376,6 @@
 				29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */,
 				29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */,
 				291635A52B7EAEE200D47EEF /* SegmentedDisplayOptions.swift */,
-				29708F912B7FBECB004A95AD /* VisualEffectView.swift */,
 			);
 			path = DisplayOptionsBar;
 			sourceTree = "<group>";
