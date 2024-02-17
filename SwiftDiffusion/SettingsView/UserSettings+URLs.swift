@@ -11,6 +11,8 @@ extension UserSettings {
   
   func modelDirectoryUrl<T>(forType type: T.Type) -> URL? {
     switch type {
+    case is PythonCheckpointModel.Type:
+      return directoryUrl(forPath: stableDiffusionModelsPath)
     case is LoraModel.Type:
       return directoryUrl(forPath: loraDirectoryPath)
     default:
