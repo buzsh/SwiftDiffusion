@@ -11,13 +11,15 @@ import SwiftData
 @main
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  var modelContainer: ModelContainer
+  
   @StateObject var scriptManager = ScriptManager.shared
+  
+  let sidebarViewModel = SidebarViewModel()
   
   let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
-  let sidebarViewModel = SidebarViewModel()
-  
-  var modelContainer: ModelContainer
+  let loraModelsManager = LoraModelsManager()
   
   init() {
     let fileManager = FileManager.default
@@ -50,9 +52,10 @@ struct SwiftDiffusionApp: App {
       ContentView(scriptManager: scriptManager)
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+        .environmentObject(sidebarViewModel)
         .environmentObject(currentPrompt)
         .environmentObject(modelManangerViewModel)
-        .environmentObject(sidebarViewModel)
+        .environmentObject(loraModelsManager)
     }
     .modelContainer(modelContainer)
     .windowToolbarStyle(.unified(showsTitle: false))
