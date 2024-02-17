@@ -11,6 +11,12 @@ struct FilesSection: View {
   @ObservedObject var userSettings: UserSettings
   
   var body: some View {
+    BrowseFileRow(labelText: "Custom image output directory",
+                  placeholderText: "~/Documents/SwiftDiffusion/",
+                  textValue: $userSettings.outputDirectoryPath) {
+      await FilePickerService.browseForDirectory()
+    }
+    
     BrowseFileRow(labelText: "webui.sh file",
                   placeholderText: "../stable-diffusion-webui/webui.sh",
                   textValue: $userSettings.webuiShellPath) {
@@ -23,9 +29,9 @@ struct FilesSection: View {
       await FilePickerService.browseForDirectory()
     }
     
-    BrowseFileRow(labelText: "Custom image output directory",
-                  placeholderText: "~/Documents/SwiftDiffusion/",
-                  textValue: $userSettings.outputDirectoryPath) {
+    BrowseFileRow(labelText: "LoRA models path",
+                  placeholderText: "../stable-diffusion-webui/models/Lora/",
+                  textValue: $userSettings.loraDirectoryPath) {
       await FilePickerService.browseForDirectory()
     }
   }
