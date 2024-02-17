@@ -59,10 +59,12 @@ struct PromptEditorView: View {
           }
         }
         .frame(height: 30)
+        .transition(.opacity.combined(with: .scale))
       }
       
     }
     .padding(.bottom, 10)
+    .animation(.easeInOut(duration: 0.5), value: loraModelsManager.loraModels.isEmpty && isFocused)
   }
   
   var wordCount: Int {
