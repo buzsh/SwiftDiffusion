@@ -19,6 +19,6 @@ class LoraService {
   }
   
   static func refreshLoras() async throws {
-      try _ = await AutomaticApiService.shared.request(endpoint: Constants.API.Endpoint.postRefreshLoras, httpMethod: "POST")
+    try _ = await AutomaticApiService.shared.request(endpoint: Constants.API.Endpoint.postRefreshLoras, httpMethod: .post)
   }
 }

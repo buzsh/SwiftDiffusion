@@ -13,7 +13,7 @@ class AutomaticApiService {
   
   private init() {}
   
-  func request(endpoint: String, httpMethod: String = "GET") async throws -> Data {
+  func request(endpoint: String, httpMethod: HttpMethod = .get) async throws -> Data {
     guard let apiUrl = await scriptManager.serviceUrl else {
       throw NetworkError.invalidURL
     }
@@ -21,7 +21,7 @@ class AutomaticApiService {
     let fullUrl = apiUrl.appendingPathComponent(endpoint)
     
     var request = URLRequest(url: fullUrl)
-    request.httpMethod = httpMethod
+    request.httpMethod = httpMethod.rawValue
     
     let (data, response) = try await URLSession.shared.data(for: request)
     
@@ -32,6 +32,14 @@ class AutomaticApiService {
     }
     
     return data
+  }
+  
+}
+
+extension AutomaticApiService {
+  enum HttpMethod: String {
+    case get  = "GET"
+    case post = "POST"
   }
   
   enum NetworkError: Error {
