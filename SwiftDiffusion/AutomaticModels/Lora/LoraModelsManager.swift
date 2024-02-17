@@ -17,7 +17,6 @@ class LoraModelsManager: ObservableObject {
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
   private let scriptManager = ScriptManager.shared
-
   
   func loadInitialModels() {
     Task {
@@ -45,57 +44,56 @@ class LoraModelsManager: ObservableObject {
 
 extension LoraModelsManager {
   func getLorasFromApi() async {
-    
     guard await postRefreshLoras() else {
       Debug.log("[LoraModelsManager] Failed to refresh LoRAs. Aborting fetch.")
       return
     }
     
-    guard let apiUrl = await scriptManager.serviceUrl else {
-      Debug.log("Service URL is nil.")
+    guard let data = await performAPIRequest(to: Constants.API.Endpoint.getLoras) else {
       return
     }
     
-    let endpoint = apiUrl.appendingPathComponent(Constants.API.Endpoint.getLoras)
     do {
-      let (data, _) = try await URLSession.shared.data(from: endpoint)
-      let decoder = JSONDecoder()
-      let loras = try decoder.decode([LoraModel].self, from: data)
-      
+      let loras = try JSONDecoder().decode([LoraModel].self, from: data)
       await MainActor.run {
         let currentPaths = Set(self.loraModels.map { $0.path })
         let uniqueLoras = loras.filter { !currentPaths.contains($0.path) }
         self.loraModels.append(contentsOf: uniqueLoras)
       }
     } catch {
-      Debug.log("Failed to fetch or parse Lora models: \(error.localizedDescription)")
+      Debug.log("Failed to parse Lora models: \(error.localizedDescription)")
+    }
+  }
+  
+  func postRefreshLoras() async -> Bool {
+    return await performAPIRequest(to: Constants.API.Endpoint.postRefreshLoras, httpMethod: "POST") != nil
+  }
+}
+
+
+extension LoraModelsManager {
+  private func performAPIRequest(to endpoint: String, httpMethod: String = "GET") async -> Data? {
+    guard let apiUrl = await scriptManager.serviceUrl,
+          let url = URL(string: apiUrl.appendingPathComponent(endpoint).absoluteString) else {
+      Debug.log("Invalid API URL or Endpoint.")
+      return nil
+    }
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = httpMethod
+    
+    do {
+      let (data, response) = try await URLSession.shared.data(for: request)
+      guard let httpResponse = response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+        Debug.log("API request failed with response: \(response)")
+        return nil
+      }
+      return data
+    } catch {
+      Debug.log("API request failed: \(error.localizedDescription)")
+      return nil
     }
   }
 }
 
-extension LoraModelsManager {
-  func postRefreshLoras() async -> Bool {
-    guard let apiUrl = await scriptManager.serviceUrl else {
-      Debug.log("Service URL is nil.")
-      return false
-    }
-    
-    let endpoint = apiUrl.appendingPathComponent(Constants.API.Endpoint.postRefreshLoras)
-    var request = URLRequest(url: endpoint)
-    request.httpMethod = "POST"
-    
-    do {
-      let (_, response) = try await URLSession.shared.data(for: request)
-      
-      if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
-        return true
-      } else {
-        Debug.log("Refresh Loras request failed with response: \(response)")
-        return false
-      }
-    } catch {
-      Debug.log("Failed to post refresh Loras: \(error.localizedDescription)")
-      return false
-    }
-  }
-}
