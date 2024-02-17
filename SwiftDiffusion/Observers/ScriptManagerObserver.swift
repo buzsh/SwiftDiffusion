@@ -13,11 +13,11 @@ class ScriptManagerObserver {
   var userSettings: UserSettings
   
   var modelManagerViewModel: ModelManagerViewModel
-  var loraModelsManager: LoraModelsManager
+  var loraModelsManager: ModelManager<LoraModel>
   
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, loraModelsManager: LoraModelsManager) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, loraModelsManager: ModelManager<LoraModel>) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
     self.modelManagerViewModel = modelManagerViewModel
@@ -52,7 +52,7 @@ class ScriptManagerObserver {
     if newState.isActive {
       Debug.log("newState.isActive")
       modelManagerViewModel.startObservingModelDirectories()
-      loraModelsManager.startObservingLoraDirectory()
+      loraModelsManager.startObservingDirectory()
     }
   }
   
@@ -62,10 +62,10 @@ class ScriptManagerObserver {
     modelManagerViewModel.startObservingModelDirectories()
   }
   
-  private func loraDirectoryPathDidChange(_ newPath: String) {
+  private func loraDirectoryPathDidChange(_ newPath: String = "") {
     Debug.log("loraDirectoryPathDidChange newPath: \(newPath)")
-    loraModelsManager.stopObservingLoraDirectory()
-    loraModelsManager.startObservingLoraDirectory()
+    loraModelsManager.stopObservingDirectory()
+    loraModelsManager.startObservingDirectory()
   }
   
   deinit {

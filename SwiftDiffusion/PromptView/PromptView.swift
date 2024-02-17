@@ -22,7 +22,7 @@ struct PromptView: View {
   
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var loraModelsManager: LoraModelsManager
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false

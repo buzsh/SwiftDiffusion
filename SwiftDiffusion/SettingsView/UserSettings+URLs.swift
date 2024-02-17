@@ -9,6 +9,15 @@ import Foundation
 
 extension UserSettings {
   
+  func modelDirectoryUrl<T>(forType type: T.Type) -> URL? {
+    switch type {
+    case is LoraModel.Type:
+      return directoryUrl(forPath: loraDirectoryPath)
+    default:
+      return nil
+    }
+  }
+  
   func directoryUrl(forPath path: String) -> URL? {
     guard !path.isEmpty else { return nil }
     let pathUrl = URL(fileURLWithPath: path)

@@ -19,7 +19,8 @@ struct SwiftDiffusionApp: App {
   
   let currentPrompt = PromptModel()
   let modelManangerViewModel = ModelManagerViewModel()
-  let loraModelsManager = LoraModelsManager()
+  
+  let loraModelsManager = ModelManager<LoraModel>()
   
   init() {
     let fileManager = FileManager.default

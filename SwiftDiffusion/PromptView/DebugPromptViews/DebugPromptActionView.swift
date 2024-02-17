@@ -11,7 +11,7 @@ struct DebugPromptActionView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var loraModelsManager: LoraModelsManager
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
@@ -53,7 +53,7 @@ struct DebugPromptActionView: View {
             Spacer()
             Button("loraModels()") {
               Task {
-                let outputText = "\(loraModelsManager.loraModels)"
+                let outputText = "\(loraModelsManager.models)"
                 await MainActor.run {
                   setNewConsoleOutputText(outputText)
                 }

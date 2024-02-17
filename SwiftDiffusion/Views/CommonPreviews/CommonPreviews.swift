@@ -14,7 +14,7 @@ struct CommonPreviews {
     let sidebarViewModelPreview = SidebarViewModel()
     let promptModelPreview = PromptModel()
     let modelManagerViewModelPreview = ModelManagerViewModel()
-    let loraModelsManagerPreview = LoraModelsManager()
+    let loraModelsManagerPreview = ModelManager<LoraModel>()
     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
     return AnyView(EmptyView())
       .environmentObject(sidebarViewModelPreview)
@@ -34,7 +34,7 @@ struct CommonPreviews {
     promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
     
     let modelManagerViewModelPreview = ModelManagerViewModel()
-    let loraModelsManagerPreview = LoraModelsManager()
+    let loraModelsManagerPreview = ModelManager<LoraModel>()
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
@@ -54,7 +54,7 @@ struct CommonPreviews {
     promptModelPreview.negativePrompt = "sample, negative, prompt"
     promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
     let modelManagerViewModelPreview = ModelManagerViewModel()
-    let loraModelsManagerPreview = LoraModelsManager()
+    let loraModelsManagerPreview = ModelManager<LoraModel>()
     
     return ContentView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)

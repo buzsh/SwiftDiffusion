@@ -35,7 +35,7 @@ struct ContentView: View {
   
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var loraModelsManager: LoraModelsManager
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PromptEditorView: View {
-  @EnvironmentObject var loraModelsManager: LoraModelsManager
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   var label: String
   @Binding var text: String
@@ -45,16 +45,16 @@ struct PromptEditorView: View {
         .animation(.easeInOut(duration: 0.15), value: isFocused)
         .onChange(of: isFocused) {
           withAnimation(.easeInOut(duration: 0.25)) {
-            showMenu = isFocused && !loraModelsManager.loraModels.isEmpty
+            showMenu = isFocused && !loraModelsManager.models.isEmpty
           }
         }
       
-      if !loraModelsManager.loraModels.isEmpty && isFocused {
+      if !loraModelsManager.models.isEmpty && isFocused {
         HStack {
           HalfMaxWidthView {}
           
           Menu {
-            ForEach(loraModelsManager.loraModels, id: \.id) { lora in
+            ForEach(loraModelsManager.models, id: \.id) { lora in
               Button(lora.name) {
                 let loraSyntax = "<lora:\(lora.alias):1>"
                 text += (text.isEmpty ? "" : " ") + loraSyntax
@@ -80,8 +80,8 @@ struct PromptEditorView: View {
 }
 
 #Preview {
-  let loraModelsManagerPreview = LoraModelsManager()
-  loraModelsManagerPreview.loraModels = [
+  let loraModelsManagerPreview = ModelManager<LoraModel>()
+  loraModelsManagerPreview.models = [
     LoraModel(name: "Some Lora", alias: "some_lora", path: "/path/to/some_lora"),
     LoraModel(name: "Another Lora", alias: "another_lora", path: "/path/to/another_lora")
   ]
@@ -94,9 +94,9 @@ struct PromptEditorView: View {
 }
 
 extension CommonPreviews {
-  static var previewLoraModelsManager: LoraModelsManager {
-    let loraModelsManager = LoraModelsManager()
-    loraModelsManager.loraModels = [
+  static var previewLoraModelsManager: ModelManager<LoraModel> {
+    let loraModelsManager = ModelManager<LoraModel>()
+    loraModelsManager.models = [
       LoraModel(name: "Some Lora", alias: "some_lora", path: "/path/to/some_lora"),
       LoraModel(name: "Another Lora", alias: "another_lora", path: "/path/to/another_lora")
     ]
