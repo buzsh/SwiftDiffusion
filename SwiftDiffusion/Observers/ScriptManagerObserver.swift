@@ -50,6 +50,7 @@ class ScriptManagerObserver {
   private func scriptStateDidChange(_ newState: ScriptState) {
     Debug.log("scriptStateDidChange newState: \(newState)")
     if newState.isActive {
+      Debug.log("newState.isActive")
       modelManagerViewModel.startObservingModelDirectories()
       loraModelsManager.startObservingLoraDirectory()
     }

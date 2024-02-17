@@ -63,6 +63,7 @@ struct DebugPromptActionView: View {
           }
           
           HStack {
+            Spacer()
             Button("Log Prompt") {
               logPromptProperties()
             }
@@ -82,6 +83,7 @@ struct DebugPromptActionView: View {
                 }
               }
             }
+            Spacer()
           }
         }
         .padding(.horizontal)
