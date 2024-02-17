@@ -31,12 +31,16 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var loraModelsManager: LoraModelsManager
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager
+  
+  @State private var scriptManagerObserver: ScriptManagerObserver?
   
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
@@ -81,6 +85,8 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings)
+      
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }
