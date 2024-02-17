@@ -12,15 +12,22 @@ class ScriptManagerObserver {
   var scriptManager: ScriptManager
   var userSettings: UserSettings
   
+  /// DEPRECATED
   var modelManagerViewModel: ModelManagerViewModel
+  
+  var optionsModelManager: OptionsModelManager
+  var pythonCheckpointModelsManager: ModelManager<PythonCheckpointModel>
   var loraModelsManager: ModelManager<LoraModel>
   
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, loraModelsManager: ModelManager<LoraModel>) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, pythonCheckpointModelsManager: ModelManager<PythonCheckpointModel>, optionsModelManager: OptionsModelManager, loraModelsManager: ModelManager<LoraModel>) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
     self.modelManagerViewModel = modelManagerViewModel
+    
+    self.optionsModelManager = optionsModelManager
+    self.pythonCheckpointModelsManager = pythonCheckpointModelsManager
     self.loraModelsManager = loraModelsManager
     
     setupObservers()
@@ -34,9 +41,17 @@ class ScriptManagerObserver {
       }
       .store(in: &cancellables)
     
+    /// DEPRECATED
+    /*
     userSettings.$stableDiffusionModelsPath
       .sink { [weak self] newPath in
         self?.stableDiffusionModelsPathDidChange(newPath)
+      }
+      .store(in: &cancellables)
+    */
+    userSettings.$pythonCheckpointModelsPath
+      .sink { [weak self] newPath in
+        self?.pythonCheckpointDirectoryPathDidChange(newPath)
       }
       .store(in: &cancellables)
     
@@ -51,15 +66,27 @@ class ScriptManagerObserver {
     Debug.log("scriptStateDidChange newState: \(newState)")
     if newState.isActive {
       Debug.log("newState.isActive")
-      modelManagerViewModel.startObservingModelDirectories()
+      //modelManagerViewModel.startObservingModelDirectories()
+      
+      pythonCheckpointModelsManager.startObservingDirectory()
+      
+      optionsModelManager.fetchOptionsModel()
+      
       loraModelsManager.startObservingDirectory()
     }
   }
   
+  /// DEPRECATED
   private func stableDiffusionModelsPathDidChange(_ newPath: String) {
     Debug.log("stableDiffusionModelsPathDidChange newPath: \(newPath)")
     modelManagerViewModel.stopObservingModelDirectories()
     modelManagerViewModel.startObservingModelDirectories()
+  }
+  
+  private func pythonCheckpointDirectoryPathDidChange(_ newPath: String = "") {
+    Debug.log("pythonCheckpointDirectoryPathDidChange newPath: \(newPath)")
+    pythonCheckpointModelsManager.stopObservingDirectory()
+    pythonCheckpointModelsManager.startObservingDirectory()
   }
   
   private func loraDirectoryPathDidChange(_ newPath: String = "") {

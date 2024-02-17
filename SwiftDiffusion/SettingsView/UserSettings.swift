@@ -28,11 +28,18 @@ class UserSettings: ObservableObject {
   @Published var webuiShellPath: String {
     didSet { store.set(webuiShellPath, forKey: "webuiShellPath") }
   }
+  /// **DEPRECATED:**
   /// Path to the directory containing the Stable Diffusion models.
   /// This setting is essential for the application to locate and use the stable diffusion model checkpoints.
   /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
   @Published var stableDiffusionModelsPath: String {
     didSet { store.set(stableDiffusionModelsPath, forKey: "stableDiffusionModelsPath") }
+  }
+  /// Path to the directory containing the Stable Diffusion models.
+  /// This setting is essential for the application to locate and use the stable diffusion model checkpoints.
+  /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
+  @Published var pythonCheckpointModelsPath: String {
+    didSet { store.set(pythonCheckpointModelsPath, forKey: "pythonCheckpointModelsPath") }
   }
   /// Custom directory path chosen by the user for saving image outputs.
   /// Allows users to specify a preferred location for saving generated images.
@@ -129,7 +136,10 @@ class UserSettings: ObservableObject {
     
     self.alwaysShowSettingsHelp = store.bool(forKey: "alwaysShowSettingsHelp")
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
+    /// DEPRECATED
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
+    
+    self.pythonCheckpointModelsPath = store.string(forKey: "pythonCheckpointModelsPath") ?? ""
     self.loraDirectoryPath = store.string(forKey: "loraDirectoryPath") ?? ""
     
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""

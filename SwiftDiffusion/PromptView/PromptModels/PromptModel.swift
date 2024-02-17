@@ -12,6 +12,10 @@ class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
   
   @Published var selectedModel: ModelItem?
+  
+  //@Published var selectedCoreMlCheckpointModel: CoreMlCheckpointModel?
+  @Published var selectedPythonCheckpointModel: PythonCheckpointModel?
+  
   @Published var samplingMethod: String?
   
   @Published var positivePrompt: String = ""
@@ -39,6 +43,10 @@ extension PromptModel {
     self.isWorkspaceItem = model.isWorkspaceItem
     
     self.selectedModel = model.selectedModel
+    
+    //self.selectedCoreMlCheckpointModel = model.selectedCoreMlCheckpointModel
+    self.selectedPythonCheckpointModel = model.selectedPythonCheckpointModel
+    
     self.samplingMethod = model.samplingMethod
     
     self.positivePrompt = model.positivePrompt

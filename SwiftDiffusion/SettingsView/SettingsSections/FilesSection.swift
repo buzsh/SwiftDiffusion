@@ -23,9 +23,16 @@ struct FilesSection: View {
       await FilePickerService.browseForShellFile()
     }
     
-    BrowseFileRow(labelText: "Stable diffusion models",
+    // MARK: DEPRECATED
+    BrowseFileRow(labelText: "DEPRECATED: Stable diffusion models",
                   placeholderText: "../stable-diffusion-webui/models/Stable-diffusion/",
                   textValue: $userSettings.stableDiffusionModelsPath) {
+      await FilePickerService.browseForDirectory()
+    }
+    
+    BrowseFileRow(labelText: "Stable diffusion models",
+                  placeholderText: "../stable-diffusion-webui/models/Stable-diffusion/",
+                  textValue: $userSettings.pythonCheckpointModelsPath) {
       await FilePickerService.browseForDirectory()
     }
     

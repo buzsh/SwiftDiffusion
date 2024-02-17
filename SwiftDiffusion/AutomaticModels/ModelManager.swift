@@ -51,6 +51,32 @@ class ModelManager<T: Decodable & EndpointRepresentable>: ObservableObject {
   }
 }
 
+/*
+class OptionsManager<T: Decodable & EndpointRepresentable>: ObservableObject {
+  @Published var options: T
+  
+  @Published var errorMessage: String?
+  @Published var showError: Bool = false
+  
+  func loadOptions() {
+    Task {
+      do {
+        let options = try await AutomaticApiService.shared.fetchDataItem(for: T.self)
+        DispatchQueue.main.async {
+          self.options = options
+          self.showError = false
+        }
+      } catch {
+        DispatchQueue.main.async {
+          self.errorMessage = "Failed to load models: \(error.localizedDescription)"
+          Debug.log(self.errorMessage)
+          self.showError = true
+        }
+      }
+    }
+  }
+}
+*/
 
 // Boilerplate code for SwiftUI:
 /*

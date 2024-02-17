@@ -43,3 +43,8 @@ extension PythonCheckpointModel: EndpointRepresentable {
   }
 }
 
+extension PythonCheckpointModel: Equatable {
+  static func == (lhs: PythonCheckpointModel, rhs: PythonCheckpointModel) -> Bool {
+    return lhs.id == rhs.id
+  }
+}

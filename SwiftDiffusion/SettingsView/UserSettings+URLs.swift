@@ -35,6 +35,10 @@ extension UserSettings {
     return directoryUrl(forPath: stableDiffusionModelsPath)
   }
   
+  var pythonCheckpointDirectoryUrl: URL? {
+    return directoryUrl(forPath: stableDiffusionModelsPath)
+  }
+  
   var loraDirectoryUrl: URL? {
     return directoryUrl(forPath: loraDirectoryPath)
   }

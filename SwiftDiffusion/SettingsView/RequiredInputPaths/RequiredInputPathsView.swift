@@ -47,11 +47,6 @@ struct RequiredInputPathsView: View {
             }
             
           }
-          .onChange(of: userSettings.stableDiffusionModelsPath) {
-            Task {
-              await modelManagerViewModel.loadModels()
-            }
-          }
           
         }
         .padding(.horizontal, 16)

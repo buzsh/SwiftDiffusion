@@ -30,6 +30,10 @@ class AutomaticApiService {
     
     let (data, response) = try await URLSession.shared.data(for: request)
     
+    if let jsonString = String(data: data, encoding: .utf8) {
+      Debug.log("   ######\n     Raw JSON Response:\n     \n \(jsonString)")
+    }
+    
     guard let httpResponse = response as? HTTPURLResponse,
           (200...299).contains(httpResponse.statusCode) else {
       let statusCode = (response as? HTTPURLResponse)?.statusCode

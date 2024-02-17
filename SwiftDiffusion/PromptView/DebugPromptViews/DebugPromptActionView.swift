@@ -11,6 +11,8 @@ struct DebugPromptActionView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  
+  @EnvironmentObject var optionsModelManager: OptionsModelManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var scriptManager: ScriptManager
@@ -59,6 +61,11 @@ struct DebugPromptActionView: View {
                 }
               }
             }
+            
+            Button("log OptionsModel") {
+              Debug.log(optionsModelManager.optionsModel)
+            }
+            
             Spacer()
           }
           

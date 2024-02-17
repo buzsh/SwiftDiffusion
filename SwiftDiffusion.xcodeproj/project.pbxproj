@@ -28,6 +28,8 @@
 		2916F33B2B728633001D14B9 /* FileOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33A2B728633001D14B9 /* FileOutlineView.swift */; };
 		2916F33D2B72867C001D14B9 /* FileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33C2B72867C001D14B9 /* FileRowView.swift */; };
 		2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */; };
+		292CE8042B815BF200116D60 /* OptionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8032B815BF200116D60 /* OptionsModel.swift */; };
+		292CE8062B81616800116D60 /* OptionsModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8052B81616800116D60 /* OptionsModelManager.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
 		2942B07A2B7BCD5D00D1E0DE /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */; };
@@ -129,6 +131,8 @@
 		2916F33A2B728633001D14B9 /* FileOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOutlineView.swift; sourceTree = "<group>"; };
 		2916F33C2B72867C001D14B9 /* FileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailLoader.swift; sourceTree = "<group>"; };
+		292CE8032B815BF200116D60 /* OptionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsModel.swift; sourceTree = "<group>"; };
+		292CE8052B81616800116D60 /* OptionsModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsModelManager.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
 		2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
@@ -314,6 +318,15 @@
 				293336442B72A3C6007237AA /* Extensions */,
 			);
 			path = DetailView;
+			sourceTree = "<group>";
+		};
+		292CE8022B815BE200116D60 /* OptionsModel */ = {
+			isa = PBXGroup;
+			children = (
+				292CE8032B815BF200116D60 /* OptionsModel.swift */,
+				292CE8052B81616800116D60 /* OptionsModelManager.swift */,
+			);
+			path = OptionsModel;
 			sourceTree = "<group>";
 		};
 		293336442B72A3C6007237AA /* Extensions */ = {
@@ -537,6 +550,7 @@
 			children = (
 				29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */,
 				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
+				292CE8022B815BE200116D60 /* OptionsModel */,
 				29D4C2222B81463E003B907A /* PythonCheckpointModel */,
 				29A1E0B72B80F44500B18AC1 /* LoraModel */,
 			);
@@ -770,6 +784,7 @@
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
+				292CE8042B815BF200116D60 /* OptionsModel.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,
@@ -830,6 +845,7 @@
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
+				292CE8062B81616800116D60 /* OptionsModelManager.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				29145E782B77DCAE00BFA64B /* PromptBottomStatusBar.swift in Sources */,

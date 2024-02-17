@@ -117,3 +117,59 @@ extension PromptView {
   
 }
 
+
+/*
+extension PromptView {
+  @MainActor
+  /// Update automatic1111 currently loaded model checkpoint
+  func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+    let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
+    var request = URLRequest(url: endpoint)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    guard let sdModelCheckpoint = modelItem.sdModel else {
+      completion(.failure(.nilCheckpoint))
+      return
+    }
+    
+    Debug.log("[API] attempting to POST \(modelItem):\n > \(sdModelCheckpoint.title)")
+    
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint.title)
+    do {
+      request.httpBody = try JSONEncoder().encode(requestBody)
+    } catch {
+      completion(.failure(.encodingError(error.localizedDescription)))
+      return
+    }
+    
+    Task {
+      do {
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+          completion(.failure(.invalidServerResponse))
+          return
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+          scriptManager.modelLoadState = .done
+          completion(.success("Update successful for model: \(sdModelCheckpoint)."))
+        case 422:
+          scriptManager.modelLoadState = .failed
+          let decoder = JSONDecoder()
+          let validationError = try decoder.decode(ValidationErrorResponse.self, from: data)
+          let errorMsg = validationError.detail.map { "\($0.msg)" }.joined(separator: ", ")
+          completion(.failure(.validationError("Validation error: \(errorMsg)")))
+        default:
+          completion(.failure(.unexpectedStatusCode(httpResponse.statusCode)))
+        }
+      } catch {
+        completion(.failure(.requestFailure(error.localizedDescription)))
+      }
+    }
+  }
+  
+}
+*/
