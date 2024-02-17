@@ -34,10 +34,11 @@ struct ModelManagerView: View {
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
+        /*
         Button("Reveal in Finder") {
           openUserModelsFolder()
         }
-        
+        */
         Button("Refresh") {
           Task {
             await modelManagerViewModel.loadModels()
