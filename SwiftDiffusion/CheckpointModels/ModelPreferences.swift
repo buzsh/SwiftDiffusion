@@ -1,42 +1,11 @@
 //
-//  ModelItem.swift
+//  ModelPreferences.swift
 //  SwiftDiffusion
 //
-//  Created by Justin Bush on 2/8/24.
+//  Created by Justin Bush on 2/17/24.
 //
 
 import Foundation
-import Combine
-
-@MainActor
-class ModelItem: ObservableObject, Identifiable {
-  let id = UUID()
-  let name: String
-  let type: ModelType
-  let url: URL
-  var isDefaultModel: Bool = false
-  var sdModel: SdModel?
-
-  @Published var preferences: ModelPreferences
-  
-  init(name: String, type: ModelType, url: URL, isDefaultModel: Bool = false, sdModel: SdModel? = nil) {
-    self.name = name
-    self.type = type
-    self.url = url
-    self.isDefaultModel = isDefaultModel
-    self.sdModel = sdModel
-    self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
-  }
-  
-  func setSdModel(_ model: SdModel) {
-    self.sdModel = model
-  }
-}
-
-enum ModelType {
-  case coreMl
-  case python
-}
 
 @MainActor
 class ModelPreferences: ObservableObject {
@@ -81,11 +50,5 @@ extension ModelPreferences {
     self.batchCount = promptModel.batchCount
     self.batchSize = promptModel.batchSize
     self.seed = promptModel.seed
-  }
-}
-
-extension ModelItem: Equatable {
-  static func == (lhs: ModelItem, rhs: ModelItem) -> Bool {
-    return lhs.id == rhs.id
   }
 }
