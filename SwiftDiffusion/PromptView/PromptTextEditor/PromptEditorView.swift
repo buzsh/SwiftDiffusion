@@ -13,6 +13,7 @@ struct PromptEditorView: View {
   var label: String
   @Binding var text: String
   @FocusState private var isFocused: Bool
+  @State private var showMenu = false
   
   var body: some View {
     VStack(alignment: .leading) {
@@ -42,6 +43,11 @@ struct PromptEditorView: View {
         )
         .focused($isFocused)
         .animation(.easeInOut(duration: 0.15), value: isFocused)
+        .onChange(of: isFocused) {
+          withAnimation(.easeInOut(duration: 0.25)) {
+            showMenu = isFocused && !loraModelsManager.loraModels.isEmpty
+          }
+        }
       
       if !loraModelsManager.loraModels.isEmpty && isFocused {
         HStack {
@@ -59,12 +65,12 @@ struct PromptEditorView: View {
           }
         }
         .frame(height: 30)
-        .transition(.opacity.combined(with: .scale))
+        .opacity(showMenu ? 1 : 0)
+        .scaleEffect(showMenu ? 1 : 0.95)
       }
       
     }
     .padding(.bottom, 10)
-    .animation(.easeInOut(duration: 0.5), value: loraModelsManager.loraModels.isEmpty && isFocused)
   }
   
   var wordCount: Int {
