@@ -48,16 +48,16 @@ struct DebugPromptActionView: View {
             .padding(.vertical, 2)
           }
           
+          
           HStack {
             Spacer()
-            Button("getLoras()") {
-              Task {
-                await loraModelsManager.getLorasFromApi()
-                setNewConsoleOutputText("loraModelsManager.getLorasFromApi()")
-              }
-            }
             Button("loraModels()") {
-              setNewConsoleOutputText("\(loraModelsManager.loraModels)")
+              Task {
+                let outputText = "\(loraModelsManager.loraModels)"
+                await MainActor.run {
+                  setNewConsoleOutputText(outputText)
+                }
+              }
             }
             Spacer()
           }

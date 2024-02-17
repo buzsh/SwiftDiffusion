@@ -14,19 +14,23 @@ class AutomaticApiService {
   private init() {}
   
   func request(endpoint: String, httpMethod: String = "GET") async throws -> Data {
-    guard let apiUrl = await scriptManager.serviceUrl,
-          let url = URL(string: apiUrl.appendingPathComponent(endpoint).absoluteString) else {
+    guard let apiUrl = await scriptManager.serviceUrl else {
       throw NetworkError.invalidURL
     }
     
-    var request = URLRequest(url: url)
+    let fullUrl = apiUrl.appendingPathComponent(endpoint)
+    
+    var request = URLRequest(url: fullUrl)
     request.httpMethod = httpMethod
     
     let (data, response) = try await URLSession.shared.data(for: request)
+    
     guard let httpResponse = response as? HTTPURLResponse,
           (200...299).contains(httpResponse.statusCode) else {
-      throw NetworkError.badResponse(statusCode: (response as? HTTPURLResponse)?.statusCode)
+      let statusCode = (response as? HTTPURLResponse)?.statusCode
+      throw NetworkError.badResponse(statusCode: statusCode)
     }
+    
     return data
   }
   
