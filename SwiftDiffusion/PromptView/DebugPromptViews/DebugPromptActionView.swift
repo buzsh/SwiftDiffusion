@@ -11,9 +11,17 @@ struct DebugPromptActionView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var scriptManager: ScriptManager
   @ObservedObject var userSettings = UserSettings.shared
+  
+  @State var consoleOutput: String = ""
+  
+  func setNewConsoleOutputText(_ output: String) {
+    consoleOutput = output
+    Debug.log(output)
+  }
   
   var body: some View {
     if userSettings.showDeveloperInterface {
@@ -21,28 +29,41 @@ struct DebugPromptActionView: View {
         Spacer()
         VStack(alignment: .leading) {
           
-          HStack {
-            
-            Spacer()
-            
-            if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-              Text("isWorkspaceItem: true")
-            } else {
-              Text("isWorkspaceItem: false")
+          if !consoleOutput.isEmpty {
+            HStack {
+              Spacer()
+              Button(action: {
+                setNewConsoleOutputText("")
+              }) {
+                Text("Clear Console")
+                  .font(.system(size: 10))
+              }
+              .buttonStyle(.accessoryBar)
             }
-            
-            Divider()
-            
-            if let timestamp = sidebarViewModel.selectedSidebarItem?.timestamp {
-              Text("Created: \(timestamp.description)")
+            HStack {
+              TextEditor(text: $consoleOutput)
+                .font(.system(size: 9, design: .monospaced))
+                .frame(minHeight: 10, idealHeight: 30, maxHeight: 80)
             }
-            
-            Spacer()
-            
+            .padding(.vertical, 2)
           }
-          .frame(height: 24)
+          
           
           HStack {
+            Spacer()
+            Button("loraModels()") {
+              Task {
+                let outputText = "\(loraModelsManager.models)"
+                await MainActor.run {
+                  setNewConsoleOutputText(outputText)
+                }
+              }
+            }
+            Spacer()
+          }
+          
+          HStack {
+            Spacer()
             Button("Log Prompt") {
               logPromptProperties()
             }
@@ -62,10 +83,7 @@ struct DebugPromptActionView: View {
                 }
               }
             }
-            
-            Button("Log isWorkspaceItem") {
-              Debug.log("PromptModel.isWorkspace: \(currentPrompt.isWorkspaceItem)")
-            }
+            Spacer()
           }
         }
         .padding(.horizontal)

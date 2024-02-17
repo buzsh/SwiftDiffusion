@@ -140,6 +140,8 @@ struct SidebarView: View {
     
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image
+    } else {
+      selectedImage = nil
     }
   }
   

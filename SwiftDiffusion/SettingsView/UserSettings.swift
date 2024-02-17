@@ -40,6 +40,12 @@ class UserSettings: ObservableObject {
   @Published var outputDirectoryPath: String {
     didSet { store.set(outputDirectoryPath, forKey: "outputDirectoryPath") }
   }
+  /// Path to the directory containing the Stable Diffusion models.
+  /// This setting is essential for the application to locate and use the stable diffusion model checkpoints.
+  /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
+  @Published var loraDirectoryPath: String {
+    didSet { store.set(loraDirectoryPath, forKey: "loraDirectoryPath") }
+  }
   
   
   // MARK: - Developer Settings
@@ -124,6 +130,8 @@ class UserSettings: ObservableObject {
     self.alwaysShowSettingsHelp = store.bool(forKey: "alwaysShowSettingsHelp")
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
+    self.loraDirectoryPath = store.string(forKey: "loraDirectoryPath") ?? ""
+    
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""
     self.killAllPythonProcessesOnTerminate = store.bool(forKey: "killAllPythonProcessesOnTerminate")
     self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch")

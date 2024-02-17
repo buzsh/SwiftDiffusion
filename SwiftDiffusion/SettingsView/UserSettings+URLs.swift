@@ -9,15 +9,32 @@ import Foundation
 
 extension UserSettings {
   
-  var stableDiffusionModelsDirectoryUrl: URL? {
-    guard !stableDiffusionModelsPath.isEmpty else { return nil }
-    let pathUrl = URL(fileURLWithPath: stableDiffusionModelsPath)
+  func modelDirectoryUrl<T>(forType type: T.Type) -> URL? {
+    switch type {
+    case is LoraModel.Type:
+      return directoryUrl(forPath: loraDirectoryPath)
+    default:
+      return nil
+    }
+  }
+  
+  func directoryUrl(forPath path: String) -> URL? {
+    guard !path.isEmpty else { return nil }
+    let pathUrl = URL(fileURLWithPath: path)
     var isDir: ObjCBool = false
-    if FileManager.default.fileExists(atPath: stableDiffusionModelsPath, isDirectory: &isDir), isDir.boolValue {
+    if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
       return pathUrl
     } else {
       return nil
     }
+  }
+  
+  var stableDiffusionModelsDirectoryUrl: URL? {
+    return directoryUrl(forPath: stableDiffusionModelsPath)
+  }
+  
+  var loraDirectoryUrl: URL? {
+    return directoryUrl(forPath: loraDirectoryPath)
   }
   
   var outputDirectoryUrl: URL? {

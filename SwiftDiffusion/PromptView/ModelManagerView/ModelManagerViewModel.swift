@@ -8,7 +8,6 @@
 import Combine
 import SwiftUI
 
-@MainActor
 class ModelManagerViewModel: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
@@ -78,17 +77,6 @@ class ModelManagerViewModel: ObservableObject {
   }
   
   private var scriptManagerObservation: AnyCancellable?
-  /// DEPRECATED:
-  func observeScriptManagerState(scriptManager: ScriptManager) {
-    scriptManagerObservation = scriptManager.$scriptState
-      .sink { [weak self] state in
-        if state == .readyToStart {
-          self?.startObservingModelDirectories()
-        } else {
-          self?.stopObservingModelDirectories()
-        }
-      }
-  }
   
   func stopObservingModelDirectories() {
     coreMlObserver?.stopObserving()

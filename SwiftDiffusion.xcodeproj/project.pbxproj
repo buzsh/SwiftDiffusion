@@ -59,6 +59,11 @@
 		2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */; };
 		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
+		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
+		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
+		29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */; };
+		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
+		29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C82B81374500B18AC1 /* ModelManager.swift */; };
 		29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */; };
 		29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D72B755965009B6F03 /* AppDirectory.swift */; };
 		29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* ModelPreferencesView.swift */; };
@@ -156,6 +161,11 @@
 		2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
 		2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
 		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
+		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
+		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
+		29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPromptObserver.swift; sourceTree = "<group>"; };
+		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
+		29A1E0C82B81374500B18AC1 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFileStructure.swift; sourceTree = "<group>"; };
 		29B1D9D72B755965009B6F03 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
 		29B571782B756F320057DD50 /* ModelPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPreferencesView.swift; sourceTree = "<group>"; };
@@ -210,7 +220,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		290A34AE2B7C432100963C6E /* Sidebar */ = {
+		290A34AE2B7C432100963C6E /* SidebarView */ = {
 			isa = PBXGroup;
 			children = (
 				291635A42B7EAEAB00D47EEF /* Components */,
@@ -220,7 +230,7 @@
 				290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */,
 				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
 			);
-			path = Sidebar;
+			path = SidebarView;
 			sourceTree = "<group>";
 		};
 		29145E6D2B77D80400BFA64B /* DebugPromptViews */ = {
@@ -315,7 +325,6 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
-				290A34AE2B7C432100963C6E /* Sidebar */,
 				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
@@ -323,7 +332,7 @@
 				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
 				29145E702B77D94900BFA64B /* PromptStatusBarViews */,
 				29B571802B75AE250057DD50 /* PromptRows */,
-				2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */,
+				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
 			);
 			path = PromptView;
 			sourceTree = "<group>";
@@ -470,7 +479,10 @@
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
+				29A1E0C02B810C8C00B18AC1 /* Observers */,
+				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
 				29C0F37A2B7AB22F0017DD6B /* ContentView */,
+				290A34AE2B7C432100963C6E /* SidebarView */,
 				293336472B72A5CE007237AA /* PromptView */,
 				2916F3352B728586001D14B9 /* DetailView */,
 				2916F3322B7278D4001D14B9 /* SettingsView */,
@@ -516,6 +528,41 @@
 				29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */,
 			);
 			path = ScriptManager;
+			sourceTree = "<group>";
+		};
+		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */,
+				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
+				29A1E0B72B80F44500B18AC1 /* Lora */,
+			);
+			path = AutomaticModels;
+			sourceTree = "<group>";
+		};
+		29A1E0B72B80F44500B18AC1 /* Lora */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0B82B80F45900B18AC1 /* LoraModel.swift */,
+			);
+			path = Lora;
+			sourceTree = "<group>";
+		};
+		29A1E0C02B810C8C00B18AC1 /* Observers */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */,
+				29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */,
+			);
+			path = Observers;
+			sourceTree = "<group>";
+		};
+		29A1E0C32B81136300B18AC1 /* PromptTextEditor */ = {
+			isa = PBXGroup;
+			children = (
+				2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */,
+			);
+			path = PromptTextEditor;
 			sourceTree = "<group>";
 		};
 		29B1D9D62B755929009B6F03 /* AppStructure */ = {
@@ -713,8 +760,10 @@
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
+				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,
 				29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */,
+				29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */,
 				29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				29708F8D2B7EB2BE004A95AD /* HoverToggleButton.swift in Sources */,
@@ -764,6 +813,7 @@
 				2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */,
 				290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */,
 				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
+				29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */,
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
@@ -773,11 +823,13 @@
 				29145E782B77DCAE00BFA64B /* PromptBottomStatusBar.swift in Sources */,
 				29C0F3842B7ABF2E0017DD6B /* PromptSection.swift in Sources */,
 				2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */,
+				29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */,
 				29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */,
 				29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */,
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
+				29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,

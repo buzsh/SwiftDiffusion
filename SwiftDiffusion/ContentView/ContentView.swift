@@ -31,12 +31,16 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager: ScriptManager
+  
+  @State private var scriptManagerObserver: ScriptManagerObserver?
   
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
@@ -49,7 +53,7 @@ struct ContentView: View {
   
   // Detail
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
-  @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
+  @State var selectedImage: NSImage? = nil
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   @State var lastSavedImageUrls: [URL] = []
   
@@ -61,6 +65,7 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       SidebarView(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
+        .frame(minWidth: 190)
     } content: {
       switch selectedView {
       case .prompt:
@@ -81,6 +86,8 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, modelManagerViewModel: modelManagerViewModel, loraModelsManager: loraModelsManager)
+      
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
       }

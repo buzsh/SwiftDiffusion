@@ -33,32 +33,32 @@ struct DetailView: View {
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-        } else if NSImage(named: "DiffusionPlaceholder") != nil {
-          Image(nsImage: NSImage(named: "DiffusionPlaceholder")!)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
         } else {
-          Rectangle()
-            .foregroundColor(.gray)
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+          Spacer()
+          HStack {
+            Spacer()
+            Image(systemName: "photo") // app.dashed
+              .font(.system(size: 30, weight: .light))
+              .foregroundColor(Color.secondary)
+              .opacity(0.5)
+            Spacer()
+          }
+          Spacer()
         }
+        
       }
       .frame(minHeight: 200, idealHeight: 400)
       
       HStack(spacing: 0) {
         Button(action: {
-            if let previousImageNode = fileHierarchyObject.previousImage(currentPath: lastSelectedImagePath) {
-                if let image = NSImage(contentsOfFile: previousImageNode.fullPath) {
-                    self.selectedImage = image
-                    self.lastSelectedImagePath = previousImageNode.fullPath
-                }
+          if let previousImageNode = fileHierarchyObject.previousImage(currentPath: lastSelectedImagePath) {
+            if let image = NSImage(contentsOfFile: previousImageNode.fullPath) {
+              self.selectedImage = image
+              self.lastSelectedImagePath = previousImageNode.fullPath
             }
+          }
         }) {
-            Image(systemName: "arrow.left")
+          Image(systemName: "arrow.left")
         }
         .buttonStyle(BorderlessButtonStyle())
         .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
@@ -134,14 +134,14 @@ struct DetailView: View {
         Divider()
         
         Button(action: {
-            if let nextImageNode = fileHierarchyObject.nextImage(currentPath: lastSelectedImagePath) {
-                if let image = NSImage(contentsOfFile: nextImageNode.fullPath) {
-                    self.selectedImage = image
-                    self.lastSelectedImagePath = nextImageNode.fullPath
-                }
+          if let nextImageNode = fileHierarchyObject.nextImage(currentPath: lastSelectedImagePath) {
+            if let image = NSImage(contentsOfFile: nextImageNode.fullPath) {
+              self.selectedImage = image
+              self.lastSelectedImagePath = nextImageNode.fullPath
             }
+          }
         }) {
-            Image(systemName: "arrow.right")
+          Image(systemName: "arrow.right")
         }
         .buttonStyle(BorderlessButtonStyle())
         .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
@@ -155,7 +155,7 @@ struct DetailView: View {
       .frame(minWidth: 250, idealWidth: 300, maxWidth: .infinity)
       .frame(minHeight: 140, idealHeight: 200)
     }
-
+    
   }
 }
 
