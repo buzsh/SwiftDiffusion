@@ -330,7 +330,7 @@
 				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
 				29145E702B77D94900BFA64B /* PromptStatusBarViews */,
 				29B571802B75AE250057DD50 /* PromptRows */,
-				2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */,
+				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
 			);
 			path = PromptView;
 			sourceTree = "<group>";
@@ -552,6 +552,14 @@
 				29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */,
 			);
 			path = Observers;
+			sourceTree = "<group>";
+		};
+		29A1E0C32B81136300B18AC1 /* PromptTextEditor */ = {
+			isa = PBXGroup;
+			children = (
+				2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */,
+			);
+			path = PromptTextEditor;
 			sourceTree = "<group>";
 		};
 		29B1D9D62B755929009B6F03 /* AppStructure */ = {
