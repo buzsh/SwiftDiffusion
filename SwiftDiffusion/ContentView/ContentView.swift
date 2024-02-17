@@ -53,7 +53,7 @@ struct ContentView: View {
   
   // Detail
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
-  @State var selectedImage: NSImage? = NSImage(named: "DiffusionPlaceholder")
+  @State var selectedImage: NSImage? = nil
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   @State var lastSavedImageUrls: [URL] = []
   
