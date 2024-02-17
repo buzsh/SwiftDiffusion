@@ -17,10 +17,9 @@ struct PromptTopStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    HStack(alignment: .center) {
+    if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
       
-      if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
-        
+      HStack(alignment: .center) {
         if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
           Button(action: {
             sidebarViewModel.queueWorkspaceItemForDeletion()
@@ -29,6 +28,7 @@ struct PromptTopStatusBar: View {
             Text("Close")
           }
           .buttonStyle(.accessoryBar)
+          Spacer()
         } else {
           Button(action: {
             sidebarViewModel.queueSelectedSidebarItemForDeletion()
@@ -37,31 +37,14 @@ struct PromptTopStatusBar: View {
             Text("Delete")
           }
           .buttonStyle(.accessoryBar)
+          Spacer()
         }
-        
-      }
-      
-      Spacer()
-      
-      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
-        Button(action: {
-          if let pasteboardContent = getPasteboardString() {
-            onPaste(pasteboardContent)
-          }
-        }) {
-          Image(systemName: "arrow.up.doc.on.clipboard")
-          Text("Paste Generation Data")
-        }
-        .buttonStyle(.accessoryBar)
-      }
-      
-      if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
         
         if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-          Spacer()
           
           if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
              sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+            Spacer()
             Button(action: {
               sidebarViewModel.queueSelectedSidebarItemForSaving()
             }) {
@@ -71,9 +54,8 @@ struct PromptTopStatusBar: View {
             .buttonStyle(.accessoryBar)
           }
         } else {
-          
+          Spacer()
           Button(action: {
-            
             if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
               let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
               let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
@@ -87,12 +69,12 @@ struct PromptTopStatusBar: View {
           .buttonStyle(.accessoryBar)
         }
         
+        
       }
-      
+      .padding(.horizontal, 12)
+      .frame(height: 30)
+      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
     }
-    .padding(.horizontal, 12)
-    .frame(height: 30)
-    .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
   }
   
   func getPasteboardString() -> String? {

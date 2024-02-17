@@ -10,7 +10,7 @@ import SwiftData
 
 extension Constants {
   struct Sidebar {
-    static let itemTitleLength: Int = 45
+    static let itemTitleLength: Int = 60
   }
 }
 

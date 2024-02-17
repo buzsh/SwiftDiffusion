@@ -41,6 +41,7 @@
 		29708F8D2B7EB2BE004A95AD /* HoverToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */; };
 		29708F902B7EB632004A95AD /* DisplayOptionsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */; };
 		29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F912B7FBECB004A95AD /* VisualEffectView.swift */; };
+		29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */; };
 		297196492B7150B5000F7960 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196482B7150B5000F7960 /* ConsoleView.swift */; };
 		2971964C2B715191000F7960 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971964B2B715191000F7960 /* Constants.swift */; };
 		297196532B71538C000F7960 /* FilePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196522B71538C000F7960 /* FilePickerService.swift */; };
@@ -135,6 +136,7 @@
 		29708F8C2B7EB2BE004A95AD /* HoverToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverToggleButton.swift; sourceTree = "<group>"; };
 		29708F8F2B7EB632004A95AD /* DisplayOptionsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayOptionsBar.swift; sourceTree = "<group>"; };
 		29708F912B7FBECB004A95AD /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
+		29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteGenerationDataStatusBar.swift; sourceTree = "<group>"; };
 		297196482B7150B5000F7960 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
 		2971964B2B715191000F7960 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		297196522B71538C000F7960 /* FilePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerService.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			children = (
 				29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */,
 				29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */,
+				29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */,
 			);
 			path = PromptStatusBarViews;
 			sourceTree = "<group>";
@@ -707,6 +710,7 @@
 				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
+				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,

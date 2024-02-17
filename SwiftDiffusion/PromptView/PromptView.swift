@@ -274,6 +274,13 @@ struct PromptView: View {
         }//Form
       }//ScrollView
       
+      PasteGenerationDataStatusBar(
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
+        }
+      )
+      
       //PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
