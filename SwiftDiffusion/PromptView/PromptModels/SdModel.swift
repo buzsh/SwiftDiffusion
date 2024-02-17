@@ -17,7 +17,7 @@ struct SdModel: Decodable {
   
   enum CodingKeys: String, CodingKey {
     case title
-    case modelName = "model_name" // Corrected key mapping
+    case modelName = "model_name"
     case hash
     case sha256
     case filename
@@ -55,13 +55,10 @@ enum UpdateModelError: Error {
 struct OptionsResponse: Decodable {
   let samplesSave: Bool
   let samplesFormat: String
-  // Add other properties as needed...
   let sdModelCheckpoint: String
-  // Use CodingKeys to match JSON keys with Swift property names
   enum CodingKeys: String, CodingKey {
     case samplesSave = "samples_save"
     case samplesFormat = "samples_format"
-    // Map other properties...
     case sdModelCheckpoint = "sd_model_checkpoint"
   }
 }
