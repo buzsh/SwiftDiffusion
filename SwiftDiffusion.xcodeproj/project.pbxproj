@@ -60,7 +60,6 @@
 		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
-		29A1E0BB2B80F46E00B18AC1 /* LoraModelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BA2B80F46E00B18AC1 /* LoraModelsManager.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
 		29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
@@ -163,7 +162,6 @@
 		2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
 		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
-		29A1E0BA2B80F46E00B18AC1 /* LoraModelsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModelsManager.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
 		29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPromptObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
@@ -546,7 +544,6 @@
 			isa = PBXGroup;
 			children = (
 				29A1E0B82B80F45900B18AC1 /* LoraModel.swift */,
-				29A1E0BA2B80F46E00B18AC1 /* LoraModelsManager.swift */,
 			);
 			path = Lora;
 			sourceTree = "<group>";
@@ -836,7 +833,6 @@
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
-				29A1E0BB2B80F46E00B18AC1 /* LoraModelsManager.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
 				29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
