@@ -117,14 +117,9 @@ struct SidebarView: View {
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
-    if index > 0 {
-      return index - 1  // Select the item above if available
-    } else if sidebarItems.count > 1 {
-      // Select the next item in the list if the deleted item was the first
-      return 0
-    } else {
-      return nil // No items left to select
-    }
+    if index > 0 { return index - 1 }
+    else if sidebarItems.count > 1 { return 0 }
+    else { return nil }
   }
   
   private func updateSelection(to index: Int?) {
@@ -362,7 +357,6 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
-        //setNewPromptSidebarItemOnAppear()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -400,14 +394,6 @@ struct SidebarView: View {
       _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
     }
   }
-  
-  /*
-  func setNewPromptSidebarItemOnAppear() {
-    if let newPromptSidebarItem = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true }) {
-      sidebarViewModel.newPromptModelSidebarItem = newPromptItem
-    }
-  }
-   */
   
 }
 

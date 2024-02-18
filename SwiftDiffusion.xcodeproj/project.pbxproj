@@ -65,7 +65,6 @@
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
-		29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
 		29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C82B81374500B18AC1 /* ModelManager.swift */; };
 		29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */; };
@@ -170,7 +169,6 @@
 		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
-		29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPromptObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
 		29A1E0C82B81374500B18AC1 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFileStructure.swift; sourceTree = "<group>"; };
@@ -588,7 +586,6 @@
 			isa = PBXGroup;
 			children = (
 				29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */,
-				29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */,
 				29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */,
 			);
 			path = Observers;
@@ -864,7 +861,6 @@
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
-				29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */,

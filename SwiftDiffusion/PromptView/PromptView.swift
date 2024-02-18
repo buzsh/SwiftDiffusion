@@ -27,6 +27,8 @@ struct PromptView: View {
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   
+  @State var disablePromptView: Bool = false
+  
   @State private var previousSelectedModel: CheckpointModel? = nil
   @State var promptViewHasLoadedInitialModel = false
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
@@ -58,8 +60,16 @@ struct PromptView: View {
     if scriptManager.scriptState.isActive { previousSelectedModel = checkpointModel }
   }
   
+  func updateDisabledPromptViewState() {
+    guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
+    disablePromptView = !isWorkspaceItem
+  }
+  
   func storeChangesOfSelectedSidebarItem() {
-    sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+    }
+    updateDisabledPromptViewState()
   }
   
   var body: some View {
@@ -82,6 +92,12 @@ struct PromptView: View {
           }
         }
       }
+    }
+    .onChange(of: sidebarViewModel.selectedSidebarItem) {
+      updateDisabledPromptViewState()
+    }
+    .onChange(of: sidebarViewModel.itemToSave) {
+      updateDisabledPromptViewState()
     }
     .onChange(of: currentPrompt.isWorkspaceItem) {
       storeChangesOfSelectedSidebarItem()
@@ -232,11 +248,11 @@ struct PromptView: View {
           .frame(minHeight: 90)
           
           VStack {
-            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
               .onChange(of: currentPrompt.positivePrompt) {
                 sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
               }
-            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt, isDisabled: $disablePromptView)
           }
             .padding(.bottom, 6)
           
@@ -271,6 +287,7 @@ struct PromptView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
           // handle application going to background
         }//Form
+        .disabled(disablePromptView)
       }//ScrollView
       
       PasteGenerationDataStatusBar(
