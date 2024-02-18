@@ -40,7 +40,7 @@ struct PromptEditorView: View {
         .padding(4)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(
-          RoundedRectangle(cornerRadius: 10)
+          RoundedRectangle(cornerRadius: 8)
             .stroke(isFocused ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
         )
         .focused($isFocused)

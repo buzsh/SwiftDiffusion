@@ -16,17 +16,15 @@ extension Constants.Layout {
 struct PromptView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
-  
-  @ObservedObject var scriptManager: ScriptManager
-  @ObservedObject var userSettings = UserSettings.shared
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
+  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var userSettings = UserSettings.shared
+  
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
-  
   @State var disablePromptView: Bool = false
   
   func updateDisabledPromptViewState() {
@@ -39,6 +37,87 @@ struct PromptView: View {
       sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
     }
     updateDisabledPromptViewState()
+  }
+  
+  private var leftPane: some View {
+    VStack(spacing: 0) {
+      
+      DebugPromptStatusView(scriptManager: scriptManager)
+      
+      PromptTopStatusBar(
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
+        }
+      )
+      
+      ScrollView {
+        Form {
+          HStack {
+            CheckpointModelMenu(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+            SamplingMethodMenu(currentPrompt: currentPrompt)
+          }
+          .padding(.vertical, Constants.Layout.promptRowPadding)
+          .frame(minHeight: 90)
+          
+          VStack {
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt, isDisabled: $disablePromptView)
+          }
+          .padding(.bottom, 6)
+          
+          DimensionSelectionRow(width: $currentPrompt.width, height: $currentPrompt.height)
+          
+          DetailSelectionRow(cfgScale: $currentPrompt.cfgScale, samplingSteps: $currentPrompt.samplingSteps)
+          
+          HalfSkipClipRow(clipSkip: $currentPrompt.clipSkip)
+          
+          SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
+          //SeedAndClipSkipRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
+          //SeedRowAndClipSkipHalfRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
+          
+          ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
+        }
+        .padding(.leading, 8).padding(.trailing, 16)
+        
+        .onAppear {
+          checkPasteboardAndUpdateFlag()
+          /*
+          if let pasteboardContent = getPasteboardString() {
+            generationDataInPasteboard = userHasGenerationDataInPasteboard(from: pasteboardContent)
+          }
+           */
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
+          Task {
+            await checkPasteboardAndUpdateFlag()
+          }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
+          Debug.log("Application did enter background")
+        } // Form
+        .disabled(disablePromptView)
+      } // ScrollView
+      
+      PasteGenerationDataStatusBar(
+        generationDataInPasteboard: generationDataInPasteboard,
+        onPaste: { pasteboardContent in
+          self.parseAndSetPromptData(from: pasteboardContent)
+        }
+      )
+      
+      // PromptBottomStatusBar()
+      DebugPromptActionView(scriptManager: scriptManager)
+      
+    }
+    .background(Color(NSColor.windowBackgroundColor))
+  }
+  
+  // TODO: PROMPT QUEUE
+  private var rightPane: some View {
+    ConsoleView(scriptManager: scriptManager)
+      .background(Color(NSColor.windowBackgroundColor))
+    
   }
   
   var body: some View {
@@ -107,95 +186,6 @@ struct PromptView: View {
     .onChange(of: currentPrompt.clipSkip) {
       storeChangesOfSelectedSidebarItem()
     }
-  }
-  
-  private var leftPane: some View {
-    VStack(spacing: 0) {
-      
-      DebugPromptStatusView(scriptManager: scriptManager)
-      
-      PromptTopStatusBar(
-        generationDataInPasteboard: generationDataInPasteboard,
-        onPaste: { pasteboardContent in
-          self.parseAndSetPromptData(from: pasteboardContent)
-        }
-      )
-      
-      ScrollView {
-        Form {
-          HStack {
-            
-            //CheckpointModelMenu(scriptManager: scriptManager)
-            CheckpointModelMenu(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
-            // Sampling Menu
-            SamplingMethodMenu(currentPrompt: currentPrompt)
-            
-          }
-          .padding(.vertical, Constants.Layout.promptRowPadding)
-          .frame(minHeight: 90)
-          
-          VStack {
-            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
-              .onChange(of: currentPrompt.positivePrompt) {
-                sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
-              }
-            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt, isDisabled: $disablePromptView)
-          }
-            .padding(.bottom, 6)
-          
-          DimensionSelectionRow(width: $currentPrompt.width, height: $currentPrompt.height)
-          
-          DetailSelectionRow(cfgScale: $currentPrompt.cfgScale, samplingSteps: $currentPrompt.samplingSteps)
-          
-          HalfSkipClipRow(clipSkip: $currentPrompt.clipSkip)
-          
-          SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
-          //SeedAndClipSkipRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
-          //SeedRowAndClipSkipHalfRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
-          
-          ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
-        }
-        .padding(.leading, 8)
-        .padding(.trailing, 16)
-        .onAppear {
-          if let pasteboardContent = getPasteboardString() {
-            if userHasGenerationDataInPasteboard(from: pasteboardContent) {
-              generationDataInPasteboard = true
-            } else {
-              generationDataInPasteboard = false
-            }
-          }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-          Task {
-            await checkPasteboardAndUpdateFlag()
-          }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
-          // handle application going to background
-        }//Form
-        .disabled(disablePromptView)
-      }//ScrollView
-      
-      PasteGenerationDataStatusBar(
-        generationDataInPasteboard: generationDataInPasteboard,
-        onPaste: { pasteboardContent in
-          self.parseAndSetPromptData(from: pasteboardContent)
-        }
-      )
-      
-      //PromptBottomStatusBar()
-      DebugPromptActionView(scriptManager: scriptManager)
-      
-    }
-    .background(Color(NSColor.windowBackgroundColor))
-  }
-  
-  // TODO: PROMPT QUEUE
-  private var rightPane: some View {
-    ConsoleView(scriptManager: scriptManager)
-      .background(Color(NSColor.windowBackgroundColor))
-    
   }
   
 }
