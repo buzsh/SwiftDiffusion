@@ -42,7 +42,6 @@ struct SidebarView: View {
   @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
   @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
   @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
-  
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
@@ -73,7 +72,7 @@ struct SidebarView: View {
     }
   }
   
-  func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
+  func getCurrentPromptToStored() -> (PromptModel, [URL]) {
     return (currentPrompt, lastSavedImageUrls)
   }
   
@@ -109,7 +108,7 @@ struct SidebarView: View {
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
-    itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
+    itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
@@ -336,7 +335,7 @@ struct SidebarView: View {
           selectedItemName = selectedItem.title
           let mapModelData = MapModelData()
           if let storedPromptModel = selectedItem.prompt {
-            let newPrompt = mapModelData.fromArchive(storedPromptModel: storedPromptModel)
+            let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }

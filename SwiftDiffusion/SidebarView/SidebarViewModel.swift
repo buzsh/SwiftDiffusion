@@ -35,7 +35,7 @@ class SidebarViewModel: ObservableObject {
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
       let mapModelData = MapModelData()
-      let updatedPrompt = mapModelData.toArchive(promptModel: prompt)
+      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
       
       if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
         if let newTitle = updatedPrompt?.positivePrompt {
@@ -107,7 +107,7 @@ extension SidebarViewModel {
   func createNewPromptSidebarWorkspaceItem(in model: ModelContext) -> SidebarItem? {
     let mapModelData = MapModelData()
     let newPrompt = PromptModel()
-    guard let storedPromptModel = mapModelData.toArchive(promptModel: newPrompt) else { return nil }
+    guard let storedPromptModel = mapModelData.toStored(promptModel: newPrompt) else { return nil }
     let imageUrls: [URL] = []
     let newSidebarItem = createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: model)
     return newSidebarItem
