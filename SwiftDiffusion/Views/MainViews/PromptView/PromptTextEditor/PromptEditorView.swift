@@ -15,6 +15,8 @@ struct PromptEditorView: View {
   @FocusState private var isFocused: Bool
   @State private var showMenu = false
   
+  @Binding var isDisabled: Bool
+  
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
@@ -38,7 +40,7 @@ struct PromptEditorView: View {
         .padding(4)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(
-          RoundedRectangle(cornerRadius: 10)
+          RoundedRectangle(cornerRadius: 8)
             .stroke(isFocused ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
         )
         .focused($isFocused)
@@ -47,6 +49,10 @@ struct PromptEditorView: View {
           withAnimation(.easeInOut(duration: 0.25)) {
             showMenu = isFocused && !loraModelsManager.models.isEmpty
           }
+        }
+        .disabled(isDisabled)
+        .onChange(of: isDisabled) {
+          if isDisabled { isFocused = false }
         }
       
       if !loraModelsManager.models.isEmpty && isFocused {
@@ -86,10 +92,9 @@ struct PromptEditorView: View {
   ]
   
   @State var promptText: String = "some, positive, prompt, text"
-  return PromptEditorView(label: "Positive Prompt", text: $promptText)
+  return PromptEditorView(label: "Positive Prompt", text: $promptText, isDisabled: .constant(false))
     .frame(width: 400, height: 600)
     .environmentObject(loraModelsManagerPreview)
-    //.environmentObject(CommonPreviews.previewLoraModelsManager)
 }
 
 extension CommonPreviews {

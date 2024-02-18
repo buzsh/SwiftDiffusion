@@ -42,39 +42,25 @@ struct SidebarView: View {
   @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
   @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
   @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
-  
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
-  
   @State private var selectedItemName: String?
+  
   @State private var editingItemId: UUID? = nil
   @State private var draftTitle: String = ""
-  
   @State private var showDeletionAlert: Bool = false
-  
   @State private var sortingOrder: SortingOrder = .mostRecent
+  
+  @State private var selectedModelName: String? = nil
   
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"
   }
   
-  @State private var selectedModelName: String? = nil
-  
   var uniqueModelNames: [String] {
     Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
-  }
-  
-  func saveEditedTitle(_ id: UUID, _ title: String) {
-    if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
-      sidebarItems[index].title = title
-      sidebarViewModel.saveData(in: modelContext)
-    }
-  }
-  
-  func getCurrentPromptToArchive() -> (PromptModel, [URL]) {
-    return (currentPrompt, lastSavedImageUrls)
   }
   
   func newFolderToData(title: String) {
@@ -109,7 +95,7 @@ struct SidebarView: View {
   private func moveSavableItemFromWorkspace() {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
-    itemToSave.prompt = mapModel.toArchive(promptModel: currentPrompt)
+    itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
     itemToSave.timestamp = Date()
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
@@ -117,14 +103,9 @@ struct SidebarView: View {
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
-    if index > 0 {
-      return index - 1  // Select the item above if available
-    } else if sidebarItems.count > 1 {
-      // Select the next item in the list if the deleted item was the first
-      return 0
-    } else {
-      return nil // No items left to select
-    }
+    if index > 0 { return index - 1 }
+    else if sidebarItems.count > 1 { return 0 }
+    else { return nil }
   }
   
   private func updateSelection(to index: Int?) {
@@ -299,10 +280,10 @@ struct SidebarView: View {
                 selectedItemID = item.id
               }
             }
-          }//Section("Uncategorized")
+          } // Section("Uncategorized")
           VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
         }
-      }// List
+      } // List
       .listStyle(SidebarListStyle())
       //.scrollIndicators(.hidden)
       .onChange(of: sidebarViewModel.itemToSave) {
@@ -341,7 +322,7 @@ struct SidebarView: View {
           selectedItemName = selectedItem.title
           let mapModelData = MapModelData()
           if let storedPromptModel = selectedItem.prompt {
-            let newPrompt = mapModelData.fromArchive(storedPromptModel: storedPromptModel)
+            let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }
@@ -362,12 +343,11 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
-        //setNewPromptSidebarItemOnAppear()
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
       
-    }//ZStack
+    } // ZStack
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Button(action: {
@@ -400,14 +380,6 @@ struct SidebarView: View {
       _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
     }
   }
-  
-  /*
-  func setNewPromptSidebarItemOnAppear() {
-    if let newPromptSidebarItem = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true }) {
-      sidebarViewModel.newPromptModelSidebarItem = newPromptItem
-    }
-  }
-   */
   
 }
 

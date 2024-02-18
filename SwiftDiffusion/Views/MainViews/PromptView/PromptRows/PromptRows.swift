@@ -68,7 +68,7 @@ struct DetailSelectionRow: View {
           Text("\(Int(samplingSteps))")
         }
       }
-    }//.padding(.bottom, Constants.Layout.promptRowPadding)
+    }
   }
 }
 

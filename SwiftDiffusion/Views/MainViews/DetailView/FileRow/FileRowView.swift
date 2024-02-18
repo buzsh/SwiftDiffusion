@@ -27,7 +27,6 @@ struct FileRowView: View {
       
       Spacer()
       
-      // Display the dimensions and file size if available
       if let size = thumbnailLoader.imageSize {
         let width = Int(size.width)
         let height = Int(size.height)

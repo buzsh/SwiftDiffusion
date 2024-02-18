@@ -10,24 +10,17 @@ import Combine
 @MainActor
 class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
-  
   @Published var selectedModel: CheckpointModel?
   @Published var samplingMethod: String?
-  
   @Published var positivePrompt: String = ""
   @Published var negativePrompt: String = ""
-  
   @Published var width: Double = 512
   @Published var height: Double = 512
-  
   @Published var cfgScale: Double = 7
   @Published var samplingSteps: Double = 20
-  
   @Published var seed: String = "-1"
-  
   @Published var batchCount: Double = 1
   @Published var batchSize: Double = 1
-  
   @Published var clipSkip: Double = 1
 }
 
@@ -35,26 +28,18 @@ extension PromptModel {
   func updateProperties(from model: PromptModel) {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
     Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointMetadata?.title))")
-    
     self.isWorkspaceItem = model.isWorkspaceItem
-    
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
-    
     self.positivePrompt = model.positivePrompt
     self.negativePrompt = model.negativePrompt
-    
     self.width = model.width
     self.height = model.height
-    
     self.cfgScale = model.cfgScale
     self.samplingSteps = model.samplingSteps
-    
     self.seed = model.seed
-    
     self.batchCount = model.batchCount
     self.batchSize = model.batchSize
-    
     self.clipSkip = model.clipSkip
   }
 }

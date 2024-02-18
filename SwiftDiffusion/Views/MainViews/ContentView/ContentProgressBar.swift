@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+class ProgressViewModel: ObservableObject {
+  @Published var progress: Double = 0 {
+    didSet {
+      Debug.log("Progress updated to \(progress)")
+    }
+  }
+}
+
 struct CustomLinearProgressViewStyle: ProgressViewStyle {
   @Environment(\.colorScheme) var colorScheme
   

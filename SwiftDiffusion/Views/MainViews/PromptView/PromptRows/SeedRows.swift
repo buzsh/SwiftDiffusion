@@ -51,7 +51,7 @@ struct SeedControlButtonLayout: View {
       Debug.log("Shuffle random seed")
       seed = "-1"
     }) {
-      Image(systemName: "shuffle") //"dice"
+      Image(systemName: "shuffle") //dice
     }
     .buttonStyle(BorderlessButtonStyle())
     Button(action: {
@@ -79,7 +79,7 @@ struct SeedAndClipSkipRow: View {
               Debug.log("Shuffle random seed")
               seed = "-1"
             }) {
-              Image(systemName: "shuffle") //"dice"
+              Image(systemName: "shuffle") // dice
             }
             .buttonStyle(BorderlessButtonStyle())
             Button(action: {
@@ -132,7 +132,7 @@ struct SeedRowAndClipSkipHalfRow: View {
           Debug.log("Shuffle random seed")
           seed = "-1"
         }) {
-          Image(systemName: "shuffle") //"dice"
+          Image(systemName: "shuffle") // dice
         }
         .buttonStyle(BorderlessButtonStyle())
         Button(action: {

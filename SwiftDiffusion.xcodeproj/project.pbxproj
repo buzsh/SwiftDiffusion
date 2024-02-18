@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */; };
 		290A34AD2B7C360100963C6E /* SidebarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AC2B7C360100963C6E /* SidebarModel.swift */; };
-		290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */; };
+		290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* MapModelData.swift */; };
 		290A34B22B7C894500963C6E /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B12B7C894500963C6E /* SidebarView.swift */; };
 		290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B32B7D283600963C6E /* SidebarMockDataController.swift */; };
 		290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B52B7D597C00963C6E /* SidebarViewModel.swift */; };
@@ -32,9 +32,10 @@
 		292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80B2B8193E400116D60 /* ImageSaver.swift */; };
 		292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */; };
 		292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80F2B81958700116D60 /* Txt2ImgService.swift */; };
+		292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */; };
+		292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
-		2942B07A2B7BCD5D00D1E0DE /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */; };
 		2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD62B71AEFA002FC885 /* PromptView.swift */; };
 		2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* PromptModel.swift */; };
 		2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */; };
@@ -65,7 +66,6 @@
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
-		29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
 		29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C82B81374500B18AC1 /* ModelManager.swift */; };
 		29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */; };
@@ -112,7 +112,7 @@
 /* Begin PBXFileReference section */
 		290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProgressBar.swift; sourceTree = "<group>"; };
 		290A34AC2B7C360100963C6E /* SidebarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModel.swift; sourceTree = "<group>"; };
-		290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModelMapping.swift; sourceTree = "<group>"; };
+		290A34AF2B7C616A00963C6E /* MapModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModelData.swift; sourceTree = "<group>"; };
 		290A34B12B7C894500963C6E /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		290A34B32B7D283600963C6E /* SidebarMockDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMockDataController.swift; sourceTree = "<group>"; };
 		290A34B52B7D597C00963C6E /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
@@ -135,9 +135,10 @@
 		292CE80B2B8193E400116D60 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageSaver+Composite.swift"; sourceTree = "<group>"; };
 		292CE80F2B81958700116D60 /* Txt2ImgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Txt2ImgService.swift; sourceTree = "<group>"; };
+		292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelMenu.swift; sourceTree = "<group>"; };
+		292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplingMethodMenu.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
-		2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
 		2952BAD62B71AEFA002FC885 /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		2952BAD82B71B79F002FC885 /* PromptModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptModel.swift; sourceTree = "<group>"; };
 		2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
@@ -170,7 +171,6 @@
 		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
-		29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPromptObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
 		29A1E0C82B81374500B18AC1 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFileStructure.swift; sourceTree = "<group>"; };
@@ -230,11 +230,10 @@
 			isa = PBXGroup;
 			children = (
 				291635A42B7EAEAB00D47EEF /* Components */,
+				292CE81C2B81BA3D00116D60 /* MapModelData */,
+				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
-				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
-				290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */,
-				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
 			);
 			path = SidebarView;
 			sourceTree = "<group>";
@@ -248,21 +247,14 @@
 			path = DebugPromptViews;
 			sourceTree = "<group>";
 		};
-		29145E702B77D94900BFA64B /* PromptStatusBarViews */ = {
+		29145E702B77D94900BFA64B /* PromptStatusBar */ = {
 			isa = PBXGroup;
 			children = (
 				29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */,
 				29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */,
 				29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */,
 			);
-			path = PromptStatusBarViews;
-			sourceTree = "<group>";
-		};
-		29145E712B77D95600BFA64B /* PromptModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = PromptModels;
+			path = PromptStatusBar;
 			sourceTree = "<group>";
 		};
 		29145E742B77DBCE00BFA64B /* CommonPreviews */ = {
@@ -307,12 +299,10 @@
 			isa = PBXGroup;
 			children = (
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
-				2942B0782B7BCD4900D1E0DE /* DetailModels */,
-				29C0F3612B79C7E90017DD6B /* ImageDetailViews */,
-				29C0F3692B79D2BA0017DD6B /* FileHierarchy */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
-				2916F33C2B72867C001D14B9 /* FileRowView.swift */,
-				2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */,
+				292CE8252B81C0B300116D60 /* FileRow */,
+				29C0F3692B79D2BA0017DD6B /* FileHierarchy */,
+				29C0F3612B79C7E90017DD6B /* FullscreenImage */,
 				293336442B72A3C6007237AA /* Extensions */,
 			);
 			path = DetailView;
@@ -341,9 +331,93 @@
 		292CE8112B8195A800116D60 /* AutomaticServices */ = {
 			isa = PBXGroup;
 			children = (
+				29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */,
 				292CE80F2B81958700116D60 /* Txt2ImgService.swift */,
 			);
 			path = AutomaticServices;
+			sourceTree = "<group>";
+		};
+		292CE8122B81AE6F00116D60 /* PromptMenus */ = {
+			isa = PBXGroup;
+			children = (
+				292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */,
+				292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */,
+			);
+			path = PromptMenus;
+			sourceTree = "<group>";
+		};
+		292CE8172B81B49300116D60 /* ParseGenerationData */ = {
+			isa = PBXGroup;
+			children = (
+				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
+			);
+			path = ParseGenerationData;
+			sourceTree = "<group>";
+		};
+		292CE81C2B81BA3D00116D60 /* MapModelData */ = {
+			isa = PBXGroup;
+			children = (
+				290A34AF2B7C616A00963C6E /* MapModelData.swift */,
+				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
+			);
+			path = MapModelData;
+			sourceTree = "<group>";
+		};
+		292CE81E2B81BCA000116D60 /* PromptView */ = {
+			isa = PBXGroup;
+			children = (
+				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
+			);
+			path = PromptView;
+			sourceTree = "<group>";
+		};
+		292CE81F2B81BCE100116D60 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				29145E7B2B78110200BFA64B /* ToolbarViews */,
+				2952BADF2B71F64F002FC885 /* CustomViews */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		292CE8222B81BD3C00116D60 /* MainViews */ = {
+			isa = PBXGroup;
+			children = (
+				29C0F37A2B7AB22F0017DD6B /* ContentView */,
+				290A34AE2B7C432100963C6E /* SidebarView */,
+				293336472B72A5CE007237AA /* PromptView */,
+				2916F3352B728586001D14B9 /* DetailView */,
+			);
+			path = MainViews;
+			sourceTree = "<group>";
+		};
+		292CE8232B81BD6700116D60 /* WindowViews */ = {
+			isa = PBXGroup;
+			children = (
+				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
+				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
+				2916F3322B7278D4001D14B9 /* SettingsView */,
+			);
+			path = WindowViews;
+			sourceTree = "<group>";
+		};
+		292CE8242B81BDB000116D60 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				292CE8222B81BD3C00116D60 /* MainViews */,
+				292CE8232B81BD6700116D60 /* WindowViews */,
+				297196472B715061000F7960 /* OtherViews */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		292CE8252B81C0B300116D60 /* FileRow */ = {
+			isa = PBXGroup;
+			children = (
+				2916F33C2B72867C001D14B9 /* FileRowView.swift */,
+				2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */,
+			);
+			path = FileRow;
 			sourceTree = "<group>";
 		};
 		293336442B72A3C6007237AA /* Extensions */ = {
@@ -359,10 +433,8 @@
 			children = (
 				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
-				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
-				29145E712B77D95600BFA64B /* PromptModels */,
-				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
-				29145E702B77D94900BFA64B /* PromptStatusBarViews */,
+				292CE8122B81AE6F00116D60 /* PromptMenus */,
+				29145E702B77D94900BFA64B /* PromptStatusBar */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
 			);
@@ -372,6 +444,7 @@
 		293336482B72A67C007237AA /* DebugViews */ = {
 			isa = PBXGroup;
 			children = (
+				292CE81E2B81BCA000116D60 /* PromptView */,
 				297196482B7150B5000F7960 /* ConsoleView.swift */,
 			);
 			path = DebugViews;
@@ -383,14 +456,6 @@
 				2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */,
 			);
 			path = CustomViews;
-			sourceTree = "<group>";
-		};
-		2942B0782B7BCD4900D1E0DE /* DetailModels */ = {
-			isa = PBXGroup;
-			children = (
-				2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */,
-			);
-			path = DetailModels;
 			sourceTree = "<group>";
 		};
 		2952BADF2B71F64F002FC885 /* CustomViews */ = {
@@ -421,16 +486,14 @@
 			path = DisplayOptionsBar;
 			sourceTree = "<group>";
 		};
-		297196472B715061000F7960 /* Views */ = {
+		297196472B715061000F7960 /* OtherViews */ = {
 			isa = PBXGroup;
 			children = (
 				29145E742B77DBCE00BFA64B /* CommonPreviews */,
-				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
-				29145E7B2B78110200BFA64B /* ToolbarViews */,
-				2952BADF2B71F64F002FC885 /* CustomViews */,
+				292CE81F2B81BCE100116D60 /* Custom */,
 				293336482B72A67C007237AA /* DebugViews */,
 			);
-			path = Views;
+			path = OtherViews;
 			sourceTree = "<group>";
 		};
 		2971964A2B715184000F7960 /* App */ = {
@@ -481,6 +544,7 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8172B81B49300116D60 /* ParseGenerationData */,
 				292CE80A2B8193C200116D60 /* ImageSaver */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29D362382B72E59F006C57B3 /* FileUtility.swift */,
@@ -515,14 +579,8 @@
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
 				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
-				29C0F37A2B7AB22F0017DD6B /* ContentView */,
-				290A34AE2B7C432100963C6E /* SidebarView */,
-				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
-				293336472B72A5CE007237AA /* PromptView */,
-				2916F3352B728586001D14B9 /* DetailView */,
-				2916F3322B7278D4001D14B9 /* SettingsView */,
-				297196472B715061000F7960 /* Views */,
-				2996D0A42B6EE44E00B487D5 /* PythonInterface */,
+				292CE8242B81BDB000116D60 /* Views */,
+				2996D0A42B6EE44E00B487D5 /* ScriptManager */,
 				297196512B715380000F7960 /* Services */,
 				297196692B71A5A2000F7960 /* Utilities */,
 				2971964A2B715184000F7960 /* App */,
@@ -541,14 +599,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		2996D0A42B6EE44E00B487D5 /* PythonInterface */ = {
+		2996D0A42B6EE44E00B487D5 /* ScriptManager */ = {
 			isa = PBXGroup;
 			children = (
 				2971965B2B717672000F7960 /* PythonProcess */,
 				2971965A2B7174AD000F7960 /* FileManagers */,
 				2996D0A52B6EE45E00B487D5 /* ScriptManager */,
 			);
-			path = PythonInterface;
+			path = ScriptManager;
 			sourceTree = "<group>";
 		};
 		2996D0A52B6EE45E00B487D5 /* ScriptManager */ = {
@@ -568,7 +626,6 @@
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
 			isa = PBXGroup;
 			children = (
-				29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */,
 				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
 				292CE8072B8176CA00116D60 /* Checkpoint */,
 				29A1E0B72B80F44500B18AC1 /* Lora */,
@@ -588,7 +645,6 @@
 			isa = PBXGroup;
 			children = (
 				29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */,
-				29A1E0C12B810C9B00B18AC1 /* CurrentPromptObserver.swift */,
 				29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */,
 			);
 			path = Observers;
@@ -622,13 +678,13 @@
 			path = PromptRows;
 			sourceTree = "<group>";
 		};
-		29C0F3612B79C7E90017DD6B /* ImageDetailViews */ = {
+		29C0F3612B79C7E90017DD6B /* FullscreenImage */ = {
 			isa = PBXGroup;
 			children = (
 				29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */,
 				29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */,
 			);
-			path = ImageDetailViews;
+			path = FullscreenImage;
 			sourceTree = "<group>";
 		};
 		29C0F3692B79D2BA0017DD6B /* FileHierarchy */ = {
@@ -790,7 +846,7 @@
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
-				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
+				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
@@ -801,6 +857,7 @@
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
 				29708F8D2B7EB2BE004A95AD /* HoverToggleButton.swift in Sources */,
 				29145E762B77DBDA00BFA64B /* CommonPreviews.swift in Sources */,
+				292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */,
 				29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */,
 				29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
@@ -811,6 +868,7 @@
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				29C0F3882B7ABF430017DD6B /* DeveloperSection.swift in Sources */,
 				29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */,
+				292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */,
 				29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
@@ -834,7 +892,6 @@
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */,
 				29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */,
-				2942B07A2B7BCD5D00D1E0DE /* ProgressViewModel.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
@@ -864,7 +921,6 @@
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
-				29A1E0C22B810C9B00B18AC1 /* CurrentPromptObserver.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */,
