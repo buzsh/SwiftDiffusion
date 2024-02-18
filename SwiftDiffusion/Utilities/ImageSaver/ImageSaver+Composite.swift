@@ -1,12 +1,10 @@
 //
-//  ContentView+CompositeImage.swift
+//  ImageSaver+Composite.swift
 //  SwiftDiffusion
 //
-//  Created by Justin Bush on 2/8/24.
+//  Created by Justin Bush on 2/17/24.
 //
 
-import SwiftUI
-import Combine
 import AppKit
 
 extension ImageSaver {
