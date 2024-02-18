@@ -34,7 +34,7 @@ class PromptModel: ObservableObject {
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
-    Debug.log("                    checkpointMetadata.title: \(String(describing: selectedModel?.checkpointMetadata?.title))")
+    Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointMetadata?.title))")
     
     self.isWorkspaceItem = model.isWorkspaceItem
     
