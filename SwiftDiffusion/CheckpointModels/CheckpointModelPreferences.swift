@@ -25,7 +25,7 @@ class CheckpointModelPreferences: ObservableObject {
     self.samplingMethod = samplingMethod
   }
   
-  static func defaultSamplingForModelType(type: ModelType) -> CheckpointModelPreferences {
+  static func defaultSamplingForCheckpointModelType(type: CheckpointModelType) -> CheckpointModelPreferences {
     let samplingMethod: String
     switch type {
     case .coreMl:

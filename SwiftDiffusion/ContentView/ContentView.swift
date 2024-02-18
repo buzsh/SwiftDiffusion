@@ -73,7 +73,7 @@ struct ContentView: View {
       case .console:
         ConsoleView(scriptManager: scriptManager)
       case .models:
-        ModelManagerView(scriptManager: scriptManager)
+        CheckpointModelsManagerView(scriptManager: scriptManager)
       case .settings:
         SettingsView()
       }

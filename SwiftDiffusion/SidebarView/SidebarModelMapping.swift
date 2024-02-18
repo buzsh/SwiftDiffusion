@@ -1,5 +1,5 @@
 //
-//  SidebarModelMstoreding.swift
+//  SidebarModelMapping.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/13/24.
@@ -18,14 +18,14 @@ struct MapModelData {
     return mapStoredPromptModelToPromptModel(storedPromptModel)
   }
   
-  func mapModelTypeToStoredModelType(_ type: ModelType) -> StoredModelType {
+  func mapCheckpointModelTypeToStoredCheckpointModelType(_ type: CheckpointModelType) -> StoredCheckpointModelType {
     switch type {
     case .coreMl: return .coreMl
     case .python: return .python
     }
   }
   
-  func mapStoredModelTypeToModelType(_ type: StoredModelType) -> ModelType {
+  func mapStoredCheckpointModelTypeToCheckpointModelType(_ type: StoredCheckpointModelType) -> CheckpointModelType {
     switch type {
     case .coreMl: return .coreMl
     case .python: return .python
@@ -44,9 +44,9 @@ struct MapModelData {
   @MainActor
   func mapCheckpointModelToStoredCheckpointModel(_ checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
     guard let checkpointModel = checkpointModel else { return nil }
-    let storedModelType = mapModelTypeToStoredModelType(checkpointModel.type)
+    let storedCheckpointModelType = mapCheckpointModelTypeToStoredCheckpointModelType(checkpointModel.type)
     return StoredCheckpointModel(name: checkpointModel.name,
-                        type: storedModelType,
+                        type: storedCheckpointModelType,
                         url: checkpointModel.url,
                         isDefaultModel: checkpointModel.isDefaultModel,
                         jsonModelCheckpointTitle: checkpointModel.sdModel?.title ?? "",
@@ -60,11 +60,11 @@ struct MapModelData {
   @MainActor
   func mapStoredCheckpointModelToCheckpointModel(_ storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
     guard let storedCheckpointModel = storedCheckpointModel else { return nil }
-    let modelType = mapStoredModelTypeToModelType(storedCheckpointModel.type)
+    let checkpointModelType = mapStoredCheckpointModelTypeToCheckpointModelType(storedCheckpointModel.type)
     let sdModel = mapJsonDataToSdModel(title: storedCheckpointModel.jsonModelCheckpointTitle, modelName: storedCheckpointModel.jsonModelCheckpointName, hash: storedCheckpointModel.jsonModelCheckpointHash, sha256: storedCheckpointModel.jsonModelCheckpointSha256, filename: storedCheckpointModel.jsonModelCheckpointFilename, config: storedCheckpointModel.jsonModelCheckpointConfig)
     
     return CheckpointModel(name: storedCheckpointModel.name,
-                     type: modelType,
+                     type: checkpointModelType,
                      url: storedCheckpointModel.url,
                      isDefaultModel: storedCheckpointModel.isDefaultModel,
                      sdModel: sdModel)

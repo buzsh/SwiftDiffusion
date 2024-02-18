@@ -1,5 +1,5 @@
 //
-//  ModelManagerView.swift
+//  CheckpointModelsManagerView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ModelManagerView: View {
+struct CheckpointModelsManagerView: View {
   @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var currentPrompt: PromptModel
   
   @ObservedObject var scriptManager: ScriptManager
-  @State private var selectedFilter: ModelType? = nil
+  @State private var selectedFilter: CheckpointModelType? = nil
   @State private var selectedCheckpointModel: CheckpointModel?
   
   private var filterTitle: String {
@@ -45,7 +45,7 @@ struct ModelManagerView: View {
           }
         }
         
-        Menu(filterTitle) { // Use the computed property here
+        Menu(filterTitle) {
           Button("Show All Models", action: { selectedFilter = nil })
           Button("􀢇 CoreML", action: { selectedFilter = .coreMl })
           Button("􁻴 Python", action: { selectedFilter = .python })
@@ -127,7 +127,7 @@ struct ModelManagerView: View {
 
 
 #Preview {
-  return ModelManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+  return CheckpointModelsManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .frame(width: 500, height: 400)
 }
 
