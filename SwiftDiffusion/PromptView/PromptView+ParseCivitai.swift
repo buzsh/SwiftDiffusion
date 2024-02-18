@@ -12,7 +12,7 @@ extension Constants.Debug {
 }
 
 extension Constants.Parsing {
-  static let ignoreModelKeywords = ["turbo", "safetensors", "v2", "dpmppsde"]
+  static let ignoreModelKeywords = ["turbo", "safetensors", "dpmppsde"]
   static let separateModelKeywordsForParsingByCharacters = "_-."
 }
 

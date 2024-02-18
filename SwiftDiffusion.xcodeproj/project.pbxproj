@@ -97,7 +97,7 @@
 		29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */; };
 		29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
-		29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */; };
+		29D3623C2B72ED4D006C57B3 /* CheckpointModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
 		29D362402B7317E1006C57B3 /* CheckpointModelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */; };
 		29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */; };
@@ -200,7 +200,7 @@
 		29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleWithHeader.swift; sourceTree = "<group>"; };
 		29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
-		29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerView.swift; sourceTree = "<group>"; };
+		29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelsManager.swift; sourceTree = "<group>"; };
 		29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadState.swift; sourceTree = "<group>"; };
@@ -257,8 +257,6 @@
 		29145E712B77D95600BFA64B /* PromptModels */ = {
 			isa = PBXGroup;
 			children = (
-				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
-				29F0D3042B76D12400BF56CE /* SdModel.swift */,
 			);
 			path = PromptModels;
 			sourceTree = "<group>";
@@ -319,6 +317,7 @@
 		292CE8072B8176CA00116D60 /* CheckpointModels */ = {
 			isa = PBXGroup;
 			children = (
+				29F0D3042B76D12400BF56CE /* SdModel.swift */,
 				29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */,
 				29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */,
 				292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */,
@@ -337,6 +336,7 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
+				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
 				29145E712B77D95600BFA64B /* PromptModels */,
@@ -665,7 +665,7 @@
 		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
 			isa = PBXGroup;
 			children = (
-				29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */,
+				29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */,
 				29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */,
 			);
 			path = ModelManagerView;
@@ -845,7 +845,7 @@
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
-				29D3623C2B72ED4D006C57B3 /* ModelManagerView.swift in Sources */,
+				29D3623C2B72ED4D006C57B3 /* CheckpointModelManagerView.swift in Sources */,
 				29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
 				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,
