@@ -95,7 +95,7 @@ struct DebugApiView: View {
           Button("Get Loaded Checkpoint") {
             let apiManager = APIManager(baseURL: apiUrl)
             Task {
-              let result = await refreshAndGetCheckpoints(apiManager: apiManager)
+              let result = await getLoadedCheckpoint(apiManager: apiManager)
               switch result {
               case .success(let message):
                 Debug.log(message)
