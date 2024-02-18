@@ -28,7 +28,7 @@ struct PromptBottomStatusBar: View {
       .buttonStyle(.accessoryBar)
       .sheet(isPresented: $showingModelPreferences) {
         if let selectedModel = currentPrompt.selectedModel {
-          ModelPreferencesView(modelItem: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
+          ModelPreferencesView(checkpointModel: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
         }
       }
     }

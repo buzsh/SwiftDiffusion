@@ -99,10 +99,10 @@ extension PromptView {
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
     // Loop through each line of the pasteboard content
-    var matchedModelCheckpoint: ModelItem?
+    var matchedCheckpointModel: CheckpointModel?
     for line in lines {
       if line.contains("Model hash:") {
-        matchedModelCheckpoint = parseModelHash(from: String(line))
+        matchedCheckpointModel = parseModelHash(from: String(line))
       }
 
       if line.starts(with: "Negative prompt:") {
@@ -111,9 +111,9 @@ extension PromptView {
       } else {
         let parameters = line.split(separator: ",").map(String.init)
         // Continue parsing for model
-        if matchedModelCheckpoint == nil {
+        if matchedCheckpointModel == nil {
           if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
-            matchedModelCheckpoint = processModelParameter(modelParameter)
+            matchedCheckpointModel = processModelParameter(modelParameter)
           }
         }
         // Continue parsing for other parameters (excluding those starting with Model)
@@ -123,8 +123,8 @@ extension PromptView {
       }
     }
     
-    if let modelToSelect = matchedModelCheckpoint {
-      currentPrompt.selectedModel = modelToSelect
+    if let checkpointModelToSelect = matchedCheckpointModel {
+      currentPrompt.selectedModel = checkpointModelToSelect
     }
     
   }
@@ -149,7 +149,7 @@ extension PromptView {
   /// // to
   /// ["4726d3bab1", "dreamshaperXL_v2TurboDpmppSDE"]
   /// ```
-  func parseModelHash(from line: String) -> ModelItem? {
+  func parseModelHash(from line: String) -> CheckpointModel? {
     let regexPattern = "Model hash: ([^,]+(?:, [^,]+(?= Version:))*)"
     let regex = try! NSRegularExpression(pattern: regexPattern, options: [])
     let nsLine = line as NSString
@@ -174,8 +174,8 @@ extension PromptView {
             let extractedHash = String(sdModelCheckpointTitle[range])
             potentialHashMatch = extractedHash
           }
-        } else if let sdModelCheckpointHash = model.sdModel?.hash {
-          potentialHashMatch = sdModelCheckpointHash
+        } else if let sdCheckpointModelHash = model.sdModel?.hash {
+          potentialHashMatch = sdCheckpointModelHash
         }
         
         if potentialHashMatch?.lowercased() == modelHash.lowercased() {
@@ -188,7 +188,7 @@ extension PromptView {
     return nil
   }
   /// Processes a model parameter by extracting the value from a key-value pair and attempting to match it with a model in the model manager.
-  func processModelParameter(_ parameter: String) -> ModelItem? {
+  func processModelParameter(_ parameter: String) -> CheckpointModel? {
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
     guard keyValue.count == 2 else { return nil }
     let value = keyValue[1].trimmingCharacters(in: .whitespaces)

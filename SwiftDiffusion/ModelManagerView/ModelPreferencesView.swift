@@ -16,13 +16,13 @@ extension Constants {
 }
 
 struct ModelPreferencesView: View {
-  @Binding var modelItem: ModelItem
+  @Binding var checkpointModel: CheckpointModel
   @ObservedObject var modelPreferences: ModelPreferences
   @StateObject private var temporaryPreferences: ModelPreferences
   @Environment(\.presentationMode) var presentationMode
   
-  init(modelItem: Binding<ModelItem>, modelPreferences: ModelPreferences) {
-    self._modelItem = modelItem
+  init(checkpointModel: Binding<CheckpointModel>, modelPreferences: ModelPreferences) {
+    self._checkpointModel = checkpointModel
     self._modelPreferences = ObservedObject(initialValue: modelPreferences)
     self._temporaryPreferences = StateObject(wrappedValue: ModelPreferences.copy(from: modelPreferences))
   }
@@ -36,7 +36,7 @@ struct ModelPreferencesView: View {
             .padding(.bottom, 4)
           Text("Set default properties for loading this model.")
             .padding(.bottom, 4)
-          Text(modelItem.name)
+          Text(checkpointModel.name)
             .font(.system(.body, design: .monospaced))
             .truncationMode(.middle)
           
@@ -75,7 +75,7 @@ struct ModelPreferencesView: View {
     VStack(alignment: .leading) {
       PromptRowHeading(title: "Sampling")
       Menu {
-        let samplingMethods = modelItem.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
+        let samplingMethods = checkpointModel.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
         ForEach(samplingMethods, id: \.self) { method in
           Button(method) {
             temporaryPreferences.samplingMethod = method
@@ -123,16 +123,16 @@ struct ModelPreferencesView: View {
   }
   
   private func applyPreferences() {
-    modelItem.preferences.update(from: temporaryPreferences)
+    checkpointModel.preferences.update(from: temporaryPreferences)
   }
 }
 
 
 #Preview {
-  let item = ModelItem(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  let item = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
   item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
-  return ModelPreferencesView(modelItem: .constant(item), modelPreferences: item.preferences)
+  return ModelPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 400)
 }
 

@@ -42,31 +42,31 @@ struct MapModelData {
   }
   
   @MainActor
-  func mapModelItemToStoredModelItem(_ modelItem: ModelItem?) -> StoredModelItem? {
-    guard let modelItem = modelItem else { return nil }
-    let storedModelType = mapModelTypeToStoredModelType(modelItem.type)
-    return StoredModelItem(name: modelItem.name,
+  func mapCheckpointModelToStoredCheckpointModel(_ checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
+    guard let checkpointModel = checkpointModel else { return nil }
+    let storedModelType = mapModelTypeToStoredModelType(checkpointModel.type)
+    return StoredCheckpointModel(name: checkpointModel.name,
                         type: storedModelType,
-                        url: modelItem.url,
-                        isDefaultModel: modelItem.isDefaultModel,
-                        jsonModelCheckpointTitle: modelItem.sdModel?.title ?? "",
-                        jsonModelCheckpointName: modelItem.sdModel?.modelName ?? "",
-                        jsonModelCheckpointHash: modelItem.sdModel?.hash,
-                        jsonModelCheckpointSha256: modelItem.sdModel?.sha256,
-                        jsonModelCheckpointFilename: modelItem.sdModel?.filename ?? "",
-                        jsonModelCheckpointConfig: modelItem.sdModel?.config)
+                        url: checkpointModel.url,
+                        isDefaultModel: checkpointModel.isDefaultModel,
+                        jsonModelCheckpointTitle: checkpointModel.sdModel?.title ?? "",
+                        jsonModelCheckpointName: checkpointModel.sdModel?.modelName ?? "",
+                        jsonModelCheckpointHash: checkpointModel.sdModel?.hash,
+                        jsonModelCheckpointSha256: checkpointModel.sdModel?.sha256,
+                        jsonModelCheckpointFilename: checkpointModel.sdModel?.filename ?? "",
+                        jsonModelCheckpointConfig: checkpointModel.sdModel?.config)
   }
   
   @MainActor
-  func mapStoredModelItemToModelItem(_ storedModelItem: StoredModelItem?) -> ModelItem? {
-    guard let storedModelItem = storedModelItem else { return nil }
-    let modelType = mapStoredModelTypeToModelType(storedModelItem.type)
-    let sdModel = mapJsonDataToSdModel(title: storedModelItem.jsonModelCheckpointTitle, modelName: storedModelItem.jsonModelCheckpointName, hash: storedModelItem.jsonModelCheckpointHash, sha256: storedModelItem.jsonModelCheckpointSha256, filename: storedModelItem.jsonModelCheckpointFilename, config: storedModelItem.jsonModelCheckpointConfig)
+  func mapStoredCheckpointModelToCheckpointModel(_ storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
+    guard let storedCheckpointModel = storedCheckpointModel else { return nil }
+    let modelType = mapStoredModelTypeToModelType(storedCheckpointModel.type)
+    let sdModel = mapJsonDataToSdModel(title: storedCheckpointModel.jsonModelCheckpointTitle, modelName: storedCheckpointModel.jsonModelCheckpointName, hash: storedCheckpointModel.jsonModelCheckpointHash, sha256: storedCheckpointModel.jsonModelCheckpointSha256, filename: storedCheckpointModel.jsonModelCheckpointFilename, config: storedCheckpointModel.jsonModelCheckpointConfig)
     
-    return ModelItem(name: storedModelItem.name,
+    return CheckpointModel(name: storedCheckpointModel.name,
                      type: modelType,
-                     url: storedModelItem.url,
-                     isDefaultModel: storedModelItem.isDefaultModel,
+                     url: storedCheckpointModel.url,
+                     isDefaultModel: storedCheckpointModel.isDefaultModel,
                      sdModel: sdModel)
   }
   
@@ -74,8 +74,8 @@ struct MapModelData {
   
   @MainActor
   func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
-    var selectedModel: StoredModelItem?
-    selectedModel = mapModelItemToStoredModelItem(promptModel.selectedModel)
+    var selectedModel: StoredCheckpointModel?
+    selectedModel = mapCheckpointModelToStoredCheckpointModel(promptModel.selectedModel)
     return StoredPromptModel(
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
@@ -105,7 +105,7 @@ struct MapModelData {
     promptModel.batchCount = storedPromptModel.batchCount
     promptModel.batchSize = storedPromptModel.batchSize
     promptModel.clipSkip = storedPromptModel.clipSkip
-    promptModel.selectedModel = mapStoredModelItemToModelItem(storedPromptModel.selectedModel)
+    promptModel.selectedModel = mapStoredCheckpointModelToCheckpointModel(storedPromptModel.selectedModel)
     return promptModel
   }
   /*

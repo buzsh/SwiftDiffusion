@@ -29,7 +29,7 @@ class MockDataController {
   init() {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     do {
-      container = try ModelContainer(for: SidebarItem.self, StoredPromptModel.self, StoredModelItem.self, SidebarFolder.self, configurations: config)
+      container = try ModelContainer(for: SidebarItem.self, StoredPromptModel.self, StoredCheckpointModel.self, SidebarFolder.self, configurations: config)
       insertMockData()
     } catch {
       fatalError("Failed to initialize the mock ModelContainer: \(error)")
@@ -38,11 +38,11 @@ class MockDataController {
   
   func insertMockData() {
     let context = container.mainContext
-    let storedModelItem1 = StoredModelItem(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let storedPromptModel1 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem1)
+    let storedCheckpointModel1 = StoredCheckpointModel(name: "DreamShaperXL_v2.0", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let storedPromptModel1 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel1)
     
-    let storedModelItem2 = StoredModelItem(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
-    let storedPromptModel2 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedModelItem2)
+    let storedCheckpointModel2 = StoredCheckpointModel(name: "Animerge 1.6.2", type: .python, url: URL(string: "https://example.com/model")!, isDefaultModel: true, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let storedPromptModel2 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel2)
     
     let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)
     let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel2)
@@ -50,8 +50,8 @@ class MockDataController {
     let sidebarFolder1 = SidebarFolder(name: "Personal", contents: [sidebarItem1, sidebarItem2])
     let sidebarFolder2 = SidebarFolder(name: "Shared", contents: [sidebarItem1, sidebarItem2])
     
-    context.insert(storedModelItem1)
-    context.insert(storedModelItem2)
+    context.insert(storedCheckpointModel1)
+    context.insert(storedCheckpointModel2)
     context.insert(storedPromptModel1)
     context.insert(storedPromptModel2)
     context.insert(sidebarItem1)

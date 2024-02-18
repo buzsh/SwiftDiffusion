@@ -11,7 +11,7 @@ import Combine
 class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
   
-  @Published var selectedModel: ModelItem?
+  @Published var selectedModel: CheckpointModel?
   @Published var samplingMethod: String?
   
   @Published var positivePrompt: String = ""
@@ -90,7 +90,7 @@ extension PromptModel {
 
 
 /*
- @Published var selectedModel: ModelItem? {
+ @Published var selectedModel: CheckpointModel? {
  didSet {
  updatePromptPreferences()
  }

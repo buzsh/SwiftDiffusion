@@ -66,18 +66,18 @@ struct OptionsResponse: Decodable {
 extension PromptView {
   @MainActor
   /// Update automatic1111 currently loaded model checkpoint
-  func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+  func updateSdModelCheckpoint(forModel checkpointModel: CheckpointModel, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
     let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
     var request = URLRequest(url: endpoint)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    guard let sdModelCheckpoint = modelItem.sdModel else {
+    guard let sdModelCheckpoint = checkpointModel.sdModel else {
       completion(.failure(.nilCheckpoint))
       return
     }
     
-    Debug.log("[API] attempting to POST \(modelItem):\n > \(sdModelCheckpoint.title)")
+    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(sdModelCheckpoint.title)")
     
     let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint.title)
     do {

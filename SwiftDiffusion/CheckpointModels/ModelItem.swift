@@ -1,5 +1,5 @@
 //
-//  ModelItem.swift
+//  CheckpointModel.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/8/24.
@@ -28,8 +28,8 @@ class CheckpointModel: ObservableObject, Identifiable {
     self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
   }
   
-  func setSdModel(_ model: SdModel) {
-    self.sdModel = model
+  func setSdModel(_ automaticCheckpointModel: SdModel) {
+    self.sdModel = automaticCheckpointModel
   }
 }
 
@@ -39,7 +39,7 @@ enum ModelType {
 }
 
 extension CheckpointModel: Equatable {
-  static func == (lhs: ModelItem, rhs: ModelItem) -> Bool {
+  static func == (lhs: CheckpointModel, rhs: CheckpointModel) -> Bool {
     return lhs.id == rhs.id
   }
 }

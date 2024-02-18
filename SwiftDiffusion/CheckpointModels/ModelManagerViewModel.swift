@@ -11,7 +11,7 @@ import SwiftUI
 class ModelManagerViewModel: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
-  @Published var items: [ModelItem] = []
+  @Published var items: [CheckpointModel] = []
   
   @Published var hasLoadedInitialModelCheckpointsAndAssignedSdModel: Bool = false
   
@@ -26,7 +26,7 @@ class ModelManagerViewModel: ObservableObject {
   func loadModels() async {
     do {
       let fileManager = FileManager.default
-      var newItems: [ModelItem] = []
+      var newItems: [CheckpointModel] = []
       let existingURLs = Set(self.items.map { $0.url })
       var updatedURLs = Set<URL>()
       
@@ -36,7 +36,7 @@ class ModelManagerViewModel: ObservableObject {
         for modelURL in coreMlModels where modelURL.hasDirectoryPath {
           updatedURLs.insert(modelURL)
           if !existingURLs.contains(modelURL) {
-            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .coreMl, url: modelURL, isDefaultModel: defaultCoreMLModelNames.contains(modelURL.lastPathComponent))
+            let newItem = CheckpointModel(name: modelURL.lastPathComponent, type: .coreMl, url: modelURL, isDefaultModel: defaultCoreMLModelNames.contains(modelURL.lastPathComponent))
             newItems.append(newItem)
           }
         }
@@ -49,7 +49,7 @@ class ModelManagerViewModel: ObservableObject {
         for modelURL in pythonModels where modelURL.pathExtension == "safetensors" {
           updatedURLs.insert(modelURL)
           if !existingURLs.contains(modelURL) {
-            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .python, url: modelURL, isDefaultModel: defaultPythonModelNames.contains(modelURL.lastPathComponent))
+            let newItem = CheckpointModel(name: modelURL.lastPathComponent, type: .python, url: modelURL, isDefaultModel: defaultPythonModelNames.contains(modelURL.lastPathComponent))
             newItems.append(newItem)
           }
         }
@@ -108,7 +108,7 @@ class ModelManagerViewModel: ObservableObject {
 }
 
 extension ModelManagerViewModel {
-  func moveToTrash(item: ModelItem) async {
+  func moveToTrash(item: CheckpointModel) async {
     let fileManager = FileManager.default
     do {
       let fileURL: URL
@@ -165,7 +165,7 @@ extension ModelManagerViewModel {
       
       do {
         let models = try await getSdModelData(baseUrl)
-        var unassignedItems: [ModelItem] = []
+        var unassignedItems: [CheckpointModel] = []
         
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
@@ -184,7 +184,7 @@ extension ModelManagerViewModel {
         }
         
         for item in unassignedItems {
-          Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
+          Debug.log("CheckpointModel still without sdModelCheckpoint: \(item.name)")
         }
         
         completion(assignedModelsCount)
@@ -198,7 +198,7 @@ extension ModelManagerViewModel {
 
 extension ModelManagerViewModel {
   @MainActor
-  func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> ModelItem? {
+  func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> CheckpointModel? {
     guard let apiUrl = scriptManager.serviceUrl else {
       Debug.log("Service URL is nil.")
       return nil

@@ -13,7 +13,7 @@ struct ModelManagerView: View {
   
   @ObservedObject var scriptManager: ScriptManager
   @State private var selectedFilter: ModelType? = nil
-  @State private var selectedModelItem: ModelItem?
+  @State private var selectedCheckpointModel: CheckpointModel?
   
   private var filterTitle: String {
     switch selectedFilter {
@@ -26,7 +26,7 @@ struct ModelManagerView: View {
     }
   }
   
-  var filteredItems: [ModelItem] {
+  var filteredItems: [CheckpointModel] {
     guard let selectedFilter = selectedFilter else { return modelManagerViewModel.items }
     return modelManagerViewModel.items.filter { $0.type == selectedFilter }
   }
@@ -73,7 +73,7 @@ struct ModelManagerView: View {
           
           Button(action: {
             Debug.log(item)
-            self.selectedModelItem = item
+            self.selectedCheckpointModel = item
           }) {
             Image(systemName: "pencil")
           }
@@ -97,8 +97,8 @@ struct ModelManagerView: View {
         .padding(.horizontal, 4)
       }
     }
-    .sheet(item: $selectedModelItem) { modelItem in
-      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
+    .sheet(item: $selectedCheckpointModel) { checkpointModel in
+      ModelPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
     .navigationTitle("Models")
     .toolbar {
