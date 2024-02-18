@@ -45,35 +45,22 @@ struct SidebarView: View {
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
-  
   @State private var selectedItemName: String?
+  
   @State private var editingItemId: UUID? = nil
   @State private var draftTitle: String = ""
-  
   @State private var showDeletionAlert: Bool = false
-  
   @State private var sortingOrder: SortingOrder = .mostRecent
+  
+  @State private var selectedModelName: String? = nil
   
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"
   }
   
-  @State private var selectedModelName: String? = nil
-  
   var uniqueModelNames: [String] {
     Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
-  }
-  
-  func saveEditedTitle(_ id: UUID, _ title: String) {
-    if let index = sidebarItems.firstIndex(where: { $0.id == id }) {
-      sidebarItems[index].title = title
-      sidebarViewModel.saveData(in: modelContext)
-    }
-  }
-  
-  func getCurrentPromptToStored() -> (PromptModel, [URL]) {
-    return (currentPrompt, lastSavedImageUrls)
   }
   
   func newFolderToData(title: String) {
@@ -293,10 +280,10 @@ struct SidebarView: View {
                 selectedItemID = item.id
               }
             }
-          }//Section("Uncategorized")
+          } // Section("Uncategorized")
           VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
         }
-      }// List
+      } // List
       .listStyle(SidebarListStyle())
       //.scrollIndicators(.hidden)
       .onChange(of: sidebarViewModel.itemToSave) {
@@ -360,7 +347,7 @@ struct SidebarView: View {
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
       
-    }//ZStack
+    } // ZStack
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Button(action: {
