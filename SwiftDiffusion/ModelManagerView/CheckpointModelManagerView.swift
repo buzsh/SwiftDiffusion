@@ -1,5 +1,5 @@
 //
-//  ModelManagerView.swift
+//  CheckpointModelsManagerView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct ModelManagerView: View {
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+struct CheckpointModelsManagerView: View {
+  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var currentPrompt: PromptModel
   
   @ObservedObject var scriptManager: ScriptManager
-  @State private var selectedFilter: ModelType? = nil
-  @State private var selectedModelItem: ModelItem?
+  @State private var selectedFilter: CheckpointModelType? = nil
+  @State private var selectedCheckpointModel: CheckpointModel?
   
   private var filterTitle: String {
     switch selectedFilter {
@@ -26,9 +26,9 @@ struct ModelManagerView: View {
     }
   }
   
-  var filteredItems: [ModelItem] {
-    guard let selectedFilter = selectedFilter else { return modelManagerViewModel.items }
-    return modelManagerViewModel.items.filter { $0.type == selectedFilter }
+  var filteredItems: [CheckpointModel] {
+    guard let selectedFilter = selectedFilter else { return checkpointModelsManager.items }
+    return checkpointModelsManager.items.filter { $0.type == selectedFilter }
   }
   
   var body: some View {
@@ -41,11 +41,11 @@ struct ModelManagerView: View {
         */
         Button("Refresh") {
           Task {
-            await modelManagerViewModel.loadModels()
+            await checkpointModelsManager.loadModels()
           }
         }
         
-        Menu(filterTitle) { // Use the computed property here
+        Menu(filterTitle) {
           Button("Show All Models", action: { selectedFilter = nil })
           Button("􀢇 CoreML", action: { selectedFilter = .coreMl })
           Button("􁻴 Python", action: { selectedFilter = .python })
@@ -73,7 +73,7 @@ struct ModelManagerView: View {
           
           Button(action: {
             Debug.log(item)
-            self.selectedModelItem = item
+            self.selectedCheckpointModel = item
           }) {
             Image(systemName: "pencil")
           }
@@ -83,7 +83,7 @@ struct ModelManagerView: View {
           if !item.isDefaultModel && item != currentPrompt.selectedModel {
             Button(action: {
               Task {
-                await modelManagerViewModel.moveToTrash(item: item)
+                await checkpointModelsManager.moveToTrash(item: item)
               }
             }) {
               Image(systemName: "trash")
@@ -97,8 +97,8 @@ struct ModelManagerView: View {
         .padding(.horizontal, 4)
       }
     }
-    .sheet(item: $selectedModelItem) { modelItem in
-      ModelPreferencesView(modelItem: Binding<ModelItem>(get: { modelItem }, set: { _ in }), modelPreferences: modelItem.preferences)
+    .sheet(item: $selectedCheckpointModel) { checkpointModel in
+      CheckpointModelPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
     .navigationTitle("Models")
     .toolbar {
@@ -127,7 +127,7 @@ struct ModelManagerView: View {
 
 
 #Preview {
-  return ModelManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+  return CheckpointModelsManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .frame(width: 500, height: 400)
 }
 

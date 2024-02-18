@@ -95,15 +95,15 @@ extension CommonPreviews {
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
     
-    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
+    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
     
-    let modelManagerViewModel = ModelManagerViewModel()
+    let checkpointModelsManagerPreview = CheckpointModelsManager()
     
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .environmentObject(promptModelPreview)
-    .environmentObject(modelManagerViewModel)
+    .environmentObject(checkpointModelsManagerPreview)
     .frame(width: 400, height: 600)
   }
 }
@@ -115,7 +115,7 @@ extension CommonPreviews {
   let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
-  promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
+  promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
   
   return PromptTopStatusBar(
     generationDataInPasteboard: true,

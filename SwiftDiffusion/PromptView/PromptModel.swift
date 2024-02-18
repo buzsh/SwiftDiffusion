@@ -11,7 +11,7 @@ import Combine
 class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
   
-  @Published var selectedModel: ModelItem?
+  @Published var selectedModel: CheckpointModel?
   @Published var samplingMethod: String?
   
   @Published var positivePrompt: String = ""
@@ -34,7 +34,7 @@ class PromptModel: ObservableObject {
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
-    Debug.log("        sdModel.title: \(String(describing: selectedModel?.sdModel?.title))")
+    Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointMetadata?.title))")
     
     self.isWorkspaceItem = model.isWorkspaceItem
     
@@ -90,7 +90,7 @@ extension PromptModel {
 
 
 /*
- @Published var selectedModel: ModelItem? {
+ @Published var selectedModel: CheckpointModel? {
  didSet {
  updatePromptPreferences()
  }

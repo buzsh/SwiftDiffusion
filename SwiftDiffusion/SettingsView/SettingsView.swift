@@ -16,7 +16,7 @@ extension Constants.WindowSize {
 
 struct SettingsView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   
   @Environment(\.presentationMode) var presentationMode
   
@@ -48,7 +48,7 @@ struct SettingsView: View {
         .padding(.top).padding(.horizontal, 14)
         .onChange(of: userSettings.stableDiffusionModelsPath) {
           Task {
-            await modelManagerViewModel.loadModels()
+            await checkpointModelsManager.loadModels()
           }
         }
       }

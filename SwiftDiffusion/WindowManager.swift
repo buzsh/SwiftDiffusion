@@ -72,7 +72,7 @@ class WindowManager: NSObject, ObservableObject {
   }
   
   /// Shows the models manager window containing ModelsManagerView. If the window does not exist, it creates and configures a new window before displaying it.
-  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `ModelManagerView`.
+  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointModelsManagerView`.
   func showModelsManagerWindow(scriptManager: ScriptManager) {
     if modelsManagerWindow == nil {
       modelsManagerWindow = NSWindow(
@@ -80,7 +80,7 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       modelsManagerWindow?.center()
-      modelsManagerWindow?.contentView = NSHostingView(rootView: ModelManagerView(scriptManager: scriptManager))
+      modelsManagerWindow?.contentView = NSHostingView(rootView: CheckpointModelsManagerView(scriptManager: scriptManager))
       modelsManagerWindow?.title = "Models"
       
       modelsManagerWindow?.isReleasedWhenClosed = false

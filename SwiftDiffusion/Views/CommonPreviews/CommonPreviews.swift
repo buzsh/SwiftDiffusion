@@ -13,13 +13,13 @@ struct CommonPreviews {
   static var previewEnvironment: some View {
     let sidebarViewModelPreview = SidebarViewModel()
     let promptModelPreview = PromptModel()
-    let modelManagerViewModelPreview = ModelManagerViewModel()
+    let checkpointModelsManagerPreview = CheckpointModelsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
     return AnyView(EmptyView())
       .environmentObject(sidebarViewModelPreview)
       .environmentObject(promptModelPreview)
-      .environmentObject(modelManagerViewModelPreview)
+      .environmentObject(checkpointModelsManagerPreview)
       .environmentObject(scriptManagerPreview)
       .environmentObject(loraModelsManagerPreview)
   }
@@ -31,16 +31,16 @@ struct CommonPreviews {
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
-    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
+    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
     
-    let modelManagerViewModelPreview = ModelManagerViewModel()
+    let checkpointModelsManagerPreview = CheckpointModelsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .environmentObject(sidebarViewModelPreview)
     .environmentObject(promptModelPreview)
-    .environmentObject(modelManagerViewModelPreview)
+    .environmentObject(checkpointModelsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
     .frame(width: 400, height: 600)
   }
@@ -52,8 +52,8 @@ struct CommonPreviews {
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
-    promptModelPreview.selectedModel = ModelItem(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
-    let modelManagerViewModelPreview = ModelManagerViewModel()
+    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
+    let checkpointModelsManagerPreview = CheckpointModelsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
     
     return ContentView(
@@ -61,7 +61,7 @@ struct CommonPreviews {
     )
     .environmentObject(sidebarViewModelPreview)
     .environmentObject(promptModelPreview)
-    .environmentObject(modelManagerViewModelPreview)
+    .environmentObject(checkpointModelsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
     .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
            minHeight: 500, idealHeight: 800, maxHeight: .infinity)

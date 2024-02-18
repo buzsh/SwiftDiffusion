@@ -1,5 +1,5 @@
 //
-//  ModelManagerViewModel.swift
+//  CheckpointModelsManager.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.
@@ -8,10 +8,10 @@
 import Combine
 import SwiftUI
 
-class ModelManagerViewModel: ObservableObject {
+class CheckpointModelsManager: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
-  @Published var items: [ModelItem] = []
+  @Published var items: [CheckpointModel] = []
   
   @Published var hasLoadedInitialModelCheckpointsAndAssignedSdModel: Bool = false
   
@@ -26,7 +26,7 @@ class ModelManagerViewModel: ObservableObject {
   func loadModels() async {
     do {
       let fileManager = FileManager.default
-      var newItems: [ModelItem] = []
+      var newItems: [CheckpointModel] = []
       let existingURLs = Set(self.items.map { $0.url })
       var updatedURLs = Set<URL>()
       
@@ -36,7 +36,7 @@ class ModelManagerViewModel: ObservableObject {
         for modelURL in coreMlModels where modelURL.hasDirectoryPath {
           updatedURLs.insert(modelURL)
           if !existingURLs.contains(modelURL) {
-            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .coreMl, url: modelURL, isDefaultModel: defaultCoreMLModelNames.contains(modelURL.lastPathComponent))
+            let newItem = CheckpointModel(name: modelURL.lastPathComponent, type: .coreMl, url: modelURL, isDefaultModel: defaultCoreMLModelNames.contains(modelURL.lastPathComponent))
             newItems.append(newItem)
           }
         }
@@ -49,16 +49,14 @@ class ModelManagerViewModel: ObservableObject {
         for modelURL in pythonModels where modelURL.pathExtension == "safetensors" {
           updatedURLs.insert(modelURL)
           if !existingURLs.contains(modelURL) {
-            let newItem = ModelItem(name: modelURL.lastPathComponent, type: .python, url: modelURL, isDefaultModel: defaultPythonModelNames.contains(modelURL.lastPathComponent))
+            let newItem = CheckpointModel(name: modelURL.lastPathComponent, type: .python, url: modelURL, isDefaultModel: defaultPythonModelNames.contains(modelURL.lastPathComponent))
             newItems.append(newItem)
           }
         }
       }
       // Remove items whose URLs no longer exist
       self.items = self.items.filter { updatedURLs.contains($0.url) }
-      // Add new items
       self.items.append(contentsOf: newItems)
-      // Assign model titles if API is connectable
       assignLocalModelCheckpointsWithApiSdModelResults()
     } catch {
       Debug.log("Failed to load models: \(error)")
@@ -70,7 +68,7 @@ class ModelManagerViewModel: ObservableObject {
       if assignedModelsCount < 1 {
         Debug.log("No new models were assigned.")
       } else {
-        Debug.log("New unassigned SdModels returned from the API!\n > \(assignedModelsCount) models were assigned.")
+        Debug.log("New unassigned CheckpointMetadata returned from the API!\n > \(assignedModelsCount) models were assigned.")
         self.hasLoadedInitialModelCheckpointsAndAssignedSdModel = true
       }
     }
@@ -107,8 +105,8 @@ class ModelManagerViewModel: ObservableObject {
   }
 }
 
-extension ModelManagerViewModel {
-  func moveToTrash(item: ModelItem) async {
+extension CheckpointModelsManager {
+  func moveToTrash(item: CheckpointModel) async {
     let fileManager = FileManager.default
     do {
       let fileURL: URL
@@ -142,17 +140,17 @@ extension ModelManagerViewModel {
   }
 }
 
-extension ModelManagerViewModel {
-  func getSdModelData(_ api: URL) async throws -> [SdModel] {
+extension CheckpointModelsManager {
+  func getCheckpointMetadata(_ api: URL) async throws -> [CheckpointMetadata] {
     let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
     let (data, _) = try await URLSession.shared.data(from: endpoint)
     let decoder = JSONDecoder()
-    let models = try decoder.decode([SdModel].self, from: data)
+    let models = try decoder.decode([CheckpointMetadata].self, from: data)
     return models
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   @MainActor
   func assignSdModelCheckpointTitles(completion: @escaping (Int) -> Void) {
     guard let baseUrl = scriptManager.serviceUrl else {
@@ -164,17 +162,17 @@ extension ModelManagerViewModel {
       var assignedModelsCount = 0
       
       do {
-        let models = try await getSdModelData(baseUrl)
-        var unassignedItems: [ModelItem] = []
+        let models = try await getCheckpointMetadata(baseUrl)
+        var unassignedItems: [CheckpointModel] = []
         
         let apiFilenames = models.map { URL(fileURLWithPath: $0.filename).lastPathComponent }
         Debug.log("API Filenames: \(apiFilenames)")
         
-        for item in self.items where item.sdModel == nil {
+        for item in self.items where item.checkpointMetadata == nil {
           
           let itemFilename = item.url.lastPathComponent
           if let matchingModel = models.first(where: { URL(fileURLWithPath: $0.filename).lastPathComponent == itemFilename }) {
-            item.setSdModel(matchingModel)
+            item.setCheckpointMetadata(matchingModel)
             Debug.log("Assigned \(matchingModel.title) to \(item.name)")
             assignedModelsCount += 1
           } else {
@@ -184,7 +182,7 @@ extension ModelManagerViewModel {
         }
         
         for item in unassignedItems {
-          Debug.log("ModelItem still without sdModelCheckpoint: \(item.name)")
+          Debug.log("CheckpointModel still without sdModelCheckpoint: \(item.name)")
         }
         
         completion(assignedModelsCount)
@@ -196,9 +194,9 @@ extension ModelManagerViewModel {
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   @MainActor
-  func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> ModelItem? {
+  func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> CheckpointModel? {
     guard let apiUrl = scriptManager.serviceUrl else {
       Debug.log("Service URL is nil.")
       return nil
@@ -212,7 +210,7 @@ extension ModelManagerViewModel {
       
       Debug.log("Fetched sd_model_checkpoint: \(optionsResponse.sdModelCheckpoint)")
       
-      return self.items.first { $0.sdModel?.title == optionsResponse.sdModelCheckpoint }
+      return self.items.first { $0.checkpointMetadata?.title == optionsResponse.sdModelCheckpoint }
     } catch {
       Debug.log("Failed to fetch or parse options data: \(error.localizedDescription)")
       return nil

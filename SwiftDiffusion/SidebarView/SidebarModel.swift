@@ -62,9 +62,9 @@ class StoredPromptModel {
   @Attribute var batchCount: Double = 1
   @Attribute var batchSize: Double = 1
   @Attribute var clipSkip: Double = 1
-  @Relationship var selectedModel: StoredModelItem?
+  @Relationship var selectedModel: StoredCheckpointModel?
 
-  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredModelItem? = nil) {
+  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil) {
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
@@ -81,9 +81,9 @@ class StoredPromptModel {
 }
 
 @Model
-class StoredModelItem {
+class StoredCheckpointModel {
   @Attribute var name: String
-  @Attribute var type: StoredModelType
+  @Attribute var type: StoredCheckpointModelType
   @Attribute var url: URL
   @Attribute var isDefaultModel: Bool = false
   
@@ -94,7 +94,7 @@ class StoredModelItem {
   @Attribute var jsonModelCheckpointFilename: String
   @Attribute var jsonModelCheckpointConfig: String?
   
-  init(name: String, type: StoredModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
+  init(name: String, type: StoredCheckpointModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
     self.name = name
     self.type = type
     self.url = url
@@ -109,17 +109,15 @@ class StoredModelItem {
   }
 }
 
-func mapModelTypeToStoredModelType(_ type: ModelType?) -> StoredModelType? {
+func mapCheckpointModelTypeToStoredCheckpointModelType(_ type: CheckpointModelType?) -> StoredCheckpointModelType? {
   guard let type = type else { return nil }
   switch type {
-  case .coreMl:
-    return .coreMl
-  case .python:
-    return .python
+  case .coreMl: return .coreMl
+  case .python: return .python
   }
 }
 
-enum StoredModelType: String, Codable {
+enum StoredCheckpointModelType: String, Codable {
   case coreMl = "coreMl"
   case python = "python"
 }

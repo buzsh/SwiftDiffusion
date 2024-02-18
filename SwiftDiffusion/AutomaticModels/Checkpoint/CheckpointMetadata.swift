@@ -1,5 +1,5 @@
 //
-//  SdModel.swift
+//  CheckpointMetadata.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/9/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SdModel: Decodable {
+struct CheckpointMetadata: Decodable {
   let title: String
   let modelName: String
   let hash: String?
@@ -66,20 +66,20 @@ struct OptionsResponse: Decodable {
 extension PromptView {
   @MainActor
   /// Update automatic1111 currently loaded model checkpoint
-  func updateSdModelCheckpoint(forModel modelItem: ModelItem, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+  func updateSdModelCheckpoint(forModel checkpointModel: CheckpointModel, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
     let endpoint = apiUrl.appendingPathComponent("/sdapi/v1/options")
     var request = URLRequest(url: endpoint)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    guard let sdModelCheckpoint = modelItem.sdModel else {
+    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
       completion(.failure(.nilCheckpoint))
       return
     }
     
-    Debug.log("[API] attempting to POST \(modelItem):\n > \(sdModelCheckpoint.title)")
+    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(checkpointMetadata.title)")
     
-    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint.title)
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: checkpointMetadata.title)
     do {
       request.httpBody = try JSONEncoder().encode(requestBody)
     } catch {
@@ -99,7 +99,7 @@ extension PromptView {
         switch httpResponse.statusCode {
         case 200:
           scriptManager.modelLoadState = .done
-          completion(.success("Update successful for model: \(sdModelCheckpoint)."))
+          completion(.success("Update successful for model: \(checkpointMetadata)."))
         case 422:
           scriptManager.modelLoadState = .failed
           let decoder = JSONDecoder()

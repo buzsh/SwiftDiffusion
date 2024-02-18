@@ -10,7 +10,7 @@ import SwiftUI
 struct DebugPromptActionView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var scriptManager: ScriptManager
@@ -71,14 +71,14 @@ struct DebugPromptActionView: View {
             
             Button("Load Models") {
               Task {
-                await modelManagerViewModel.loadModels()
+                await checkpointModelsManager.loadModels()
               }
             }
             .padding(.trailing, 6)
             
             Button("Log Model from API") {
               Task {
-                if let modelTitle = await modelManagerViewModel.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.sdModel?.title {
+                if let modelTitle = await checkpointModelsManager.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.checkpointMetadata?.title {
                   Debug.log("Log Model from API: \(modelTitle)")
                 }
               }
