@@ -95,7 +95,6 @@ struct PromptEditorView: View {
   return PromptEditorView(label: "Positive Prompt", text: $promptText, isDisabled: .constant(false))
     .frame(width: 400, height: 600)
     .environmentObject(loraModelsManagerPreview)
-    //.environmentObject(CommonPreviews.previewLoraModelsManager)
 }
 
 extension CommonPreviews {

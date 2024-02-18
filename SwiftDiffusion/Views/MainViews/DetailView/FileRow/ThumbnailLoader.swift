@@ -14,9 +14,7 @@ class ThumbnailLoader: ObservableObject {
   @Published var fileSize: String = ""
   
   func loadThumbnail(for node: FileNode) async {
-    // load the image and process it on the main actor to avoid concurrency issues
     await processImage(from: node.fullPath)
-    // fetch and format file size on a background thread and then update on the main actor
     await fetchAndSetFileSize(for: node.fullPath)
   }
   
@@ -29,7 +27,7 @@ class ThumbnailLoader: ObservableObject {
     
     let thumbnail = image.resizedToMaintainAspectRatio(targetHeight: 40)
     self.thumbnailImage = thumbnail
-    self.imageSize = image.size // original image size
+    self.imageSize = image.size
   }
   
   private func fetchAndSetFileSize(for path: String) async {

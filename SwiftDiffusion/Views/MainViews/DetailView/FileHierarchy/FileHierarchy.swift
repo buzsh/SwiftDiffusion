@@ -25,7 +25,6 @@ class FileHierarchy: ObservableObject {
     await MainActor.run {
       self.rootNodes = loadedFiles
       self.isLoading = false
-      //let allImageFiles = self.getAllImageFiles()
     }
   }
   
@@ -47,7 +46,7 @@ class FileHierarchy: ObservableObject {
           nodes.append(FileNode(name: item, fullPath: itemPath, children: nil, lastModified: modificationDate))
         }
       }
-      // Sort the nodes by lastModified date in descending order
+      
       nodes.sort { $0.lastModified > $1.lastModified }
     } catch {
       await MainActor.run {
@@ -76,7 +75,6 @@ extension FileHierarchy {
           var isDir: ObjCBool = false
           fileManager.fileExists(atPath: itemPath, isDirectory: &isDir)
           if isDir.boolValue {
-            // Recursively search in directories
             if let foundNode = await searchDirectory(itemPath) {
               if mostRecentImageNode == nil || foundNode.lastModified > mostRecentImageNode!.lastModified {
                 mostRecentImageNode = foundNode
