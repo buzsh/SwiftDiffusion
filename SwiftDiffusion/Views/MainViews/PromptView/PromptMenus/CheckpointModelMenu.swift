@@ -48,7 +48,7 @@ struct CheckpointModelMenu: View {
   }
   */
   
-  
+  /*
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
     
     var canChangeModel: Bool {
@@ -74,11 +74,9 @@ struct CheckpointModelMenu: View {
           }
         }
       }
-      
-      
     }
-      
   }
+   */
   
   
   
@@ -116,12 +114,15 @@ struct CheckpointModelMenu: View {
       }
     }
     .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
+    /*
     .onChange(of: currentPrompt.selectedModel) {
       if let checkpointModel = currentPrompt.selectedModel {
         Debug.log(".onChange(of: currentPrompt.selectedModel)")
         updateSelectedCheckpointModel(with: checkpointModel)
       }
     }
+     */
+    /*
     .onChange(of: scriptManager.scriptState) {
       if scriptManager.scriptState == .active {
         Task {
@@ -134,12 +135,15 @@ struct CheckpointModelMenu: View {
         }
       }
     }
+    */
+    /*
     .onChange(of: scriptManager.modelLoadState) {
       // if first load state done, promptViewHasLoadedInitialModel = true
       if scriptManager.modelLoadState == .done {
         promptViewHasLoadedInitialModel = true
       }
     }
+     */
     /*
     .onChange(of: checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel) {
       Debug.log("checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel: \(checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel)")
@@ -235,7 +239,7 @@ extension CheckpointModelMenu {
 
 
 
-
+/*
 
 extension CheckpointModelMenu {
   @MainActor
@@ -290,6 +294,8 @@ extension CheckpointModelMenu {
   }
 }
 
+ */
+ 
 #Preview {
   CommonPreviews.promptView
 }
