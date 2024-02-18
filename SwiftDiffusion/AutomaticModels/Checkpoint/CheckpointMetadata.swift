@@ -7,6 +7,23 @@
 
 import Foundation
 
+extension Constants.API.Endpoint {
+  struct Checkpoint {
+    static let get = "/sdapi/v1/sd-models"
+    static let postRefresh = "/sdapi/v1/refresh-checkpoints"
+  }
+}
+
+extension CheckpointMetadata: EndpointRepresentable {
+  static var fetchEndpoint: String? {
+    Constants.API.Endpoint.Checkpoint.get
+  }
+  
+  static var refreshEndpoint: String? {
+    Constants.API.Endpoint.Checkpoint.postRefresh
+  }
+}
+
 struct CheckpointMetadata: Decodable {
   let title: String
   let modelName: String
