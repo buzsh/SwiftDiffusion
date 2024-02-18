@@ -119,7 +119,6 @@ struct DebugApiView: View {
         }
         .frame(height: 40)
         .font(.system(size: 12, weight: .regular, design: .rounded))
-        //.buttonStyle(.accessoryBar)
         
         Divider()
         

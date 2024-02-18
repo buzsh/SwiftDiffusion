@@ -45,7 +45,7 @@ class APIManager: ObservableObject {
     }
     let decoder = JSONDecoder()
     let decodedResponse = try decoder.decode([CheckpointApiModel].self, from: data)
-    self.checkpoints = decodedResponse.map { Checkpoint(name: $0.title, path: $0.filename, checkpointApiModel: $0) }
+    self.checkpoints = decodedResponse.map { Checkpoint(name: $0.title, path: $0.filename, type: .python, checkpointApiModel: $0) }
   }
   
   func getLoadedCheckpointAsync() async throws {

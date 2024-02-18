@@ -8,19 +8,17 @@
 import Foundation
 import Combine
 
-class CheckpointApiManager: ObservableObject {
-  @Published var models: [CheckpointModel] = []
-}
-
 class Checkpoint: ObservableObject, Identifiable {
   let id = UUID()
   let name: String
   let path: String
+  let type: CheckpointModelType
   var checkpointApiModel: CheckpointApiModel?
   
-  init(name: String, path: String, checkpointApiModel: CheckpointApiModel? = nil) {
+  init(name: String, path: String, type: CheckpointModelType, checkpointApiModel: CheckpointApiModel? = nil) {
     self.name = name
     self.path = path
+    self.type = type
     self.checkpointApiModel = checkpointApiModel
   }
 }
