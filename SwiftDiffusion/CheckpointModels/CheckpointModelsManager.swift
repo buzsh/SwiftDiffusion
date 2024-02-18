@@ -56,9 +56,7 @@ class CheckpointModelsManager: ObservableObject {
       }
       // Remove items whose URLs no longer exist
       self.items = self.items.filter { updatedURLs.contains($0.url) }
-      // Add new items
       self.items.append(contentsOf: newItems)
-      // Assign model titles if API is connectable
       assignLocalModelCheckpointsWithApiSdModelResults()
     } catch {
       Debug.log("Failed to load models: \(error)")
@@ -107,7 +105,7 @@ class CheckpointModelsManager: ObservableObject {
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   func moveToTrash(item: CheckpointModel) async {
     let fileManager = FileManager.default
     do {
@@ -142,7 +140,7 @@ extension ModelManagerViewModel {
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   func getSdModelData(_ api: URL) async throws -> [SdModel] {
     let endpoint = api.appendingPathComponent("/sdapi/v1/sd-models")
     let (data, _) = try await URLSession.shared.data(from: endpoint)
@@ -152,7 +150,7 @@ extension ModelManagerViewModel {
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   @MainActor
   func assignSdModelCheckpointTitles(completion: @escaping (Int) -> Void) {
     guard let baseUrl = scriptManager.serviceUrl else {
@@ -196,7 +194,7 @@ extension ModelManagerViewModel {
   }
 }
 
-extension ModelManagerViewModel {
+extension CheckpointModelsManager {
   @MainActor
   func getModelCheckpointMatchingApiLoadedModelCheckpoint() async -> CheckpointModel? {
     guard let apiUrl = scriptManager.serviceUrl else {

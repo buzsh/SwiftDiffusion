@@ -34,7 +34,7 @@ struct ContentView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
@@ -86,7 +86,7 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, modelManagerViewModel: modelManagerViewModel, loraModelsManager: loraModelsManager)
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointModelsManager: checkpointModelsManager, loraModelsManager: loraModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
@@ -94,7 +94,7 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-        await modelManagerViewModel.loadModels()
+        await checkpointModelsManager.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -302,9 +302,6 @@ extension ContentView {
     if userSettings.alwaysStartPythonEnvironmentAtLaunch && userHasEnteredBothRequiredFields {
       if !CanvasPreview {
         scriptManager.run()
-        Task {
-          await modelManagerViewModel.loadModels()
-        }
       }
     }
   }

@@ -97,13 +97,13 @@ extension CommonPreviews {
     
     promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "/"), isDefaultModel: false)
     
-    let modelManagerViewModel = ModelManagerViewModel()
+    let checkpointModelsManagerPreview = CheckpointModelsManager()
     
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .environmentObject(promptModelPreview)
-    .environmentObject(modelManagerViewModel)
+    .environmentObject(checkpointModelsManagerPreview)
     .frame(width: 400, height: 600)
   }
 }

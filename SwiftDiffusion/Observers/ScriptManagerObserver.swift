@@ -12,15 +12,15 @@ class ScriptManagerObserver {
   var scriptManager: ScriptManager
   var userSettings: UserSettings
   
-  var modelManagerViewModel: ModelManagerViewModel
+  var checkpointModelsManager: CheckpointModelsManager
   var loraModelsManager: ModelManager<LoraModel>
   
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings, modelManagerViewModel: ModelManagerViewModel, loraModelsManager: ModelManager<LoraModel>) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, checkpointModelsManager: CheckpointModelsManager, loraModelsManager: ModelManager<LoraModel>) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
-    self.modelManagerViewModel = modelManagerViewModel
+    self.checkpointModelsManager = checkpointModelsManager
     self.loraModelsManager = loraModelsManager
     
     setupObservers()
@@ -51,15 +51,15 @@ class ScriptManagerObserver {
     Debug.log("scriptStateDidChange newState: \(newState)")
     if newState.isActive {
       Debug.log("newState.isActive")
-      modelManagerViewModel.startObservingModelDirectories()
+      checkpointModelsManager.startObservingModelDirectories()
       loraModelsManager.startObservingDirectory()
     }
   }
   
   private func stableDiffusionModelsPathDidChange(_ newPath: String) {
     Debug.log("stableDiffusionModelsPathDidChange newPath: \(newPath)")
-    modelManagerViewModel.stopObservingModelDirectories()
-    modelManagerViewModel.startObservingModelDirectories()
+    checkpointModelsManager.stopObservingModelDirectories()
+    checkpointModelsManager.startObservingModelDirectories()
   }
   
   private func loraDirectoryPathDidChange(_ newPath: String = "") {

@@ -166,7 +166,7 @@ extension PromptView {
       Debug.log("modelHash: \(modelHash)")
       
       var potentialHashMatch: String?
-      for model in modelManagerViewModel.items {
+      for model in checkpointModelsManager.items {
         if let sdModelCheckpointTitle = model.sdModel?.title {
           if let startIndex = sdModelCheckpointTitle.firstIndex(of: "["),
              let endIndex = sdModelCheckpointTitle.firstIndex(of: "]") {
@@ -198,7 +198,7 @@ extension PromptView {
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
     parseLog("Parsed model substrings: \(parsedModelSubstrings)")
     
-    for model in modelManagerViewModel.items {
+    for model in checkpointModelsManager.items {
       let itemSubstrings = splitAndFilterModelName(model.name)
       parseLog("Model item substrings: \(itemSubstrings) for model: \(model.name)")
       if parsedModelSubstrings.contains(where: itemSubstrings.contains) {
@@ -208,7 +208,7 @@ extension PromptView {
     }
     
     parseLog("No matching model found for \(parsedModelSubstrings)")
-    let allTitles = modelManagerViewModel.items.compactMap { $0.sdModel?.title }.joined(separator: ", ")
+    let allTitles = checkpointModelsManager.items.compactMap { $0.sdModel?.title }.joined(separator: ", ")
     Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
     return nil
   }

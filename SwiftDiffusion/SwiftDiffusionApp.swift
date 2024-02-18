@@ -18,8 +18,7 @@ struct SwiftDiffusionApp: App {
   let sidebarViewModel = SidebarViewModel()
   
   let currentPrompt = PromptModel()
-  let modelManangerViewModel = ModelManagerViewModel()
-  
+  let checkpointModelsManager = CheckpointModelsManager()
   let loraModelsManager = ModelManager<LoraModel>()
   
   init() {
@@ -54,7 +53,7 @@ struct SwiftDiffusionApp: App {
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(sidebarViewModel)
         .environmentObject(currentPrompt)
-        .environmentObject(modelManangerViewModel)
+        .environmentObject(checkpointModelsManager)
         .environmentObject(loraModelsManager)
     }
     .modelContainer(modelContainer)

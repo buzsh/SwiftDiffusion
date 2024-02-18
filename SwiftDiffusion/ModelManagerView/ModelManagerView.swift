@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ModelManagerView: View {
-  @EnvironmentObject var modelManagerViewModel: ModelManagerViewModel
+  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var currentPrompt: PromptModel
   
   @ObservedObject var scriptManager: ScriptManager
@@ -27,8 +27,8 @@ struct ModelManagerView: View {
   }
   
   var filteredItems: [CheckpointModel] {
-    guard let selectedFilter = selectedFilter else { return modelManagerViewModel.items }
-    return modelManagerViewModel.items.filter { $0.type == selectedFilter }
+    guard let selectedFilter = selectedFilter else { return checkpointModelsManager.items }
+    return checkpointModelsManager.items.filter { $0.type == selectedFilter }
   }
   
   var body: some View {
@@ -41,7 +41,7 @@ struct ModelManagerView: View {
         */
         Button("Refresh") {
           Task {
-            await modelManagerViewModel.loadModels()
+            await checkpointModelsManager.loadModels()
           }
         }
         
@@ -83,7 +83,7 @@ struct ModelManagerView: View {
           if !item.isDefaultModel && item != currentPrompt.selectedModel {
             Button(action: {
               Task {
-                await modelManagerViewModel.moveToTrash(item: item)
+                await checkpointModelsManager.moveToTrash(item: item)
               }
             }) {
               Image(systemName: "trash")
