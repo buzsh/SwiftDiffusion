@@ -74,7 +74,7 @@ struct ContentView: View {
       case .console:
         ConsoleView(scriptManager: scriptManager)
       case .models:
-        CheckpointModelsManagerView(scriptManager: scriptManager)
+        CheckpointModelsManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
       case .settings:
         SettingsView()
       }
@@ -216,6 +216,12 @@ struct ContentView: View {
         
         if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {
           ContentProgressBar(scriptManager: scriptManager)
+        }
+        
+        Button(action: {
+          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+        }) {
+          Image(systemName: "arkit")
         }
         
         Button(action: {
