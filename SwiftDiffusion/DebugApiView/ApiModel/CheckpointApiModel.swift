@@ -43,7 +43,7 @@ struct CheckpointApiModel: Decodable {
   }
 }
 
-struct ClientConfig: Decodable {
+struct ClientConfig: Encodable, Decodable {
   let sdModelCheckpoint: String
   enum CodingKeys: String, CodingKey {
     case sdModelCheckpoint = "sd_model_checkpoint"

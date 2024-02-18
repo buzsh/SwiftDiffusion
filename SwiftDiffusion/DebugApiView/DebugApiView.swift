@@ -24,6 +24,22 @@ struct DebugApiView: View {
   @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
   @State private var consoleLog: String = ""
   
+  @State private var checkpoints: [Checkpoint] = []
+  @State private var checkpointTitlePaths: [String: String] = [:]
+  private func updateCheckpointTitlePaths(with checkpoints: [Checkpoint]) {
+    checkpointTitlePaths = Dictionary(uniqueKeysWithValues: checkpoints.map { ($0.name, $0.path) })
+  }
+  
+  @State private var checkpointApiTitle: String = ""
+  
+  private func logConsoleCheckpointTitlePaths() {
+    consoleLog += "\n\nlogConsoleCheckpointTitlePaths()\n"
+    for (name, path) in checkpointTitlePaths {
+      consoleLog += "    name: \(name)\n"
+      consoleLog += "    path: \(path)\n\n"
+    }
+  }
+  
   var apiUrl: String {
     if let url = scriptManager.serviceUrl {
       return url.absoluteString
@@ -55,22 +71,62 @@ struct DebugApiView: View {
               }
             }
           
+          Button("Refresh/Get [Checkpoints]") {
+            let apiManager = APIManager(baseURL: apiUrl)
+            Task {
+              let result = await refreshAndGetCheckpoints(apiManager: apiManager)
+              switch result {
+              case .success(let message):
+                Debug.log(message)
+                consoleLog += "Done: \(message)\n"
+                checkpoints = apiManager.checkpoints
+                updateCheckpointTitlePaths(with: checkpoints)
+              case .failure(let error):
+                Debug.log(error.localizedDescription)
+                consoleLog += "Error: \(error.localizedDescription)\n"
+              }
+            }
+          }
           
-          Button("API Button") {
-            Debug.log("API Button")
+          Button("Log [Checkpoints]") {
+            logConsoleCheckpointTitlePaths()
+          }
+          
+          Button("Get Loaded Checkpoint") {
+            let apiManager = APIManager(baseURL: apiUrl)
+            Task {
+              let result = await refreshAndGetCheckpoints(apiManager: apiManager)
+              switch result {
+              case .success(let message):
+                Debug.log(message)
+                consoleLog += "Done: \(message)\n"
+                if let title = apiManager.loadedCheckpoint {
+                  checkpointApiTitle = title
+                }
+                consoleLog += "[Loaded] from sd_model_checkpoint: \(checkpointApiTitle)\n"
+              case .failure(let error):
+                Debug.log(error.localizedDescription)
+                consoleLog += "Error: \(error.localizedDescription)\n"
+              }
+            }
+          }
+          
+          Button("Set [Checkpoints]") {
+            Debug.log("Hello")//logConsoleCheckpointTitlePaths()
           }
           
           Spacer()
         }
         .frame(height: 40)
+        .font(.system(size: 12, weight: .regular, design: .rounded))
+        //.buttonStyle(.accessoryBar)
         
         Divider()
         
         TextEditor(text: $consoleLog)
+          .font(.system(size: 12, weight: .regular, design: .monospaced))
       }
       .padding(.horizontal, 6)
-      .font(.system(size: 12, weight: .regular, design: .monospaced))
-      .buttonStyle(.accessoryBar)
       
     }
     .navigationTitle("Debug API")
@@ -91,7 +147,36 @@ struct DebugApiView: View {
       }
     }
   }
+  
+  func refreshAndGetCheckpoints(apiManager: APIManager) async -> Result<String, Error> {
+    Debug.log("\n\nrefreshAndGetCheckpoints")
+    do {
+      consoleLog += "apiManager init\n"
+      try await apiManager.refreshCheckpointsAsync()
+      consoleLog += "apiManager.refreshCheckpointsAsync()\n"
+      try await apiManager.getCheckpointsAsync()
+      consoleLog += "apiManager.getCheckpointsAsync()\n"
+      return .success("Success!")
+    } catch {
+      return .failure(error)
+    }
+  }
+  
+  func getLoadedCheckpoint(apiManager: APIManager) async -> Result<String, Error> {
+    Debug.log("\n\ngetLoadedCheckpoint")
+    do {
+      consoleLog += "apiManager init\n"
+      try await apiManager.getLoadedCheckpointAsync()
+      consoleLog += "apiManager.getLoadedCheckpointAsync()\n"
+      return .success("Success!")
+    } catch {
+      return .failure(error)
+    }
+  }
 }
+
+
+
 
 
 #Preview {
