@@ -96,7 +96,7 @@ struct CheckpointManagerView: View {
       }
     }
     .sheet(item: $selectedCheckpointModel) { checkpointModel in
-      CheckpointModelPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
+      CheckpointPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
     .navigationTitle("Checkpoint Manager")
     .toolbar {

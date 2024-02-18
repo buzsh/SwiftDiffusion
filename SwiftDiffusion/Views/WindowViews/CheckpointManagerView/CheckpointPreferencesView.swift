@@ -1,5 +1,5 @@
 //
-//  CheckpointModelPreferencesView.swift
+//  CheckpointPreferencesView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/8/24.
@@ -15,7 +15,7 @@ extension Constants {
   ]
 }
 
-struct CheckpointModelPreferencesView: View {
+struct CheckpointPreferencesView: View {
   @Binding var checkpointModel: CheckpointModel
   @ObservedObject var modelPreferences: CheckpointModelPreferences
   @StateObject private var temporaryPreferences: CheckpointModelPreferences
@@ -132,7 +132,7 @@ struct CheckpointModelPreferencesView: View {
   let item = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
   item.preferences = CheckpointModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
-  return CheckpointModelPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
+  return CheckpointPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 400)
 }
 
