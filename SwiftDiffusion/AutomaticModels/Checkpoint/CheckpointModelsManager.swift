@@ -12,8 +12,9 @@ class CheckpointModelsManager: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
   @Published var items: [CheckpointModel] = []
-  
   @Published var hasLoadedInitialModelCheckpointsAndAssignedSdModel: Bool = false
+  
+  @Published var recentlyDeletedCheckpointModels: [CheckpointModel] = []
   
   private var coreMlObserver: DirectoryObserver?
   private var pythonObserver: DirectoryObserver?
@@ -23,7 +24,14 @@ class CheckpointModelsManager: ObservableObject {
   
   private let scriptManager = ScriptManager.shared
   
+  func refreshModels() {
+    let checkpointMetadata = ModelManager<CheckpointMetadata>()
+    checkpointMetadata.refreshModels()
+  }
+  
   func loadModels() async {
+    //refreshModels()
+    
     do {
       let fileManager = FileManager.default
       var newItems: [CheckpointModel] = []
@@ -54,13 +62,30 @@ class CheckpointModelsManager: ObservableObject {
           }
         }
       }
+      
+      Debug.log("loadModels()")
+      
+      let recordOfCheckpointModels = items
+      
       // Remove items whose URLs no longer exist
       self.items = self.items.filter { updatedURLs.contains($0.url) }
       self.items.append(contentsOf: newItems)
+      
+      // Calculate recentlyRemovedCheckpointModels by finding models not in the updated 'items'
+      self.recentlyDeletedCheckpointModels = recordOfCheckpointModels.filter { model in
+        !self.items.contains(where: { $0.url == model.url })
+      }
+      
       assignLocalModelCheckpointsWithApiSdModelResults()
     } catch {
       Debug.log("Failed to load models: \(error)")
     }
+  }
+  
+  private func removeRecentlyDeletedCheckpointModels(updatedURLs: Set<URL>) {
+    let modelsToRemove = self.items.filter { !updatedURLs.contains($0.url) }
+    self.recentlyDeletedCheckpointModels.append(contentsOf: modelsToRemove)
+    self.items = self.items.filter { updatedURLs.contains($0.url) }
   }
   
   func assignLocalModelCheckpointsWithApiSdModelResults() {
@@ -100,6 +125,8 @@ class CheckpointModelsManager: ObservableObject {
       pythonObserver?.startObserving(url: pythonModelsDir) { [weak self] in
         Debug.log("Detected changes in Python models directory")
         await self?.loadModels()
+        
+        //if selected
       }
     }
   }

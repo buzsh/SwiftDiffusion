@@ -27,6 +27,9 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
+  @State var deletedCheckpointModel: CheckpointModel? = nil
+  @State var showSelectedCheckpointModelWasDeletedAlert: Bool = false
+  
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
     disablePromptView = !isWorkspaceItem
@@ -93,6 +96,29 @@ struct PromptView: View {
         } // Form
         .disabled(disablePromptView)
       } // ScrollView
+      .onChange(of: checkpointModelsManager.recentlyDeletedCheckpointModels) {
+        if let selectedModel = currentPrompt.selectedModel {
+          if let deletedModel = checkpointModelsManager.recentlyDeletedCheckpointModels.first(where: { $0.url == selectedModel.url }) {
+            deletedCheckpointModel = deletedModel
+            currentPrompt.selectedModel = nil
+            showSelectedCheckpointModelWasDeletedAlert = true
+          }
+        }
+        checkpointModelsManager.recentlyDeletedCheckpointModels = []
+      }
+      .alert(isPresented: $showSelectedCheckpointModelWasDeletedAlert) {
+        var message: String = ""
+        if let modelName = deletedCheckpointModel?.name { message = modelName }
+        
+        return Alert(
+          title: Text("Warning: Model checkpoint was either moved or deleted"),
+          message: Text(message),
+          dismissButton: .cancel(Text("OK")) {
+            deletedCheckpointModel = nil
+          }
+        )
+      }
+      
       
       PasteGenerationDataStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,
