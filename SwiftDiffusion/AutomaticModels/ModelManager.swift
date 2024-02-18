@@ -32,6 +32,22 @@ class ModelManager<T: Decodable & EndpointRepresentable>: ObservableObject {
     directoryObserver?.stopObserving()
   }
   
+  func refreshModels() {
+    Task {
+      do {
+        if let _ = T.refreshEndpoint {
+          try await AutomaticApiService.shared.refreshData(for: T.self)
+        }
+      } catch {
+        DispatchQueue.main.async {
+          self.errorMessage = "Failed to refresh models: \(error.localizedDescription)"
+          Debug.log(self.errorMessage)
+          self.showError = true
+        }
+      }
+    }
+  }
+  
   func loadModels() {
     Task {
       do {
