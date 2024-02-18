@@ -35,6 +35,10 @@ class ModelManager<T: Decodable & EndpointRepresentable>: ObservableObject {
   func loadModels() {
     Task {
       do {
+        if let _ = T.refreshEndpoint {
+          try await AutomaticApiService.shared.refreshData(for: T.self)
+        }
+        
         let models = try await AutomaticApiService.shared.fetchData(for: [T].self)
         DispatchQueue.main.async {
           self.models = models
