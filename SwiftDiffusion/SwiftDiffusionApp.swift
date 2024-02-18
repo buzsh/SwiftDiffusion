@@ -27,7 +27,7 @@ struct SwiftDiffusionApp: App {
       fatalError("Application Support directory not found.")
     }
     let storeURL = appSupportURL
-      .appendingPathComponent("test1") // Constants.FileStructure.AppSupportFolderName
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
       .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
       .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
     
