@@ -70,7 +70,7 @@ class WindowManager: NSObject, ObservableObject {
   }
   
   /// Shows the models manager window containing CheckpointManagerView. If the window does not exist, it creates and configures a new window before displaying it.
-  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointModelsManagerView`.
+  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointManagerView`.
   func showCheckpointManagerWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, checkpointModelsManager: CheckpointModelsManager) {
     if checkpointManagerWindow == nil {
       checkpointManagerWindow = NSWindow(
