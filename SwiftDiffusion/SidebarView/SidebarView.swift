@@ -236,13 +236,16 @@ struct SidebarView: View {
             Spacer(minLength: 100)
             HStack(alignment: .center) {
               Spacer()
-              Text("Saved prompts will appear here!")
-                .foregroundStyle(Color.secondary)
-                .multilineTextAlignment(.center)
+              VStack {
+                Text("Saved prompts")
+                Text("will appear here!")
+              }
               Spacer()
             }
+            
             Spacer()
           }
+          .foregroundStyle(Color.secondary)
         } else {
           
           Section(header: Text("Uncategorized")) {

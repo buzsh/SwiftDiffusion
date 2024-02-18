@@ -78,7 +78,7 @@ struct DebugPromptActionView: View {
             
             Button("Log Model from API") {
               Task {
-                if let modelTitle = await checkpointModelsManager.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.sdModel?.title {
+                if let modelTitle = await checkpointModelsManager.getModelCheckpointMatchingApiLoadedModelCheckpoint()?.checkpointMetadata?.title {
                   Debug.log("Log Model from API: \(modelTitle)")
                 }
               }

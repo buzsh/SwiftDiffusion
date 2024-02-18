@@ -32,8 +32,8 @@ struct MapModelData {
     }
   }
   
-  func mapJsonDataToSdModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> SdModel {
-    return SdModel(title: title,
+  func mapJsonDataToCheckpointMetadata(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> CheckpointMetadata {
+    return CheckpointMetadata(title: title,
                    modelName: modelName,
                    hash: hash,
                    sha256: sha256,
@@ -49,25 +49,25 @@ struct MapModelData {
                         type: storedCheckpointModelType,
                         url: checkpointModel.url,
                         isDefaultModel: checkpointModel.isDefaultModel,
-                        jsonModelCheckpointTitle: checkpointModel.sdModel?.title ?? "",
-                        jsonModelCheckpointName: checkpointModel.sdModel?.modelName ?? "",
-                        jsonModelCheckpointHash: checkpointModel.sdModel?.hash,
-                        jsonModelCheckpointSha256: checkpointModel.sdModel?.sha256,
-                        jsonModelCheckpointFilename: checkpointModel.sdModel?.filename ?? "",
-                        jsonModelCheckpointConfig: checkpointModel.sdModel?.config)
+                        jsonModelCheckpointTitle: checkpointModel.checkpointMetadata?.title ?? "",
+                        jsonModelCheckpointName: checkpointModel.checkpointMetadata?.modelName ?? "",
+                        jsonModelCheckpointHash: checkpointModel.checkpointMetadata?.hash,
+                        jsonModelCheckpointSha256: checkpointModel.checkpointMetadata?.sha256,
+                        jsonModelCheckpointFilename: checkpointModel.checkpointMetadata?.filename ?? "",
+                        jsonModelCheckpointConfig: checkpointModel.checkpointMetadata?.config)
   }
   
   @MainActor
   func mapStoredCheckpointModelToCheckpointModel(_ storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
     guard let storedCheckpointModel = storedCheckpointModel else { return nil }
     let checkpointModelType = mapStoredCheckpointModelTypeToCheckpointModelType(storedCheckpointModel.type)
-    let sdModel = mapJsonDataToSdModel(title: storedCheckpointModel.jsonModelCheckpointTitle, modelName: storedCheckpointModel.jsonModelCheckpointName, hash: storedCheckpointModel.jsonModelCheckpointHash, sha256: storedCheckpointModel.jsonModelCheckpointSha256, filename: storedCheckpointModel.jsonModelCheckpointFilename, config: storedCheckpointModel.jsonModelCheckpointConfig)
+    let checkpointMetadata = mapJsonDataToCheckpointMetadata(title: storedCheckpointModel.jsonModelCheckpointTitle, modelName: storedCheckpointModel.jsonModelCheckpointName, hash: storedCheckpointModel.jsonModelCheckpointHash, sha256: storedCheckpointModel.jsonModelCheckpointSha256, filename: storedCheckpointModel.jsonModelCheckpointFilename, config: storedCheckpointModel.jsonModelCheckpointConfig)
     
     return CheckpointModel(name: storedCheckpointModel.name,
-                     type: checkpointModelType,
-                     url: storedCheckpointModel.url,
-                     isDefaultModel: storedCheckpointModel.isDefaultModel,
-                     sdModel: sdModel)
+                           type: checkpointModelType,
+                           url: storedCheckpointModel.url,
+                           isDefaultModel: storedCheckpointModel.isDefaultModel,
+                           checkpointMetadata: checkpointMetadata)
   }
   
   
@@ -109,25 +109,25 @@ struct MapModelData {
     return promptModel
   }
   /*
-  func mapSdModelToStoredSdModel(_ sdModel: SdModel?) -> StoredSdModel? {
-    guard let sdModel = sdModel else { return nil }
-    return StoredSdModel(title: sdModel.title,
-                      modelName: sdModel.modelName,
-                      hash: sdModel.hash,
-                      sha256: sdModel.sha256,
-                      filename: sdModel.filename,
-                      config: sdModel.config)
+  func mapCheckpointMetadataToStoredSdModel(_ checkpointMetadata: CheckpointMetadata?) -> StoredCheckpointMetadata? {
+    guard let checkpointMetadata = checkpointMetadata else { return nil }
+    return StoredSdModel(title: checkpointMetadata.title,
+                      modelName: checkpointMetadata.modelName,
+                      hash: checkpointMetadata.hash,
+                      sha256: checkpointMetadata.sha256,
+                      filename: checkpointMetadata.filename,
+                      config: checkpointMetadata.config)
   }
   
-  func mapStoredSdModelToSdModel(_ storedSdModel: StoredSdModel?) -> SdModel? {
-    guard let storedSdModel = storedSdModel else { return nil }
+  func mapStoredCheckpointMetadataToCheckpointMetadataModel(_ storedCheckpointMetadata: StoredCheckpointMetadata?) -> CheckpointMetadata? {
+    guard let storedCheckpointMetadata = storedCheckpointMetadata else { return nil }
     
-    return SdModel(title: storedSdModel.title,
-                   modelName: storedSdModel.modelName,
-                   hash: storedSdModel.hash,
-                   sha256: storedSdModel.sha256,
-                   filename: storedSdModel.filename,
-                   config: storedSdModel.config)
+    return SdModel(title: storedCheckpointMetadata.title,
+                   modelName: storedCheckpointMetadata.modelName,
+                   hash: storedCheckpointMetadata.hash,
+                   sha256: storedCheckpointMetadata.sha256,
+                   filename: storedCheckpointMetadata.filename,
+                   config: storedCheckpointMetadata.config)
   }
   */
   

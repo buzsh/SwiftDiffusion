@@ -167,15 +167,15 @@ extension PromptView {
       
       var potentialHashMatch: String?
       for model in checkpointModelsManager.items {
-        if let sdModelCheckpointTitle = model.sdModel?.title {
-          if let startIndex = sdModelCheckpointTitle.firstIndex(of: "["),
-             let endIndex = sdModelCheckpointTitle.firstIndex(of: "]") {
-            let range = sdModelCheckpointTitle.index(after: startIndex)..<endIndex
-            let extractedHash = String(sdModelCheckpointTitle[range])
+        if let checkpointMetadataTitle = model.checkpointMetadata?.title {
+          if let startIndex = checkpointMetadataTitle.firstIndex(of: "["),
+             let endIndex = checkpointMetadataTitle.firstIndex(of: "]") {
+            let range = checkpointMetadataTitle.index(after: startIndex)..<endIndex
+            let extractedHash = String(checkpointMetadataTitle[range])
             potentialHashMatch = extractedHash
           }
-        } else if let sdCheckpointModelHash = model.sdModel?.hash {
-          potentialHashMatch = sdCheckpointModelHash
+        } else if let checkpointMetadataHash = model.checkpointMetadata?.hash {
+          potentialHashMatch = checkpointMetadataHash
         }
         
         if potentialHashMatch?.lowercased() == modelHash.lowercased() {
@@ -208,7 +208,7 @@ extension PromptView {
     }
     
     parseLog("No matching model found for \(parsedModelSubstrings)")
-    let allTitles = checkpointModelsManager.items.compactMap { $0.sdModel?.title }.joined(separator: ", ")
+    let allTitles = checkpointModelsManager.items.compactMap { $0.checkpointMetadata?.title }.joined(separator: ", ")
     Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
     return nil
   }

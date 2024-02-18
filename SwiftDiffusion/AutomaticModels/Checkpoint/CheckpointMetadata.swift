@@ -1,5 +1,5 @@
 //
-//  SdModel.swift
+//  CheckpointMetadata.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/9/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SdModel: Decodable {
+struct CheckpointMetadata: Decodable {
   let title: String
   let modelName: String
   let hash: String?
@@ -72,14 +72,14 @@ extension PromptView {
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    guard let sdModelCheckpoint = checkpointModel.sdModel else {
+    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
       completion(.failure(.nilCheckpoint))
       return
     }
     
-    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(sdModelCheckpoint.title)")
+    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(checkpointMetadata.title)")
     
-    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: sdModelCheckpoint.title)
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: checkpointMetadata.title)
     do {
       request.httpBody = try JSONEncoder().encode(requestBody)
     } catch {
@@ -99,7 +99,7 @@ extension PromptView {
         switch httpResponse.statusCode {
         case 200:
           scriptManager.modelLoadState = .done
-          completion(.success("Update successful for model: \(sdModelCheckpoint)."))
+          completion(.success("Update successful for model: \(checkpointMetadata)."))
         case 422:
           scriptManager.modelLoadState = .failed
           let decoder = JSONDecoder()

@@ -101,7 +101,7 @@
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
 		29D362402B7317E1006C57B3 /* CheckpointModelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */; };
 		29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */; };
-		29F0D3052B76D12400BF56CE /* SdModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3042B76D12400BF56CE /* SdModel.swift */; };
+		29F0D3052B76D12400BF56CE /* CheckpointMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */; };
 		29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */; };
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
@@ -204,7 +204,7 @@
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelsManager.swift; sourceTree = "<group>"; };
 		29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadState.swift; sourceTree = "<group>"; };
-		29F0D3042B76D12400BF56CE /* SdModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SdModel.swift; sourceTree = "<group>"; };
+		29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMetadata.swift; sourceTree = "<group>"; };
 		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -314,15 +314,15 @@
 			path = DetailView;
 			sourceTree = "<group>";
 		};
-		292CE8072B8176CA00116D60 /* CheckpointModels */ = {
+		292CE8072B8176CA00116D60 /* Checkpoint */ = {
 			isa = PBXGroup;
 			children = (
-				29F0D3042B76D12400BF56CE /* SdModel.swift */,
+				29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */,
 				29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */,
 				29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */,
 				292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */,
 			);
-			path = CheckpointModels;
+			path = Checkpoint;
 			sourceTree = "<group>";
 		};
 		293336442B72A3C6007237AA /* Extensions */ = {
@@ -492,7 +492,6 @@
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
 				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
-				292CE8072B8176CA00116D60 /* CheckpointModels */,
 				29C0F37A2B7AB22F0017DD6B /* ContentView */,
 				290A34AE2B7C432100963C6E /* SidebarView */,
 				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
@@ -548,17 +547,18 @@
 			children = (
 				29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */,
 				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
-				29A1E0B72B80F44500B18AC1 /* LoraModel */,
+				292CE8072B8176CA00116D60 /* Checkpoint */,
+				29A1E0B72B80F44500B18AC1 /* Lora */,
 			);
 			path = AutomaticModels;
 			sourceTree = "<group>";
 		};
-		29A1E0B72B80F44500B18AC1 /* LoraModel */ = {
+		29A1E0B72B80F44500B18AC1 /* Lora */ = {
 			isa = PBXGroup;
 			children = (
 				29A1E0B82B80F45900B18AC1 /* LoraModel.swift */,
 			);
-			path = LoraModel;
+			path = Lora;
 			sourceTree = "<group>";
 		};
 		29A1E0C02B810C8C00B18AC1 /* Observers */ = {
@@ -792,7 +792,7 @@
 				29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
-				29F0D3052B76D12400BF56CE /* SdModel.swift in Sources */,
+				29F0D3052B76D12400BF56CE /* CheckpointMetadata.swift in Sources */,
 				290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */,
 				291635A62B7EAEE200D47EEF /* SegmentedDisplayOptions.swift in Sources */,
 				29145E7A2B77DCEB00BFA64B /* DebugPromptActionView.swift in Sources */,

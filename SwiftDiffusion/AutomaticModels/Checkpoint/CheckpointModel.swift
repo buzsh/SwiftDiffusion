@@ -20,21 +20,21 @@ class CheckpointModel: ObservableObject, Identifiable {
   let type: CheckpointModelType
   let url: URL
   var isDefaultModel: Bool = false
-  var sdModel: SdModel?
+  var checkpointMetadata: CheckpointMetadata?
 
   @Published var preferences: CheckpointModelPreferences
   
-  init(name: String, type: CheckpointModelType, url: URL, isDefaultModel: Bool = false, sdModel: SdModel? = nil) {
+  init(name: String, type: CheckpointModelType, url: URL, isDefaultModel: Bool = false, checkpointMetadata: CheckpointMetadata? = nil) {
     self.name = name
     self.type = type
     self.url = url
     self.isDefaultModel = isDefaultModel
-    self.sdModel = sdModel
+    self.checkpointMetadata = checkpointMetadata
     self.preferences = CheckpointModelPreferences.defaultSamplingForCheckpointModelType(type: type)
   }
   
-  func setSdModel(_ automaticCheckpointModel: SdModel) {
-    self.sdModel = automaticCheckpointModel
+  func setCheckpointMetadata(_ automaticCheckpointModel: CheckpointMetadata) {
+    self.checkpointMetadata = automaticCheckpointModel
   }
 }
 

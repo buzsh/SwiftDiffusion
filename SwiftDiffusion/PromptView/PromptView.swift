@@ -32,7 +32,7 @@ struct PromptView: View {
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
-    if previousSelectedModel?.sdModel?.title == checkpointModel.sdModel?.title {
+    if previousSelectedModel?.checkpointMetadata?.title == checkpointModel.checkpointMetadata?.title {
       Debug.log("Model already loaded. Do not reload.")
       return
     }
@@ -205,8 +205,8 @@ struct PromptView: View {
                   Task {
                     if let loadedCheckpointModel = await checkpointModelsManager.getModelCheckpointMatchingApiLoadedModelCheckpoint() {
                       currentPrompt.selectedModel = loadedCheckpointModel
-                      Debug.log(" - apiLoadedModel: \(String(describing: loadedCheckpointModel.sdModel?.title))")
-                      Debug.log(" - currentPrompt.selectedModel: \(String(describing: currentPrompt.selectedModel?.sdModel?.title))")
+                      Debug.log(" - apiLoadedModel: \(String(describing: loadedCheckpointModel.checkpointMetadata?.title))")
+                      Debug.log(" - currentPrompt.selectedModel: \(String(describing: currentPrompt.selectedModel?.checkpointMetadata?.title))")
                     }
                   }
                 }
