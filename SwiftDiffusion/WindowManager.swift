@@ -78,7 +78,7 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
-      checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointModelsManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager))
+      checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager))
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self

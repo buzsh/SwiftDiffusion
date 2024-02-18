@@ -1,5 +1,5 @@
 //
-//  CheckpointModelsManagerView.swift
+//  CheckpointManagerView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CheckpointModelsManagerView: View {
+struct CheckpointManagerView: View {
   @ObservedObject var scriptManager: ScriptManager
   var currentPrompt: PromptModel
   var checkpointModelsManager: CheckpointModelsManager
@@ -122,10 +122,9 @@ struct CheckpointModelsManagerView: View {
   }
 }
 
-
 /*
 #Preview {
-  return CheckpointModelsManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
+  return CheckpointManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .frame(width: 500, height: 400)
 }
 */
