@@ -221,6 +221,12 @@ struct ContentView: View {
         }
         
         Button(action: {
+          WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointModelsManager: checkpointModelsManager, loraModelsManager: loraModelsManager)
+        }) {
+          Image(systemName: "command")
+        }
+        
+        Button(action: {
           WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
         }) {
           Image(systemName: "arkit")
