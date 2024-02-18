@@ -1,5 +1,5 @@
 //
-//  SidebarModelMapping.swift
+//  MapModelData.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/13/24.

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */; };
 		290A34AD2B7C360100963C6E /* SidebarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AC2B7C360100963C6E /* SidebarModel.swift */; };
-		290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */; };
+		290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* MapModelData.swift */; };
 		290A34B22B7C894500963C6E /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B12B7C894500963C6E /* SidebarView.swift */; };
 		290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B32B7D283600963C6E /* SidebarMockDataController.swift */; };
 		290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B52B7D597C00963C6E /* SidebarViewModel.swift */; };
@@ -113,7 +113,7 @@
 /* Begin PBXFileReference section */
 		290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProgressBar.swift; sourceTree = "<group>"; };
 		290A34AC2B7C360100963C6E /* SidebarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModel.swift; sourceTree = "<group>"; };
-		290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModelMapping.swift; sourceTree = "<group>"; };
+		290A34AF2B7C616A00963C6E /* MapModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModelData.swift; sourceTree = "<group>"; };
 		290A34B12B7C894500963C6E /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		290A34B32B7D283600963C6E /* SidebarMockDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMockDataController.swift; sourceTree = "<group>"; };
 		290A34B52B7D597C00963C6E /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
@@ -232,11 +232,10 @@
 			isa = PBXGroup;
 			children = (
 				291635A42B7EAEAB00D47EEF /* Components */,
+				292CE81C2B81BA3D00116D60 /* MapModelData */,
+				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
-				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
-				290A34AF2B7C616A00963C6E /* SidebarModelMapping.swift */,
-				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
 			);
 			path = SidebarView;
 			sourceTree = "<group>";
@@ -350,6 +349,23 @@
 			path = PromptMenus;
 			sourceTree = "<group>";
 		};
+		292CE8172B81B49300116D60 /* ParseGenerationData */ = {
+			isa = PBXGroup;
+			children = (
+				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
+			);
+			path = ParseGenerationData;
+			sourceTree = "<group>";
+		};
+		292CE81C2B81BA3D00116D60 /* MapModelData */ = {
+			isa = PBXGroup;
+			children = (
+				290A34AF2B7C616A00963C6E /* MapModelData.swift */,
+				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
+			);
+			path = MapModelData;
+			sourceTree = "<group>";
+		};
 		293336442B72A3C6007237AA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -361,14 +377,13 @@
 		293336472B72A5CE007237AA /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
-				292CE8122B81AE6F00116D60 /* PromptMenus */,
 				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
-				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
-				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
+				292CE8122B81AE6F00116D60 /* PromptMenus */,
 				29145E702B77D94900BFA64B /* PromptStatusBarViews */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
+				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
 			);
 			path = PromptView;
 			sourceTree = "<group>";
@@ -485,6 +500,7 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8172B81B49300116D60 /* ParseGenerationData */,
 				292CE80A2B8193C200116D60 /* ImageSaver */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29D362382B72E59F006C57B3 /* FileUtility.swift */,
@@ -793,7 +809,7 @@
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
-				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
+				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
