@@ -67,7 +67,7 @@
 		29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C82B81374500B18AC1 /* ModelManager.swift */; };
 		29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */; };
 		29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D72B755965009B6F03 /* AppDirectory.swift */; };
-		29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* ModelPreferencesView.swift */; };
+		29B571792B756F320057DD50 /* CheckpointModelPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */; };
 		29B5717D2B758D7E0057DD50 /* CheckpointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */; };
 		29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */; };
 		29B571822B75AE410057DD50 /* PromptRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571812B75AE410057DD50 /* PromptRows.swift */; };
@@ -170,7 +170,7 @@
 		29A1E0C82B81374500B18AC1 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFileStructure.swift; sourceTree = "<group>"; };
 		29B1D9D72B755965009B6F03 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
-		29B571782B756F320057DD50 /* ModelPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPreferencesView.swift; sourceTree = "<group>"; };
+		29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelPreferencesView.swift; sourceTree = "<group>"; };
 		29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModel.swift; sourceTree = "<group>"; };
 		29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfMaxWidthView.swift; sourceTree = "<group>"; };
 		29B571812B75AE410057DD50 /* PromptRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRows.swift; sourceTree = "<group>"; };
@@ -666,7 +666,7 @@
 			isa = PBXGroup;
 			children = (
 				29D3623B2B72ED4D006C57B3 /* ModelManagerView.swift */,
-				29B571782B756F320057DD50 /* ModelPreferencesView.swift */,
+				29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */,
 			);
 			path = ModelManagerView;
 			sourceTree = "<group>";
@@ -800,7 +800,7 @@
 				29623E3A2B79888500EC719F /* RequiredInputPathsPulsatingButton.swift in Sources */,
 				29145E7F2B782BB600BFA64B /* AppDocuments.swift in Sources */,
 				29708F902B7EB632004A95AD /* DisplayOptionsBar.swift in Sources */,
-				29B571792B756F320057DD50 /* ModelPreferencesView.swift in Sources */,
+				29B571792B756F320057DD50 /* CheckpointModelPreferencesView.swift in Sources */,
 				29D362402B7317E1006C57B3 /* CheckpointModelsManager.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				29C0F38F2B7AC3380017DD6B /* BrowseFileRow.swift in Sources */,
