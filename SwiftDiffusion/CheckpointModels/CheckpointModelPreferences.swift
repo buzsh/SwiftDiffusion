@@ -1,5 +1,5 @@
 //
-//  ModelPreferences.swift
+//  CheckpointModelPreferences.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/17/24.
@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-class ModelPreferences: ObservableObject {
+class CheckpointModelPreferences: ObservableObject {
   @Published var samplingMethod: String
   @Published var positivePrompt: String = ""
   @Published var negativePrompt: String = ""
@@ -25,7 +25,7 @@ class ModelPreferences: ObservableObject {
     self.samplingMethod = samplingMethod
   }
   
-  static func defaultSamplingForModelType(type: ModelType) -> ModelPreferences {
+  static func defaultSamplingForModelType(type: ModelType) -> CheckpointModelPreferences {
     let samplingMethod: String
     switch type {
     case .coreMl:
@@ -33,11 +33,11 @@ class ModelPreferences: ObservableObject {
     case .python:
       samplingMethod = "DPM++ 2M Karras"
     }
-    return ModelPreferences(samplingMethod: samplingMethod)
+    return CheckpointModelPreferences(samplingMethod: samplingMethod)
   }
 }
 
-extension ModelPreferences {
+extension CheckpointModelPreferences {
   convenience init(from promptModel: PromptModel) {
     self.init(samplingMethod: promptModel.samplingMethod ?? "DPM++ 2M Karras")
     self.positivePrompt = promptModel.positivePrompt

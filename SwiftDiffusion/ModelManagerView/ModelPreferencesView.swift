@@ -1,5 +1,5 @@
 //
-//  ModelPreferencesView.swift
+//  CheckpointModelPreferencesView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/8/24.
@@ -15,16 +15,16 @@ extension Constants {
   ]
 }
 
-struct ModelPreferencesView: View {
+struct CheckpointModelPreferencesView: View {
   @Binding var checkpointModel: CheckpointModel
-  @ObservedObject var modelPreferences: ModelPreferences
-  @StateObject private var temporaryPreferences: ModelPreferences
+  @ObservedObject var modelPreferences: CheckpointModelPreferences
+  @StateObject private var temporaryPreferences: CheckpointModelPreferences
   @Environment(\.presentationMode) var presentationMode
   
-  init(checkpointModel: Binding<CheckpointModel>, modelPreferences: ModelPreferences) {
+  init(checkpointModel: Binding<CheckpointModel>, modelPreferences: CheckpointModelPreferences) {
     self._checkpointModel = checkpointModel
     self._modelPreferences = ObservedObject(initialValue: modelPreferences)
-    self._temporaryPreferences = StateObject(wrappedValue: ModelPreferences.copy(from: modelPreferences))
+    self._temporaryPreferences = StateObject(wrappedValue: CheckpointModelPreferences.copy(from: modelPreferences))
   }
   
   var body: some View {
@@ -130,16 +130,16 @@ struct ModelPreferencesView: View {
 
 #Preview {
   let item = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
-  item.preferences = ModelPreferences(samplingMethod: "DPM++ 2M Karras")
+  item.preferences = CheckpointModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
-  return ModelPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
+  return CheckpointModelPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 400)
 }
 
 
-extension ModelPreferences {
-  static func copy(from preferences: ModelPreferences) -> ModelPreferences {
-    let copy = ModelPreferences(samplingMethod: preferences.samplingMethod)
+extension CheckpointModelPreferences {
+  static func copy(from preferences: CheckpointModelPreferences) -> CheckpointModelPreferences {
+    let copy = CheckpointModelPreferences(samplingMethod: preferences.samplingMethod)
     copy.positivePrompt = preferences.positivePrompt
     copy.negativePrompt = preferences.negativePrompt
     copy.width = preferences.width
@@ -153,7 +153,7 @@ extension ModelPreferences {
     return copy
   }
   
-  func update(from preferences: ModelPreferences) {
+  func update(from preferences: CheckpointModelPreferences) {
     self.samplingMethod = preferences.samplingMethod
     self.positivePrompt = preferences.positivePrompt
     self.negativePrompt = preferences.negativePrompt

@@ -17,7 +17,7 @@ class CheckpointModel: ObservableObject, Identifiable {
   var isDefaultModel: Bool = false
   var sdModel: SdModel?
 
-  @Published var preferences: ModelPreferences
+  @Published var preferences: CheckpointModelPreferences
   
   init(name: String, type: ModelType, url: URL, isDefaultModel: Bool = false, sdModel: SdModel? = nil) {
     self.name = name
@@ -25,7 +25,7 @@ class CheckpointModel: ObservableObject, Identifiable {
     self.url = url
     self.isDefaultModel = isDefaultModel
     self.sdModel = sdModel
-    self.preferences = ModelPreferences.defaultSamplingForModelType(type: type)
+    self.preferences = CheckpointModelPreferences.defaultSamplingForModelType(type: type)
   }
   
   func setSdModel(_ automaticCheckpointModel: SdModel) {

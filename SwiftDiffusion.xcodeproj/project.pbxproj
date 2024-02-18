@@ -28,7 +28,7 @@
 		2916F33B2B728633001D14B9 /* FileOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33A2B728633001D14B9 /* FileOutlineView.swift */; };
 		2916F33D2B72867C001D14B9 /* FileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33C2B72867C001D14B9 /* FileRowView.swift */; };
 		2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */; };
-		292CE8092B81771B00116D60 /* ModelPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8082B81771B00116D60 /* ModelPreferences.swift */; };
+		292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
 		2942B07A2B7BCD5D00D1E0DE /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */; };
@@ -129,7 +129,7 @@
 		2916F33A2B728633001D14B9 /* FileOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOutlineView.swift; sourceTree = "<group>"; };
 		2916F33C2B72867C001D14B9 /* FileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailLoader.swift; sourceTree = "<group>"; };
-		292CE8082B81771B00116D60 /* ModelPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPreferences.swift; sourceTree = "<group>"; };
+		292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelPreferences.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
 		2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
@@ -321,7 +321,7 @@
 			children = (
 				29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */,
 				29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */,
-				292CE8082B81771B00116D60 /* ModelPreferences.swift */,
+				292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */,
 			);
 			path = CheckpointModels;
 			sourceTree = "<group>";
@@ -491,8 +491,8 @@
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
-				292CE8072B8176CA00116D60 /* CheckpointModels */,
 				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
+				292CE8072B8176CA00116D60 /* CheckpointModels */,
 				29C0F37A2B7AB22F0017DD6B /* ContentView */,
 				290A34AE2B7C432100963C6E /* SidebarView */,
 				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
@@ -825,7 +825,7 @@
 				290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */,
 				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
 				29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */,
-				292CE8092B81771B00116D60 /* ModelPreferences.swift in Sources */,
+				292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */,
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,

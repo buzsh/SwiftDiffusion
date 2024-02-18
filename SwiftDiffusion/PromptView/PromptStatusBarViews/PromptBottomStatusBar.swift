@@ -17,7 +17,7 @@ struct PromptBottomStatusBar: View {
       Spacer()
       Button("Save Model Preferences") {
         if let selectedModel = currentPrompt.selectedModel {
-          let updatedPreferences = ModelPreferences(from: currentPrompt)
+          let updatedPreferences = CheckpointModelPreferences(from: currentPrompt)
           selectedModel.preferences = updatedPreferences
           showingModelPreferences = true
         } else {
@@ -28,7 +28,7 @@ struct PromptBottomStatusBar: View {
       .buttonStyle(.accessoryBar)
       .sheet(isPresented: $showingModelPreferences) {
         if let selectedModel = currentPrompt.selectedModel {
-          ModelPreferencesView(checkpointModel: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
+          CheckpointModelPreferencesView(checkpointModel: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
         }
       }
     }
