@@ -31,6 +31,7 @@
 		292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */; };
 		292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80B2B8193E400116D60 /* ImageSaver.swift */; };
 		292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */; };
+		292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80F2B81958700116D60 /* Txt2ImgService.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
 		2942B07A2B7BCD5D00D1E0DE /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */; };
@@ -133,6 +134,7 @@
 		292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelPreferences.swift; sourceTree = "<group>"; };
 		292CE80B2B8193E400116D60 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageSaver+Composite.swift"; sourceTree = "<group>"; };
+		292CE80F2B81958700116D60 /* Txt2ImgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Txt2ImgService.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
 		2942B0792B7BCD5D00D1E0DE /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
@@ -336,6 +338,14 @@
 			path = ImageSaver;
 			sourceTree = "<group>";
 		};
+		292CE8112B8195A800116D60 /* AutomaticServices */ = {
+			isa = PBXGroup;
+			children = (
+				292CE80F2B81958700116D60 /* Txt2ImgService.swift */,
+			);
+			path = AutomaticServices;
+			sourceTree = "<group>";
+		};
 		293336442B72A3C6007237AA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -436,6 +446,7 @@
 		297196512B715380000F7960 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8112B8195A800116D60 /* AutomaticServices */,
 				297196522B71538C000F7960 /* FilePickerService.swift */,
 			);
 			path = Services;
@@ -781,6 +792,7 @@
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* SidebarModelMapping.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
+				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,
 				29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */,

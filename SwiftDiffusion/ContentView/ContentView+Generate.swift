@@ -47,44 +47,6 @@ enum PayloadKey: String {
 // POSTing to sdapi/v1/options with sd_model_checkpoint
 // https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/4301#issuecomment-1328249975
 
-class APIService {
-  static let shared = APIService()
-  
-  private init() {}
-  
-  func sendImageGenerationRequest(to endpoint: Constants.API.Endpoint, with payload: [String: Any], baseAPI: URL) async -> [String]? {
-    guard let url = endpoint.url(relativeTo: baseAPI) else {
-      Debug.log("Invalid URL for endpoint: \(endpoint)")
-      return nil
-    }
-    
-    do {
-      var request = URLRequest(url: url)
-      request.httpMethod = "POST"
-      request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-      request.httpBody = try JSONSerialization.data(withJSONObject: payload, options: [])
-      
-      let session = URLSession(configuration: self.customSessionConfiguration())
-      let (data, _) = try await session.data(for: request)
-      
-      if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-         let images = json["images"] as? [String] {
-        return images
-      }
-    } catch {
-      Debug.log("API request failed with error: \(error)")
-    }
-    return nil
-  }
-  
-  private func customSessionConfiguration() -> URLSessionConfiguration {
-    let configuration = URLSessionConfiguration.default
-    configuration.timeoutIntervalForRequest = Constants.API.timeoutInterval
-    configuration.timeoutIntervalForResource = Constants.API.timeoutInterval
-    return configuration
-  }
-}
-
 extension ContentView {
   func prepareImageGenerationPayloadFromPrompt() -> [String: Any] {
     var payload: [String: Any] = [
@@ -110,8 +72,6 @@ extension ContentView {
   }
 }
 
-
-
 extension ContentView {
   func saveGeneratedImages(base64EncodedImages: [String]) {
     guard let directoryURL = ImageSaver.getOutputDirectoryUrl(forEndpoint: .txt2img) else {
@@ -127,7 +87,6 @@ extension ContentView {
   
   private func updateUIWithImageResult(_ result: (Data?, String, [URL])) async {
     let (imageData, imagePath, savedImageUrls) = result
-    // Convert Data? to NSImage?
     let image: NSImage? = imageData.flatMap { NSImage(data: $0) }
     
     await MainActor.run {
@@ -149,7 +108,7 @@ extension ContentView {
     scriptManager.genStatus = .preparingToGenerate
     scriptManager.genProgress = -1
     
-    let payload = prepareImageGenerationPayloadFromPrompt() // Assuming this prepares your API request payload correctly
+    let payload = prepareImageGenerationPayloadFromPrompt()
     
     guard let baseAPI = scriptManager.serviceUrl else {
       Debug.log("Invalid base API URL")
@@ -157,12 +116,11 @@ extension ContentView {
     }
     
     Task {
-      guard let images = await APIService.shared.sendImageGenerationRequest(to: .txt2img, with: payload, baseAPI: baseAPI) else {
+      guard let images = await Txt2ImgService.shared.sendImageGenerationRequest(to: .txt2img, with: payload, baseAPI: baseAPI) else {
         Debug.log("Failed to fetch images from API")
         return
       }
       
-      // Assuming `images` are the base64 encoded strings you need to save
       saveGeneratedImages(base64EncodedImages: images)
     }
   }
