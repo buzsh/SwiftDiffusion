@@ -18,7 +18,9 @@ class APIManager: ObservableObject {
   }
   
   func refreshCheckpointsAsync() async throws {
-    let url = URL(string: "\(baseURL)/sdapi/v1/refresh-checkpoints")!
+    guard let url = URL(string: "\(baseURL)/sdapi/v1/refresh-checkpoints") else {
+      throw URLError(.badURL)
+    }
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "accept")
@@ -30,7 +32,9 @@ class APIManager: ObservableObject {
   }
   
   func getCheckpointsAsync() async throws {
-    let url = URL(string: "\(baseURL)/sdapi/v1/sd-models")!
+    guard let url = URL(string: "\(baseURL)/sdapi/v1/sd-models") else {
+      throw URLError(.badURL)
+    }
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
     request.addValue("application/json", forHTTPHeaderField: "accept")
@@ -45,7 +49,9 @@ class APIManager: ObservableObject {
   }
   
   func getLoadedCheckpointAsync() async throws {
-    let url = URL(string: "\(baseURL)/sdapi/v1/options")!
+    guard let url = URL(string: "\(baseURL)/sdapi/v1/options") else {
+      throw URLError(.badURL)
+    }
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
     request.addValue("application/json", forHTTPHeaderField: "accept")
@@ -57,6 +63,30 @@ class APIManager: ObservableObject {
     let decoder = JSONDecoder()
     let decodedResponse = try decoder.decode(ClientConfig.self, from: data)
     self.loadedCheckpoint = decodedResponse.sdModelCheckpoint
+  }
+  
+  func postLoadCheckpointAsync(checkpoint: String) async throws {
+    guard let url = URL(string: "\(baseURL)/sdapi/v1/options") else {
+      throw URLError(.badURL)
+    }
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "accept")
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let body = ClientConfig(sdModelCheckpoint: checkpoint)
+    let encoder = JSONEncoder()
+    do {
+      let jsonData = try encoder.encode(body)
+      request.httpBody = jsonData
+    } catch {
+      throw URLError(.cannotParseResponse)
+    }
+    
+    let (_, httpResponse) = try await URLSession.shared.upload(for: request, from: request.httpBody ?? Data())
+    guard (httpResponse as? HTTPURLResponse)?.statusCode == 200 else {
+      throw URLError(.badServerResponse)
+    }
   }
   
 }
