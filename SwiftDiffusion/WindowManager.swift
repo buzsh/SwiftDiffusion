@@ -32,9 +32,8 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       updatesWindow?.center()
       updatesWindow?.contentView = NSHostingView(rootView: UpdatesView())
-      updatesWindow?.title = "Check for Updates"
       
-      updatesWindow?.isReleasedWhenClosed = true
+      updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
       
       updatesWindow?.standardWindowButton(.zoomButton)?.isHidden = true
@@ -53,9 +52,8 @@ class WindowManager: NSObject, ObservableObject {
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
       settingsWindow?.contentView = NSHostingView(rootView: SettingsView())
-      settingsWindow?.title = "Settings"
       
-      settingsWindow?.isReleasedWhenClosed = true
+      settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
       
       settingsWindow?.standardWindowButton(.zoomButton)?.isHidden = true
@@ -81,9 +79,8 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
       checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointModelsManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager))
-      checkpointManagerWindow?.title = "Checkpoint Models"
       
-      checkpointManagerWindow?.isReleasedWhenClosed = true
+      checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self
       
       checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true

@@ -98,7 +98,7 @@ struct CheckpointModelsManagerView: View {
     .sheet(item: $selectedCheckpointModel) { checkpointModel in
       CheckpointModelPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
-    .navigationTitle("Checkpoint Models")
+    .navigationTitle("Checkpoint Manager")
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
