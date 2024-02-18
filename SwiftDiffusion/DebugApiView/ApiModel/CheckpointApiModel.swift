@@ -8,7 +8,12 @@
 import Foundation
 import Combine
 
-class Checkpoint: ObservableObject, Identifiable {
+enum CheckpointModelType {
+  case coreMl
+  case python
+}
+
+class CheckpointModel: ObservableObject, Identifiable {
   let id = UUID()
   let name: String
   let path: String
@@ -20,6 +25,12 @@ class Checkpoint: ObservableObject, Identifiable {
     self.path = path
     self.type = type
     self.checkpointApiModel = checkpointApiModel
+  }
+}
+
+extension CheckpointModel: Equatable {
+  static func == (lhs: CheckpointModel, rhs: CheckpointModel) -> Bool {
+    return lhs.id == rhs.id
   }
 }
 

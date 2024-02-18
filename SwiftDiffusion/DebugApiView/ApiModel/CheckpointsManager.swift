@@ -1,5 +1,5 @@
 //
-//  CheckpointApiManager.swift
+//  CheckpointsManager.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/18/24.
@@ -7,8 +7,9 @@
 
 import Foundation
 
+@MainActor
 class CheckpointsManager: ObservableObject {
-  @Published var models: [Checkpoint] = []
+  @Published var models: [CheckpointModel] = []
   
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
@@ -16,29 +17,30 @@ class CheckpointsManager: ObservableObject {
   @Published var errorMessage: String?
   @Published var showError: Bool = false
   
-  let apiManager: APIManager
+  private(set) var apiManager: APIManager?
   
-  init(apiManager: APIManager) {
-    self.apiManager = apiManager
+  func configureApiManager(with baseURL: String) {
+    self.apiManager = APIManager(baseURL: baseURL)
+    Debug.log("configureApiManager with baseURL: \(baseURL)")
+    
   }
   
   func startObservingDirectory() {
     guard let directoryUrl = UserSettings.shared.stableDiffusionModelsDirectoryUrl else { return }
     
-    addLocalCheckpointsFromDirectoryToModels()
+    Task {
+      await addLocalCheckpointsFromDirectoryToModels()
+      await updateCheckpointsFromAPI()
+    }
     
     directoryObserver = DirectoryObserver()
     directoryObserver?.startObserving(url: directoryUrl) { [weak self] in
       
-      DispatchQueue.main.async {
-        
-        self?.addLocalCheckpointsFromDirectoryToModels()
-        
-        Task {
-          await self?.updateCheckpointsFromAPI()
-        }
-        
+      Task {
+        await self?.addLocalCheckpointsFromDirectoryToModels()
+        await self?.updateCheckpointsFromAPI()
       }
+      
     }
   }
   
@@ -49,25 +51,23 @@ class CheckpointsManager: ObservableObject {
 }
 
 extension CheckpointsManager {
-  
   func updateCheckpointsFromAPI() async {
     Debug.log("Starting updateCheckpointsFromAPI")
-    let result = await refreshAndAssignApiCheckpoints(apiManager: self.apiManager)
+    guard let apiManager = apiManager else { Debug.log("apiManager not yet available"); return }
+    
+    let result = await refreshAndAssignApiCheckpoints(apiManager: apiManager)
     switch result {
     case .success(let message):
       Debug.log(message)
-      DispatchQueue.main.async {
-        for apiCheckpoint in self.apiManager.checkpoints {
-          if let existingCheckpoint = self.checkpointWithPathAlreadyExistsInModels(compare: apiCheckpoint) {
-            existingCheckpoint.checkpointApiModel = apiCheckpoint.checkpointApiModel
-          }
+      for apiCheckpoint in apiManager.checkpoints {
+        if let existingCheckpoint = checkpointWithPathAlreadyExistsInModels(compare: apiCheckpoint) {
+          existingCheckpoint.checkpointApiModel = apiCheckpoint.checkpointApiModel
+          Debug.log("apiCheckpoint: \(apiCheckpoint), existingCheckpoint.checkpointApiModel: \(String(describing: existingCheckpoint.checkpointApiModel))")
         }
       }
     case .failure(let error):
-      DispatchQueue.main.async {
-        self.errorMessage = "Failed to update checkpoints from API: \(error.localizedDescription)"
-        self.showError = true
-      }
+      errorMessage = "Failed to update checkpoints from API: \(error.localizedDescription)"
+      showError = true
       Debug.log(error.localizedDescription)
     }
   }
@@ -88,13 +88,13 @@ extension CheckpointsManager {
 }
 
 extension CheckpointsManager {
-  func checkpointWithPathAlreadyExistsInModels(compare checkpoint: Checkpoint) -> Checkpoint? {
+  func checkpointWithPathAlreadyExistsInModels(compare checkpoint: CheckpointModel) -> CheckpointModel? {
     return models.first { $0.path == checkpoint.path }
   }
 }
 
 extension CheckpointsManager {
-  func addLocalCheckpointsFromDirectoryToModels() {
+  func addLocalCheckpointsFromDirectoryToModels() async {
     guard let directoryUrl = userSettings.stableDiffusionModelsDirectoryUrl else {
       errorMessage = "Directory URL is not set."
       showError = true
@@ -107,25 +107,20 @@ extension CheckpointsManager {
       
       let safetensorFiles = directoryContents.filter { $0.pathExtension == "safetensors" }
       
-      let newCheckpoints = safetensorFiles.compactMap { fileUrl -> Checkpoint? in
-        let name = fileUrl.deletingPathExtension().lastPathComponent
+      let newCheckpoints = safetensorFiles.compactMap { fileUrl -> CheckpointModel? in
+        let name = fileUrl.lastPathComponent //fileUrl.deletingPathExtension().lastPathComponent
         let path = fileUrl.path
         
         if !self.models.contains(where: { $0.path == path }) {
-          return Checkpoint(name: name, path: path, type: .python, checkpointApiModel: nil)
+          return CheckpointModel(name: name, path: path, type: .python, checkpointApiModel: nil)
         }
         return nil
       }
       
-      DispatchQueue.main.async {
-        self.models.append(contentsOf: newCheckpoints)
-      }
+      self.models.append(contentsOf: newCheckpoints)
     } catch {
-      Debug.log("Failed to read directory contents: \(error)")
-      DispatchQueue.main.async {
-        self.errorMessage = "Failed to load local checkpoints: \(error.localizedDescription)"
-        self.showError = true
-      }
+      self.errorMessage = "Failed to load local checkpoints: \(error.localizedDescription)"
+      self.showError = true
     }
   }
 }

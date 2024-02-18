@@ -123,19 +123,20 @@ struct CheckpointPreferencesView: View {
   }
   
   private func applyPreferences() {
-    checkpointModel.preferences.update(from: temporaryPreferences)
+    // TODO: applyPreferences
+    //checkpointModel.preferences.update(from: temporaryPreferences)
   }
 }
 
-
+/*
 #Preview {
-  let item = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  let item = CheckpointModel(name: "some_model.safetensor", path: "/path/to/package", type: .python)
   item.preferences = CheckpointModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
   return CheckpointPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 400)
 }
-
+*/
 
 extension CheckpointModelPreferences {
   static func copy(from preferences: CheckpointModelPreferences) -> CheckpointModelPreferences {

@@ -16,28 +16,18 @@ extension Constants.WindowSize {
 
 struct DebugApiView: View {
   @ObservedObject var scriptManager: ScriptManager
+  var checkpointsManager: CheckpointsManager
   var currentPrompt: PromptModel
   var sidebarViewModel: SidebarViewModel
-  var checkpointModelsManager: CheckpointModelsManager
   var loraModelsManager: ModelManager<LoraModel>
   
   @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
   @State private var consoleLog: String = ""
   
-  @State private var checkpoints: [Checkpoint] = []
+  @State private var checkpoints: [CheckpointModel] = []
   @State private var checkpointTitlePaths: [String: String] = [:]
-  private func updateCheckpointTitlePaths(with checkpoints: [Checkpoint]) {
+  private func updateCheckpointTitlePaths(with checkpoints: [CheckpointModel]) {
     checkpointTitlePaths = Dictionary(uniqueKeysWithValues: checkpoints.map { ($0.name, $0.path) })
-  }
-  
-  @State private var checkpointApiTitle: String = ""
-  
-  private func logConsoleCheckpointTitlePaths() {
-    consoleLog += "\n\nlogConsoleCheckpointTitlePaths()\n"
-    for (name, path) in checkpointTitlePaths {
-      consoleLog += "    name: \(name)\n"
-      consoleLog += "    path: \(path)\n\n"
-    }
   }
   
   var apiUrl: String {
@@ -63,62 +53,56 @@ struct DebugApiView: View {
       VStack(alignment: .leading, spacing: 0) {
         
         HStack {
-          CheckpointMenu(consoleLog: $consoleLog, scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+          CheckpointMenu(consoleLog: $consoleLog, scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
             .onChange(of: currentPrompt.selectedModel) {
               if let selectedModel = currentPrompt.selectedModel {
-                consoleLog += ".onChange(of: currentPrompt.selectedModel)\n"
-                consoleLog += "    \(selectedModel)\n\n"
+                consoleLog += "\n\n.onChange(of: currentPrompt.selectedModel)\n"
+                consoleLog += " - \(selectedModel)\n\n"
               }
             }
           
-          Button("Refresh/Get [Checkpoints]") {
-            let apiManager = APIManager(baseURL: apiUrl)
-            Task {
-              let result = await refreshAndGetCheckpoints(apiManager: apiManager)
-              switch result {
-              case .success(let message):
-                Debug.log(message)
-                consoleLog += "Done: \(message)\n"
-                checkpoints = apiManager.checkpoints
-                updateCheckpointTitlePaths(with: checkpoints)
-              case .failure(let error):
-                Debug.log(error.localizedDescription)
-                consoleLog += "Error: \(error.localizedDescription)\n"
-              }
+          Button("local titles") {
+            consoleLog += "\n\nlocal title\n"
+            for model in checkpointsManager.models {
+              consoleLog += " - \(model.name)\n"
             }
           }
           
-          Button("Log [Checkpoints]") {
-            logConsoleCheckpointTitlePaths()
+          Button("local paths") {
+            consoleLog += "\n\nlocal path\n"
+            for model in checkpointsManager.models {
+              consoleLog += " - \(model.path)\n"
+            }
           }
           
-          Button("Get Loaded Checkpoint") {
-            let apiManager = APIManager(baseURL: apiUrl)
-            Task {
-              let result = await getLoadedCheckpoint(apiManager: apiManager)
-              switch result {
-              case .success(let message):
-                Debug.log(message)
-                consoleLog += "Done: \(message)\n"
-                if let title = apiManager.loadedCheckpoint {
-                  checkpointApiTitle = title
-                }
-                consoleLog += "[Loaded] from sd_model_checkpoint: \(checkpointApiTitle)\n"
-              case .failure(let error):
-                Debug.log(error.localizedDescription)
-                consoleLog += "Error: \(error.localizedDescription)\n"
+          Button("api title") {
+            consoleLog += "\n\napi title\n"
+            for model in checkpointsManager.models {
+              if let title = model.checkpointApiModel?.title {
+                consoleLog += " - \(title)\n"
               }
             }
           }
           
-          Button("Set [Checkpoints]") {
-            Debug.log("Hello")//logConsoleCheckpointTitlePaths()
+          Button("api filename") {
+            consoleLog += "\n\napi filename\n"
+            for model in checkpointsManager.models {
+              if let apiFilename = model.checkpointApiModel?.filename {
+                consoleLog += " - \(apiFilename)\n"
+              }
+            }
           }
           
           Spacer()
         }
         .frame(height: 40)
         .font(.system(size: 12, weight: .regular, design: .rounded))
+        .onChange(of: checkpointsManager.models) {
+          consoleLog += ".onChange(of: checkpointsManager.models) model.name:\n"
+          for model in checkpointsManager.models {
+            consoleLog += "  \(model.name)\n"
+          }
+        }
         
         Divider()
         
@@ -146,32 +130,6 @@ struct DebugApiView: View {
       }
     }
   }
-  
-  func refreshAndGetCheckpoints(apiManager: APIManager) async -> Result<String, Error> {
-    Debug.log("\n\nrefreshAndGetCheckpoints")
-    do {
-      consoleLog += "apiManager init\n"
-      try await apiManager.refreshCheckpointsAsync()
-      consoleLog += "apiManager.refreshCheckpointsAsync()\n"
-      try await apiManager.getCheckpointsAsync()
-      consoleLog += "apiManager.getCheckpointsAsync()\n"
-      return .success("Success!")
-    } catch {
-      return .failure(error)
-    }
-  }
-  
-  func getLoadedCheckpoint(apiManager: APIManager) async -> Result<String, Error> {
-    Debug.log("\n\ngetLoadedCheckpoint")
-    do {
-      consoleLog += "apiManager init\n"
-      try await apiManager.getLoadedCheckpointAsync()
-      consoleLog += "apiManager.getLoadedCheckpointAsync()\n"
-      return .success("Success!")
-    } catch {
-      return .failure(error)
-    }
-  }
 }
 
 
@@ -183,9 +141,9 @@ struct DebugApiView: View {
   let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
-  promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(fileURLWithPath: "."), isDefaultModel: false)
+  promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
   let sidebarViewModelPreview = SidebarViewModel()
-  let checkpointModelsManagerPreview = CheckpointModelsManager()
+  let checkpointsManagerPreview = CheckpointsManager()
   let loraModelsManagerPreview = ModelManager<LoraModel>()
-  return DebugApiView(scriptManager: scriptManagerPreview, currentPrompt: promptModelPreview, sidebarViewModel: sidebarViewModelPreview, checkpointModelsManager: checkpointModelsManagerPreview, loraModelsManager: loraModelsManagerPreview)
+  return DebugApiView(scriptManager: scriptManagerPreview, checkpointsManager: checkpointsManagerPreview, currentPrompt: promptModelPreview, sidebarViewModel: sidebarViewModelPreview, loraModelsManager: loraModelsManagerPreview)
 }

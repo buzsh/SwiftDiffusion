@@ -7,17 +7,17 @@
 
 import SwiftUI
 
+/*
 struct CheckpointModelMenu: View {
   @ObservedObject var scriptManager: ScriptManager
   //@EnvironmentObject var currentPrompt: PromptModel
   //@EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   
   var currentPrompt: PromptModel
-  var checkpointModelsManager: CheckpointModelsManager
+  //var checkpointModelsManager: CheckpointModelsManager
   
   @State private var previousSelectedModel: CheckpointModel? = nil
   @State var promptViewHasLoadedInitialModel = false
-  /*
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
@@ -46,9 +46,7 @@ struct CheckpointModelMenu: View {
     
     if scriptManager.scriptState.isActive { previousSelectedModel = checkpointModel }
   }
-  */
   
-  /*
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
     
     var canChangeModel: Bool {
@@ -76,7 +74,6 @@ struct CheckpointModelMenu: View {
       }
     }
   }
-   */
   
   
   
@@ -114,15 +111,15 @@ struct CheckpointModelMenu: View {
       }
     }
     .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
-    /*
+    
     .onChange(of: currentPrompt.selectedModel) {
       if let checkpointModel = currentPrompt.selectedModel {
         Debug.log(".onChange(of: currentPrompt.selectedModel)")
         updateSelectedCheckpointModel(with: checkpointModel)
       }
     }
-     */
-    /*
+     
+    
     .onChange(of: scriptManager.scriptState) {
       if scriptManager.scriptState == .active {
         Task {
@@ -135,16 +132,14 @@ struct CheckpointModelMenu: View {
         }
       }
     }
-    */
-    /*
+
     .onChange(of: scriptManager.modelLoadState) {
       // if first load state done, promptViewHasLoadedInitialModel = true
       if scriptManager.modelLoadState == .done {
         promptViewHasLoadedInitialModel = true
       }
     }
-     */
-    /*
+
     .onChange(of: checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel) {
       Debug.log("checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel: \(checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel)")
       if checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel {
@@ -160,12 +155,12 @@ struct CheckpointModelMenu: View {
           }
         }
       }
-    }*/
+    }
   }
 }
+*/
 
-
-
+/*
 extension CheckpointModelMenu {
   @MainActor
   /// Update currently loaded model checkpoint
@@ -185,7 +180,7 @@ extension CheckpointModelMenu {
   }
   
   private func prepareRequest(for checkpointModel: CheckpointModel, endpoint: URL) -> URLRequest? {
-    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
+    guard let checkpointMetadata = checkpointModel.checkpointApiModel else {
       return nil
     }
     
@@ -236,7 +231,7 @@ extension CheckpointModelMenu {
     }
   }
 }
-
+*/
 
 
 /*
@@ -295,7 +290,9 @@ extension CheckpointModelMenu {
 }
 
  */
- 
+ /*
+
 #Preview {
   CommonPreviews.promptView
 }
+*/

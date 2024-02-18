@@ -45,7 +45,7 @@
 		29620FDF2B8275CE008EA5EB /* CheckpointMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */; };
 		29620FE62B8291E8008EA5EB /* ApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE52B8291E8008EA5EB /* ApiManager.swift */; };
 		29620FE82B82924E008EA5EB /* CheckpointApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE72B82924E008EA5EB /* CheckpointApiModel.swift */; };
-		29620FEA2B82A23F008EA5EB /* CheckpointApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE92B82A23F008EA5EB /* CheckpointApiManager.swift */; };
+		29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */; };
 		29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29623E362B797B5900EC719F /* RequiredInputPathsView.swift */; };
 		29623E3A2B79888500EC719F /* RequiredInputPathsPulsatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29623E392B79888500EC719F /* RequiredInputPathsPulsatingButton.swift */; };
 		296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296AA9EF2B769B2A00CF0658 /* UserSettings.swift */; };
@@ -154,7 +154,7 @@
 		29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMenu.swift; sourceTree = "<group>"; };
 		29620FE52B8291E8008EA5EB /* ApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiManager.swift; sourceTree = "<group>"; };
 		29620FE72B82924E008EA5EB /* CheckpointApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointApiModel.swift; sourceTree = "<group>"; };
-		29620FE92B82A23F008EA5EB /* CheckpointApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointApiManager.swift; sourceTree = "<group>"; };
+		29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointsManager.swift; sourceTree = "<group>"; };
 		29623E362B797B5900EC719F /* RequiredInputPathsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredInputPathsView.swift; sourceTree = "<group>"; };
 		29623E392B79888500EC719F /* RequiredInputPathsPulsatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredInputPathsPulsatingButton.swift; sourceTree = "<group>"; };
 		296AA9EF2B769B2A00CF0658 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -502,7 +502,7 @@
 			children = (
 				29620FE52B8291E8008EA5EB /* ApiManager.swift */,
 				29620FE72B82924E008EA5EB /* CheckpointApiModel.swift */,
-				29620FE92B82A23F008EA5EB /* CheckpointApiManager.swift */,
+				29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */,
 			);
 			path = ApiModel;
 			sourceTree = "<group>";
@@ -937,7 +937,7 @@
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */,
 				29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */,
-				29620FEA2B82A23F008EA5EB /* CheckpointApiManager.swift in Sources */,
+				29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,

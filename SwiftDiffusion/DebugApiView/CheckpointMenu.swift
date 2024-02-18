@@ -10,12 +10,12 @@ import SwiftUI
 struct CheckpointMenu: View {
   @Binding var consoleLog: String
   @ObservedObject var scriptManager: ScriptManager
+  var checkpointsManager: CheckpointsManager
   var currentPrompt: PromptModel
-  var checkpointModelsManager: CheckpointModelsManager
   
   func selectMenuItem(forModel model: CheckpointModel, ofType type: CheckpointModelType = .python) {
-    consoleLog += "    CheckpointModel.name: \(model.name)\n"
-    consoleLog += "CheckpointMetadata.title: \(model.checkpointMetadata?.title ?? "nil")\n"
+    consoleLog += "         Checkpoint.name: \(model.name)\n"
+    consoleLog += "CheckpointMetadata.title: \(model.checkpointApiModel?.title ?? "nil")\n"
     consoleLog += "\n\n"
     currentPrompt.selectedModel = model
   }
@@ -25,16 +25,16 @@ struct CheckpointMenu: View {
       HStack {
         Menu {
           Section(header: Text("􀢇 CoreML")) {
-            ForEach(checkpointModelsManager.items.filter { $0.type == .coreMl }) { item in
-              Button(item.name) {
-                selectMenuItem(forModel: item, ofType: .coreMl)
+            ForEach(checkpointsManager.models.filter { $0.type == .coreMl }) { model in
+              Button(model.name) {
+                selectMenuItem(forModel: model, ofType: .coreMl)
               }
             }
           }
           Section(header: Text("􁻴 Python")) {
-            ForEach(checkpointModelsManager.items.filter { $0.type == .python }) { item in
-              Button(item.name) {
-                selectMenuItem(forModel: item)
+            ForEach(checkpointsManager.models.filter { $0.type == .python }) { model in
+              Button(model.name) {
+                selectMenuItem(forModel: model)
               }
             }
           }
@@ -55,7 +55,7 @@ struct CheckpointMenu: View {
   
 }
 
-
+/*
 extension CheckpointMenu {
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
     
@@ -84,7 +84,9 @@ extension CheckpointMenu {
     }
   }
 }
+ */
 
+/*
 extension CheckpointMenu {
   @MainActor
   /// Update currently loaded model checkpoint
@@ -104,17 +106,17 @@ extension CheckpointMenu {
   }
   
   private func prepareRequest(for checkpointModel: CheckpointModel, endpoint: URL) -> URLRequest? {
-    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
+    guard let checkpointApiModel = checkpointModel.checkpointApiModel else {
       return nil
     }
     
-    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(checkpointMetadata.title)")
+    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(checkpointApiModel.title)")
     
     var request = URLRequest(url: endpoint)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: checkpointMetadata.title)
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: checkpointApiModel.title)
     do {
       request.httpBody = try JSONEncoder().encode(requestBody)
       return request
@@ -155,3 +157,4 @@ extension CheckpointMenu {
     }
   }
 }
+*/

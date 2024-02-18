@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 struct PromptBottomStatusBar: View {
   @EnvironmentObject var currentPrompt: PromptModel
   
@@ -41,3 +41,4 @@ struct PromptBottomStatusBar: View {
 #Preview {
   CommonPreviews.promptView
 }
+*/
