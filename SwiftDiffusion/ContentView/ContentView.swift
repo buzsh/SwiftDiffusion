@@ -65,7 +65,8 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       SidebarView(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
-        .frame(minWidth: 200, idealWidth: 240, maxWidth: 340)
+        .navigationSplitViewColumnWidth(min: 200, ideal: 240, max: 340)
+      
     } content: {
       switch selectedView {
       case .prompt:
@@ -77,6 +78,7 @@ struct ContentView: View {
       case .settings:
         SettingsView()
       }
+      
     } detail: {
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
     }
