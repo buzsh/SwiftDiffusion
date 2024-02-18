@@ -131,6 +131,7 @@ extension CheckpointModelsManager {
       var trashedItemURL: NSURL? = nil
       try fileManager.trashItem(at: fileURL, resultingItemURL: &trashedItemURL)
       Debug.log("Moved to trash: \(item.name)")
+      SoundUtility.play(systemSound: .trash)
       
       // Reload or update the items list to reflect the change
       await loadModels()
