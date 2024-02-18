@@ -17,6 +17,7 @@ struct CheckpointModelMenu: View {
   
   @State private var previousSelectedModel: CheckpointModel? = nil
   @State var promptViewHasLoadedInitialModel = false
+  /*
   /// Sends an API request to load in the currently selected model from the PromptView model menu.
   /// - Note: Updates `scriptState` and `modelLoadState`.
   func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
@@ -45,6 +46,41 @@ struct CheckpointModelMenu: View {
     
     if scriptManager.scriptState.isActive { previousSelectedModel = checkpointModel }
   }
+  */
+  
+  
+  func updateSelectedCheckpointModel(with checkpointModel: CheckpointModel) {
+    
+    var canChangeModel: Bool {
+      (scriptManager.scriptState == .active) && (scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done)
+    }
+    
+    
+    if let checkpointModel = currentPrompt.selectedModel, let serviceUrl = scriptManager.serviceUrl {
+      
+      if canChangeModel {
+        scriptManager.modelLoadState = .isLoading
+        
+        postAutomaticCheckpoint(forModel: checkpointModel, apiUrl: serviceUrl) { result in
+          switch result {
+          case .success(let successMessage):
+            Debug.log("updateSelectedCheckpointModel Success: \(successMessage)")
+            scriptManager.modelLoadState = .done
+            
+          case .failure(let error):
+            Debug.log("updateSelectedCheckpointModel Failure: \(error)")
+            scriptManager.modelLoadState = .failed
+            
+          }
+        }
+      }
+      
+      
+    }
+      
+  }
+  
+  
   
   var body: some View {
     VStack(alignment: .leading) {
@@ -82,6 +118,7 @@ struct CheckpointModelMenu: View {
     .disabled(!(scriptManager.modelLoadState == .idle || scriptManager.modelLoadState == .done))
     .onChange(of: currentPrompt.selectedModel) {
       if let checkpointModel = currentPrompt.selectedModel {
+        Debug.log(".onChange(of: currentPrompt.selectedModel)")
         updateSelectedCheckpointModel(with: checkpointModel)
       }
     }
@@ -93,7 +130,7 @@ struct CheckpointModelMenu: View {
         // if user has already selected a checkpoint model, load that model
         if let checkpointModel = currentPrompt.selectedModel {
           Debug.log("User already selected model. Loading \(checkpointModel.name)")
-          updateSelectedCheckpointModel(with: checkpointModel)
+          //updateSelectedCheckpointModel(with: checkpointModel)
         }
       }
     }
@@ -103,6 +140,7 @@ struct CheckpointModelMenu: View {
         promptViewHasLoadedInitialModel = true
       }
     }
+    /*
     .onChange(of: checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel) {
       Debug.log("checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel: \(checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel)")
       if checkpointModelsManager.hasLoadedInitialModelCheckpointsAndAssignedSdModel {
@@ -118,9 +156,86 @@ struct CheckpointModelMenu: View {
           }
         }
       }
+    }*/
+  }
+}
+
+
+
+extension CheckpointModelMenu {
+  @MainActor
+  /// Update currently loaded model checkpoint
+  func postAutomaticCheckpoint(forModel checkpointModel: CheckpointModel, apiUrl: URL, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+    guard let endpoint = prepareEndpoint(with: apiUrl) else { return }
+    
+    guard let request = prepareRequest(for: checkpointModel, endpoint: endpoint) else {
+      completion(.failure(.nilCheckpoint))
+      return
+    }
+    
+    performRequest(request, completion: completion)
+  }
+  
+  private func prepareEndpoint(with apiUrl: URL) -> URL? {
+    return apiUrl.appendingPathComponent("/sdapi/v1/options")
+  }
+  
+  private func prepareRequest(for checkpointModel: CheckpointModel, endpoint: URL) -> URLRequest? {
+    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
+      return nil
+    }
+    
+    Debug.log("[API] attempting to POST \(checkpointModel):\n > \(checkpointMetadata.title)")
+    
+    var request = URLRequest(url: endpoint)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let requestBody = UpdateSdModelCheckpointRequest(sdModelCheckpoint: checkpointMetadata.title)
+    do {
+      request.httpBody = try JSONEncoder().encode(requestBody)
+      return request
+    } catch {
+      return nil
+    }
+  }
+  
+  private func performRequest(_ request: URLRequest, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+    Task {
+      do {
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+          completion(.failure(.invalidServerResponse))
+          return
+        }
+        
+        handleResponse(httpResponse, with: data, completion: completion)
+      } catch {
+        completion(.failure(.requestFailure(error.localizedDescription)))
+      }
+    }
+  }
+  
+  private func handleResponse(_ httpResponse: HTTPURLResponse, with data: Data, completion: @escaping (Result<String, UpdateModelError>) -> Void) {
+    switch httpResponse.statusCode {
+    case 200:
+      scriptManager.modelLoadState = .done
+      completion(.success("Update successful."))
+    case 422:
+      scriptManager.modelLoadState = .failed
+      if let validationError = try? JSONDecoder().decode(ValidationErrorResponse.self, from: data) {
+        let errorMsg = validationError.detail.map { "\($0.msg)" }.joined(separator: ", ")
+        completion(.failure(.validationError("Validation error: \(errorMsg)")))
+      }
+    default:
+      completion(.failure(.unexpectedStatusCode(httpResponse.statusCode)))
     }
   }
 }
+
+
+
+
 
 extension CheckpointModelMenu {
   @MainActor
