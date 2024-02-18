@@ -130,16 +130,18 @@ struct ContentView: View {
             }
           }
           
-          //Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
+          Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
           
-          Picker("Options", selection: $selectedView) {
-            Text("Prompt").tag(ViewManager.prompt)
-            if userSettings.showDeveloperInterface {
-              Text("Console").tag(ViewManager.console)
+          if userSettings.showDeveloperInterface {
+            Picker("Options", selection: $selectedView) {
+              Text("Prompt").tag(ViewManager.prompt)
+              if userSettings.showDeveloperInterface {
+                Text("Console").tag(ViewManager.console)
+              }
+              Text("Models").tag(ViewManager.models)
             }
-            Text("Models").tag(ViewManager.models)
+            .pickerStyle(SegmentedPickerStyle())
           }
-          .pickerStyle(SegmentedPickerStyle())
           
           //Divider().padding(.leading, 6).padding(.trailing, 3)
           
