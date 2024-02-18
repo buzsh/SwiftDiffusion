@@ -82,11 +82,6 @@ struct PromptView: View {
         
         .onAppear {
           checkPasteboardAndUpdateFlag()
-          /*
-          if let pasteboardContent = getPasteboardString() {
-            generationDataInPasteboard = userHasGenerationDataInPasteboard(from: pasteboardContent)
-          }
-           */
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
           Task {

@@ -249,14 +249,14 @@
 			path = DebugPromptViews;
 			sourceTree = "<group>";
 		};
-		29145E702B77D94900BFA64B /* PromptStatusBarViews */ = {
+		29145E702B77D94900BFA64B /* PromptStatusBar */ = {
 			isa = PBXGroup;
 			children = (
 				29145E722B77D99400BFA64B /* PromptTopStatusBar.swift */,
 				29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */,
 				29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */,
 			);
-			path = PromptStatusBarViews;
+			path = PromptStatusBar;
 			sourceTree = "<group>";
 		};
 		29145E742B77DBCE00BFA64B /* CommonPreviews */ = {
@@ -429,7 +429,7 @@
 				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
 				292CE8122B81AE6F00116D60 /* PromptMenus */,
-				29145E702B77D94900BFA64B /* PromptStatusBarViews */,
+				29145E702B77D94900BFA64B /* PromptStatusBar */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
 			);
