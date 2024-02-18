@@ -395,7 +395,7 @@
 			isa = PBXGroup;
 			children = (
 				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
-				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
+				29D3623A2B72ED3B006C57B3 /* CheckpointManagerView */,
 				2916F3322B7278D4001D14B9 /* SettingsView */,
 			);
 			path = WindowViews;
@@ -454,6 +454,7 @@
 			isa = PBXGroup;
 			children = (
 				2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */,
+				290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -703,7 +704,6 @@
 				2942B0742B7B2BBA00D1E0DE /* CustomViews */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
-				290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */,
 			);
 			path = ContentView;
 			sourceTree = "<group>";
@@ -740,13 +740,13 @@
 			path = CustomViews;
 			sourceTree = "<group>";
 		};
-		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
+		29D3623A2B72ED3B006C57B3 /* CheckpointManagerView */ = {
 			isa = PBXGroup;
 			children = (
 				29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */,
 				29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */,
 			);
-			path = ModelManagerView;
+			path = CheckpointManagerView;
 			sourceTree = "<group>";
 		};
 		29F6D5E92B72B15E00613242 /* Frameworks */ = {

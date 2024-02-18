@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct CheckpointModelsManagerView: View {
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
-  @EnvironmentObject var currentPrompt: PromptModel
-  
   @ObservedObject var scriptManager: ScriptManager
+  var currentPrompt: PromptModel
+  var checkpointModelsManager: CheckpointModelsManager
+  
   @State private var selectedFilter: CheckpointModelType? = nil
   @State private var selectedCheckpointModel: CheckpointModel?
   
@@ -34,11 +34,9 @@ struct CheckpointModelsManagerView: View {
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
-        /*
         Button("Reveal in Finder") {
           openUserModelsFolder()
         }
-        */
         Button("Refresh") {
           Task {
             await checkpointModelsManager.loadModels()
@@ -100,7 +98,7 @@ struct CheckpointModelsManagerView: View {
     .sheet(item: $selectedCheckpointModel) { checkpointModel in
       CheckpointModelPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
-    .navigationTitle("Models")
+    .navigationTitle("Checkpoint Models")
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
@@ -125,10 +123,9 @@ struct CheckpointModelsManagerView: View {
 }
 
 
-
+/*
 #Preview {
   return CheckpointModelsManagerView(scriptManager: ScriptManager.preview(withState: .readyToStart))
     .frame(width: 500, height: 400)
 }
-
-
+*/
