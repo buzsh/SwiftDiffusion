@@ -1,5 +1,5 @@
 //
-//  ModelManagerViewModel.swift
+//  CheckpointModelsManager.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/6/24.
@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-class ModelManagerViewModel: ObservableObject {
+class CheckpointModelsManager: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
   @Published var items: [CheckpointModel] = []
