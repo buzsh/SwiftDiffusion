@@ -13,7 +13,7 @@ struct CheckpointMenu: View {
   var checkpointsManager: CheckpointsManager
   var currentPrompt: PromptModel
   
-  func selectMenuItem(forModel model: CheckpointModel, ofType type: CheckpointModelType = .python) {
+  func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
     consoleLog += "         Checkpoint.name: \(model.name)\n"
     consoleLog += "CheckpointMetadata.title: \(model.checkpointApiModel?.title ?? "nil")\n"
     consoleLog += "\n\n"
@@ -27,14 +27,14 @@ struct CheckpointMenu: View {
           Section(header: Text("􀢇 CoreML")) {
             ForEach(checkpointsManager.models.filter { $0.type == .coreMl }) { model in
               Button(model.name) {
-                selectMenuItem(forModel: model, ofType: .coreMl)
+                selectMenuItem(withCheckpoint: model, ofType: .coreMl)
               }
             }
           }
           Section(header: Text("􁻴 Python")) {
             ForEach(checkpointsManager.models.filter { $0.type == .python }) { model in
               Button(model.name) {
-                selectMenuItem(forModel: model)
+                selectMenuItem(withCheckpoint: model)
               }
             }
           }
