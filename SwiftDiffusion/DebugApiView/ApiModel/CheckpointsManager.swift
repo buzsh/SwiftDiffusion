@@ -9,10 +9,11 @@ import Foundation
 
 @MainActor
 class CheckpointsManager: ObservableObject {
-  @Published var models: [CheckpointModel] = []
-  
   private var directoryObserver: DirectoryObserver?
   private var userSettings = UserSettings.shared
+  
+  @Published var models: [CheckpointModel] = []
+  @Published var recentlyRemovedCheckpointModels: [CheckpointModel] = []
   
   @Published var errorMessage: String?
   @Published var showError: Bool = false
@@ -29,6 +30,7 @@ class CheckpointsManager: ObservableObject {
     guard let directoryUrl = UserSettings.shared.stableDiffusionModelsDirectoryUrl else { return }
     
     Task {
+      await removeNonExistentCheckpointsFromPublishedModels()
       await addLocalCheckpointsFromDirectoryToModels()
       await updateCheckpointsFromAPI()
     }
@@ -37,6 +39,7 @@ class CheckpointsManager: ObservableObject {
     directoryObserver?.startObserving(url: directoryUrl) { [weak self] in
       
       Task {
+        await self?.removeNonExistentCheckpointsFromPublishedModels()
         await self?.addLocalCheckpointsFromDirectoryToModels()
         await self?.updateCheckpointsFromAPI()
       }
@@ -121,6 +124,25 @@ extension CheckpointsManager {
     } catch {
       self.errorMessage = "Failed to load local checkpoints: \(error.localizedDescription)"
       self.showError = true
+    }
+  }
+}
+
+extension CheckpointsManager {
+  func removeNonExistentCheckpointsFromPublishedModels() async {
+    let fileManager = FileManager.default
+    var removedModels: [CheckpointModel] = []
+    
+    models = models.filter { model in
+      let exists = fileManager.fileExists(atPath: model.path)
+      if !exists {
+        removedModels.append(model)
+      }
+      return exists
+    }
+    
+    if !removedModels.isEmpty {
+      recentlyRemovedCheckpointModels.append(contentsOf: removedModels)
     }
   }
 }

@@ -13,6 +13,8 @@ struct CheckpointMenu: View {
   var checkpointsManager: CheckpointsManager
   var currentPrompt: PromptModel
   
+  @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
+  
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
     consoleLog += "         Checkpoint.name: \(model.name)\n"
     consoleLog += "CheckpointMetadata.title: \(model.checkpointApiModel?.title ?? "nil")\n"
@@ -49,6 +51,28 @@ struct CheckpointMenu: View {
       }
       .onChange(of: currentPrompt.selectedModel) {
         consoleLog += "CheckpointMenu.onChange(of: currentPrompt.selectedModel)\n\n"
+      }
+      .onChange(of: checkpointsManager.recentlyRemovedCheckpointModels) {
+        if !checkpointsManager.recentlyRemovedCheckpointModels.isEmpty, let selectedModel = currentPrompt.selectedModel {
+          for removedModel in checkpointsManager.recentlyRemovedCheckpointModels {
+            if selectedModel.path == removedModel.path {
+              showSelectedCheckpointModelWasRemovedAlert = true
+            }
+          }
+        }
+        checkpointsManager.recentlyRemovedCheckpointModels = []
+      }
+      .alert(isPresented: $showSelectedCheckpointModelWasRemovedAlert) {
+        var message: String = ""
+        if let model = currentPrompt.selectedModel { message = model.name }
+        
+        return Alert(
+          title: Text("Warning: Model checkpoint was either moved or deleted"),
+          message: Text(message),
+          dismissButton: .cancel(Text("OK")) {
+            currentPrompt.selectedModel = nil
+          }
+        )
       }
     }
   }
