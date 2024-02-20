@@ -69,6 +69,7 @@ class APIManager: ObservableObject {
     guard let url = URL(string: "\(baseURL)/sdapi/v1/options") else {
       throw URLError(.badURL)
     }
+    
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "accept")
@@ -83,8 +84,9 @@ class APIManager: ObservableObject {
       throw URLError(.cannotParseResponse)
     }
     
-    let (_, httpResponse) = try await URLSession.shared.upload(for: request, from: request.httpBody ?? Data())
-    guard (httpResponse as? HTTPURLResponse)?.statusCode == 200 else {
+    let (_, httpResponse) = try await URLSession.shared.data(for: request)
+    
+    guard let response = httpResponse as? HTTPURLResponse, response.statusCode == 200 else {
       throw URLError(.badServerResponse)
     }
   }
