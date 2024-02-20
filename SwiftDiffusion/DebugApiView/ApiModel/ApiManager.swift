@@ -17,6 +17,8 @@ class APIManager: ObservableObject {
     self.baseURL = baseURL
   }
   
+  /// Tells Automatic1111 to refresh the list of available model checkpoints by sending a POST request to the server.
+  /// Throws an error if the URL is invalid or the server responds with an error.
   func refreshCheckpointsAsync() async throws {
     guard let url = URL(string: "\(baseURL)/sdapi/v1/refresh-checkpoints") else {
       throw URLError(.badURL)
@@ -31,6 +33,9 @@ class APIManager: ObservableObject {
     }
   }
   
+  /// Retrieves the list of available model checkpoints from the Automatic1111 server by sending a GET request.
+  /// Updates the `checkpoints` published property with the response.
+  /// Throws an error if the URL is invalid, the server responds with an error, or the response cannot be decoded.
   func getCheckpointsAsync() async throws {
     guard let url = URL(string: "\(baseURL)/sdapi/v1/sd-models") else {
       throw URLError(.badURL)
@@ -48,6 +53,9 @@ class APIManager: ObservableObject {
     self.checkpoints = decodedResponse.map { CheckpointModel(name: $0.title, path: $0.filename, type: .python, checkpointApiModel: $0) }
   }
   
+  /// Fetches the currently loaded checkpoint configuration, loaded into memory, from the Automatic1111 server by sending a GET request.
+  /// Updates the `loadedCheckpoint` published property with the checkpoint's title (JSON key `sd_model_checkpoint`).
+  /// Throws an error if the URL is invalid, the server responds with an error, or the response cannot be decoded.
   func getLoadedCheckpointAsync() async throws {
     guard let url = URL(string: "\(baseURL)/sdapi/v1/options") else {
       throw URLError(.badURL)
@@ -65,6 +73,9 @@ class APIManager: ObservableObject {
     self.loadedCheckpoint = decodedResponse.sdModelCheckpoint
   }
   
+  /// Posts a request to load a specific model checkpoint into memory by sending a POST request with the checkpoint's title (JSON key `sd_model_checkpoint`).
+  /// Throws an error if the URL is invalid, the server responds with an error, or the request cannot be encoded.
+  /// - Parameter checkpoint: The name of the checkpoint to be loaded.
   func postLoadCheckpointAsync(checkpoint: String) async throws {
     guard let url = URL(string: "\(baseURL)/sdapi/v1/options") else {
       throw URLError(.badURL)
