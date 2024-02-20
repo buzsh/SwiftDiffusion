@@ -54,12 +54,6 @@ struct DebugApiView: View {
         
         HStack {
           CheckpointMenu(consoleLog: $consoleLog, scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
-            .onChange(of: currentPrompt.selectedModel) {
-              if let selectedModel = currentPrompt.selectedModel {
-                consoleLog += "\n\n.onChange(of: currentPrompt.selectedModel)\n"
-                consoleLog += " - \(selectedModel)\n\n"
-              }
-            }
           
           Button("local titles") {
             consoleLog += "\n\nlocal title\n"
@@ -97,12 +91,6 @@ struct DebugApiView: View {
         }
         .frame(height: 40)
         .font(.system(size: 12, weight: .regular, design: .rounded))
-        .onChange(of: checkpointsManager.models) {
-          consoleLog += ".onChange(of: checkpointsManager.models) model.name:\n"
-          for model in checkpointsManager.models {
-            consoleLog += "  \(model.name)\n"
-          }
-        }
         
         Divider()
         

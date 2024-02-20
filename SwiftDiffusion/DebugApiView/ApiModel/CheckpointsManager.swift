@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 @MainActor
 class CheckpointsManager: ObservableObject {
@@ -16,22 +15,21 @@ class CheckpointsManager: ObservableObject {
   
   @Published var models: [CheckpointModel] = []
   @Published var recentlyRemovedCheckpointModels: [CheckpointModel] = []
-  
   @Published var loadedCheckpointModel: CheckpointModel? = nil
+  @Published var hasLoadedInitialCheckpointDataFromApi: Bool = false
   
   @Published var errorMessage: String?
   @Published var showError: Bool = false
   
   private(set) var apiManager: APIManager?
-  private var cancellables: Set<AnyCancellable> = []
-  
   func configureApiManager(with baseURL: String) {
     self.apiManager = APIManager(baseURL: baseURL)
-    Debug.log("configureApiManager with baseURL: \(baseURL)")
-    
+    Debug.log("[CheckpointsManager] configureApiManager with baseURL: \(baseURL)")
   }
   
   func startObservingDirectory() {
+    Debug.log("[CheckpointsManager] startObservingDirectory()")
+    
     guard let directoryUrl = UserSettings.shared.stableDiffusionModelsDirectoryUrl else { return }
     
     Task {
@@ -54,13 +52,20 @@ class CheckpointsManager: ObservableObject {
   
   func stopObservingDirectory() {
     directoryObserver?.stopObserving()
+    
+    updateFlagForHasLoadedInitialCheckpointDataFromApi(to: false)
   }
-  
+}
+
+extension CheckpointsManager {
+  func updateFlagForHasLoadedInitialCheckpointDataFromApi(to state: Bool) {
+    hasLoadedInitialCheckpointDataFromApi = state
+  }
 }
 
 extension CheckpointsManager {
   func updateCheckpointsFromAPI() async {
-    Debug.log("Starting updateCheckpointsFromAPI")
+    Debug.log("[CheckpointsManager] Starting updateCheckpointsFromAPI")
     guard let apiManager = apiManager else { Debug.log("apiManager not yet available"); return }
     
     let result = await refreshAndAssignApiCheckpoints(apiManager: apiManager)
@@ -73,18 +78,24 @@ extension CheckpointsManager {
           Debug.log("apiCheckpoint: \(apiCheckpoint), existingCheckpoint.checkpointApiModel: \(String(describing: existingCheckpoint.checkpointApiModel))")
         }
       }
+      updateFlagForHasLoadedInitialCheckpointDataFromApi(to: true)
+      
     case .failure(let error):
       errorMessage = "Failed to update checkpoints from API: \(error.localizedDescription)"
       showError = true
       Debug.log(error.localizedDescription)
     }
   }
+  
+  func checkpointWithPathAlreadyExistsInModels(compare checkpoint: CheckpointModel) -> CheckpointModel? {
+    return models.first { $0.path == checkpoint.path }
+  }
 }
 
 
 extension CheckpointsManager {
   func refreshAndAssignApiCheckpoints(apiManager: APIManager) async -> Result<String, Error> {
-    Debug.log("refreshAndAssignApiCheckpoints")
+    Debug.log("[CheckpointsManager] refreshAndAssignApiCheckpoints")
     do {
       try await apiManager.refreshCheckpointsAsync()
       try await apiManager.getCheckpointsAsync()
@@ -92,12 +103,6 @@ extension CheckpointsManager {
     } catch {
       return .failure(error)
     }
-  }
-}
-
-extension CheckpointsManager {
-  func checkpointWithPathAlreadyExistsInModels(compare checkpoint: CheckpointModel) -> CheckpointModel? {
-    return models.first { $0.path == checkpoint.path }
   }
 }
 
@@ -163,48 +168,40 @@ extension CheckpointsManager {
     }
     
     do {
-      // Attempt to update APIManager's loadedCheckpoint
       try await apiManager.getLoadedCheckpointAsync()
       
-      // Check for a non-nil loadedCheckpoint
       if let loadedCheckpointTitle = apiManager.loadedCheckpoint {
-        // Search for a matching model
         let matchingModel = models.first { $0.checkpointApiModel?.title == loadedCheckpointTitle }
         return .success(matchingModel)
+        
       } else {
-        // No loaded checkpoint found
         return .success(nil)
+        
       }
     } catch {
-      // Return failure in case of error
       return .failure(error)
+      
     }
   }
   
-  func handleLoadedCheckpointModel() async {
+  func getLoadedCheckpointModelFromApi() async {
     let result = await findLoadedCheckpointModel()
     switch result {
     case .success(let checkpointModel):
       if let model = checkpointModel {
-        // Successfully found a model, handle it accordingly
-        Debug.log("Found loaded checkpoint model: \(model.name)")
+        Debug.log("[CheckpointsManager] Found loaded checkpoint model: \(model.name)")
         loadedCheckpointModel = model
-        
         scriptManager.updateModelLoadState(to: .done)
         
       } else {
-        // No matching model found
-        Debug.log("No loaded checkpoint model found")
-        
+        Debug.log("[CheckpointsManager] No loaded checkpoint model found")
         scriptManager.updateModelLoadState(to: .failed)
         
       }
     case .failure(let error):
-      // Handle error
-      errorMessage = "Failed to find loaded checkpoint model: \(error.localizedDescription)"
+      errorMessage = "[CheckpointsManager] Failed to find loaded checkpoint model: \(error.localizedDescription)"
       showError = true
       Debug.log(error.localizedDescription)
-      
       scriptManager.updateModelLoadState(to: .failed)
     }
   }
@@ -236,37 +233,11 @@ extension CheckpointsManager {
     let result = await postCheckpoint(checkpoint: checkpoint)
     switch result {
     case .success():
-      // Handle success, such as updating UI or state
-      Debug.log("Checkpoint was successfully posted.")
+      Debug.log("[CheckpointsManager] Checkpoint was successfully posted.")
     case .failure(let error):
-      // Handle failure, such as updating UI with an error message
-      Debug.log("Failed to post checkpoint: \(error.localizedDescription)")
+      Debug.log("[CheckpointsManager] Failed to post checkpoint: \(error.localizedDescription)")
       errorMessage = "Failed to post checkpoint: \(error.localizedDescription)"
       showError = true
     }
   }
 }
-
-/*
-extension CheckpointsManager {
-  func postCheckpoint(checkpoint: CheckpointModel?) async {
-    guard let checkpointTitle = checkpoint?.checkpointApiModel?.title else {
-      Debug.log("Checkpoint or checkpoint title is nil")
-      // Optionally, update UI to reflect that the operation cannot proceed
-      return
-    }
-    
-    do {
-      try await apiManager?.postLoadCheckpointAsync(checkpoint: checkpointTitle)
-      // Handle success
-      Debug.log("Successfully posted checkpoint: \(checkpointTitle)")
-      // Here, you can update any relevant state or UI to reflect the success
-    } catch {
-      // Handle error
-      Debug.log("Failed to post checkpoint: \(error.localizedDescription)")
-      errorMessage = "Failed to post checkpoint: \(error.localizedDescription)"
-      showError = true
-    }
-  }
-}
-*/

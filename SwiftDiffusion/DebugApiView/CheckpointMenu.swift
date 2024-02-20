@@ -92,9 +92,6 @@ struct CheckpointMenu: View {
     
   }
   
-  //func get
-  
-  
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
       HStack {
@@ -111,12 +108,12 @@ struct CheckpointMenu: View {
               Button(model.name) {
                 selectMenuItem(withCheckpoint: model)
               }
+              .disabled(checkpointsManager.hasLoadedInitialCheckpointDataFromApi == false)
             }
           }
         } label: {
           Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
         }
-        
         
         if scriptManager.modelLoadState == .isLoading {
           ProgressView()
@@ -128,20 +125,30 @@ struct CheckpointMenu: View {
         }
       }
       .disabled(scriptManager.modelLoadState.disableCheckpointMenu)
-      .onChange(of: scriptManager.modelLoadState) {
-        consoleLog("")
-        consoleLog("        scriptManager.modelLoadState: \(scriptManager.modelLoadState)")
-        consoleLog("modelLoadState.disableCheckpointMenu: \(scriptManager.modelLoadState.disableCheckpointMenu)")
-        consoleLog("")
+      .onChange(of: checkpointsManager.hasLoadedInitialCheckpointDataFromApi) {
+        consoleLog(" > .onChange(of: hasLoadedInitialCheckpointDataFromApi), with new value: \(checkpointsManager.hasLoadedInitialCheckpointDataFromApi)")
+        if checkpointsManager.hasLoadedInitialCheckpointDataFromApi {
+          for model in checkpointsManager.models {
+            consoleLog("     \(model.checkpointApiModel?.title ?? "nil")")
+          }
+        }
       }
       
+      .onChange(of: scriptManager.modelLoadState) {
+        consoleLog("""
+        
+                        scriptManager.modelLoadState: \(scriptManager.modelLoadState)
+                modelLoadState.disableCheckpointMenu: \(scriptManager.modelLoadState.disableCheckpointMenu)
+        
+        """)
+      }
       .onChange(of: checkpointsManager.loadedCheckpointModel) {
         consoleLog("onChange of: checkpointsManager.loadedCheckpointModel")
         if currentPrompt.selectedModel != checkpointsManager.loadedCheckpointModel {
           currentPrompt.selectedModel = checkpointsManager.loadedCheckpointModel
         }
       }
-      // MARK: Handle
+      // MARK: Handle Recently Removed
       .onChange(of: checkpointsManager.recentlyRemovedCheckpointModels) {
         handleRecentlyRemovedCheckpointIfSelectedMenuItem()
       }
