@@ -41,11 +41,24 @@ extension ModelLoadState {
 
 extension ScriptManager {
   
+  @MainActor
+  func updateModelLoadState(to state: ModelLoadState) {
+    Debug.log("[ScriptManager] updateModelLoadState to: \(state)")
+    updateModelLoadStateAndTime(to: state)
+    
+    if state == .done || state == .failed {
+      Delay.by(3) {
+        self.modelLoadState = .idle
+        self.modelLoadTime = 0
+      }
+    }
+  }
+  
   func parseAndUpdateModelLoadState(output: String) async {
     Debug.log(">> \(output)")
     // ie. >> Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
     if output.contains("Update successful for model") {
-      updateModelLoadStateAndTime(to: .done)
+      //updateModelLoadStateAndTime(to: .done)
     }
     //Debug.log(output)
     // Check for model loading time
@@ -56,7 +69,8 @@ extension ScriptManager {
          let timeRange = Range(match.range(at: 1), in: output) {
         let timeString = String(output[timeRange])
         if let time = Double(timeString) {
-          updateModelLoadStateAndTime(to: .done, time: time)
+          //updateModelLoadStateAndTime(to: .done, time: time)
+          updateModelLoadTime(with: time)
         }
       }
     }
@@ -68,18 +82,24 @@ extension ScriptManager {
     ]
     
     if failureMessages.contains(where: output.contains) {
-      updateModelLoadStateAndTime(to: .failed, time: 0)
+      //updateModelLoadStateAndTime(to: .failed, time: 0)
     }
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
     let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
     if let _ = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
-      updateModelLoadStateAndTime(to: .done)
+      //updateModelLoadStateAndTime(to: .done)
     }
   }
   
   @MainActor
-  private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
+  private func updateModelLoadTime(with time: Double = 0) {
+    modelLoadTime = time
+    Debug.log("Parsed model load time: \(time)")
+  }
+  
+  /// - important: DEPRECATED
+  @MainActor private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
     self.modelLoadState = state
     self.modelLoadTime = time
     // Assuming Debug.log is a method to log messages
@@ -91,13 +111,25 @@ extension ScriptManager {
         self.modelLoadTime = 0
       }
     }
+    
+    if state == .failed {
+      Delay.by(3) {
+        self.modelLoadState = .idle
+        self.modelLoadTime = 0
+      }
+    }
+    
   }
+  
+  
   
   func updateModelLoadStateBasedOnOutput(output: String) {
     Task {
       await parseAndUpdateModelLoadState(output: output)
     }
   }
+  
+  
   
 }
 
