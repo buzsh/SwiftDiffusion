@@ -20,7 +20,6 @@ extension ModelLoadState {
 }
 
 struct CheckpointMenu: View {
-  @Binding var consoleLog: String
   @ObservedObject var scriptManager: ScriptManager
   var checkpointsManager: CheckpointsManager
   var currentPrompt: PromptModel
@@ -41,8 +40,6 @@ struct CheckpointMenu: View {
     model.checkpointApiModel?.title: \(model.checkpointApiModel?.title ?? "nil")
     
     """)
-    
-    // if previously selected checkpoint != current checkpoint: load new checkpoint
     
     scriptManager.updateModelLoadState(to: .isLoading)
     currentPrompt.selectedModel = model
@@ -94,6 +91,8 @@ struct CheckpointMenu: View {
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
+      PromptRowHeading(title: "Checkpoint")
+        .padding(.bottom, 6)
       HStack {
         Menu {
           Section(header: Text("􀢇 CoreML")) {
@@ -178,4 +177,8 @@ struct CheckpointMenu: View {
     checkpointsManager.recentlyRemovedCheckpointModels = []
   }
   
+}
+
+#Preview {
+  CommonPreviews.promptView
 }

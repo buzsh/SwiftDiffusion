@@ -60,7 +60,7 @@ struct DebugApiView: View {
       VStack(alignment: .leading, spacing: 0) {
         
         HStack {
-          CheckpointMenu(consoleLog: $consoleLog, scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
+          CheckpointMenu(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
           
           Button("local titles") {
             consoleLog("local title")
@@ -101,7 +101,7 @@ struct DebugApiView: View {
         
         Divider()
         
-        TextEditor(text: $consoleLog)
+        TextEditor(text: $scriptManager.apiConsoleOutput)
           .font(.system(size: 12, weight: .regular, design: .monospaced))
       }
       .padding(.horizontal, 6)
