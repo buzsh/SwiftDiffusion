@@ -28,10 +28,8 @@ class CheckpointModelPreferences: ObservableObject {
   static func defaultSamplingForCheckpointModelType(type: CheckpointModelType) -> CheckpointModelPreferences {
     let samplingMethod: String
     switch type {
-    case .coreMl:
-      samplingMethod = "DPM-Solver++"
-    case .python:
-      samplingMethod = "DPM++ 2M Karras"
+    case .coreMl: samplingMethod = "DPM-Solver++"
+    case .python: samplingMethod = "DPM++ 2M Karras"
     }
     return CheckpointModelPreferences(samplingMethod: samplingMethod)
   }
