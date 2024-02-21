@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DebugPromptStatusView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   var apiHasLoadedInitialCheckpointModel: String {

@@ -15,7 +15,7 @@ extension Constants.WindowSize {
 }
 
 struct DebugApiView: View {
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
@@ -49,7 +49,7 @@ struct DebugApiView: View {
     } content: {
       VStack(alignment: .leading, spacing: 0) {
         
-        DebugPromptStatusView(scriptManager: scriptManager)
+        DebugPromptStatusView()
         
         TextEditor(text: $scriptManager.consoleOutput)
           .font(.system(size: 10, weight: .regular, design: .monospaced))
@@ -141,8 +141,8 @@ struct DebugApiView: View {
   let sidebarViewModelPreview = SidebarViewModel()
   let checkpointsManagerPreview = CheckpointsManager()
   let loraModelsManagerPreview = ModelManager<LoraModel>()
-  return DebugApiView(scriptManager: scriptManagerPreview)
-    //.environmentObject(scriptManagerPreview)
+  return DebugApiView()
+    .environmentObject(scriptManagerPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(promptModelPreview)
     .environmentObject(sidebarViewModelPreview)

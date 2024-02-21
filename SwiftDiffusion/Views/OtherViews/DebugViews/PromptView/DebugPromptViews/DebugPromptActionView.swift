@@ -13,7 +13,7 @@ struct DebugPromptActionView: View {
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
   
   @State var consoleOutput: String = ""

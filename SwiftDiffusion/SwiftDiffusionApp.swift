@@ -47,7 +47,7 @@ struct SwiftDiffusionApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(scriptManager: scriptManager)
+      ContentView()
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(scriptManager)

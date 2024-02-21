@@ -80,6 +80,9 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
+      
+      //let rootView = CheckpointManagerView()
+      
       checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager))
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
@@ -98,8 +101,8 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
       
-      let rootView = DebugApiView(scriptManager: scriptManager)
-                  //.environmentObject(scriptManager)
+      let rootView = DebugApiView()
+                  .environmentObject(scriptManager)
                   .environmentObject(checkpointsManager)
                   .environmentObject(currentPrompt)
                   .environmentObject(sidebarViewModel)
