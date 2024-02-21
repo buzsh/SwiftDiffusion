@@ -341,6 +341,12 @@ struct SidebarView: View {
       .onChange(of: currentPrompt.positivePrompt) {
         ensureNewPromptWorkspaceItemExists()
       }
+      .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+        if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
+          ensureNewPromptWorkspaceItemExists()
+          sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
+        }
+      }
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
