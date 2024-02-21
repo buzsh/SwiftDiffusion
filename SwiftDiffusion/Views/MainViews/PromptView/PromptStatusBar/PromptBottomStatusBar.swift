@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 struct PromptBottomStatusBar: View {
   @EnvironmentObject var currentPrompt: PromptModel
   
@@ -28,7 +28,7 @@ struct PromptBottomStatusBar: View {
       .buttonStyle(.accessoryBar)
       .sheet(isPresented: $showingModelPreferences) {
         if let selectedModel = currentPrompt.selectedModel {
-          CheckpointModelPreferencesView(checkpointModel: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
+          CheckpointPreferencesView(checkpointModel: Binding.constant(selectedModel), modelPreferences: selectedModel.preferences)
         }
       }
     }
@@ -41,3 +41,4 @@ struct PromptBottomStatusBar: View {
 #Preview {
   CommonPreviews.promptView
 }
+*/

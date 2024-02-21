@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RequiredInputPathsView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
   @Environment(\.presentationMode) var presentationMode
   
   private var buttonTitle: String {
@@ -47,12 +47,6 @@ struct RequiredInputPathsView: View {
             }
             
           }
-          .onChange(of: userSettings.stableDiffusionModelsPath) {
-            Task {
-              await checkpointModelsManager.loadModels()
-            }
-          }
-          
         }
         .padding(.horizontal, 16)
       }//scrollview

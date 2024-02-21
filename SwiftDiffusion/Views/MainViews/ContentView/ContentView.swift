@@ -32,13 +32,13 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
@@ -59,7 +59,7 @@ struct ContentView: View {
   
   @State var imageCountToGenerate: Int = 0
   
-  @State private var columnVisibility = NavigationSplitViewVisibility.all//.doubleColumn
+  @State private var columnVisibility = NavigationSplitViewVisibility.all // .doubleColumn (hide by default)
   
   
   var body: some View {
@@ -70,17 +70,17 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(scriptManager: scriptManager)
+        PromptView()
       case .console:
-        ConsoleView(scriptManager: scriptManager)
+        ConsoleView()
       case .models:
-        CheckpointModelsManagerView(scriptManager: scriptManager)
+        CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
       case .settings:
         SettingsView()
       }
       
     } detail: {
-      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
+      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
     }
     .onChange(of: columnVisibility) {
       Debug.log("columnVisibility: \(columnVisibility)")
@@ -88,7 +88,7 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointModelsManager: checkpointModelsManager, loraModelsManager: loraModelsManager)
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
@@ -96,7 +96,6 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-        await checkpointModelsManager.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -130,18 +129,15 @@ struct ContentView: View {
             }
           }
           
-          //Text(selectedView.title).font(.system(size: 15, weight: .semibold, design: .default))
+          Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
           
-          Picker("Options", selection: $selectedView) {
-            Text("Prompt").tag(ViewManager.prompt)
-            if userSettings.showDeveloperInterface {
+          if userSettings.showDeveloperInterface {
+            Picker("Options", selection: $selectedView) {
+              Text("Prompt").tag(ViewManager.prompt)
               Text("Console").tag(ViewManager.console)
             }
-            Text("Models").tag(ViewManager.models)
+            .pickerStyle(SegmentedPickerStyle())
           }
-          .pickerStyle(SegmentedPickerStyle())
-          
-          //Divider().padding(.leading, 6).padding(.trailing, 3)
           
           if userSettings.showPythonEnvironmentControls {
             Button(action: {
@@ -216,6 +212,28 @@ struct ContentView: View {
         
         if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {
           ContentProgressBar(scriptManager: scriptManager)
+        }
+        
+        /*
+        if scriptManager.scriptState.isActive && checkpointsManager.apiHasLoadedInitialCheckpointModel != true {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
+        }
+         */
+        
+        if userSettings.showDeveloperInterface {
+          Button(action: {
+            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+          }) {
+            Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
+          }
+        }
+        
+        Button(action: {
+          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
+        }) {
+          Image(systemName: "arkit")
         }
         
         Button(action: {

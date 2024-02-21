@@ -1,5 +1,5 @@
 //
-//  CheckpointModelPreferencesView.swift
+//  CheckpointPreferencesView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/8/24.
@@ -8,14 +8,7 @@
 import CompactSlider
 import SwiftUI
 
-extension Constants {
-  static let coreMLSamplingMethods = ["DPM-Solver++", "PLMS"]
-  static let pythonSamplingMethods = [
-    "DPM++ 2M Karras", "DPM++ SDE Karras", "DPM++ 2M SDE Exponential", "DPM++ 2M SDE Karras", "Euler a", "Euler", "LMS", "Heun", "DPM2", "DPM2 a", "DPM++ 2S a", "DPM++ 2M", "DPM++ SDE", "DPM++ 2M SDE", "DPM++ 2M SDE Heun", "DPM++ 2M SDE Heun Karras", "DPM++ 2M SDE Heun Exponential", "DPM++ 3M SDE", "DPM++ 3M SDE Karras", "DPM++ 3M SDE Exponential", "DPM fast", "DPM adaptive", "LMS Karras", "DPM2 Karras", "DPM2 a Karras", "DPM++ 2S a Karras", "Restart", "DDIM", "PLMS", "UniPC", "LCM"
-  ]
-}
-
-struct CheckpointModelPreferencesView: View {
+struct CheckpointPreferencesView: View {
   @Binding var checkpointModel: CheckpointModel
   @ObservedObject var modelPreferences: CheckpointModelPreferences
   @StateObject private var temporaryPreferences: CheckpointModelPreferences
@@ -123,19 +116,20 @@ struct CheckpointModelPreferencesView: View {
   }
   
   private func applyPreferences() {
-    checkpointModel.preferences.update(from: temporaryPreferences)
+    // TODO: applyPreferences
+    //checkpointModel.preferences.update(from: temporaryPreferences)
   }
 }
 
-
+/*
 #Preview {
-  let item = CheckpointModel(name: "some_model.safetensor", type: .python, url: URL(string: "file://path/to/package")!)
+  let item = CheckpointModel(name: "some_model.safetensor", path: "/path/to/package", type: .python)
   item.preferences = CheckpointModelPreferences(samplingMethod: "DPM++ 2M Karras")
   
-  return CheckpointModelPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
+  return CheckpointPreferencesView(checkpointModel: .constant(item), modelPreferences: item.preferences)
     .frame(width: 400, height: 400)
 }
-
+*/
 
 extension CheckpointModelPreferences {
   static func copy(from preferences: CheckpointModelPreferences) -> CheckpointModelPreferences {

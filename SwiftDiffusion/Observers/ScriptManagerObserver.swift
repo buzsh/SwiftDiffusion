@@ -8,19 +8,19 @@
 import SwiftUI
 import Combine
 
+@MainActor
 class ScriptManagerObserver {
   var scriptManager: ScriptManager
   var userSettings: UserSettings
-  
-  var checkpointModelsManager: CheckpointModelsManager
+  var checkpointsManager: CheckpointsManager
   var loraModelsManager: ModelManager<LoraModel>
   
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings, checkpointModelsManager: CheckpointModelsManager, loraModelsManager: ModelManager<LoraModel>) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
-    self.checkpointModelsManager = checkpointModelsManager
+    self.checkpointsManager = checkpointsManager
     self.loraModelsManager = loraModelsManager
     
     setupObservers()
@@ -47,19 +47,28 @@ class ScriptManagerObserver {
       .store(in: &cancellables)
   }
   
+  
   private func scriptStateDidChange(_ newState: ScriptState) {
-    Debug.log("scriptStateDidChange newState: \(newState)")
+    Debug.log("[ScriptManagerObserver] scriptStateDidChange newState: \(newState)")
     if newState.isActive {
-      Debug.log("newState.isActive")
-      checkpointModelsManager.startObservingModelDirectories()
+      Debug.log("[ScriptManagerObserver] newState.isActive")
+      checkpointsManager.startObservingDirectory()
       loraModelsManager.startObservingDirectory()
+      
+      if let serviceUrl = scriptManager.serviceUrl {
+        checkpointsManager.configureApiManager(with: serviceUrl.absoluteString)
+      }
+      
+    } else {
+      checkpointsManager.stopObservingDirectory()
+      loraModelsManager.stopObservingDirectory()
     }
   }
   
   private func stableDiffusionModelsPathDidChange(_ newPath: String) {
     Debug.log("stableDiffusionModelsPathDidChange newPath: \(newPath)")
-    checkpointModelsManager.stopObservingModelDirectories()
-    checkpointModelsManager.startObservingModelDirectories()
+    checkpointsManager.stopObservingDirectory()
+    checkpointsManager.startObservingDirectory()
   }
   
   private func loraDirectoryPathDidChange(_ newPath: String = "") {

@@ -32,14 +32,21 @@
 		292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80B2B8193E400116D60 /* ImageSaver.swift */; };
 		292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */; };
 		292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80F2B81958700116D60 /* Txt2ImgService.swift */; };
-		292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */; };
 		292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */; };
+		292CE8282B82430000116D60 /* SoundUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8272B82430000116D60 /* SoundUtility.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
 		2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */; };
 		2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD62B71AEFA002FC885 /* PromptView.swift */; };
 		2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BAD82B71B79F002FC885 /* PromptModel.swift */; };
 		2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */; };
 		2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */; };
+		2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */; };
+		2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */; };
+		29620FDD2B826BDD008EA5EB /* DebugApiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FDC2B826BDD008EA5EB /* DebugApiView.swift */; };
+		29620FDF2B8275CE008EA5EB /* CheckpointMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */; };
+		29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE52B8291E8008EA5EB /* CheckpointsApiManager.swift */; };
+		29620FE82B82924E008EA5EB /* CheckpointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE72B82924E008EA5EB /* CheckpointModel.swift */; };
+		29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */; };
 		29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29623E362B797B5900EC719F /* RequiredInputPathsView.swift */; };
 		29623E3A2B79888500EC719F /* RequiredInputPathsPulsatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29623E392B79888500EC719F /* RequiredInputPathsPulsatingButton.swift */; };
 		296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296AA9EF2B769B2A00CF0658 /* UserSettings.swift */; };
@@ -70,8 +77,7 @@
 		29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C82B81374500B18AC1 /* ModelManager.swift */; };
 		29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */; };
 		29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B1D9D72B755965009B6F03 /* AppDirectory.swift */; };
-		29B571792B756F320057DD50 /* CheckpointModelPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */; };
-		29B5717D2B758D7E0057DD50 /* CheckpointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */; };
+		29B571792B756F320057DD50 /* CheckpointPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571782B756F320057DD50 /* CheckpointPreferencesView.swift */; };
 		29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */; };
 		29B571822B75AE410057DD50 /* PromptRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571812B75AE410057DD50 /* PromptRows.swift */; };
 		29B571842B75B2070057DD50 /* SeedRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571832B75B2070057DD50 /* SeedRows.swift */; };
@@ -99,11 +105,9 @@
 		29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */; };
 		29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
-		29D3623C2B72ED4D006C57B3 /* CheckpointModelManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */; };
+		29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
-		29D362402B7317E1006C57B3 /* CheckpointModelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */; };
 		29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */; };
-		29F0D3052B76D12400BF56CE /* CheckpointMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */; };
 		29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */; };
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
@@ -135,14 +139,21 @@
 		292CE80B2B8193E400116D60 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageSaver+Composite.swift"; sourceTree = "<group>"; };
 		292CE80F2B81958700116D60 /* Txt2ImgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Txt2ImgService.swift; sourceTree = "<group>"; };
-		292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelMenu.swift; sourceTree = "<group>"; };
 		292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplingMethodMenu.swift; sourceTree = "<group>"; };
+		292CE8272B82430000116D60 /* SoundUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundUtility.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 		2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundButtonStyles.swift; sourceTree = "<group>"; };
 		2952BAD62B71AEFA002FC885 /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		2952BAD82B71B79F002FC885 /* PromptModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptModel.swift; sourceTree = "<group>"; };
 		2952BADB2B71C4C6002FC885 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
 		2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlurView.swift; sourceTree = "<group>"; };
+		2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointApiModel.swift; sourceTree = "<group>"; };
+		2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelauncherUtility.swift; sourceTree = "<group>"; };
+		29620FDC2B826BDD008EA5EB /* DebugApiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugApiView.swift; sourceTree = "<group>"; };
+		29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMenu.swift; sourceTree = "<group>"; };
+		29620FE52B8291E8008EA5EB /* CheckpointsApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointsApiManager.swift; sourceTree = "<group>"; };
+		29620FE72B82924E008EA5EB /* CheckpointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModel.swift; sourceTree = "<group>"; };
+		29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointsManager.swift; sourceTree = "<group>"; };
 		29623E362B797B5900EC719F /* RequiredInputPathsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredInputPathsView.swift; sourceTree = "<group>"; };
 		29623E392B79888500EC719F /* RequiredInputPathsPulsatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredInputPathsPulsatingButton.swift; sourceTree = "<group>"; };
 		296AA9EF2B769B2A00CF0658 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -175,8 +186,7 @@
 		29A1E0C82B81374500B18AC1 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		29B1D9D42B753B8D009B6F03 /* AppFileStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFileStructure.swift; sourceTree = "<group>"; };
 		29B1D9D72B755965009B6F03 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
-		29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelPreferencesView.swift; sourceTree = "<group>"; };
-		29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModel.swift; sourceTree = "<group>"; };
+		29B571782B756F320057DD50 /* CheckpointPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointPreferencesView.swift; sourceTree = "<group>"; };
 		29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfMaxWidthView.swift; sourceTree = "<group>"; };
 		29B571812B75AE410057DD50 /* PromptRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRows.swift; sourceTree = "<group>"; };
 		29B571832B75B2070057DD50 /* SeedRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedRows.swift; sourceTree = "<group>"; };
@@ -204,11 +214,9 @@
 		29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleWithHeader.swift; sourceTree = "<group>"; };
 		29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
-		29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelManagerView.swift; sourceTree = "<group>"; };
+		29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
-		29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelsManager.swift; sourceTree = "<group>"; };
 		29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadState.swift; sourceTree = "<group>"; };
-		29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMetadata.swift; sourceTree = "<group>"; };
 		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -308,15 +316,14 @@
 			path = DetailView;
 			sourceTree = "<group>";
 		};
-		292CE8072B8176CA00116D60 /* Checkpoint */ = {
+		292CE8072B8176CA00116D60 /* Checkpoints */ = {
 			isa = PBXGroup;
 			children = (
-				29F0D3042B76D12400BF56CE /* CheckpointMetadata.swift */,
-				29B5717C2B758D7E0057DD50 /* CheckpointModel.swift */,
-				29D3623F2B7317E1006C57B3 /* CheckpointModelsManager.swift */,
-				292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */,
+				2952F5022B86380200CB8679 /* Managers */,
+				2952F5032B8639B400CB8679 /* Models */,
+				2952F5062B863B3200CB8679 /* Views */,
 			);
-			path = Checkpoint;
+			path = Checkpoints;
 			sourceTree = "<group>";
 		};
 		292CE80A2B8193C200116D60 /* ImageSaver */ = {
@@ -340,7 +347,7 @@
 		292CE8122B81AE6F00116D60 /* PromptMenus */ = {
 			isa = PBXGroup;
 			children = (
-				292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */,
+				29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */,
 				292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */,
 			);
 			path = PromptMenus;
@@ -395,7 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
-				29D3623A2B72ED3B006C57B3 /* ModelManagerView */,
+				29D3623A2B72ED3B006C57B3 /* CheckpointManagerView */,
 				2916F3322B7278D4001D14B9 /* SettingsView */,
 			);
 			path = WindowViews;
@@ -418,6 +425,13 @@
 				2916F33E2B7286A3001D14B9 /* ThumbnailLoader.swift */,
 			);
 			path = FileRow;
+			sourceTree = "<group>";
+		};
+		292CE8262B8240EC00116D60 /* ContentToolbar */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ContentToolbar;
 			sourceTree = "<group>";
 		};
 		293336442B72A3C6007237AA /* Extensions */ = {
@@ -454,6 +468,7 @@
 			isa = PBXGroup;
 			children = (
 				2942B0752B7B2BD300D1E0DE /* BackgroundButtonStyles.swift */,
+				290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -465,6 +480,50 @@
 				29B5717E2B75AB1E0057DD50 /* HalfMaxWidthView.swift */,
 			);
 			path = CustomViews;
+			sourceTree = "<group>";
+		};
+		2952F5022B86380200CB8679 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				29620FE52B8291E8008EA5EB /* CheckpointsApiManager.swift */,
+				29620FE92B82A23F008EA5EB /* CheckpointsManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		2952F5032B8639B400CB8679 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				29620FE72B82924E008EA5EB /* CheckpointModel.swift */,
+				2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */,
+				292CE8082B81771B00116D60 /* CheckpointModelPreferences.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2952F5062B863B3200CB8679 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				29620FDC2B826BDD008EA5EB /* DebugApiView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2952F5072B863EB400CB8679 /* Generic */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
+				29A1E0B72B80F44500B18AC1 /* Loras */,
+			);
+			path = Generic;
+			sourceTree = "<group>";
+		};
+		2952F5082B863EC400CB8679 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				292CE8072B8176CA00116D60 /* Checkpoints */,
+			);
+			path = Custom;
 			sourceTree = "<group>";
 		};
 		29623E382B79886000EC719F /* RequiredInputPaths */ = {
@@ -550,6 +609,8 @@
 				29D362382B72E59F006C57B3 /* FileUtility.swift */,
 				29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */,
 				29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */,
+				292CE8272B82430000116D60 /* SoundUtility.swift */,
+				2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -626,19 +687,18 @@
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
 			isa = PBXGroup;
 			children = (
-				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
-				292CE8072B8176CA00116D60 /* Checkpoint */,
-				29A1E0B72B80F44500B18AC1 /* Lora */,
+				2952F5082B863EC400CB8679 /* Custom */,
+				2952F5072B863EB400CB8679 /* Generic */,
 			);
 			path = AutomaticModels;
 			sourceTree = "<group>";
 		};
-		29A1E0B72B80F44500B18AC1 /* Lora */ = {
+		29A1E0B72B80F44500B18AC1 /* Loras */ = {
 			isa = PBXGroup;
 			children = (
 				29A1E0B82B80F45900B18AC1 /* LoraModel.swift */,
 			);
-			path = Lora;
+			path = Loras;
 			sourceTree = "<group>";
 		};
 		29A1E0C02B810C8C00B18AC1 /* Observers */ = {
@@ -700,10 +760,10 @@
 		29C0F37A2B7AB22F0017DD6B /* ContentView */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8262B8240EC00116D60 /* ContentToolbar */,
 				2942B0742B7B2BBA00D1E0DE /* CustomViews */,
 				2996D0952B6ED5B000B487D5 /* ContentView.swift */,
 				29B571872B75C53C0057DD50 /* ContentView+Generate.swift */,
-				290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */,
 			);
 			path = ContentView;
 			sourceTree = "<group>";
@@ -740,13 +800,13 @@
 			path = CustomViews;
 			sourceTree = "<group>";
 		};
-		29D3623A2B72ED3B006C57B3 /* ModelManagerView */ = {
+		29D3623A2B72ED3B006C57B3 /* CheckpointManagerView */ = {
 			isa = PBXGroup;
 			children = (
-				29D3623B2B72ED4D006C57B3 /* CheckpointModelManagerView.swift */,
-				29B571782B756F320057DD50 /* CheckpointModelPreferencesView.swift */,
+				29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */,
+				29B571782B756F320057DD50 /* CheckpointPreferencesView.swift */,
 			);
-			path = ModelManagerView;
+			path = CheckpointManagerView;
 			sourceTree = "<group>";
 		};
 		29F6D5E92B72B15E00613242 /* Frameworks */ = {
@@ -850,6 +910,7 @@
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
+				29620FDD2B826BDD008EA5EB /* DebugApiView.swift in Sources */,
 				29B571842B75B2070057DD50 /* SeedRows.swift in Sources */,
 				29B1D9D52B753B8D009B6F03 /* AppFileStructure.swift in Sources */,
 				29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */,
@@ -861,6 +922,7 @@
 				29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */,
 				29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
+				292CE8282B82430000116D60 /* SoundUtility.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
 				29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */,
 				2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */,
@@ -868,11 +930,9 @@
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				29C0F3882B7ABF430017DD6B /* DeveloperSection.swift in Sources */,
 				29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */,
-				292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */,
 				29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
-				29F0D3052B76D12400BF56CE /* CheckpointMetadata.swift in Sources */,
 				290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */,
 				291635A62B7EAEE200D47EEF /* SegmentedDisplayOptions.swift in Sources */,
 				29145E7A2B77DCEB00BFA64B /* DebugPromptActionView.swift in Sources */,
@@ -880,18 +940,18 @@
 				29623E3A2B79888500EC719F /* RequiredInputPathsPulsatingButton.swift in Sources */,
 				29145E7F2B782BB600BFA64B /* AppDocuments.swift in Sources */,
 				29708F902B7EB632004A95AD /* DisplayOptionsBar.swift in Sources */,
-				29B571792B756F320057DD50 /* CheckpointModelPreferencesView.swift in Sources */,
-				29D362402B7317E1006C57B3 /* CheckpointModelsManager.swift in Sources */,
+				29B571792B756F320057DD50 /* CheckpointPreferencesView.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				29C0F38F2B7AC3380017DD6B /* BrowseFileRow.swift in Sources */,
 				29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */,
 				2916F3372B72859D001D14B9 /* DetailView.swift in Sources */,
 				29C0F3822B7ABF210017DD6B /* FilesSection.swift in Sources */,
-				29B5717D2B758D7E0057DD50 /* CheckpointModel.swift in Sources */,
+				29620FDF2B8275CE008EA5EB /* CheckpointMenu.swift in Sources */,
 				29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */,
 				297196552B715A58000F7960 /* Debug.swift in Sources */,
 				292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */,
 				29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */,
+				29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
@@ -900,6 +960,7 @@
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
 				29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */,
 				2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */,
+				2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */,
 				2916F33D2B72867C001D14B9 /* FileRowView.swift in Sources */,
 				2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */,
 				290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */,
@@ -907,9 +968,11 @@
 				29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */,
 				292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */,
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
+				29620FE82B82924E008EA5EB /* CheckpointModel.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
+				29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				29145E782B77DCAE00BFA64B /* PromptBottomStatusBar.swift in Sources */,
@@ -920,12 +983,13 @@
 				29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */,
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
+				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */,
 				292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
-				29D3623C2B72ED4D006C57B3 /* CheckpointModelManagerView.swift in Sources */,
+				29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */,
 				29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */,
 				2971965F2B71770B000F7960 /* ScriptSetupHelper.swift in Sources */,
 				297196632B719205000F7960 /* ScriptManager+PythonProcess.swift in Sources */,

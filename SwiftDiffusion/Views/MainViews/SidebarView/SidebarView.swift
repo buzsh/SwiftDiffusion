@@ -96,6 +96,7 @@ struct SidebarView: View {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
     itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
+    itemToSave.prompt?.isWorkspaceItem = false
     itemToSave.timestamp = Date()
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
@@ -323,6 +324,11 @@ struct SidebarView: View {
           let mapModelData = MapModelData()
           if let storedPromptModel = selectedItem.prompt {
             let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+            
+            if selectedItem.title == "New Prompt" {
+              newPrompt.selectedModel = nil
+            }
+            
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }
@@ -339,6 +345,12 @@ struct SidebarView: View {
       }
       .onChange(of: currentPrompt.positivePrompt) {
         ensureNewPromptWorkspaceItemExists()
+      }
+      .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+        if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
+          ensureNewPromptWorkspaceItemExists()
+          sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
+        }
       }
       .onAppear {
         ensureNewPromptWorkspaceItemExists()

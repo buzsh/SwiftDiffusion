@@ -18,7 +18,9 @@ class WindowManager: NSObject, ObservableObject {
   /// Window instance for SettingsView.
   private var settingsWindow: NSWindow?
   /// Window instance for ModelsManagerView.
-  private var modelsManagerWindow: NSWindow?
+  private var checkpointManagerWindow: NSWindow?
+  
+  private var debugApiView: NSWindow?
   
   /// Initializes a new `WindowManager`. It is private to ensure `WindowManager` can only be accessed through its shared instance.
   override private init() { }
@@ -32,7 +34,6 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       updatesWindow?.center()
       updatesWindow?.contentView = NSHostingView(rootView: UpdatesView())
-      updatesWindow?.title = "Check for Updates"
       
       updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
@@ -44,7 +45,7 @@ class WindowManager: NSObject, ObservableObject {
   
   /// Shows the settings window containing SettingsView. If the window does not exist, it creates and configures a new window before displaying it.
   /// - Parameter withPreferenceStyle: A Boolean value indicating whether the window should use a preferences style toolbar.
-  func showSettingsWindow(withPreferenceStyle: Bool = false) {
+  func showSettingsWindow(withPreferenceStyle: Bool = false, withTab tab: SettingsTab? = nil) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
         contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
@@ -52,8 +53,7 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
-      settingsWindow?.contentView = NSHostingView(rootView: SettingsView())
-      settingsWindow?.title = "Settings"
+      settingsWindow?.contentView = NSHostingView(rootView: SettingsView(openWithTab: tab))
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
@@ -71,24 +71,54 @@ class WindowManager: NSObject, ObservableObject {
     settingsWindow?.makeKeyAndOrderFront(nil)
   }
   
-  /// Shows the models manager window containing ModelsManagerView. If the window does not exist, it creates and configures a new window before displaying it.
-  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointModelsManagerView`.
-  func showModelsManagerWindow(scriptManager: ScriptManager) {
-    if modelsManagerWindow == nil {
-      modelsManagerWindow = NSWindow(
+  /// Shows the models manager window containing CheckpointManagerView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointManagerView`.
+  func showCheckpointManagerWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, checkpointsManager: CheckpointsManager) {
+    if checkpointManagerWindow == nil {
+      checkpointManagerWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
-      modelsManagerWindow?.center()
-      modelsManagerWindow?.contentView = NSHostingView(rootView: CheckpointModelsManagerView(scriptManager: scriptManager))
-      modelsManagerWindow?.title = "Models"
+      checkpointManagerWindow?.center()
       
-      modelsManagerWindow?.isReleasedWhenClosed = false
-      modelsManagerWindow?.delegate = self
+      //let rootView = CheckpointManagerView()
       
-      modelsManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
+      checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager))
+      
+      checkpointManagerWindow?.isReleasedWhenClosed = false
+      checkpointManagerWindow?.delegate = self
+      
+      checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
-    modelsManagerWindow?.makeKeyAndOrderFront(nil)
+    checkpointManagerWindow?.makeKeyAndOrderFront(nil)
+  }
+  
+  func showDebugApiWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, sidebarViewModel: SidebarViewModel, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
+    if checkpointManagerWindow == nil {
+      checkpointManagerWindow = NSWindow(
+        contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.DebugApi.defaultWidth, height: Constants.WindowSize.DebugApi.defaultHeight),
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
+        backing: .buffered, defer: false)
+      checkpointManagerWindow?.center()
+      
+      let rootView = DebugApiView()
+                  .environmentObject(scriptManager)
+                  .environmentObject(checkpointsManager)
+                  .environmentObject(currentPrompt)
+                  .environmentObject(sidebarViewModel)
+                  .environmentObject(loraModelsManager)
+              
+     checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
+      
+      
+      
+      
+      checkpointManagerWindow?.isReleasedWhenClosed = false
+      checkpointManagerWindow?.delegate = self
+      
+      checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
+    }
+    checkpointManagerWindow?.makeKeyAndOrderFront(nil)
   }
 }
 
@@ -101,8 +131,8 @@ extension WindowManager: NSWindowDelegate {
         updatesWindow = nil
       } else if window == settingsWindow {
         settingsWindow = nil
-      } else if window == modelsManagerWindow {
-        modelsManagerWindow = nil
+      } else if window == checkpointManagerWindow {
+        checkpointManagerWindow = nil
       }
     }
   }

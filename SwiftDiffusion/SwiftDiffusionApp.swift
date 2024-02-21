@@ -13,12 +13,11 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
   
-  @StateObject var scriptManager = ScriptManager.shared
+  var scriptManager = ScriptManager.shared
   
   let sidebarViewModel = SidebarViewModel()
-  
+  let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
-  let checkpointModelsManager = CheckpointModelsManager()
   let loraModelsManager = ModelManager<LoraModel>()
   
   init() {
@@ -29,7 +28,7 @@ struct SwiftDiffusionApp: App {
     let storeURL = appSupportURL
       .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
       .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent("user-db.store") // Constants.FileStructure.AppSwiftDataFileName
+      .appendingPathComponent("test6-UserDb.store") // Constants.FileStructure.AppSwiftDataFileName
     
     let subfolderURL = storeURL.deletingLastPathComponent()
     if !fileManager.fileExists(atPath: subfolderURL.path) {
@@ -48,12 +47,13 @@ struct SwiftDiffusionApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(scriptManager: scriptManager)
+      ContentView()
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+        .environmentObject(scriptManager)
         .environmentObject(sidebarViewModel)
+        .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)
-        .environmentObject(checkpointModelsManager)
         .environmentObject(loraModelsManager)
     }
     .modelContainer(modelContainer)

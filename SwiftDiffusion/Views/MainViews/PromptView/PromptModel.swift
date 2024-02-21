@@ -7,6 +7,13 @@
 
 import Combine
 
+extension Constants {
+  static let coreMLSamplingMethods = ["DPM-Solver++", "PLMS"]
+  static let pythonSamplingMethods = [
+    "DPM++ 2M Karras", "DPM++ SDE Karras", "DPM++ 2M SDE Exponential", "DPM++ 2M SDE Karras", "Euler a", "Euler", "LMS", "Heun", "DPM2", "DPM2 a", "DPM++ 2S a", "DPM++ 2M", "DPM++ SDE", "DPM++ 2M SDE", "DPM++ 2M SDE Heun", "DPM++ 2M SDE Heun Karras", "DPM++ 2M SDE Heun Exponential", "DPM++ 3M SDE", "DPM++ 3M SDE Karras", "DPM++ 3M SDE Exponential", "DPM fast", "DPM adaptive", "LMS Karras", "DPM2 Karras", "DPM2 a Karras", "DPM++ 2S a Karras", "Restart", "DDIM", "PLMS", "UniPC", "LCM"
+  ]
+}
+
 @MainActor
 class PromptModel: ObservableObject {
   @Published var isWorkspaceItem: Bool = true
@@ -27,7 +34,7 @@ class PromptModel: ObservableObject {
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
     Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
-    Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointMetadata?.title))")
+    Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointApiModel?.title))")
     self.isWorkspaceItem = model.isWorkspaceItem
     self.selectedModel = model.selectedModel
     self.samplingMethod = model.samplingMethod
@@ -72,27 +79,26 @@ extension PromptModel {
   }
 }
 
-
-
 /*
- @Published var selectedModel: CheckpointModel? {
- didSet {
- updatePromptPreferences()
- }
- }
- 
- private func updatePromptPreferences() {
- guard let model = selectedModel else { return }
- samplingMethod = model.preferences.samplingMethod
- // Update only if the current values are the default (512x512)
- if width == 512 && height == 512 {
- width = model.preferences.width
- height = model.preferences.height
- }
- cfgScale = model.preferences.cfgScale
- samplingSteps = model.preferences.samplingSteps
- batchCount = model.preferences.batchCount
- batchSize = model.preferences.batchSize
- clipSkip = model.preferences.clipSkip
- }
- */
+extension PromptModel {
+  @Published var selectedModel: CheckpointModel? {
+    didSet {
+      updatePromptPreferences()
+    }
+  }
+  
+  private func updatePromptPreferences() {
+    guard let model = selectedModel else { return }
+    samplingMethod = model.preferences.samplingMethod
+    if width == 512 && height == 512 {
+      width = model.preferences.width
+      height = model.preferences.height
+    }
+    cfgScale = model.preferences.cfgScale
+    samplingSteps = model.preferences.samplingSteps
+    batchCount = model.preferences.batchCount
+    batchSize = model.preferences.batchSize
+    clipSkip = model.preferences.clipSkip
+  }
+}
+*/

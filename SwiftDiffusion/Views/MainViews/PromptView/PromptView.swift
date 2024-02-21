@@ -17,15 +17,18 @@ struct PromptView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
+  
+  @State var deletedCheckpointModel: CheckpointModel? = nil
+  @State var showSelectedCheckpointModelWasDeletedAlert: Bool = false
   
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
@@ -42,7 +45,7 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      DebugPromptStatusView(scriptManager: scriptManager)
+      DebugPromptStatusView()
       
       PromptTopStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,
@@ -54,8 +57,8 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            CheckpointModelMenu(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
-            SamplingMethodMenu(currentPrompt: currentPrompt)
+            CheckpointMenu()
+            SamplingMethodMenu()
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
           .frame(minHeight: 90)
@@ -93,6 +96,7 @@ struct PromptView: View {
         } // Form
         .disabled(disablePromptView)
       } // ScrollView
+      
       
       PasteGenerationDataStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,

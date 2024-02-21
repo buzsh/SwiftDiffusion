@@ -8,7 +8,7 @@
 import Foundation
 
 protocol EndpointRepresentable {
-  static var fetchEndpoint: String { get }
+  static var fetchEndpoint: String? { get }
   static var refreshEndpoint: String? { get }
 }
 
@@ -44,12 +44,18 @@ class AutomaticApiService {
 extension AutomaticApiService {
   
   func fetchDataItem<T: Decodable & EndpointRepresentable>(for type: T.Type) async throws -> T {
-    let data = try await request(endpoint: T.fetchEndpoint)
+    guard let endpoint = T.fetchEndpoint else {
+      throw NetworkError.fetchEndpointIsNil
+    }
+    let data = try await request(endpoint: endpoint)
     return try JSONDecoder().decode(T.self, from: data)
   }
   
   func fetchData<T: Decodable & EndpointRepresentable>(for type: [T].Type) async throws -> [T] {
-    let data = try await request(endpoint: T.fetchEndpoint)
+    guard let endpoint = T.fetchEndpoint else {
+      throw NetworkError.fetchEndpointIsNil
+    }
+    let data = try await request(endpoint: endpoint)
     return try JSONDecoder().decode([T].self, from: data)
   }
   
@@ -67,6 +73,7 @@ extension AutomaticApiService {
   }
   
   enum NetworkError: Error {
+    case fetchEndpointIsNil
     case invalidURL
     case badResponse(statusCode: Int? = nil)
   }
