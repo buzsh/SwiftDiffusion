@@ -44,20 +44,21 @@ extension ScriptManager {
   @MainActor
   func updateModelLoadState(to state: ModelLoadState) {
     Debug.log("[ModelLoadState] updateModelLoadState to: \(state)")
+    modelLoadStateShouldExpire = false
     
     if modelLoadState != state {
       modelLoadState = state
     }
     
     if state == .done || state == .failed {
-      Delay.by(3) {
-        self.updateModelLoadTime(with: 0)
-        self.modelLoadState = .idle
+      modelLoadStateShouldExpire = true
+      
+      Delay.by(5) {
+        if self.modelLoadStateShouldExpire {
+          self.updateModelLoadTime(with: 0)
+          self.modelLoadState = .idle
+        }
       }
-    }
-    
-    if state == .idle {
-      self.updateModelLoadTime(with: 0)
     }
   }
   

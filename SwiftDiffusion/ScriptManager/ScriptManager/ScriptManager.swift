@@ -35,11 +35,13 @@ class ScriptManager: ObservableObject {
   
   @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
+  @Published var modelLoadStateShouldExpire: Bool = false
   
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
   
   @Published var apiConsoleOutput: String = ""
+  
   /// Initializes a new instance of `ScriptManager`.
   init() {
     self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)
