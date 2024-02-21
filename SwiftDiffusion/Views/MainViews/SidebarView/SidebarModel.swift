@@ -85,24 +85,32 @@ class StoredCheckpointModel {
   @Attribute var name: String
   @Attribute var path: String
   @Attribute var type: StoredCheckpointModelType
+  @Attribute var storedCheckpointApiModel: StoredCheckpointApiModel?
+  /*
   @Attribute var jsonModelCheckpointTitle: String
   @Attribute var jsonModelCheckpointName: String
   @Attribute var jsonModelCheckpointHash: String?
   @Attribute var jsonModelCheckpointSha256: String?
   @Attribute var jsonModelCheckpointFilename: String
   @Attribute var jsonModelCheckpointConfig: String?
+   */
   
+  init(name: String, path: String, type: StoredCheckpointModelType, storedCheckpointApiModel: StoredCheckpointApiModel? = nil) {
+  /*
   init(name: String, path: String, type: StoredCheckpointModelType, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
+   */
     self.name = name
     self.path = path
     self.type = type
-    
+    self.storedCheckpointApiModel = storedCheckpointApiModel
+    /*
     self.jsonModelCheckpointTitle = jsonModelCheckpointTitle
     self.jsonModelCheckpointName = jsonModelCheckpointName
     self.jsonModelCheckpointHash = jsonModelCheckpointHash
     self.jsonModelCheckpointSha256 = jsonModelCheckpointSha256
     self.jsonModelCheckpointFilename = jsonModelCheckpointFilename
     self.jsonModelCheckpointConfig = jsonModelCheckpointConfig
+     */
   }
 }
 
@@ -119,24 +127,22 @@ enum StoredCheckpointModelType: String, Codable {
   case python = "python"
 }
 
-/*
 @Model
-class StoredSdModel {
+class StoredCheckpointApiModel {
   @Attribute var title: String
   @Attribute var modelName: String
-  @Attribute var hash: String?
+  @Attribute var modelHash: String?
   @Attribute var sha256: String?
   @Attribute var filename: String
   @Attribute var config: String?
   
-  init(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) {
+  init(title: String, modelName: String, modelHash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) {
     self.title = title
     self.modelName = modelName
-    self.hash = hash
+    self.modelHash = modelHash
     self.sha256 = sha256
     self.filename = filename
     self.config = config
   }
 }
- */
 

@@ -38,10 +38,11 @@ class MockDataController {
   
   func insertMockData() {
     let context = container.mainContext
-    let storedCheckpointModel1 = StoredCheckpointModel(name: "DreamShaperXL_v2.0", path: "/path/to/checkpoint", type: .python, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    
+    let storedCheckpointModel1 = StoredCheckpointModel(name: "DreamShaperXL_v2.0", path: "/path/to/checkpoint", type: .python)
     let storedPromptModel1 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel1)
     
-    let storedCheckpointModel2 = StoredCheckpointModel(name: "Animerge 1.6.2", path: "/path/to/checkpoint", type: .python, jsonModelCheckpointTitle: "JSON Model Title", jsonModelCheckpointName: "JSON Model Name", jsonModelCheckpointFilename: "JSON Model Filename")
+    let storedCheckpointModel2 = StoredCheckpointModel(name: "Animerge 1.6.2", path: "/path/to/checkpoint", type: .python)
     let storedPromptModel2 = StoredPromptModel(positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel2)
     
     let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)

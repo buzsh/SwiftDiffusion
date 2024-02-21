@@ -32,6 +32,8 @@ struct MapModelData {
     }
   }
   
+  /// DEPRECATED
+  /*
   func mapJsonDataToCheckpointApiModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> CheckpointApiModel {
     return CheckpointApiModel(title: title,
                    modelName: modelName,
@@ -40,27 +42,67 @@ struct MapModelData {
                    filename: filename,
                    config: config)
   }
+   */
+  /// DEPRECATED
+  /*
+  func mapJsonDataToCheckpointApiModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> CheckpointApiModel {
+    return CheckpointApiModel(title: title,
+                   modelName: modelName,
+                   hash: hash,
+                   sha256: sha256,
+                   filename: filename,
+                   config: config)
+  }
+   */
+  
+  func mapStoredCheckpointApiModelToCheckpointApiModel(storedCheckpointApiModel: StoredCheckpointApiModel? = nil) -> CheckpointApiModel? {
+    guard let storedApiModel = storedCheckpointApiModel else { return nil }
+    return CheckpointApiModel(title: storedApiModel.title,
+                              modelName: storedApiModel.modelName,
+                              modelHash: storedApiModel.modelHash,
+                              sha256: storedApiModel.sha256,
+                              filename: storedApiModel.filename,
+                              config: storedApiModel.config
+                              )
+  }
+  
+  func mapCheckpointApiModelToStoredCheckpointApiModel(_ checkpointApiModel: CheckpointApiModel?) -> StoredCheckpointApiModel? {
+    guard let checkpointApiModel = checkpointApiModel else { return nil }
+    
+    return StoredCheckpointApiModel(title: checkpointApiModel.title,
+                                    modelName: checkpointApiModel.modelName,
+                                    modelHash: checkpointApiModel.modelHash,
+                                    sha256: checkpointApiModel.sha256,
+                                    filename: checkpointApiModel.filename,
+                                    config: checkpointApiModel.config
+                                    )
+  }
   
   @MainActor
   func mapCheckpointModelToStoredCheckpointModel(_ checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
     guard let checkpointModel = checkpointModel else { return nil }
     let storedCheckpointModelType = mapCheckpointModelTypeToStoredCheckpointModelType(checkpointModel.type)
+    let storedCheckpointApiModel = mapCheckpointApiModelToStoredCheckpointApiModel(checkpointModel.checkpointApiModel)
     return StoredCheckpointModel(name: checkpointModel.name,
                                  path: checkpointModel.path,
                                  type: storedCheckpointModelType,
+                                 storedCheckpointApiModel: storedCheckpointApiModel
+                                 )
+                                 /*
                                  jsonModelCheckpointTitle: checkpointModel.checkpointApiModel?.title ?? "",
                                  jsonModelCheckpointName: checkpointModel.checkpointApiModel?.modelName ?? "",
                                  jsonModelCheckpointHash: checkpointModel.checkpointApiModel?.hash,
                                  jsonModelCheckpointSha256: checkpointModel.checkpointApiModel?.sha256,
                                  jsonModelCheckpointFilename: checkpointModel.checkpointApiModel?.filename ?? "",
                                  jsonModelCheckpointConfig: checkpointModel.checkpointApiModel?.config)
+                                  */
   }
   
   @MainActor
   func mapStoredCheckpointModelToCheckpointModel(_ storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
     guard let storedCheckpointModel = storedCheckpointModel else { return nil }
     let checkpointModelType = mapStoredCheckpointModelTypeToCheckpointModelType(storedCheckpointModel.type)
-    let checkpointApiModel = mapJsonDataToCheckpointApiModel(title: storedCheckpointModel.jsonModelCheckpointTitle, modelName: storedCheckpointModel.jsonModelCheckpointName, hash: storedCheckpointModel.jsonModelCheckpointHash, sha256: storedCheckpointModel.jsonModelCheckpointSha256, filename: storedCheckpointModel.jsonModelCheckpointFilename, config: storedCheckpointModel.jsonModelCheckpointConfig)
+    let checkpointApiModel = mapStoredCheckpointApiModelToCheckpointApiModel(storedCheckpointApiModel: storedCheckpointModel.storedCheckpointApiModel)
     
     return CheckpointModel(name: storedCheckpointModel.name,
                            path: storedCheckpointModel.path,

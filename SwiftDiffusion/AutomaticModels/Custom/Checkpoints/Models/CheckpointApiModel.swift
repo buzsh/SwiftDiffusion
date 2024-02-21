@@ -10,7 +10,7 @@ import Foundation
 struct CheckpointApiModel: Decodable {
   let title: String
   let modelName: String
-  let hash: String?
+  let modelHash: String?
   let sha256: String?
   let filename: String
   let config: String?
@@ -18,7 +18,7 @@ struct CheckpointApiModel: Decodable {
   enum CodingKeys: String, CodingKey {
     case title
     case modelName = "model_name"
-    case hash
+    case modelHash = "hash"
     case sha256
     case filename
     case config

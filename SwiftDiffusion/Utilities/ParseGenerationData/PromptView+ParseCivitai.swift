@@ -174,8 +174,8 @@ extension PromptView {
             let extractedHash = String(checkpointMetadataTitle[range])
             potentialHashMatch = extractedHash
           }
-        } else if let checkpointMetadataHash = model.checkpointApiModel?.hash {
-          potentialHashMatch = checkpointMetadataHash
+        } else if let checkpointApiModelHash = model.checkpointApiModel?.modelHash {
+          potentialHashMatch = checkpointApiModelHash
         }
         
         if potentialHashMatch?.lowercased() == modelHash.lowercased() {
