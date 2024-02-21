@@ -18,6 +18,8 @@ class CheckpointsManager: ObservableObject {
   @Published var loadedCheckpointModel: CheckpointModel? = nil
   @Published var hasLoadedInitialCheckpointDataFromApi: Bool = false
   
+  @Published var apiHasLoadedInitialCheckpointModel: Bool = false
+  
   @Published var errorMessage: String?
   @Published var showError: Bool = false
   
@@ -185,6 +187,12 @@ extension CheckpointsManager {
   }
   
   func getLoadedCheckpointModelFromApi() async {
+    if hasLoadedInitialCheckpointDataFromApi == false {
+      scriptManager.updateModelLoadState(to: .failed)
+      return
+    }
+    
+    scriptManager.updateModelLoadState(to: .isLoading)
     let result = await findLoadedCheckpointModel()
     switch result {
     case .success(let checkpointModel):
@@ -204,6 +212,7 @@ extension CheckpointsManager {
       Debug.log(error.localizedDescription)
       scriptManager.updateModelLoadState(to: .failed)
     }
+    apiHasLoadedInitialCheckpointModel = true
   }
   
 }

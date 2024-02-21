@@ -220,10 +220,18 @@ struct ContentView: View {
           ContentProgressBar(scriptManager: scriptManager)
         }
         
-        Button(action: {
-          WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
-        }) {
-          Image(systemName: "command")
+        if scriptManager.scriptState.isActive && checkpointsManager.apiHasLoadedInitialCheckpointModel != true {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
+        }
+        
+        if userSettings.showDeveloperInterface {
+          Button(action: {
+            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+          }) {
+            Image(systemName: "command")
+          }
         }
         
         Button(action: {

@@ -324,6 +324,11 @@ struct SidebarView: View {
           let mapModelData = MapModelData()
           if let storedPromptModel = selectedItem.prompt {
             let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+            
+            if selectedItem.title == "New Prompt" {
+              newPrompt.selectedModel = nil
+            }
+            
             updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
           }
         }

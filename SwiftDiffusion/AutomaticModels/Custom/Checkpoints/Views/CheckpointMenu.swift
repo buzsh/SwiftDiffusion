@@ -25,8 +25,6 @@ struct CheckpointMenu: View {
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
-  @State var hasLoadedInitialCheckpoint: Bool = false
-  
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
   
   @State var previouslySelectedCheckpointModel: CheckpointModel? = nil
@@ -146,6 +144,18 @@ struct CheckpointMenu: View {
         }
       }
       
+      .onChange(of: checkpointsManager.loadedCheckpointModel) {
+        if let loadedModelCheckpoint = checkpointsManager.loadedCheckpointModel {
+          Debug.log("[matchCheckpointState] checkpointsManager.loadedCheckpointModel: \(loadedModelCheckpoint.name)")
+        }
+      }
+      
+      .onChange(of: currentPrompt.selectedModel) {
+        if let selectedModel = currentPrompt.selectedModel {
+          Debug.log("[matchCheckpointState]              currentPrompt.selectedModel: \(selectedModel.name)")
+        }
+      }
+      
       .onChange(of: sidebarViewModel.selectedSidebarItem) {
         Debug.log("sidebarViewModel.selectedSidebarItem.isWorkspaceItem: \(String(describing: sidebarViewModel.selectedSidebarItem?.isWorkspaceItem))")
         
@@ -155,6 +165,16 @@ struct CheckpointMenu: View {
       }
       
       
+      .onChange(of: scriptManager.modelLoadTime) {
+        if checkpointsManager.apiHasLoadedInitialCheckpointModel == false && scriptManager.modelLoadTime > 0 {
+          
+          if currentPrompt.selectedModel == nil {
+            Task {
+              await checkpointsManager.getLoadedCheckpointModelFromApi()
+            }
+          }
+        }
+      }
       
       .onChange(of: checkpointsManager.hasLoadedInitialCheckpointDataFromApi) {
         consoleLog(" > .onChange(of: hasLoadedInitialCheckpointDataFromApi), with new value: \(checkpointsManager.hasLoadedInitialCheckpointDataFromApi)")
@@ -162,15 +182,9 @@ struct CheckpointMenu: View {
           for model in checkpointsManager.models {
             consoleLog("     \(model.checkpointApiModel?.title ?? "nil")")
           }
-          hasLoadedInitialCheckpoint = true
         }
       }
-      
-      .onChange(of: currentPrompt.selectedModel) {
-        if hasLoadedInitialCheckpoint, let modelToSelect = currentPrompt.selectedModel {
-          selectMenuItem(withCheckpoint: modelToSelect)
-        }
-      }
+       
       .onChange(of: checkpointsManager.loadedCheckpointModel) {
         consoleLog("onChange of: checkpointsManager.loadedCheckpointModel")
         if currentPrompt.selectedModel != checkpointsManager.loadedCheckpointModel {
