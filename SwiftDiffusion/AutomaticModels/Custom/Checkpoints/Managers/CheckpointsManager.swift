@@ -21,9 +21,9 @@ class CheckpointsManager: ObservableObject {
   @Published var errorMessage: String?
   @Published var showError: Bool = false
   
-  private(set) var apiManager: APIManager?
+  private(set) var apiManager: CheckpointsApiManager?
   func configureApiManager(with baseURL: String) {
-    self.apiManager = APIManager(baseURL: baseURL)
+    self.apiManager = CheckpointsApiManager(baseURL: baseURL)
     Debug.log("[CheckpointsManager] configureApiManager with baseURL: \(baseURL)")
   }
   
@@ -94,7 +94,7 @@ extension CheckpointsManager {
 
 
 extension CheckpointsManager {
-  func refreshAndAssignApiCheckpoints(apiManager: APIManager) async -> Result<String, Error> {
+  func refreshAndAssignApiCheckpoints(apiManager: CheckpointsApiManager) async -> Result<String, Error> {
     Debug.log("[CheckpointsManager] refreshAndAssignApiCheckpoints")
     do {
       try await apiManager.refreshCheckpointsAsync()

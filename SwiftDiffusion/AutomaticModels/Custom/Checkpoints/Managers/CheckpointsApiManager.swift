@@ -1,5 +1,5 @@
 //
-//  ApiManager.swift
+//  CheckpointsApiManager.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/18/24.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class APIManager: ObservableObject {
+class CheckpointsApiManager: ObservableObject {
   @Published var checkpoints: [CheckpointModel] = []
   @Published var loadedCheckpoint: String? = nil
   private let baseURL: String
