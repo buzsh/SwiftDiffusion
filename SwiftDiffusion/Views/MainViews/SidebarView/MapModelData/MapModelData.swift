@@ -32,29 +32,6 @@ struct MapModelData {
     }
   }
   
-  /// DEPRECATED
-  /*
-  func mapJsonDataToCheckpointApiModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> CheckpointApiModel {
-    return CheckpointApiModel(title: title,
-                   modelName: modelName,
-                   hash: hash,
-                   sha256: sha256,
-                   filename: filename,
-                   config: config)
-  }
-   */
-  /// DEPRECATED
-  /*
-  func mapJsonDataToCheckpointApiModel(title: String, modelName: String, hash: String? = nil, sha256: String? = nil, filename: String, config: String? = nil) -> CheckpointApiModel {
-    return CheckpointApiModel(title: title,
-                   modelName: modelName,
-                   hash: hash,
-                   sha256: sha256,
-                   filename: filename,
-                   config: config)
-  }
-   */
-  
   func mapStoredCheckpointApiModelToCheckpointApiModel(storedCheckpointApiModel: StoredCheckpointApiModel? = nil) -> CheckpointApiModel? {
     guard let storedApiModel = storedCheckpointApiModel else { return nil }
     return CheckpointApiModel(title: storedApiModel.title,
@@ -88,14 +65,6 @@ struct MapModelData {
                                  type: storedCheckpointModelType,
                                  storedCheckpointApiModel: storedCheckpointApiModel
                                  )
-                                 /*
-                                 jsonModelCheckpointTitle: checkpointModel.checkpointApiModel?.title ?? "",
-                                 jsonModelCheckpointName: checkpointModel.checkpointApiModel?.modelName ?? "",
-                                 jsonModelCheckpointHash: checkpointModel.checkpointApiModel?.hash,
-                                 jsonModelCheckpointSha256: checkpointModel.checkpointApiModel?.sha256,
-                                 jsonModelCheckpointFilename: checkpointModel.checkpointApiModel?.filename ?? "",
-                                 jsonModelCheckpointConfig: checkpointModel.checkpointApiModel?.config)
-                                  */
   }
   
   @MainActor
@@ -107,7 +76,8 @@ struct MapModelData {
     return CheckpointModel(name: storedCheckpointModel.name,
                            path: storedCheckpointModel.path,
                            type: checkpointModelType,
-                           checkpointApiModel: checkpointApiModel)
+                           checkpointApiModel: checkpointApiModel
+                           )
   }
   
   
@@ -129,7 +99,8 @@ struct MapModelData {
                           batchCount: promptModel.batchCount,
                           batchSize: promptModel.batchSize,
                           clipSkip: promptModel.clipSkip,
-                          selectedModel: selectedModel)
+                          selectedModel: selectedModel
+                          )
   }
   
   @MainActor
@@ -150,27 +121,4 @@ struct MapModelData {
     promptModel.selectedModel = mapStoredCheckpointModelToCheckpointModel(storedPromptModel.selectedModel)
     return promptModel
   }
-  /*
-  func mapCheckpointMetadataToStoredSdModel(_ checkpointMetadata: CheckpointMetadata?) -> StoredCheckpointMetadata? {
-    guard let checkpointMetadata = checkpointMetadata else { return nil }
-    return StoredSdModel(title: checkpointMetadata.title,
-                      modelName: checkpointMetadata.modelName,
-                      hash: checkpointMetadata.hash,
-                      sha256: checkpointMetadata.sha256,
-                      filename: checkpointMetadata.filename,
-                      config: checkpointMetadata.config)
-  }
-  
-  func mapStoredCheckpointMetadataToCheckpointMetadataModel(_ storedCheckpointMetadata: StoredCheckpointMetadata?) -> CheckpointMetadata? {
-    guard let storedCheckpointMetadata = storedCheckpointMetadata else { return nil }
-    
-    return SdModel(title: storedCheckpointMetadata.title,
-                   modelName: storedCheckpointMetadata.modelName,
-                   hash: storedCheckpointMetadata.hash,
-                   sha256: storedCheckpointMetadata.sha256,
-                   filename: storedCheckpointMetadata.filename,
-                   config: storedCheckpointMetadata.config)
-  }
-  */
-  
 }

@@ -88,31 +88,13 @@ class StoredCheckpointModel {
   @Attribute var path: String
   @Attribute var type: StoredCheckpointModelType
   @Attribute var storedCheckpointApiModel: StoredCheckpointApiModel?
-  /*
-  @Attribute var jsonModelCheckpointTitle: String
-  @Attribute var jsonModelCheckpointName: String
-  @Attribute var jsonModelCheckpointHash: String?
-  @Attribute var jsonModelCheckpointSha256: String?
-  @Attribute var jsonModelCheckpointFilename: String
-  @Attribute var jsonModelCheckpointConfig: String?
-   */
   
   init(name: String, path: String, type: StoredCheckpointModelType, storedCheckpointApiModel: StoredCheckpointApiModel? = nil) {
-  /*
-  init(name: String, path: String, type: StoredCheckpointModelType, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
-   */
     self.name = name
     self.path = path
     self.type = type
     self.storedCheckpointApiModel = storedCheckpointApiModel
-    /*
-    self.jsonModelCheckpointTitle = jsonModelCheckpointTitle
-    self.jsonModelCheckpointName = jsonModelCheckpointName
-    self.jsonModelCheckpointHash = jsonModelCheckpointHash
-    self.jsonModelCheckpointSha256 = jsonModelCheckpointSha256
-    self.jsonModelCheckpointFilename = jsonModelCheckpointFilename
-    self.jsonModelCheckpointConfig = jsonModelCheckpointConfig
-     */
+    
   }
 }
 
@@ -147,4 +129,3 @@ class StoredCheckpointApiModel {
     self.config = config
   }
 }
-
