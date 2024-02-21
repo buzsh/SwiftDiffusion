@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CheckpointManagerView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
+  @ObservedObject var userSettings = UserSettings.shared
   var currentPrompt: PromptModel
   var checkpointsManager: CheckpointsManager
   
@@ -34,9 +35,11 @@ struct CheckpointManagerView: View {
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
-        Button("Reveal in Finder") {
-          openUserModelsFolder()
+        Menu("Reveal in Finder") {
+          Button("CoreML Model Checkpoints", action: openCoreMlCheckpointModelsFolder)
+          Button("Python Model Checkpoints", action: openPythonCheckpointModelsFolder)
         }
+        .menuStyle(.borderlessButton)
         
         Menu(filterTitle) {
           Button("Show All Models", action: { selectedFilter = nil })
@@ -76,7 +79,7 @@ struct CheckpointManagerView: View {
           if item != currentPrompt.selectedModel {
             Button(action: {
               Task {
-                //await checkpointsManager.moveToTrash(item: item)
+                await checkpointsManager.moveToTrash(item: item)
               }
             }) {
               Image(systemName: "trash")
@@ -97,15 +100,32 @@ struct CheckpointManagerView: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
-          
+          /*
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
             .scaleEffect(0.5)
-          
+          */
         }
       }
     }
     
+  }
+  
+  private func openCoreMlCheckpointModelsFolder() {
+    //guard let modelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl else {
+    guard let modelsDirUrl = AppDirectory.coreMl.url else {
+      Debug.log("coreML dir URL is nil")
+      return
+    }
+    NSWorkspace.shared.open(modelsDirUrl)
+  }
+  
+  private func openPythonCheckpointModelsFolder() {
+    guard let modelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl else {
+      Debug.log("stableDiffusionModelsDirectoryUrl URL is nil")
+      return
+    }
+    NSWorkspace.shared.open(modelsDirUrl)
   }
   
   private func openUserModelsFolder() {
@@ -123,3 +143,40 @@ struct CheckpointManagerView: View {
     .frame(width: 500, height: 400)
 }
 */
+
+extension CheckpointsManager {
+  func moveToTrash(item: CheckpointModel) async {
+    let fileManager = FileManager.default
+    do {
+      let fileURL: URL
+      
+      switch item.type {
+      case .coreMl:
+        guard let coreMlModelsDirUrl = AppDirectory.coreMl.url else {
+          Debug.log("CoreML models URL is nil")
+          return
+        }
+        fileURL = coreMlModelsDirUrl.appendingPathComponent(item.name)
+      case .python:
+        let userSettings = UserSettings.shared
+        let pythonModelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl ?? AppDirectory.python.url
+        guard let pythonModelsDirUrl = pythonModelsDirUrl else {
+          Debug.log("Python models URL is nil")
+          return
+        }
+        fileURL = pythonModelsDirUrl.appendingPathComponent(item.name)
+      }
+      
+      // Move the file to trash
+      var trashedItemURL: NSURL? = nil
+      try fileManager.trashItem(at: fileURL, resultingItemURL: &trashedItemURL)
+      Debug.log("Moved to trash: \(item.name)")
+      SoundUtility.play(systemSound: .trash)
+      
+      // Reload or update the items list to reflect the change
+      //await loadModels()
+    } catch {
+      Debug.log("Failed to move to trash: \(item.name), error: \(error)")
+    }
+  }
+}
