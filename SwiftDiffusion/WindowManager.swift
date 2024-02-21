@@ -45,7 +45,7 @@ class WindowManager: NSObject, ObservableObject {
   
   /// Shows the settings window containing SettingsView. If the window does not exist, it creates and configures a new window before displaying it.
   /// - Parameter withPreferenceStyle: A Boolean value indicating whether the window should use a preferences style toolbar.
-  func showSettingsWindow(withPreferenceStyle: Bool = false, withTab tab: SettingsTab = .prompt) {
+  func showSettingsWindow(withPreferenceStyle: Bool = false, withTab tab: SettingsTab? = nil) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
         contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
@@ -53,7 +53,7 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
-      settingsWindow?.contentView = NSHostingView(rootView: SettingsView(selectedTab: tab))
+      settingsWindow?.contentView = NSHostingView(rootView: SettingsView(openWithTab: tab))
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self

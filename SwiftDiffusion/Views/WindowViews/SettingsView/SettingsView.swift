@@ -20,6 +20,8 @@ struct SettingsView: View {
   
   @Environment(\.presentationMode) var presentationMode
   
+  var openWithTab: SettingsTab? = nil
+  
   @State var selectedTab: SettingsTab = {
     let savedValue = UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? ""
     return SettingsTab(rawValue: savedValue) ?? .prompt //.engine
@@ -90,6 +92,11 @@ struct SettingsView: View {
     }
     .onChange(of: selectedTab) {
       UserDefaults.standard.set(selectedTab.rawValue, forKey: "selectedSettingsTab")
+    }
+    .onAppear {
+      if let tab = openWithTab {
+        selectedTab = tab
+      }
     }
   }
 }

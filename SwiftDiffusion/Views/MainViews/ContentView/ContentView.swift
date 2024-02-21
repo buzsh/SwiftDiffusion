@@ -96,7 +96,6 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-        //await checkpointsManager.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -139,8 +138,6 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
           }
-          
-          //Divider().padding(.leading, 6).padding(.trailing, 3)
           
           if userSettings.showPythonEnvironmentControls {
             Button(action: {
@@ -227,7 +224,7 @@ struct ContentView: View {
           Button(action: {
             WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
           }) {
-            Image(systemName: "command")
+            Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
           }
         }
         
