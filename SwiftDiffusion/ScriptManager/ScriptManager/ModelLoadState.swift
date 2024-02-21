@@ -16,39 +16,31 @@ enum ModelLoadState: Equatable {
 }
 
 extension ModelLoadState {
-  var statusTest: String {
-    switch self {
-    case .launching: return "Unpacking" // loading initial
-    case .done: return "Done!"
-    case .isLoading: return "Loading..." // loading new model
-    case .failed: return "Failed"
-    case .idle: return "idle"
-    }
-  }
-}
-
-extension ModelLoadState {
   var allowGeneration: Bool {
     switch self {
-    case .idle: return true
-    case .done: return true
-    case .failed: return true
-    case .isLoading: return true
-    case .launching: return true
+    case .idle:       return true
+    case .done:       return true
+    case .failed:     return false
+    case .isLoading:  return false
+    case .launching:  return true
     }
   }
 }
 
 extension ScriptManager {
   
+  func updateModelLoadStateBasedOnOutput(output: String) {
+    Task {
+      await parseAndUpdateModelLoadState(output: output)
+    }
+  }
+  
   @MainActor
   func updateModelLoadState(to state: ModelLoadState) {
     Debug.log("[ModelLoadState] updateModelLoadState to: \(state)")
     modelLoadStateShouldExpire = false
     
-    if modelLoadState != state {
-      modelLoadState = state
-    }
+    if modelLoadState != state { modelLoadState = state }
     
     if state == .done || state == .failed {
       modelLoadStateShouldExpire = true
@@ -133,41 +125,6 @@ extension ScriptManager {
       Debug.log("Regex error: \(error.localizedDescription)")
     }
   }
-  
-  
-  
-  /// - important: DEPRECATED
-  @MainActor private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
-    self.modelLoadState = state
-    self.modelLoadTime = time
-    // Assuming Debug.log is a method to log messages
-    Debug.log("Model load state updated to \(state) with load time: \(time)")
-    
-    if state == .done {
-      Delay.by(3) {
-        self.modelLoadState = .idle
-        self.modelLoadTime = 0
-      }
-    }
-    
-    if state == .failed {
-      Delay.by(3) {
-        self.modelLoadState = .idle
-        self.modelLoadTime = 0
-      }
-    }
-    
-  }
-  
-  
-  
-  func updateModelLoadStateBasedOnOutput(output: String) {
-    Task {
-      await parseAndUpdateModelLoadState(output: output)
-    }
-  }
-  
-  
   
 }
 
