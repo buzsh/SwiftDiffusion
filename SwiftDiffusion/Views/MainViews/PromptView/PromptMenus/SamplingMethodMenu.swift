@@ -11,8 +11,9 @@ struct SamplingMethodMenu: View {
   var currentPrompt: PromptModel
   
   var body: some View {
-    VStack(alignment: .leading) {
+    VStack(alignment: .leading, spacing: 0) {
       PromptRowHeading(title: "Sampling")
+        .padding(.bottom, 6)
       Menu {
         let samplingMethods = currentPrompt.selectedModel?.type == .coreMl ? Constants.coreMLSamplingMethods : Constants.pythonSamplingMethods
         ForEach(samplingMethods, id: \.self) { method in
