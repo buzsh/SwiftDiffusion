@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CheckpointManagerView: View {
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   var currentPrompt: PromptModel
   var checkpointsManager: CheckpointsManager
   

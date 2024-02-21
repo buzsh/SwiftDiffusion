@@ -59,7 +59,7 @@ struct ContentView: View {
   
   @State var imageCountToGenerate: Int = 0
   
-  @State private var columnVisibility = NavigationSplitViewVisibility.all//.doubleColumn
+  @State private var columnVisibility = NavigationSplitViewVisibility.all // .doubleColumn (hide by default)
   
   
   var body: some View {
@@ -70,9 +70,9 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(scriptManager: scriptManager)
+        PromptView()
       case .console:
-        ConsoleView(scriptManager: scriptManager)
+        ConsoleView()
       case .models:
         CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
       case .settings:
@@ -80,7 +80,7 @@ struct ContentView: View {
       }
       
     } detail: {
-      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
+      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
     }
     .onChange(of: columnVisibility) {
       Debug.log("columnVisibility: \(columnVisibility)")
@@ -135,10 +135,7 @@ struct ContentView: View {
           if userSettings.showDeveloperInterface {
             Picker("Options", selection: $selectedView) {
               Text("Prompt").tag(ViewManager.prompt)
-              if userSettings.showDeveloperInterface {
-                Text("Console").tag(ViewManager.console)
-              }
-              Text("Models").tag(ViewManager.models)
+              Text("Console").tag(ViewManager.console)
             }
             .pickerStyle(SegmentedPickerStyle())
           }
