@@ -37,12 +37,14 @@ struct CheckpointMenu: View {
   @MainActor
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
     
+    /*
     if model == previouslySelectedCheckpointModel {
       consoleLog("> [selectMenuItem] withCheckpoint: \(model.name) is same as previouslySelectedModel: \(String(describing: previouslySelectedCheckpointModel?.name))")
       consoleLog("  [selectMenuItem] cancelling")
       scriptManager.updateModelLoadState(to: .idle)
       return
     }
+     */
     
     // if the selected sidebar item is not a workspace item, change the menu title but not the loaded checkpoint
     if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
@@ -127,7 +129,7 @@ struct CheckpointMenu: View {
           Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
         }
         
-        if scriptManager.modelLoadState == .isLoading {
+        if scriptManager.modelLoadState == .isLoading || checkpointsManager.apiHasLoadedInitialCheckpointModel == false {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
             .scaleEffect(0.5)
@@ -143,7 +145,12 @@ struct CheckpointMenu: View {
           currentPrompt.selectedModel = nil
         }
       }
-      
+      .onChange(of: currentPrompt.selectedModel) {
+        if checkpointsManager.apiHasLoadedInitialCheckpointModel,
+            let modelToSelect = currentPrompt.selectedModel {
+          selectMenuItem(withCheckpoint: modelToSelect)
+        }
+      }
       .onChange(of: checkpointsManager.loadedCheckpointModel) {
         if let loadedModelCheckpoint = checkpointsManager.loadedCheckpointModel {
           Debug.log("[matchCheckpointState] checkpointsManager.loadedCheckpointModel: \(loadedModelCheckpoint.name)")

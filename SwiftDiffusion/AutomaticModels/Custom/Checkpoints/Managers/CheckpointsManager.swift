@@ -199,18 +199,18 @@ extension CheckpointsManager {
       if let model = checkpointModel {
         Debug.log("[CheckpointsManager] Found loaded checkpoint model: \(model.name)")
         loadedCheckpointModel = model
-        scriptManager.updateModelLoadState(to: .done)
+        //scriptManager.updateModelLoadState(to: .done)
         
       } else {
         Debug.log("[CheckpointsManager] No loaded checkpoint model found")
-        scriptManager.updateModelLoadState(to: .failed)
+        //scriptManager.updateModelLoadState(to: .failed)
         
       }
     case .failure(let error):
       errorMessage = "[CheckpointsManager] Failed to find loaded checkpoint model: \(error.localizedDescription)"
       showError = true
       Debug.log(error.localizedDescription)
-      scriptManager.updateModelLoadState(to: .failed)
+      //scriptManager.updateModelLoadState(to: .failed)
     }
     apiHasLoadedInitialCheckpointModel = true
   }
