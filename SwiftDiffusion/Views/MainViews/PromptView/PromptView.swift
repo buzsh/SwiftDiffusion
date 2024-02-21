@@ -57,7 +57,7 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            //CheckpointModelMenu(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+            CheckpointMenu(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
             
             SamplingMethodMenu(currentPrompt: currentPrompt)
           }
