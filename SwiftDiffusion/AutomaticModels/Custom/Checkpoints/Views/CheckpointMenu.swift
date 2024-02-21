@@ -139,6 +139,23 @@ struct CheckpointMenu: View {
         }
       }
       .disabled(scriptManager.modelLoadState.disableCheckpointMenu)
+      .onAppear {
+        if let sidebarItem = sidebarViewModel.selectedSidebarItem,
+           sidebarItem.title == "New Prompt" {
+          currentPrompt.selectedModel = nil
+        }
+      }
+      
+      .onChange(of: sidebarViewModel.selectedSidebarItem) {
+        Debug.log("sidebarViewModel.selectedSidebarItem.isWorkspaceItem: \(String(describing: sidebarViewModel.selectedSidebarItem?.isWorkspaceItem))")
+        
+        if let model = currentPrompt.selectedModel {
+          selectMenuItem(withCheckpoint: model)
+        }
+      }
+      
+      
+      
       .onChange(of: checkpointsManager.hasLoadedInitialCheckpointDataFromApi) {
         consoleLog(" > .onChange(of: hasLoadedInitialCheckpointDataFromApi), with new value: \(checkpointsManager.hasLoadedInitialCheckpointDataFromApi)")
         if checkpointsManager.hasLoadedInitialCheckpointDataFromApi {
