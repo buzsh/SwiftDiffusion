@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PasteGenerationDataStatusBar: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @ObservedObject var userSettings = UserSettings.shared
   

@@ -20,7 +20,7 @@ struct PromptView: View {
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isRightPaneVisible: Bool = false
@@ -45,7 +45,7 @@ struct PromptView: View {
   private var leftPane: some View {
     VStack(spacing: 0) {
       
-      DebugPromptStatusView(scriptManager: scriptManager)
+      DebugPromptStatusView()
       
       PromptTopStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,
@@ -57,9 +57,8 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            CheckpointMenu(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
-            
-            SamplingMethodMenu(currentPrompt: currentPrompt)
+            CheckpointMenu()
+            SamplingMethodMenu()
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
           .frame(minHeight: 90)

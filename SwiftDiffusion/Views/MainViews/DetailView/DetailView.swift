@@ -19,7 +19,7 @@ struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
   @Binding var lastSelectedImagePath: String
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @StateObject private var imageWindowManager = ImageWindowManager()
   @State private var showingFullscreenImage = false

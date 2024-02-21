@@ -60,6 +60,7 @@ struct SeedControlButtonLayout: View {
       Image(systemName: "repeat")
     }
     .buttonStyle(BorderlessButtonStyle())
+    .disabled(true)
   }
 }
 

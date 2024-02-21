@@ -18,12 +18,14 @@ class CheckpointsManager: ObservableObject {
   @Published var loadedCheckpointModel: CheckpointModel? = nil
   @Published var hasLoadedInitialCheckpointDataFromApi: Bool = false
   
+  @Published var apiHasLoadedInitialCheckpointModel: Bool = false
+  
   @Published var errorMessage: String?
   @Published var showError: Bool = false
   
-  private(set) var apiManager: APIManager?
+  private(set) var apiManager: CheckpointsApiManager?
   func configureApiManager(with baseURL: String) {
-    self.apiManager = APIManager(baseURL: baseURL)
+    self.apiManager = CheckpointsApiManager(baseURL: baseURL)
     Debug.log("[CheckpointsManager] configureApiManager with baseURL: \(baseURL)")
   }
   
@@ -94,7 +96,7 @@ extension CheckpointsManager {
 
 
 extension CheckpointsManager {
-  func refreshAndAssignApiCheckpoints(apiManager: APIManager) async -> Result<String, Error> {
+  func refreshAndAssignApiCheckpoints(apiManager: CheckpointsApiManager) async -> Result<String, Error> {
     Debug.log("[CheckpointsManager] refreshAndAssignApiCheckpoints")
     do {
       try await apiManager.refreshCheckpointsAsync()
@@ -185,25 +187,32 @@ extension CheckpointsManager {
   }
   
   func getLoadedCheckpointModelFromApi() async {
+    if hasLoadedInitialCheckpointDataFromApi == false {
+      scriptManager.updateModelLoadState(to: .failed)
+      return
+    }
+    
+    scriptManager.updateModelLoadState(to: .isLoading)
     let result = await findLoadedCheckpointModel()
     switch result {
     case .success(let checkpointModel):
       if let model = checkpointModel {
         Debug.log("[CheckpointsManager] Found loaded checkpoint model: \(model.name)")
         loadedCheckpointModel = model
-        scriptManager.updateModelLoadState(to: .done)
+        //scriptManager.updateModelLoadState(to: .done)
         
       } else {
         Debug.log("[CheckpointsManager] No loaded checkpoint model found")
-        scriptManager.updateModelLoadState(to: .failed)
+        //scriptManager.updateModelLoadState(to: .failed)
         
       }
     case .failure(let error):
       errorMessage = "[CheckpointsManager] Failed to find loaded checkpoint model: \(error.localizedDescription)"
       showError = true
       Debug.log(error.localizedDescription)
-      scriptManager.updateModelLoadState(to: .failed)
+      //scriptManager.updateModelLoadState(to: .failed)
     }
+    apiHasLoadedInitialCheckpointModel = true
   }
   
 }

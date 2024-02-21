@@ -38,7 +38,7 @@ struct ContentView: View {
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
@@ -59,7 +59,7 @@ struct ContentView: View {
   
   @State var imageCountToGenerate: Int = 0
   
-  @State private var columnVisibility = NavigationSplitViewVisibility.all//.doubleColumn
+  @State private var columnVisibility = NavigationSplitViewVisibility.all // .doubleColumn (hide by default)
   
   
   var body: some View {
@@ -70,9 +70,9 @@ struct ContentView: View {
     } content: {
       switch selectedView {
       case .prompt:
-        PromptView(scriptManager: scriptManager)
+        PromptView()
       case .console:
-        ConsoleView(scriptManager: scriptManager)
+        ConsoleView()
       case .models:
         CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
       case .settings:
@@ -80,7 +80,7 @@ struct ContentView: View {
       }
       
     } detail: {
-      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: scriptManager)
+      DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
     }
     .onChange(of: columnVisibility) {
       Debug.log("columnVisibility: \(columnVisibility)")
@@ -96,7 +96,6 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-        //await checkpointsManager.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -135,15 +134,10 @@ struct ContentView: View {
           if userSettings.showDeveloperInterface {
             Picker("Options", selection: $selectedView) {
               Text("Prompt").tag(ViewManager.prompt)
-              if userSettings.showDeveloperInterface {
-                Text("Console").tag(ViewManager.console)
-              }
-              Text("Models").tag(ViewManager.models)
+              Text("Console").tag(ViewManager.console)
             }
             .pickerStyle(SegmentedPickerStyle())
           }
-          
-          //Divider().padding(.leading, 6).padding(.trailing, 3)
           
           if userSettings.showPythonEnvironmentControls {
             Button(action: {
@@ -220,10 +214,20 @@ struct ContentView: View {
           ContentProgressBar(scriptManager: scriptManager)
         }
         
-        Button(action: {
-          WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
-        }) {
-          Image(systemName: "command")
+        /*
+        if scriptManager.scriptState.isActive && checkpointsManager.apiHasLoadedInitialCheckpointModel != true {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(0.5)
+        }
+         */
+        
+        if userSettings.showDeveloperInterface {
+          Button(action: {
+            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+          }) {
+            Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
+          }
         }
         
         Button(action: {

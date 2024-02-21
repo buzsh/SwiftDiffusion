@@ -45,7 +45,7 @@ class WindowManager: NSObject, ObservableObject {
   
   /// Shows the settings window containing SettingsView. If the window does not exist, it creates and configures a new window before displaying it.
   /// - Parameter withPreferenceStyle: A Boolean value indicating whether the window should use a preferences style toolbar.
-  func showSettingsWindow(withPreferenceStyle: Bool = false) {
+  func showSettingsWindow(withPreferenceStyle: Bool = false, withTab tab: SettingsTab? = nil) {
     if settingsWindow == nil {
       settingsWindow = NSWindow(
         contentRect: NSRect(x: 40, y: 40, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
@@ -53,7 +53,7 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
-      settingsWindow?.contentView = NSHostingView(rootView: SettingsView())
+      settingsWindow?.contentView = NSHostingView(rootView: SettingsView(openWithTab: tab))
       
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
@@ -80,6 +80,9 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
+      
+      //let rootView = CheckpointManagerView()
+      
       checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager))
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
@@ -97,7 +100,18 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
-      checkpointManagerWindow?.contentView = NSHostingView(rootView: DebugApiView(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, loraModelsManager: loraModelsManager))
+      
+      let rootView = DebugApiView()
+                  .environmentObject(scriptManager)
+                  .environmentObject(checkpointsManager)
+                  .environmentObject(currentPrompt)
+                  .environmentObject(sidebarViewModel)
+                  .environmentObject(loraModelsManager)
+              
+     checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
+      
+      
+      
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self

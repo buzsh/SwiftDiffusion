@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ConsoleView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var outputImage: Image?
   
@@ -22,14 +22,6 @@ struct ConsoleView: View {
       }
       .padding(.horizontal, Constants.Layout.verticalPadding)
       .padding(.top, 10)
-      // API test output
-      /*
-      if let outputImage = outputImage {
-        outputImage
-          .resizable()
-          .scaledToFit()
-      }
-       */
       
       TextEditor(text: $scriptManager.consoleOutput)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
@@ -49,27 +41,6 @@ struct ConsoleView: View {
           .onAppear {
             Debug.log("Current script state: \(scriptManager.scriptStateText)")
           }
-        
-        /*
-        if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
-          Button(action: {
-            NSWorkspace.shared.open(url)
-          }) {
-            Image(systemName: "network")
-          }
-          .buttonStyle(.plain)
-          .padding(.leading, 2)
-        }
-         */
-        /*
-        if let url = scriptManager.serviceUrl {
-          Button("Send API") {
-            Task {
-              await sendAPIRequest(api: url)
-            }
-          }
-        }
-         */
         
         Spacer()
         
