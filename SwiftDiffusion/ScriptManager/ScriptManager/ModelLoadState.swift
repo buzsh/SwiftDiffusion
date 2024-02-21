@@ -80,7 +80,7 @@ extension ScriptManager {
     Debug.log(">> \(output)")
     // ie. >> Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
     if output.contains("Update successful for model") {
-      //updateModelLoadStateAndTime(to: .done)
+      //updateModelLoadState(to: .done)
     }
     //Debug.log(output)
     // Check for model loading time
@@ -91,7 +91,7 @@ extension ScriptManager {
          let timeRange = Range(match.range(at: 1), in: output) {
         let timeString = String(output[timeRange])
         if let time = Double(timeString) {
-          //updateModelLoadStateAndTime(to: .done, time: time)
+          //updateModelLoadState(to: .done)
           updateModelLoadTime(with: time)
         }
       }
@@ -104,13 +104,30 @@ extension ScriptManager {
     ]
     
     if failureMessages.contains(where: output.contains) {
-      //updateModelLoadStateAndTime(to: .failed, time: 0)
+      //updateModelLoadState(to: .failed)
     }
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
     let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
     if let _ = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
-      //updateModelLoadStateAndTime(to: .done)
+      //updateModelLoadState(to: .done)
+    }
+    
+    // ie. Weights loaded in 3.5s (send model to cpu: 1.1s, load weights from disk: 0.5s, apply weights to model: 0.7s, move model to device: 1.2s).
+    let newPattern = #"Weights loaded in ([\d\.]+)s"#
+    do {
+      let regex = try NSRegularExpression(pattern: newPattern, options: [])
+      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
+      
+      if let match = regex.firstMatch(in: output, options: [], range: nsRange),
+         let timeRange = Range(match.range(at: 1), in: output) {
+        let timeString = String(output[timeRange])
+        if let time = Double(timeString) {
+          updateModelLoadTime(with: time)
+        }
+      }
+    } catch {
+      Debug.log("Regex error: \(error.localizedDescription)")
     }
   }
   
