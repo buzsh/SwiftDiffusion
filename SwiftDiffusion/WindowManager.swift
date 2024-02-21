@@ -97,7 +97,18 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
-      checkpointManagerWindow?.contentView = NSHostingView(rootView: DebugApiView(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, loraModelsManager: loraModelsManager))
+      
+      let rootView = DebugApiView(scriptManager: scriptManager)
+                  //.environmentObject(scriptManager)
+                  .environmentObject(checkpointsManager)
+                  .environmentObject(currentPrompt)
+                  .environmentObject(sidebarViewModel)
+                  .environmentObject(loraModelsManager)
+              
+     checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
+      
+      
+      
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self
