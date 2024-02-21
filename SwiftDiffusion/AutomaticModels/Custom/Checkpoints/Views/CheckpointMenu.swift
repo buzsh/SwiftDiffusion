@@ -235,7 +235,7 @@ struct CheckpointMenu: View {
         var message: String = ""
        // message.append("Automatic returned the following error: TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.")
         //if let model = currentPrompt.selectedModel { message.append("\(model.name)\n\n") }
-        message.append("Don't panic! This is a common issue that is easy to fix.\n\nGo to the Engine Settings and toggle the 'Disable model loading RAM optimizations' option to ON.\n\nAfter that's done, restart the app and you should be good to go!")
+        message.append("Don't panic! This is a common issue that is easy to fix.\n\nOpen the Engine Settings and toggle the 'Disable model loading RAM optimizations' option to ON.")
         
         return Alert(
           title: Text("Easily fixable TypeError thrown"),
