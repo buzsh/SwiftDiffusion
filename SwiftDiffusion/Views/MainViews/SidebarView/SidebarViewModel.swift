@@ -107,6 +107,7 @@ extension SidebarViewModel {
   func createNewPromptSidebarWorkspaceItem(in model: ModelContext) -> SidebarItem? {
     let mapModelData = MapModelData()
     let newPrompt = PromptModel()
+    newPrompt.isWorkspaceItem = true
     guard let storedPromptModel = mapModelData.toStored(promptModel: newPrompt) else { return nil }
     let imageUrls: [URL] = []
     let newSidebarItem = createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: model)

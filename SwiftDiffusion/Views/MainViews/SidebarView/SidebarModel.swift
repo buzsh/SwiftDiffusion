@@ -51,6 +51,7 @@ class SidebarItem: Identifiable {
 
 @Model
 class StoredPromptModel {
+  @Attribute var isWorkspaceItem: Bool
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
@@ -64,7 +65,8 @@ class StoredPromptModel {
   @Attribute var clipSkip: Double = 1
   @Relationship var selectedModel: StoredCheckpointModel?
 
-  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil) {
+  init(isWorkspaceItem: Bool, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil) {
+    self.isWorkspaceItem = isWorkspaceItem
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt

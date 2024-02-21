@@ -117,6 +117,7 @@ struct MapModelData {
     var selectedModel: StoredCheckpointModel?
     selectedModel = mapCheckpointModelToStoredCheckpointModel(promptModel.selectedModel)
     return StoredPromptModel(
+                          isWorkspaceItem: promptModel.isWorkspaceItem,
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
@@ -134,6 +135,7 @@ struct MapModelData {
   @MainActor
   func mapStoredPromptModelToPromptModel(_ storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
+    promptModel.isWorkspaceItem = storedPromptModel.isWorkspaceItem
     promptModel.samplingMethod = storedPromptModel.samplingMethod
     promptModel.positivePrompt = storedPromptModel.positivePrompt
     promptModel.negativePrompt = storedPromptModel.negativePrompt

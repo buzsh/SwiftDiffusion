@@ -96,6 +96,7 @@ struct SidebarView: View {
     guard let itemToSave = sidebarViewModel.itemToSave else { return }
     let mapModel = MapModelData()
     itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
+    itemToSave.prompt?.isWorkspaceItem = false
     itemToSave.timestamp = Date()
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
