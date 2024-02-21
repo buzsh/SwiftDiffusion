@@ -23,6 +23,7 @@ struct CheckpointMenu: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
   @State var hasLoadedInitialCheckpoint: Bool = false
   
@@ -39,15 +40,21 @@ struct CheckpointMenu: View {
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
     
     if model == previouslySelectedCheckpointModel {
-      consoleLog("> selectedMenuItem withCheckpoint: \(model.name) is same as previouslySelectedModel: \(String(describing: previouslySelectedCheckpointModel?.name))")
-      consoleLog("  selectedMenuItem cancelling")
+      consoleLog("> [selectMenuItem] withCheckpoint: \(model.name) is same as previouslySelectedModel: \(String(describing: previouslySelectedCheckpointModel?.name))")
+      consoleLog("  [selectMenuItem] cancelling")
       scriptManager.updateModelLoadState(to: .idle)
+      return
+    }
+    
+    // if the selected sidebar item is not a workspace item, change the menu title but not the loaded checkpoint
+    if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+       selectedSidebarItem.isWorkspaceItem == false {
       return
     }
     
     consoleLog("""
     
-    > selectedMenuItem withCheckpoint: model
+    > [selectMenuItem] withCheckpoint: model
     
                          model.name: \(model.name)")
     model.checkpointApiModel?.title: \(model.checkpointApiModel?.title ?? "nil")
@@ -57,27 +64,23 @@ struct CheckpointMenu: View {
     scriptManager.updateModelLoadState(to: .isLoading)
     
     Task {
-      // MARK: POST
+      // MARK: POST Load Checkpoint
       let result = await checkpointsManager.postCheckpoint(checkpoint: model)
       switch result {
       case .success():
-        // Handle success, such as updating UI or state
-        consoleLog("Checkpoint was successfully posted.")
+        consoleLog("[selectMenuItem] Checkpoint was successfully posted.")
       case .failure(let error):
-        // Handle failure, such as updating UI with an error message
-        consoleLog("Failed to post checkpoint: \(error.localizedDescription)")
+        consoleLog("[selectMenuItem] Failed to post checkpoint: \(error.localizedDescription)")
       }
       
-      // MARK: GET
-      //await checkpointsManager.handleLoadedCheckpointModel()
+      // MARK: GET Loaded Checkpoint
       let getResult = await checkpointsManager.findLoadedCheckpointModel()
       switch getResult {
       case .success(let checkpointModel):
         if let model = checkpointModel {
-          // Successfully found a model, handle it accordingly
           consoleLog("""
           
-          Found loaded checkpoint model: \(model.name)
+          [selectMenuItem] Found loaded checkpoint model: \(model.name)
           
           """)
           
@@ -85,15 +88,13 @@ struct CheckpointMenu: View {
           scriptManager.updateModelLoadState(to: .done)
           
         } else {
-          // No matching model found
-          consoleLog("No loaded checkpoint model found")
+          consoleLog("[selectMenuItem] No loaded checkpoint model found")
           checkpointsManager.loadedCheckpointModel = nil
           scriptManager.updateModelLoadState(to: .failed)
-          
         }
+        
       case .failure(let error):
-        // Handle error
-        consoleLog(error.localizedDescription)
+        consoleLog("[selectMenuItem] Error: \(error.localizedDescription)")
         checkpointsManager.loadedCheckpointModel = nil
         scriptManager.updateModelLoadState(to: .failed)
       }
@@ -112,7 +113,6 @@ struct CheckpointMenu: View {
           Section(header: Text("􀢇 CoreML")) {
             ForEach(checkpointsManager.models.filter { $0.type == .coreMl }) { model in
               Button(model.name) {
-                //selectMenuItem(withCheckpoint: model, ofType: .coreMl)
                 currentPrompt.selectedModel = model
               }
             }
@@ -120,7 +120,6 @@ struct CheckpointMenu: View {
           Section(header: Text("􁻴 Python")) {
             ForEach(checkpointsManager.models.filter { $0.type == .python }) { model in
               Button(model.name) {
-                //selectMenuItem(withCheckpoint: model)
                 currentPrompt.selectedModel = model
               }
               .disabled(checkpointsManager.hasLoadedInitialCheckpointDataFromApi == false)
@@ -153,9 +152,7 @@ struct CheckpointMenu: View {
       .onChange(of: currentPrompt.selectedModel) {
         if hasLoadedInitialCheckpoint, let modelToSelect = currentPrompt.selectedModel {
           selectMenuItem(withCheckpoint: modelToSelect)
-          //selectMenuItem(withCheckpoint: currentPrompt.selectedModel, ofType: .python)
         }
-        Debug.log(".onChange(of: currentPrompt.selectedModel)")
       }
       .onChange(of: checkpointsManager.loadedCheckpointModel) {
         consoleLog("onChange of: checkpointsManager.loadedCheckpointModel")
