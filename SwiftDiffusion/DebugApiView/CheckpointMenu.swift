@@ -28,7 +28,7 @@ struct CheckpointMenu: View {
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
   
   func consoleLog(_ output: String) {
-    consoleLog += "\(output)\n"
+    scriptManager.apiConsoleOutput += "\(output)\n"
     Debug.log(output)
   }
   

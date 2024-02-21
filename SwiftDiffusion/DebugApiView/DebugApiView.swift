@@ -37,12 +37,19 @@ struct DebugApiView: View {
     return "nil"
   }
   
+  func consoleLog(_ output: String) {
+    scriptManager.apiConsoleOutput += "\(output)\n"
+    Debug.log(output)
+  }
+  
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       
     } content: {
       VStack(alignment: .leading, spacing: 0) {
+        
         DebugPromptStatusView(scriptManager: scriptManager)
+        
         TextEditor(text: $scriptManager.consoleOutput)
           .font(.system(size: 10, weight: .regular, design: .monospaced))
           .background(Color.black)
@@ -56,33 +63,33 @@ struct DebugApiView: View {
           CheckpointMenu(consoleLog: $consoleLog, scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
           
           Button("local titles") {
-            consoleLog += "\n\nlocal title\n"
+            consoleLog("local title")
             for model in checkpointsManager.models {
-              consoleLog += " - \(model.name)\n"
+              consoleLog(" - \(model.name)")
             }
           }
           
           Button("local paths") {
-            consoleLog += "\n\nlocal path\n"
+            consoleLog("local path")
             for model in checkpointsManager.models {
-              consoleLog += " - \(model.path)\n"
+              consoleLog += " - \(model.path)"
             }
           }
           
           Button("api title") {
-            consoleLog += "\n\napi title\n"
+            consoleLog("api title")
             for model in checkpointsManager.models {
               if let title = model.checkpointApiModel?.title {
-                consoleLog += " - \(title)\n"
+                consoleLog(" - \(title)")
               }
             }
           }
           
           Button("api filename") {
-            consoleLog += "\n\napi filename\n"
+            consoleLog("api filename")
             for model in checkpointsManager.models {
               if let apiFilename = model.checkpointApiModel?.filename {
-                consoleLog += " - \(apiFilename)\n"
+                consoleLog(" - \(apiFilename)")
               }
             }
           }
