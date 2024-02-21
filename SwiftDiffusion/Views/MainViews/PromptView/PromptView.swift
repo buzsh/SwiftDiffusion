@@ -57,9 +57,9 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            CheckpointMenu(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
+            CheckpointMenu(scriptManager: scriptManager)
             
-            SamplingMethodMenu(currentPrompt: currentPrompt)
+            SamplingMethodMenu()
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
           .frame(minHeight: 90)

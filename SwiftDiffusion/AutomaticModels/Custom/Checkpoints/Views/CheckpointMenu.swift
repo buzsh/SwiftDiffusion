@@ -20,9 +20,12 @@ extension ModelLoadState {
 }
 
 struct CheckpointMenu: View {
+  //@ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var scriptManager: ScriptManager
-  var checkpointsManager: CheckpointsManager
-  var currentPrompt: PromptModel
+  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
+  
+  @State var hasLoadedInitialCheckpoint: Bool = false
   
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
   
@@ -31,7 +34,9 @@ struct CheckpointMenu: View {
     Debug.log(output)
   }
   
+  @MainActor
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
+    
     consoleLog("""
     
     > selectedMenuItem withCheckpoint: model
@@ -41,8 +46,7 @@ struct CheckpointMenu: View {
     
     """)
     
-    scriptManager.updateModelLoadState(to: .isLoading)
-    currentPrompt.selectedModel = model
+    //currentPrompt.selectedModel = model
     
     Task {
       // MARK: POST
@@ -98,14 +102,16 @@ struct CheckpointMenu: View {
           Section(header: Text("􀢇 CoreML")) {
             ForEach(checkpointsManager.models.filter { $0.type == .coreMl }) { model in
               Button(model.name) {
-                selectMenuItem(withCheckpoint: model, ofType: .coreMl)
+                //selectMenuItem(withCheckpoint: model, ofType: .coreMl)
+                currentPrompt.selectedModel = model
               }
             }
           }
           Section(header: Text("􁻴 Python")) {
             ForEach(checkpointsManager.models.filter { $0.type == .python }) { model in
               Button(model.name) {
-                selectMenuItem(withCheckpoint: model)
+                //selectMenuItem(withCheckpoint: model)
+                currentPrompt.selectedModel = model
               }
               .disabled(checkpointsManager.hasLoadedInitialCheckpointDataFromApi == false)
             }
@@ -130,16 +136,17 @@ struct CheckpointMenu: View {
           for model in checkpointsManager.models {
             consoleLog("     \(model.checkpointApiModel?.title ?? "nil")")
           }
+          hasLoadedInitialCheckpoint = true
         }
       }
       
-      .onChange(of: scriptManager.modelLoadState) {
-        consoleLog("""
-        
-                        scriptManager.modelLoadState: \(scriptManager.modelLoadState)
-                modelLoadState.disableCheckpointMenu: \(scriptManager.modelLoadState.disableCheckpointMenu)
-        
-        """)
+      .onChange(of: currentPrompt.selectedModel) {
+        if hasLoadedInitialCheckpoint, let modelToSelect = currentPrompt.selectedModel {
+          scriptManager.updateModelLoadState(to: .isLoading)
+          selectMenuItem(withCheckpoint: modelToSelect)
+          //selectMenuItem(withCheckpoint: currentPrompt.selectedModel, ofType: .python)
+        }
+        Debug.log(".onChange(of: currentPrompt.selectedModel)")
       }
       .onChange(of: checkpointsManager.loadedCheckpointModel) {
         consoleLog("onChange of: checkpointsManager.loadedCheckpointModel")
@@ -147,6 +154,16 @@ struct CheckpointMenu: View {
           currentPrompt.selectedModel = checkpointsManager.loadedCheckpointModel
         }
       }
+      
+      .onChange(of: scriptManager.modelLoadState) {
+        consoleLog("""
+        
+                        scriptManager.modelLoadState: \(scriptManager.modelLoadState)
+                 scriptManager.disableCheckpointMenu: \(scriptManager.modelLoadState.disableCheckpointMenu)
+        
+        """)
+      }
+      
       // MARK: Handle Recently Removed
       .onChange(of: checkpointsManager.recentlyRemovedCheckpointModels) {
         handleRecentlyRemovedCheckpointIfSelectedMenuItem()

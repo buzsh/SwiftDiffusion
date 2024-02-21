@@ -13,7 +13,7 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
   
-  @StateObject var scriptManager = ScriptManager.shared
+  var scriptManager = ScriptManager.shared
   
   let sidebarViewModel = SidebarViewModel()
   let checkpointsManager = CheckpointsManager()
@@ -28,7 +28,7 @@ struct SwiftDiffusionApp: App {
     let storeURL = appSupportURL
       .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
       .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent("UserDb.store") // Constants.FileStructure.AppSwiftDataFileName
+      .appendingPathComponent("test4-UserDb.store") // Constants.FileStructure.AppSwiftDataFileName
     
     let subfolderURL = storeURL.deletingLastPathComponent()
     if !fileManager.fileExists(atPath: subfolderURL.path) {
@@ -50,6 +50,7 @@ struct SwiftDiffusionApp: App {
       ContentView(scriptManager: scriptManager)
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+        //.environmentObject(scriptManager)
         .environmentObject(sidebarViewModel)
         .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)
