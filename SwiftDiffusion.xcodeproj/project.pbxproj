@@ -347,6 +347,7 @@
 		292CE8122B81AE6F00116D60 /* PromptMenus */ = {
 			isa = PBXGroup;
 			children = (
+				29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */,
 				292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */,
 			);
 			path = PromptMenus;
@@ -503,7 +504,6 @@
 		2952F5062B863B3200CB8679 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				29620FDE2B8275CE008EA5EB /* CheckpointMenu.swift */,
 				29620FDC2B826BDD008EA5EB /* DebugApiView.swift */,
 			);
 			path = Views;

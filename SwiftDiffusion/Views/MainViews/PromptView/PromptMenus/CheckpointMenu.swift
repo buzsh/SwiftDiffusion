@@ -48,7 +48,7 @@ struct CheckpointMenu: View {
     }
      */
     
-    // if the selected sidebar item is not a workspace item, change the menu title but not the loaded checkpoint
+    // if the selected sidebar item is not a workspace item, change the menu title without requesting a new model load from the API
     if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
        selectedSidebarItem.isWorkspaceItem == false {
       return
@@ -233,7 +233,6 @@ struct CheckpointMenu: View {
       }
       .alert(isPresented: $showModelLoadTypeErrorThrownAlert) {
         var message: String = ""
-       // message.append("Automatic returned the following error: TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.")
         //if let model = currentPrompt.selectedModel { message.append("\(model.name)\n\n") }
         message.append("Don't panic! This is a common issue. For whatever reason, this model has issues loading with RAM optimizations.\n\nOpen the Engine Settings and toggle the 'Disable model loading RAM optimizations' option to ON.")
         
