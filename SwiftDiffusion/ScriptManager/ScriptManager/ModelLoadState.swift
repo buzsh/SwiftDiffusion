@@ -45,7 +45,9 @@ extension ScriptManager {
   func updateModelLoadState(to state: ModelLoadState) {
     Debug.log("[ModelLoadState] updateModelLoadState to: \(state)")
     
-    modelLoadState = state
+    if modelLoadState != state {
+      modelLoadState = state
+    }
     
     if state == .done || state == .failed {
       Delay.by(3) {
@@ -61,6 +63,10 @@ extension ScriptManager {
   
   @MainActor
   private func updateModelLoadTime(with time: Double = 0) {
+    if modelLoadTime == time {
+      return
+    }
+    
     modelLoadTime = time
     
     if time > 0 {
