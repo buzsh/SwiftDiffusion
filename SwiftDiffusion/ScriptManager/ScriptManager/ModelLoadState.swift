@@ -43,14 +43,30 @@ extension ScriptManager {
   
   @MainActor
   func updateModelLoadState(to state: ModelLoadState) {
-    Debug.log("[ScriptManager] updateModelLoadState to: \(state)")
-    updateModelLoadStateAndTime(to: state)
+    Debug.log("[ModelLoadState] updateModelLoadState to: \(state)")
+    
+    modelLoadState = state
     
     if state == .done || state == .failed {
       Delay.by(3) {
+        self.updateModelLoadTime(with: 0)
         self.modelLoadState = .idle
-        self.modelLoadTime = 0
       }
+    }
+    
+    if state == .idle {
+      self.updateModelLoadTime(with: 0)
+    }
+  }
+  
+  @MainActor
+  private func updateModelLoadTime(with time: Double = 0) {
+    modelLoadTime = time
+    
+    if time > 0 {
+      Debug.log("[ModelLoadState] updateModelLoadTime - Parsed model load time: \(time)")
+    } else {
+      Debug.log("[ModelLoadState] updateModelLoadTime - Resetting model load time to 0")
     }
   }
   
@@ -92,11 +108,7 @@ extension ScriptManager {
     }
   }
   
-  @MainActor
-  private func updateModelLoadTime(with time: Double = 0) {
-    modelLoadTime = time
-    Debug.log("Parsed model load time: \(time)")
-  }
+  
   
   /// - important: DEPRECATED
   @MainActor private func updateModelLoadStateAndTime(to state: ModelLoadState, time: Double = 0) {
