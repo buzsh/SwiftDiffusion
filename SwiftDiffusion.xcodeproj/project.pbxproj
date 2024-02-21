@@ -32,7 +32,6 @@
 		292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80B2B8193E400116D60 /* ImageSaver.swift */; };
 		292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */; };
 		292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE80F2B81958700116D60 /* Txt2ImgService.swift */; };
-		292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */; };
 		292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */; };
 		292CE8282B82430000116D60 /* SoundUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292CE8272B82430000116D60 /* SoundUtility.swift */; };
 		293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293336452B72A3E0007237AA /* NSImageExtensions.swift */; };
@@ -139,7 +138,6 @@
 		292CE80B2B8193E400116D60 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		292CE80D2B81943300116D60 /* ImageSaver+Composite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageSaver+Composite.swift"; sourceTree = "<group>"; };
 		292CE80F2B81958700116D60 /* Txt2ImgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Txt2ImgService.swift; sourceTree = "<group>"; };
-		292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModelMenu.swift; sourceTree = "<group>"; };
 		292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplingMethodMenu.swift; sourceTree = "<group>"; };
 		292CE8272B82430000116D60 /* SoundUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundUtility.swift; sourceTree = "<group>"; };
 		293336452B72A3E0007237AA /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
@@ -347,7 +345,6 @@
 		292CE8122B81AE6F00116D60 /* PromptMenus */ = {
 			isa = PBXGroup;
 			children = (
-				292CE8132B81AE9500116D60 /* CheckpointModelMenu.swift */,
 				292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */,
 			);
 			path = PromptMenus;
@@ -930,7 +927,6 @@
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				29C0F3882B7ABF430017DD6B /* DeveloperSection.swift in Sources */,
 				29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */,
-				292CE8142B81AE9500116D60 /* CheckpointModelMenu.swift in Sources */,
 				29145E732B77D99400BFA64B /* PromptTopStatusBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
