@@ -20,14 +20,15 @@ extension ModelLoadState {
 }
 
 struct CheckpointMenu: View {
-  //@ObservedObject var scriptManager = ScriptManager.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @State var hasLoadedInitialCheckpoint: Bool = false
   
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
+  
+  @State var previouslySelectedCheckpointModel: CheckpointModel? = nil
   
   func consoleLog(_ output: String) {
     scriptManager.apiConsoleOutput += "\(output)\n"
@@ -36,6 +37,13 @@ struct CheckpointMenu: View {
   
   @MainActor
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
+    
+    if model == previouslySelectedCheckpointModel {
+      consoleLog("> selectedMenuItem withCheckpoint: \(model.name) is same as previouslySelectedModel: \(String(describing: previouslySelectedCheckpointModel?.name))")
+      consoleLog("  selectedMenuItem cancelling")
+      scriptManager.updateModelLoadState(to: .idle)
+      return
+    }
     
     consoleLog("""
     
@@ -46,7 +54,7 @@ struct CheckpointMenu: View {
     
     """)
     
-    //currentPrompt.selectedModel = model
+    scriptManager.updateModelLoadState(to: .isLoading)
     
     Task {
       // MARK: POST
@@ -90,6 +98,8 @@ struct CheckpointMenu: View {
         scriptManager.updateModelLoadState(to: .failed)
       }
     }
+    
+    previouslySelectedCheckpointModel = checkpointsManager.loadedCheckpointModel
     
   }
   
@@ -142,7 +152,6 @@ struct CheckpointMenu: View {
       
       .onChange(of: currentPrompt.selectedModel) {
         if hasLoadedInitialCheckpoint, let modelToSelect = currentPrompt.selectedModel {
-          scriptManager.updateModelLoadState(to: .isLoading)
           selectMenuItem(withCheckpoint: modelToSelect)
           //selectMenuItem(withCheckpoint: currentPrompt.selectedModel, ofType: .python)
         }

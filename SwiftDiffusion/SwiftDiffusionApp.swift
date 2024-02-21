@@ -50,7 +50,7 @@ struct SwiftDiffusionApp: App {
       ContentView(scriptManager: scriptManager)
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
-        //.environmentObject(scriptManager)
+        .environmentObject(scriptManager)
         .environmentObject(sidebarViewModel)
         .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)

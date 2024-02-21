@@ -38,7 +38,7 @@ struct ContentView: View {
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager: ScriptManager
+  @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   

@@ -58,7 +58,6 @@ struct PromptView: View {
         Form {
           HStack {
             CheckpointMenu(scriptManager: scriptManager)
-            
             SamplingMethodMenu()
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
