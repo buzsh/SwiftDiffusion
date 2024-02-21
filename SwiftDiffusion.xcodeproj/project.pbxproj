@@ -319,9 +319,9 @@
 		292CE8072B8176CA00116D60 /* Checkpoints */ = {
 			isa = PBXGroup;
 			children = (
-				2952F5062B863B3200CB8679 /* Views */,
 				2952F5022B86380200CB8679 /* Managers */,
 				2952F5032B8639B400CB8679 /* Models */,
+				2952F5062B863B3200CB8679 /* Views */,
 			);
 			path = Checkpoints;
 			sourceTree = "<group>";
@@ -510,6 +510,23 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		2952F5072B863EB400CB8679 /* Generic */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
+				29A1E0B72B80F44500B18AC1 /* Loras */,
+			);
+			path = Generic;
+			sourceTree = "<group>";
+		};
+		2952F5082B863EC400CB8679 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				292CE8072B8176CA00116D60 /* Checkpoints */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
 		29623E382B79886000EC719F /* RequiredInputPaths */ = {
 			isa = PBXGroup;
 			children = (
@@ -670,9 +687,8 @@
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
 			isa = PBXGroup;
 			children = (
-				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
-				292CE8072B8176CA00116D60 /* Checkpoints */,
-				29A1E0B72B80F44500B18AC1 /* Loras */,
+				2952F5082B863EC400CB8679 /* Custom */,
+				2952F5072B863EB400CB8679 /* Generic */,
 			);
 			path = AutomaticModels;
 			sourceTree = "<group>";

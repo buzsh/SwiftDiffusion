@@ -49,9 +49,9 @@ class ScriptManagerObserver {
   
   
   private func scriptStateDidChange(_ newState: ScriptState) {
-    Debug.log("scriptStateDidChange newState: \(newState)")
+    Debug.log("[ScriptManagerObserver] scriptStateDidChange newState: \(newState)")
     if newState.isActive {
-      Debug.log("newState.isActive")
+      Debug.log("[ScriptManagerObserver] newState.isActive")
       checkpointsManager.startObservingDirectory()
       loraModelsManager.startObservingDirectory()
       
