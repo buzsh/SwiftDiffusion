@@ -89,7 +89,7 @@ extension PromptView {
     request.httpMethod = "POST"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    guard let checkpointMetadata = checkpointModel.checkpointMetadata else {
+    guard let checkpointMetadata = checkpointModel.checkpointApiModel else {
       completion(.failure(.nilCheckpoint))
       return
     }

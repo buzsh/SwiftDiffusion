@@ -38,6 +38,8 @@ class ScriptManager: ObservableObject {
   
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
+  
+  @Published var apiConsoleOutput: String = ""
   /// Initializes a new instance of `ScriptManager`.
   init() {
     self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)

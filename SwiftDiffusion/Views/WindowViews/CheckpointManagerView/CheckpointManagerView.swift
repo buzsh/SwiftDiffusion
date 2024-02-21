@@ -10,7 +10,7 @@ import SwiftUI
 struct CheckpointManagerView: View {
   @ObservedObject var scriptManager: ScriptManager
   var currentPrompt: PromptModel
-  var checkpointModelsManager: CheckpointModelsManager
+  var checkpointsManager: CheckpointsManager
   
   @State private var selectedFilter: CheckpointModelType? = nil
   @State private var selectedCheckpointModel: CheckpointModel?
@@ -27,8 +27,8 @@ struct CheckpointManagerView: View {
   }
   
   var filteredItems: [CheckpointModel] {
-    guard let selectedFilter = selectedFilter else { return checkpointModelsManager.items }
-    return checkpointModelsManager.items.filter { $0.type == selectedFilter }
+    guard let selectedFilter = selectedFilter else { return checkpointsManager.models }
+    return checkpointsManager.models.filter { $0.type == selectedFilter }
   }
   
   var body: some View {
@@ -36,11 +36,6 @@ struct CheckpointManagerView: View {
       HStack {
         Button("Reveal in Finder") {
           openUserModelsFolder()
-        }
-        Button("Refresh") {
-          Task {
-            await checkpointModelsManager.loadModels()
-          }
         }
         
         Menu(filterTitle) {
@@ -78,10 +73,10 @@ struct CheckpointManagerView: View {
           .buttonStyle(BorderlessButtonStyle())
           
           // if item is not default or if item is not currently selected model
-          if !item.isDefaultModel && item != currentPrompt.selectedModel {
+          if item != currentPrompt.selectedModel {
             Button(action: {
               Task {
-                await checkpointModelsManager.moveToTrash(item: item)
+                //await checkpointsManager.moveToTrash(item: item)
               }
             }) {
               Image(systemName: "trash")
@@ -96,7 +91,7 @@ struct CheckpointManagerView: View {
       }
     }
     .sheet(item: $selectedCheckpointModel) { checkpointModel in
-      CheckpointPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
+      //CheckpointPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
     }
     .navigationTitle("Checkpoint Manager")
     .toolbar {

@@ -32,9 +32,9 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var userSettings = UserSettings.shared
@@ -74,7 +74,7 @@ struct ContentView: View {
       case .console:
         ConsoleView(scriptManager: scriptManager)
       case .models:
-        CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+        CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
       case .settings:
         SettingsView()
       }
@@ -88,7 +88,7 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointModelsManager: checkpointModelsManager, loraModelsManager: loraModelsManager)
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
@@ -96,7 +96,7 @@ struct ContentView: View {
       Task {
         await fileHierarchy.refresh()
         await loadLastSelectedImage()
-        await checkpointModelsManager.loadModels()
+        //await checkpointsManager.loadModels()
       }
       handleScriptOnLaunch()
     }
@@ -221,7 +221,13 @@ struct ContentView: View {
         }
         
         Button(action: {
-          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+          WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+        }) {
+          Image(systemName: "command")
+        }
+        
+        Button(action: {
+          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
         }) {
           Image(systemName: "arkit")
         }

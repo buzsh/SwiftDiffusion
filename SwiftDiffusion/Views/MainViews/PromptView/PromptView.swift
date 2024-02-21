@@ -17,7 +17,7 @@ struct PromptView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var checkpointModelsManager: CheckpointModelsManager
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @ObservedObject var scriptManager: ScriptManager
@@ -57,7 +57,8 @@ struct PromptView: View {
       ScrollView {
         Form {
           HStack {
-            CheckpointModelMenu(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager)
+            CheckpointMenu(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt)
+            
             SamplingMethodMenu(currentPrompt: currentPrompt)
           }
           .padding(.vertical, Constants.Layout.promptRowPadding)
@@ -96,28 +97,6 @@ struct PromptView: View {
         } // Form
         .disabled(disablePromptView)
       } // ScrollView
-      .onChange(of: checkpointModelsManager.recentlyDeletedCheckpointModels) {
-        if let selectedModel = currentPrompt.selectedModel {
-          if let deletedModel = checkpointModelsManager.recentlyDeletedCheckpointModels.first(where: { $0.url == selectedModel.url }) {
-            deletedCheckpointModel = deletedModel
-            currentPrompt.selectedModel = nil
-            showSelectedCheckpointModelWasDeletedAlert = true
-          }
-        }
-        checkpointModelsManager.recentlyDeletedCheckpointModels = []
-      }
-      .alert(isPresented: $showSelectedCheckpointModelWasDeletedAlert) {
-        var message: String = ""
-        if let modelName = deletedCheckpointModel?.name { message = modelName }
-        
-        return Alert(
-          title: Text("Warning: Model checkpoint was either moved or deleted"),
-          message: Text(message),
-          dismissButton: .cancel(Text("OK")) {
-            deletedCheckpointModel = nil
-          }
-        )
-      }
       
       
       PasteGenerationDataStatusBar(

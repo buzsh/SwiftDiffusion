@@ -8,6 +8,7 @@
 import Combine
 import SwiftUI
 
+/*
 class CheckpointModelsManager: ObservableObject {
   @ObservedObject var userSettings = UserSettings.shared
   
@@ -245,3 +246,4 @@ extension CheckpointModelsManager {
     }
   }
 }
+*/

@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+/*
 enum CheckpointModelType {
   case coreMl
   case python
@@ -43,3 +44,4 @@ extension CheckpointModel: Equatable {
     return lhs.id == rhs.id
   }
 }
+*/

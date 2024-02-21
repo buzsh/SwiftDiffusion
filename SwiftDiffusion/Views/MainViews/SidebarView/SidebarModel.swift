@@ -83,10 +83,8 @@ class StoredPromptModel {
 @Model
 class StoredCheckpointModel {
   @Attribute var name: String
+  @Attribute var path: String
   @Attribute var type: StoredCheckpointModelType
-  @Attribute var url: URL
-  @Attribute var isDefaultModel: Bool = false
-  
   @Attribute var jsonModelCheckpointTitle: String
   @Attribute var jsonModelCheckpointName: String
   @Attribute var jsonModelCheckpointHash: String?
@@ -94,11 +92,10 @@ class StoredCheckpointModel {
   @Attribute var jsonModelCheckpointFilename: String
   @Attribute var jsonModelCheckpointConfig: String?
   
-  init(name: String, type: StoredCheckpointModelType, url: URL, isDefaultModel: Bool = false, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
+  init(name: String, path: String, type: StoredCheckpointModelType, jsonModelCheckpointTitle: String, jsonModelCheckpointName: String, jsonModelCheckpointHash: String? = nil, jsonModelCheckpointSha256: String? = nil, jsonModelCheckpointFilename: String, jsonModelCheckpointConfig: String? = nil) {
     self.name = name
+    self.path = path
     self.type = type
-    self.url = url
-    self.isDefaultModel = isDefaultModel
     
     self.jsonModelCheckpointTitle = jsonModelCheckpointTitle
     self.jsonModelCheckpointName = jsonModelCheckpointName

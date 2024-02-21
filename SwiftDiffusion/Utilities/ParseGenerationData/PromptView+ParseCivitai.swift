@@ -166,15 +166,15 @@ extension PromptView {
       Debug.log("modelHash: \(modelHash)")
       
       var potentialHashMatch: String?
-      for model in checkpointModelsManager.items {
-        if let checkpointMetadataTitle = model.checkpointMetadata?.title {
+      for model in checkpointsManager.models {
+        if let checkpointMetadataTitle = model.checkpointApiModel?.title {
           if let startIndex = checkpointMetadataTitle.firstIndex(of: "["),
              let endIndex = checkpointMetadataTitle.firstIndex(of: "]") {
             let range = checkpointMetadataTitle.index(after: startIndex)..<endIndex
             let extractedHash = String(checkpointMetadataTitle[range])
             potentialHashMatch = extractedHash
           }
-        } else if let checkpointMetadataHash = model.checkpointMetadata?.hash {
+        } else if let checkpointMetadataHash = model.checkpointApiModel?.hash {
           potentialHashMatch = checkpointMetadataHash
         }
         
@@ -198,7 +198,7 @@ extension PromptView {
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
     parseLog("Parsed model substrings: \(parsedModelSubstrings)")
     
-    for model in checkpointModelsManager.items {
+    for model in checkpointsManager.models {
       let itemSubstrings = splitAndFilterModelName(model.name)
       parseLog("Model item substrings: \(itemSubstrings) for model: \(model.name)")
       if parsedModelSubstrings.contains(where: itemSubstrings.contains) {
@@ -208,7 +208,7 @@ extension PromptView {
     }
     
     parseLog("No matching model found for \(parsedModelSubstrings)")
-    let allTitles = checkpointModelsManager.items.compactMap { $0.checkpointMetadata?.title }.joined(separator: ", ")
+    let allTitles = checkpointsManager.models.compactMap { $0.checkpointApiModel?.title }.joined(separator: ", ")
     Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
     return nil
   }

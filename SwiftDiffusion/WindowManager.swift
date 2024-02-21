@@ -20,6 +20,8 @@ class WindowManager: NSObject, ObservableObject {
   /// Window instance for ModelsManagerView.
   private var checkpointManagerWindow: NSWindow?
   
+  private var debugApiView: NSWindow?
+  
   /// Initializes a new `WindowManager`. It is private to ensure `WindowManager` can only be accessed through its shared instance.
   override private init() { }
   
@@ -71,14 +73,31 @@ class WindowManager: NSObject, ObservableObject {
   
   /// Shows the models manager window containing CheckpointManagerView. If the window does not exist, it creates and configures a new window before displaying it.
   /// - Parameter scriptManager: The `ScriptManager` instance to be passed to the `CheckpointManagerView`.
-  func showCheckpointManagerWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, checkpointModelsManager: CheckpointModelsManager) {
+  func showCheckpointManagerWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, checkpointsManager: CheckpointsManager) {
     if checkpointManagerWindow == nil {
       checkpointManagerWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.Settings.defaultWidth, height: Constants.WindowSize.Settings.defaultHeight),
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
-      checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointModelsManager: checkpointModelsManager))
+      checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager))
+      
+      checkpointManagerWindow?.isReleasedWhenClosed = false
+      checkpointManagerWindow?.delegate = self
+      
+      checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
+    }
+    checkpointManagerWindow?.makeKeyAndOrderFront(nil)
+  }
+  
+  func showDebugApiWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, sidebarViewModel: SidebarViewModel, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
+    if checkpointManagerWindow == nil {
+      checkpointManagerWindow = NSWindow(
+        contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.DebugApi.defaultWidth, height: Constants.WindowSize.DebugApi.defaultHeight),
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
+        backing: .buffered, defer: false)
+      checkpointManagerWindow?.center()
+      checkpointManagerWindow?.contentView = NSHostingView(rootView: DebugApiView(scriptManager: scriptManager, checkpointsManager: checkpointsManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, loraModelsManager: loraModelsManager))
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self
