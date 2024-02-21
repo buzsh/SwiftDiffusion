@@ -22,7 +22,7 @@ struct SettingsView: View {
   
   @State var selectedTab: SettingsTab = {
     let savedValue = UserDefaults.standard.string(forKey: "selectedSettingsTab") ?? ""
-    return SettingsTab(rawValue: savedValue) ?? .engine
+    return SettingsTab(rawValue: savedValue) ?? .prompt //.engine
   }()
   
   var body: some View {

@@ -106,6 +106,7 @@ extension ScriptManager {
     
     if failureMessages.contains(where: output.contains) {
       //updateModelLoadState(to: .failed)
+      modelLoadTypeErrorThrown = true
     }
     // Check for update successful message
     let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
