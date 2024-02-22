@@ -1,5 +1,23 @@
-# SwiftDiffusion
-SwiftUI stable diffusion implementation using CoreML and Python libraries.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1400" alt="cover - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/97ad70fa-ff9c-4a3d-a033-9b974496f478">
+    <source media="(prefers-color-scheme: light)" width="1400" alt="cover - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8863d32b-849b-4800-8577-e24fd7d79163">
+    <img width="1400" alt="cover - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8863d32b-849b-4800-8577-e24fd7d79163">
+  </picture>
+  <p>&nbsp;</p>
+  <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="380" alt="dark mode" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a14699d6-24ff-4e27-b094-dbbf88eb9bd8">
+    <source media="(prefers-color-scheme: light)" width="380" alt="light mode" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6df1c5da-5c04-4628-ba4f-a75d99471c7e">
+    <img width="380" alt="light mode" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6df1c5da-5c04-4628-ba4f-a75d99471c7e">
+  </picture>
+  </p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
+
 
 <p align="center">
   <picture>
