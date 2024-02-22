@@ -238,7 +238,7 @@ struct SidebarView: View {
                     image
                       .resizable()
                       .aspectRatio(contentMode: .fill)
-                      .frame(width: 40, height: 50)
+                      .frame(width: 50, height: 65)
                       .clipped()
                       .clipShape(RoundedRectangle(cornerRadius: 8))
                       .shadow(color: .black, radius: 1, x: 0, y: 1)
@@ -275,7 +275,7 @@ struct SidebarView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
               }
-              .padding(.vertical, 4)
+              .padding(.vertical, 2)
               .contentShape(Rectangle())
               .onTapGesture {
                 selectedItemID = item.id
