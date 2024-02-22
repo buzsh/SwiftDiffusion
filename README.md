@@ -18,18 +18,40 @@
 </p>
 
 
-
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="1700" alt="loras - dark" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/03d5ccc9-bc9a-4356-9bda-a6e1d1dfe7d6">
-    <source media="(prefers-color-scheme: light)" width="1700" alt="loras - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6e093f10-ee6d-4565-b84f-7a579569710f">
-    <img width="1700" alt="loras - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6e093f10-ee6d-4565-b84f-7a579569710f">
+    <source media="(prefers-color-scheme: dark)" width="1587" alt="manager dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/dff4968b-f176-445a-936e-cd3488b9619f">
+    <source media="(prefers-color-scheme: light)" width="1587" alt="manager light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/225200ca-1235-4776-b715-547b18c9dc25">
+    <img width="1587" alt="manager light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/225200ca-1235-4776-b715-547b18c9dc25">
   </picture>
   <p>&nbsp;</p>
   <p>&nbsp;</p>
   <p>&nbsp;</p>
 </p>
 
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1700" alt="loras - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/15374414-755f-4c6b-a292-147929492093">
+    <source media="(prefers-color-scheme: light)" width="1700" alt="loras - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a2e93103-a42b-4855-81bd-6394500a6801">
+    <img width="1700" alt="loras - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a2e93103-a42b-4855-81bd-6394500a6801">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1587" alt="archive - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/2742c532-0c79-46ab-b8d3-ae7582f7ff78">
+    <source media="(prefers-color-scheme: light)" width="1587" alt="archive - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/43db337f-0d40-4588-ba07-a76f9211ff14">
+    <img width="1587" alt="archive - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/43db337f-0d40-4588-ba07-a76f9211ff14">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
 
 
 <p align="center">
@@ -40,94 +62,27 @@
   </picture>
   <p>&nbsp;</p>
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
 </p>
 
 
 
+# Public Pre-Release
+
+Coming very soon! Keep checking back.
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+## Developer Interfaces
 
 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7e54164f-b231-4192-9317-c716b2bcdfba">
-    <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
-    <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
-  </picture>
-  <p>&nbsp;</p>
-  <p align="center"><sup><i>Built for your MacOS workflow.</i></sup></p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-</p>
-
-
-
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" alt="dark-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8fd96e4a-2ae5-4706-b905-2a3ba07fecd8">
-    <source media="(prefers-color-scheme: light)" alt="light-min" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/e2a926aa-a9a4-457b-aea8-7dc347189d2f">
-    <img alt="light-min" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/e2a926aa-a9a4-457b-aea8-7dc347189d2f">
-  </picture>
-  <p>&nbsp;</p>
-  <p align="center"><sup><i>Currently in active development.</i></sup></p>
-  <p>&nbsp;</p>
-  <hr />
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-</p>
-
-
-
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" width="1191" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/45f4d968-3ae6-4afc-a7e7-897407b21302">
-    <source media="(prefers-color-scheme: light)" width="1191" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/df1eeaf2-fab1-4e9d-b5a8-f3082a651e27">
-    <img width="1191" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/df1eeaf2-fab1-4e9d-b5a8-f3082a651e27">
-  </picture>
-  <sup>One-click paste generation data from sites like Civit.ai</sup>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-</p>
-
-
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" width="1191" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/922c3c16-e242-49fe-96b1-616c789bf33e">
-    <source media="(prefers-color-scheme: light)" width="1191" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/88e9d605-46c7-43e5-bd5d-9f55ef6b8045">
-    <img width="1191" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/88e9d605-46c7-43e5-bd5d-9f55ef6b8045">
-  </picture>
-  <sup>LoRA, ControlNet, AnimateDiff and more on the way.</sup>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-</p>
-
-
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" width="1181" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6569e63a-5c31-46d4-8213-3c03a2dd402e">
-    <source media="(prefers-color-scheme: light)" width="1181" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ab3cdbe5-4f85-4921-88e5-ff2ffb67817a">
-    <img width="1181" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/ab3cdbe5-4f85-4921-88e5-ff2ffb67817a">
-  </picture>
-  <sup>Model checkpoint management.</sup>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-</p>
-
-
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/24869fa6-1a9c-4707-bb6a-4f3f99e882d3">
-    <source media="(prefers-color-scheme: light)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/78325ce5-1608-4bec-8015-c1dc844db5c9">
-    <img width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/78325ce5-1608-4bec-8015-c1dc844db5c9">
+    <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/d712e446-4fea-46f8-b730-6b2a640f5919">
+    <source media="(prefers-color-scheme: light)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/271ef182-5979-4bdd-aaa2-95dd440a6ec3">
+    <img width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/271ef182-5979-4bdd-aaa2-95dd440a6ec3">
   </picture>
   <p>&nbsp;</p>
   <p align="center"><sup>Integrated developer modes for debugging, advanced status monitoring and plugin creation.</sup></p>
@@ -135,6 +90,24 @@
   <p>&nbsp;</p>
   <p>&nbsp;</p>
 </p>
+
+### API Debugger
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/40ff0ed8-fd05-487c-9c4d-cb220aa39daa">
+    <source media="(prefers-color-scheme: light)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7439e3f9-6e2b-4693-b035-1dc1e3c186a6">
+    <img width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7439e3f9-6e2b-4693-b035-1dc1e3c186a6">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
+<!--
+<img width="1728" alt="screen8 - api debug (light)" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7439e3f9-6e2b-4693-b035-1dc1e3c186a6">
+<img width="1728" alt="screen8 - api debug (dark)" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/40ff0ed8-fd05-487c-9c4d-cb220aa39daa">
+-->
 
 
 ## TODO
