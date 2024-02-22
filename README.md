@@ -66,9 +66,11 @@
 
 
 
-# Public Pre-Release
+# Download the Pre-Release
 
-Coming very soon! Keep checking back.
+Coming very soon! 
+
+Still tightening some screws. Keep checking back!
 
 
 <p>&nbsp;</p>
