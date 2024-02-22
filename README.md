@@ -21,6 +21,35 @@
 
 <p align="center">
   <picture>
+    <source media="(prefers-color-scheme: dark)" width="1700" alt="loras - dark" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/03d5ccc9-bc9a-4356-9bda-a6e1d1dfe7d6">
+    <source media="(prefers-color-scheme: light)" width="1700" alt="loras - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6e093f10-ee6d-4565-b84f-7a579569710f">
+    <img width="1700" alt="loras - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/6e093f10-ee6d-4565-b84f-7a579569710f">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
+
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1728" alt="civitai - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/a1a539af-c726-4e56-bce3-0f8744cd4647">
+    <source media="(prefers-color-scheme: light)" width="1728" alt="civitai - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/540a5d19-ce46-44d5-9614-ff9804547284">
+    <img width="1728" alt="civitai - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/540a5d19-ce46-44d5-9614-ff9804547284">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
+
+
+
+
+
+<p align="center">
+  <picture>
     <source media="(prefers-color-scheme: dark)" alt="dark-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7e54164f-b231-4192-9317-c716b2bcdfba">
     <source media="(prefers-color-scheme: light)" alt="light-large" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
     <img alt="light-large" width="1728" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/844c4913-776d-424b-bcab-8a6b5140d393">
