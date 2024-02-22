@@ -54,6 +54,7 @@ struct DebugApiView: View {
         TextEditor(text: $scriptManager.consoleOutput)
           .font(.system(size: 10, weight: .regular, design: .monospaced))
           .background(Color.black)
+          .foregroundColor(.white)
       }
       .navigationSplitViewColumnWidth(min: 410, ideal: 410, max: 700)
       
@@ -97,7 +98,7 @@ struct DebugApiView: View {
           
           Spacer()
         }
-        .frame(height: 40)
+        .frame(height: 70)
         .font(.system(size: 12, weight: .regular, design: .rounded))
         
         Divider()
