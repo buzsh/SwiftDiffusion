@@ -37,10 +37,11 @@ extension ScriptManager {
   
   @MainActor
   func updateModelLoadState(to state: ModelLoadState) {
-    Debug.log("[ModelLoadState] updateModelLoadState to: \(state)")
     modelLoadStateShouldExpire = false
     
     if modelLoadState != state { modelLoadState = state }
+    
+    Debug.log("[ModelLoadState] updateModelLoadState from: \(modelLoadState.debugInfo) → to: \(state.debugInfo)")
     
     if state == .done || state == .failed {
       modelLoadStateShouldExpire = true
@@ -63,6 +64,7 @@ extension ScriptManager {
     modelLoadTime = time
     
     if time > 0 {
+      //updateModelLoadState(to: .done)
       Debug.log("[ModelLoadState] updateModelLoadTime - Parsed model load time: \(time)")
     } else {
       Debug.log("[ModelLoadState] updateModelLoadTime - Resetting model load time to 0")
@@ -77,7 +79,7 @@ extension ScriptManager {
     if output.contains("Update successful for model") {
       //updateModelLoadState(to: .done)
     }
-    //Debug.log(output)
+    
     // Check for model loading time
     if let _ = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
       let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
@@ -86,20 +88,18 @@ extension ScriptManager {
          let timeRange = Range(match.range(at: 1), in: output) {
         let timeString = String(output[timeRange])
         if let time = Double(timeString) {
-          //updateModelLoadState(to: .done)
           updateModelLoadTime(with: time)
         }
       }
     }
     
-    // Check for failure messages
+    // Check for thrown TypeError messages
     // ie. TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.
-    let failureMessages = [
-      //"Stable diffusion model failed to load",
-      "TypeError: Cannot convert a MPS Tensor to "
+    let typeErrorThrownMessages = [
+      "TypeError: Cannot convert a MPS Tensor to"
     ]
     
-    if failureMessages.contains(where: output.contains) {
+    if typeErrorThrownMessages.contains(where: output.contains) {
       //updateModelLoadState(to: .failed)
       modelLoadTypeErrorThrown = true
     }
