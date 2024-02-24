@@ -25,8 +25,6 @@ struct CheckpointMenu: View {
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
-  //@State var previouslySelectedCheckpointModel: CheckpointModel? = nil
-  
   // Alerts
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
   @State var showModelLoadTypeErrorThrownAlert: Bool = false
@@ -38,15 +36,6 @@ struct CheckpointMenu: View {
   
   @MainActor
   func selectMenuItem(withCheckpoint model: CheckpointModel, ofType type: CheckpointModelType = .python) {
-    
-    /*
-    if model == previouslySelectedCheckpointModel {
-      consoleLog("> [selectMenuItem] withCheckpoint: \(model.name) is same as previouslySelectedModel: \(String(describing: previouslySelectedCheckpointModel?.name))")
-      consoleLog("  [selectMenuItem] cancelling")
-      scriptManager.updateModelLoadState(to: .idle)
-      return
-    }
-     */
     
     // if the selected sidebar item is not a workspace item, change the menu title without requesting a new model load from the API
     if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
@@ -101,9 +90,6 @@ struct CheckpointMenu: View {
         scriptManager.updateModelLoadState(to: .failed)
       }
     }
-    
-    //previouslySelectedCheckpointModel = checkpointsManager.loadedCheckpointModel
-    
   }
   
   var body: some View {
@@ -129,15 +115,6 @@ struct CheckpointMenu: View {
           }
         } label: {
           Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
-        }
-        
-        if scriptManager.modelLoadState == .isLoading || checkpointsManager.apiHasLoadedInitialCheckpointModel == false {
-          ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(0.5)
-        } else if scriptManager.modelLoadState == .failed {
-          Image(systemName: "exclamationmark.octagon.fill")
-            .foregroundStyle(Color.red)
         }
       }
       .disabled(scriptManager.modelLoadState.disableCheckpointMenu)
@@ -233,7 +210,7 @@ struct CheckpointMenu: View {
       }
       .alert(isPresented: $showModelLoadTypeErrorThrownAlert) {
         var message: String = ""
-        //if let model = currentPrompt.selectedModel { message.append("\(model.name)\n\n") }
+        if let model = currentPrompt.selectedModel { message.append("\(model.name)\n\n") }
         message.append("Don't panic! This is a common issue. For whatever reason, this model has issues loading with RAM optimizations.\n\nOpen the Engine Settings and toggle the 'Disable model loading RAM optimizations' option to ON.")
         
         return Alert(

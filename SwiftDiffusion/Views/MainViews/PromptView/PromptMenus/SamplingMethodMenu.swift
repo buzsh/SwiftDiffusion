@@ -25,7 +25,7 @@ struct SamplingMethodMenu: View {
           }
         }
       } label: {
-        Label(currentPrompt.samplingMethod ?? "Choose Sampling Method", systemImage: "square.stack.3d.forward.dottedline")
+        Label(currentPrompt.samplingMethod ?? "Choose Sampler", systemImage: "square.stack.3d.forward.dottedline")
       }
     }
   }

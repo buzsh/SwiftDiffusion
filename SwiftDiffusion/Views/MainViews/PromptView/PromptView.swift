@@ -63,8 +63,7 @@ struct PromptView: View {
             CheckpointMenu()
             SamplingMethodMenu()
           }
-          .padding(.vertical, Constants.Layout.promptRowPadding)
-          .frame(minHeight: 90)
+          .padding(.vertical, 12)
           
           VStack {
             PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
