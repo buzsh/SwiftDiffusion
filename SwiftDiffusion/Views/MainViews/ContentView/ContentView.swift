@@ -174,6 +174,7 @@ struct ContentView: View {
           Text("Generate")
         }
         .buttonStyle(BlueBackgroundButtonStyle())
+        // TODO: queue generation instead
         .disabled(
           scriptManager.scriptState != .active ||
           (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
