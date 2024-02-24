@@ -69,6 +69,8 @@ extension ScriptManager {
     }
   }
   
+  // TODO: catch "Stable diffusion model failed to load" and throw
+  
   func parseAndUpdateModelLoadState(output: String) async {
     Debug.log(">> \(output)")
     // ie. >> Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
@@ -93,7 +95,7 @@ extension ScriptManager {
     // Check for failure messages
     // ie. TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.
     let failureMessages = [
-      "Stable diffusion model failed to load",
+      //"Stable diffusion model failed to load",
       "TypeError: Cannot convert a MPS Tensor to "
     ]
     
