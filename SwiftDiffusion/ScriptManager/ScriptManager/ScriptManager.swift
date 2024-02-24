@@ -36,8 +36,9 @@ class ScriptManager: ObservableObject {
   @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
   @Published var modelLoadStateShouldExpire: Bool = false
-  
   @Published var modelLoadTypeErrorThrown: Bool = false
+  
+  @Published var modelLoadErrorString: String? = nil
   
   @Published var scriptState: ScriptState = .readyToStart
   @Published var consoleOutput: String = ""
