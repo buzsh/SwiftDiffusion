@@ -56,8 +56,7 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          
-          //ApiCheckpointRow().padding(.top, 20)
+          // ApiCheckpointRow().padding(.top, 20)
           
           HStack {
             CheckpointMenu()
@@ -78,8 +77,6 @@ struct PromptView: View {
           HalfSkipClipRow(clipSkip: $currentPrompt.clipSkip)
           
           SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
-          //SeedAndClipSkipRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
-          //SeedRowAndClipSkipHalfRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
           
           ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
         }
@@ -107,7 +104,6 @@ struct PromptView: View {
         }
       )
       
-      // PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
     }

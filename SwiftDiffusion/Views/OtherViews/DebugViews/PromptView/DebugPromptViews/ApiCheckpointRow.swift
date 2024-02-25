@@ -22,10 +22,11 @@ struct ApiCheckpointRow: View {
   
   var body: some View {
     VStack {
-      ExpandableSectionHeader(title: "API Checkpoint Interface", isExpanded: $isExpanded)
+      ExpandableSectionHeader(title: "API Model Checkpoint", isExpanded: $isExpanded)
       
       if isExpanded {
         VStack(alignment: .leading, spacing: 0) {
+          /*
           HStack {
             Menu {
               Section(header: Text("􁻴 API Checkpoints")) {
@@ -49,13 +50,13 @@ struct ApiCheckpointRow: View {
                 .foregroundStyle(Color.red)
             }
           }
-          .disabled(scriptManager.modelLoadState.disableCheckpointMenu)
           .padding(.bottom, 6)
+          */
           
           VStack {
             HStack {
               Spacer()
-              Text("API Checkpoint: \(loadedCheckpointName)")
+              Text("Loaded Checkpoint: \(loadedCheckpointName)")
                 .onChange(of: checkpointsManager.loadedCheckpointModel) {
                   if let checkpoint = checkpointsManager.loadedCheckpointModel {
                     loadedCheckpointName = checkpoint.name
@@ -66,21 +67,20 @@ struct ApiCheckpointRow: View {
               Spacer()
             }
             
+            TextEditor(text: $mostRecentCheckpointPayload)
+              .font(.system(size: 9, design: .monospaced))
+              .frame(minHeight: 20, idealHeight: 40, maxHeight: 180)
+              .border(Color.gray.opacity(0.5))
+              .onChange(of: scriptManager.mostRecentApiRequestPayload) {
+                formatJsonString()
+              }
+            
             HStack {
-              Spacer()
               Toggle("Pretty Print JSON", isOn: $isPrettyPrinted)
                 .onChange(of: isPrettyPrinted) {
                   formatJsonString()
                 }
             }
-            
-            TextEditor(text: $mostRecentCheckpointPayload)
-              .font(.system(size: 9, design: .monospaced))
-              .frame(minHeight: 20, maxHeight: 180)
-              .border(Color.gray)
-              .onChange(of: scriptManager.mostRecentApiRequestPayload) {
-                formatJsonString()
-              }
             
             if scriptManager.modelLoadErrorString != nil {
               
@@ -91,7 +91,7 @@ struct ApiCheckpointRow: View {
                 .padding(.horizontal, 4)
             }
           }
-          .padding(.vertical, 4)
+          .padding(.top, 4)
           .font(.system(size: 12, weight: .regular, design: .monospaced))
           .background(Color.black)
           .foregroundColor(.white)
