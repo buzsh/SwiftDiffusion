@@ -23,8 +23,8 @@ struct FullscreenImageView: View {
           .padding()
       }
       .buttonStyle(BorderlessButtonStyle())
+      .shadow(color: .black, radius: 10, x: 0, y: 4)
       .padding()
     }
   }
 }
-
