@@ -56,12 +56,13 @@ struct PromptView: View {
       
       ScrollView {
         Form {
+          // ApiCheckpointRow().padding(.top, 20)
+          
           HStack {
             CheckpointMenu()
             SamplingMethodMenu()
           }
-          .padding(.vertical, Constants.Layout.promptRowPadding)
-          .frame(minHeight: 90)
+          .padding(.vertical, 12)
           
           VStack {
             PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
@@ -76,8 +77,6 @@ struct PromptView: View {
           HalfSkipClipRow(clipSkip: $currentPrompt.clipSkip)
           
           SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
-          //SeedAndClipSkipRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
-          //SeedRowAndClipSkipHalfRow(seed: $currentPrompt.seed, clipSkip: $currentPrompt.clipSkip)
           
           ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
         }
@@ -91,11 +90,8 @@ struct PromptView: View {
             await checkPasteboardAndUpdateFlag()
           }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
-          Debug.log("Application did enter background")
-        } // Form
         .disabled(disablePromptView)
-      } // ScrollView
+      }
       
       
       PasteGenerationDataStatusBar(
@@ -105,7 +101,6 @@ struct PromptView: View {
         }
       )
       
-      // PromptBottomStatusBar()
       DebugPromptActionView(scriptManager: scriptManager)
       
     }

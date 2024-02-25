@@ -12,16 +12,9 @@ struct DebugPromptStatusView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
-  var apiHasLoadedInitialCheckpointModel: String {
-    if checkpointsManager.apiHasLoadedInitialCheckpointModel {
-      return "true"
-    }
-    return "false"
-  }
-  
   var body: some View {
     if userSettings.showDeveloperInterface {
-      VStack {
+      VStack(spacing: 0) {
         HStack {
           Spacer()
           VStack(alignment: .leading) {
@@ -32,20 +25,14 @@ struct DebugPromptStatusView: View {
           Spacer()
         }
         
-        Divider().foregroundStyle(Color.white)
+        Divider().padding(.top, 10)
         
-        HStack {
-          Spacer()
-          VStack(alignment: .leading) {
-            Text("apiHasLoadedInitialCheckpointModel: \(apiHasLoadedInitialCheckpointModel)")
-          }
-          Spacer()
-        }
+        ApiCheckpointRow()
       }
       .padding(.horizontal)
+      .padding(.vertical, 6)
       .font(.system(size: 12, design: .monospaced))
       .foregroundColor(Color.white)
-      .padding(.vertical, 6).padding(.bottom, 2)
       .background(Color.black)
     }
   }
