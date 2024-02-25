@@ -14,7 +14,7 @@ struct ApiCheckpointRow: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
   @State var loadedCheckpointName: String = "nil"
-  @State private var isExpanded: Bool = true
+  @State private var isExpanded: Bool = false
   
   @State var mostRecentCheckpointPayload: String = "{}"
   
