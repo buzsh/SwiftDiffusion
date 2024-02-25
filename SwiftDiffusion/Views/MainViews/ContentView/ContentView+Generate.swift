@@ -63,11 +63,27 @@ extension ContentView {
       PayloadKey.doNotSaveSamples.rawValue : false
     ]
     
-    let overrideSettings: [String: Any] = [
+    var overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
     ]
     
+    if let selectedModel = currentPrompt.selectedModel, let apiModel = selectedModel.checkpointApiModel {
+      overrideSettings = [
+        "sd_model_checkpoint": apiModel.title,
+        "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
+      ]
+    }
+    
     payload[PayloadKey.overrideSettings.rawValue] = overrideSettings
+    
+    if let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
+       let jsonString = String(data: jsonData, encoding: .utf8) {
+      scriptManager.mostRecentApiRequestPayload = jsonString
+    } else {
+      Debug.log("Failed to serialize payload to JSON string")
+      scriptManager.mostRecentApiRequestPayload = "{}"
+    }
+    
     return payload
   }
 }

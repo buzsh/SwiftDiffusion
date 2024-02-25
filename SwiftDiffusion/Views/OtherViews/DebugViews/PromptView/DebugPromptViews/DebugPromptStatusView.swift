@@ -12,13 +12,6 @@ struct DebugPromptStatusView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
-  var apiHasLoadedInitialCheckpointModel: String {
-    if checkpointsManager.apiHasLoadedInitialCheckpointModel {
-      return "true"
-    }
-    return "false"
-  }
-  
   var body: some View {
     if userSettings.showDeveloperInterface {
       VStack {
@@ -28,16 +21,6 @@ struct DebugPromptStatusView: View {
             Text("     ScriptState: \(scriptManager.scriptState.debugInfo)")
             Text("GenerationStatus: \(scriptManager.genStatus.debugInfo) (\(Int(scriptManager.genProgress * 100))%)")
             Text("  ModelLoadState: \(scriptManager.modelLoadState.debugInfo) (\(String(format: "%.1f", scriptManager.modelLoadTime))s)")
-          }
-          Spacer()
-        }
-        
-        Divider().foregroundStyle(Color.white)
-        
-        HStack {
-          Spacer()
-          VStack(alignment: .leading) {
-            Text("apiHasLoadedInitialCheckpointModel: \(apiHasLoadedInitialCheckpointModel)")
           }
           Spacer()
         }

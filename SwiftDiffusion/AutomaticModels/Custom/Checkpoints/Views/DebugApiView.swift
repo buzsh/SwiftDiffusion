@@ -62,7 +62,7 @@ struct DebugApiView: View {
       VStack(alignment: .leading, spacing: 0) {
         
         HStack {
-          CheckpointMenu(scriptManager: scriptManager)
+          CheckpointMenu()
           
           Button("local titles") {
             consoleLog("local title")

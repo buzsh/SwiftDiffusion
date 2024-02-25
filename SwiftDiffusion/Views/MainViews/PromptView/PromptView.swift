@@ -56,8 +56,8 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          ApiCheckpointRow()
-            .padding(.top, 20)
+          
+          //ApiCheckpointRow().padding(.top, 20)
           
           HStack {
             CheckpointMenu()

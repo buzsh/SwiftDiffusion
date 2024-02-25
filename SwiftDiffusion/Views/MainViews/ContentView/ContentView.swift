@@ -178,7 +178,6 @@ struct ContentView: View {
         .disabled(
           scriptManager.scriptState != .active ||
           (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-          (!scriptManager.modelLoadState.allowGeneration) ||
           currentPrompt.selectedModel == nil
         )
         

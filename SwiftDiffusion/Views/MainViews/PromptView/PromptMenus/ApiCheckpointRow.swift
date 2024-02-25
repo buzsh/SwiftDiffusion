@@ -16,6 +16,10 @@ struct ApiCheckpointRow: View {
   @State var loadedCheckpointName: String = "nil"
   @State private var isExpanded: Bool = true
   
+  @State var mostRecentCheckpointPayload: String = "{}"
+  
+  @State private var isPrettyPrinted: Bool = false
+  
   var body: some View {
     VStack {
       ExpandableSectionHeader(title: "API Checkpoint Interface", isExpanded: $isExpanded)
@@ -62,6 +66,22 @@ struct ApiCheckpointRow: View {
               Spacer()
             }
             
+            HStack {
+              Spacer()
+              Toggle("Pretty Print JSON", isOn: $isPrettyPrinted)
+                .onChange(of: isPrettyPrinted) {
+                  formatJsonString()
+                }
+            }
+            
+            TextEditor(text: $mostRecentCheckpointPayload)
+              .font(.system(size: 9, design: .monospaced))
+              .frame(minHeight: 20, maxHeight: 180)
+              .border(Color.gray)
+              .onChange(of: scriptManager.mostRecentApiRequestPayload) {
+                formatJsonString()
+              }
+            
             if scriptManager.modelLoadErrorString != nil {
               
               Divider().foregroundStyle(Color.white)
@@ -81,8 +101,36 @@ struct ApiCheckpointRow: View {
     }
     .padding(.vertical, 10)
   }
+  
+  private func formatJsonString() {
+    let jsonString = scriptManager.mostRecentApiRequestPayload
+    
+    if isPrettyPrinted {
+      mostRecentCheckpointPayload = jsonString.prettyPrintedJSONString() ?? jsonString
+    } else {
+      mostRecentCheckpointPayload = jsonString.oneLineJSONString() ?? jsonString
+    }
+  }
 }
 
 #Preview {
-  CommonPreviews.promptView // ApiCheckpointRow()
+  CommonPreviews.promptView
+}
+
+extension String {
+  func prettyPrintedJSONString() -> String? {
+    guard let data = self.data(using: .utf8) else { return nil }
+    guard let object = try? JSONSerialization.jsonObject(with: data, options: []),
+          let prettyData = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+          let prettyString = String(data: prettyData, encoding: .utf8) else { return nil }
+    return prettyString
+  }
+  
+  func oneLineJSONString() -> String? {
+    guard let data = self.data(using: .utf8) else { return nil }
+    guard let object = try? JSONSerialization.jsonObject(with: data, options: []),
+          let compactData = try? JSONSerialization.data(withJSONObject: object, options: []),
+          let compactString = String(data: compactData, encoding: .utf8) else { return nil }
+    return compactString
+  }
 }
