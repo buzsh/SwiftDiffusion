@@ -61,7 +61,7 @@ struct DebugApiView: View {
     } detail: {
       VStack(alignment: .leading, spacing: 0) {
         
-        HStack {
+        HStack(alignment: .bottom) {
           CheckpointMenu()
           
           Button("local titles") {
@@ -95,11 +95,11 @@ struct DebugApiView: View {
               }
             }
           }
-          
           Spacer()
         }
         .frame(height: 70)
         .font(.system(size: 12, weight: .regular, design: .rounded))
+        .padding(.bottom, 6)
         
         Divider()
         
