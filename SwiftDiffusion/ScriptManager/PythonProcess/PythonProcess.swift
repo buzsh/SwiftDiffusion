@@ -7,21 +7,6 @@
 
 import Foundation
 
-extension Constants.CommandLine {
-  
-  static let baseArgs = "--api --api-log --no-download-sd-model" // --no-half
-  
-  
-  static var defaultCommand: (String, String) -> String = { dir, name in
-    let disableModelLoadingRamOptimizations = UserSettings.shared.disableModelLoadingRamOptimizations
-    if UserSettings.shared.disableModelLoadingRamOptimizations {
-      Debug.log("disableModelLoadingRamOptimizations: \(disableModelLoadingRamOptimizations)")
-      return "cd \(dir); ./\(name) \(baseArgs) --disable-model-loading-ram-optimization"
-    }
-    return "cd \(dir); ./\(name) \(baseArgs)"
-  }
-}
-
 protocol PythonProcessDelegate: AnyObject {
   func pythonProcessDidUpdateOutput(output: String)
   func pythonProcessDidFinishRunning(with result: ScriptResult)
