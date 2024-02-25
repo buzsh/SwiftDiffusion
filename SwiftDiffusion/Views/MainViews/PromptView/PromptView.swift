@@ -90,11 +90,8 @@ struct PromptView: View {
             await checkPasteboardAndUpdateFlag()
           }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
-          Debug.log("Application did enter background")
-        } // Form
         .disabled(disablePromptView)
-      } // ScrollView
+      }
       
       
       PasteGenerationDataStatusBar(
