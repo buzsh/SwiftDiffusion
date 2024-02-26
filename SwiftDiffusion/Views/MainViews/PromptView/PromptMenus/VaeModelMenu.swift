@@ -15,7 +15,7 @@ struct VaeModelMenu: View {
   
   var body: some View {
     VStack {
-      ExpandableSectionHeader(title: "VAE Settings", isExpanded: $isExpanded)
+      ExpandableSectionHeader(title: "VAE Model", isExpanded: $isExpanded)
       
       if isExpanded {
         VStack(alignment: .leading, spacing: 0) {
