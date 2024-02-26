@@ -33,7 +33,130 @@ class PreviewImageProcessingManager {
     createImagePreviews(for: sidebarItem, in: model, maxDimension: 500, compressionFactor: 0.4)
     createImageThumbnails(for: sidebarItem, in: model, maxDimension: 100, compressionFactor: 0.4)
   }
-
+  
+  /// Generates image previews for a given sidebar item and stores them in a specified directory.
+  /// This function resizes and compresses the original images to a specified maximum dimension and compression factor,
+  /// then saves the processed images to the "StoredPromptPreviews" directory.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` for which image previews are being created.
+  ///   - model: The model context used for any necessary data operations related to this process.
+  ///   - maxDimension: The maximum dimension (width or height) for the previews. Defaults to 1000 pixels.
+  ///   - compressionFactor: The JPEG compression factor used when saving the previews. Defaults to 0.5.
+  func createImagePreviews(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 1000, compressionFactor: CGFloat = 0.5) {
+    let fileManager = FileManager.default
+    guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
+          let basePreviewURL = try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
+      .appendingPathComponent("UserData")
+      .appendingPathComponent("LocalDatabase")
+      .appendingPathComponent("StoredPromptPreviews") else {
+      Debug.log("[createImagePreviews] Unable to find or create the application support directory.")
+      return
+    }
+    
+    var previewUrls: [URL] = []
+    
+    sidebarItem.imageUrls.forEach { imageUrl in
+      guard let image = NSImage(contentsOf: imageUrl) else {
+        Debug.log("[createImagePreviews] Failed to load image at \(imageUrl)")
+        return
+      }
+      
+      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
+        Debug.log("[createImagePreviews] Failed to process image at \(imageUrl)")
+        return
+      }
+      
+      let originalPath = imageUrl.path
+      var relativePath = originalPath.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
+      
+      if let dotRange = relativePath.range(of: ".", options: .backwards) {
+        relativePath.removeSubrange(dotRange.lowerBound..<relativePath.endIndex)
+      }
+      relativePath += ".jpeg"
+      
+      let newImageUrl = basePreviewURL.appendingPathComponent(relativePath)
+      
+      do {
+        let directoryUrl = newImageUrl.deletingLastPathComponent()
+        try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
+        
+        try imageData.write(to: newImageUrl)
+        previewUrls.append(newImageUrl)
+      } catch {
+        Debug.log("[createImagePreviews] Failed to save preview for \(imageUrl): \(error)")
+      }
+    }
+    
+    
+    DispatchQueue.main.async {
+      sidebarItem.imagePreviewUrls = previewUrls
+      self.saveData(in: model)
+    }
+  }
+  
+  /// Generates thumbnails for a given sidebar item and stores them in a specified directory.
+  /// This function optionally uses generated previews as a source if available; otherwise, it uses the original images.
+  /// The images are resized and compressed to a specified maximum dimension and compression factor,
+  /// then saved to the "StoredPromptThumbnails" directory.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` for which thumbnails are being created.
+  ///   - model: The model context used for any necessary data operations related to this process.
+  ///   - maxDimension: The maximum dimension (width or height) for the thumbnails. Defaults to 250 pixels.
+  ///   - compressionFactor: The JPEG compression factor used when saving the thumbnails. Defaults to 0.5.
+  func createImageThumbnails(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 250, compressionFactor: CGFloat = 0.5) {
+    let fileManager = FileManager.default
+    guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
+          let baseThumbnailURL = try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
+      .appendingPathComponent("UserData")
+      .appendingPathComponent("LocalDatabase")
+      .appendingPathComponent("StoredPromptThumbnails") else {
+      Debug.log("[createImageThumbnails] Unable to find or create the application support directory.")
+      return
+    }
+    
+    var thumbnailUrls: [URL] = []
+    
+    let sourceImageUrls = sidebarItem.imagePreviewUrls?.isEmpty == false ? sidebarItem.imagePreviewUrls! : sidebarItem.imageUrls
+    
+    sourceImageUrls.forEach { imageUrl in
+      guard let image = NSImage(contentsOf: imageUrl) else {
+        Debug.log("[createImageThumbnails] Failed to load image at \(imageUrl)")
+        return
+      }
+      
+      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
+        Debug.log("[createImageThumbnails] Failed to process image at \(imageUrl)")
+        return
+      }
+      
+      let originalPath = imageUrl.path
+      var relativePath = originalPath.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
+      if let dotRange = relativePath.range(of: ".", options: .backwards) {
+        relativePath.removeSubrange(dotRange.lowerBound..<relativePath.endIndex)
+      }
+      relativePath += ".jpeg"
+      
+      let newImageUrl = baseThumbnailURL.appendingPathComponent(relativePath)
+      
+      do {
+        let directoryUrl = newImageUrl.deletingLastPathComponent()
+        try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
+        
+        try imageData.write(to: newImageUrl)
+        thumbnailUrls.append(newImageUrl)
+      } catch {
+        Debug.log("[createImageThumbnails] Failed to save thumbnail for \(imageUrl): \(error)")
+      }
+    }
+    
+    DispatchQueue.main.async {
+      sidebarItem.imageThumbnailUrls = thumbnailUrls
+      self.saveData(in: model)
+    }
+  }
+  
   /// Moves all preview and thumbnail assets for a given sidebar item to the trash.
   /// This function attempts to move each file referenced in the sidebarItem's imagePreviewUrls and imageThumbnailUrls to the trash.
   /// Optionally plays a sound effect when the trashing operation is completed.
@@ -67,121 +190,8 @@ class PreviewImageProcessingManager {
       }
     }
   }
-
-  /// Generates image previews for a given sidebar item and stores them in a specified directory.
-  /// This function resizes and compresses the original images to a specified maximum dimension and compression factor,
-  /// then saves the processed images to the "StoredPromptPreviews" directory.
-  /// - Parameters:
-  ///   - sidebarItem: The `SidebarItem` for which image previews are being created.
-  ///   - model: The model context used for any necessary data operations related to this process.
-  ///   - maxDimension: The maximum dimension (width or height) for the previews. Defaults to 1000 pixels.
-  ///   - compressionFactor: The JPEG compression factor used when saving the previews. Defaults to 0.5.
-  func createImagePreviews(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 1000, compressionFactor: CGFloat = 0.5) {
-    let fileManager = FileManager.default
-    guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
-          let basePreviewURL = try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
-            .appendingPathComponent("UserData")
-            .appendingPathComponent("LocalDatabase")
-            .appendingPathComponent("StoredPromptPreviews") else {
-      Debug.log("[createImagePreviews] Unable to find or create the application support directory.")
-      return
-    }
-    
-    var previewUrls: [URL] = []
-    
-    sidebarItem.imageUrls.forEach { imageUrl in
-      guard let image = NSImage(contentsOf: imageUrl) else {
-        Debug.log("[createImagePreviews] Failed to load image at \(imageUrl)")
-        return
-      }
-      
-      // Resize the image and compress it to JPEG with the specified parameters
-      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
-        Debug.log("[createImagePreviews] Failed to process image at \(imageUrl)")
-        return
-      }
-      
-      let relativePath = imageUrl.path.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
-      let newImageUrl = basePreviewURL.appendingPathComponent(relativePath)
-      
-      do {
-        let directoryUrl = newImageUrl.deletingLastPathComponent()
-        try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
-        
-        try imageData.write(to: newImageUrl)
-        previewUrls.append(newImageUrl)
-      } catch {
-        Debug.log("[createImagePreviews] Failed to save preview for \(imageUrl): \(error)")
-      }
-    }
-    
-    DispatchQueue.main.async {
-      sidebarItem.imagePreviewUrls = previewUrls
-      // Implement any necessary model update logic here, such as saving changes to the model context
-      self.saveData(in: model)
-    }
-  }
-
-  /// Generates thumbnails for a given sidebar item and stores them in a specified directory.
-  /// This function optionally uses generated previews as a source if available; otherwise, it uses the original images.
-  /// The images are resized and compressed to a specified maximum dimension and compression factor,
-  /// then saved to the "StoredPromptThumbnails" directory.
-  /// - Parameters:
-  ///   - sidebarItem: The `SidebarItem` for which thumbnails are being created.
-  ///   - model: The model context used for any necessary data operations related to this process.
-  ///   - maxDimension: The maximum dimension (width or height) for the thumbnails. Defaults to 250 pixels.
-  ///   - compressionFactor: The JPEG compression factor used when saving the thumbnails. Defaults to 0.5.
-  func createImageThumbnails(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 250, compressionFactor: CGFloat = 0.5) {
-    let fileManager = FileManager.default
-    guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
-          let baseThumbnailURL = try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
-      .appendingPathComponent("UserData")
-      .appendingPathComponent("LocalDatabase")
-      .appendingPathComponent("StoredPromptThumbnails") else {
-      Debug.log("[createImageThumbnails] Unable to find or create the application support directory.")
-      return
-    }
-    
-    var thumbnailUrls: [URL] = []
-    
-    // Determine which set of URLs to use for generating thumbnails
-    let sourceImageUrls = sidebarItem.imagePreviewUrls?.isEmpty == false ? sidebarItem.imagePreviewUrls! : sidebarItem.imageUrls
-    
-    sourceImageUrls.forEach { imageUrl in
-      guard let image = NSImage(contentsOf: imageUrl) else {
-        Debug.log("[createImageThumbnails] Failed to load image at \(imageUrl)")
-        return
-      }
-      
-      // Resize the image and compress it to JPEG with the specified parameters
-      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
-        Debug.log("[createImageThumbnails] Failed to process image at \(imageUrl)")
-        return
-      }
-      
-      let relativePath = imageUrl.path.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
-      let newImageUrl = baseThumbnailURL.appendingPathComponent(relativePath)
-      
-      do {
-        let directoryUrl = newImageUrl.deletingLastPathComponent()
-        try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
-        
-        try imageData.write(to: newImageUrl)
-        thumbnailUrls.append(newImageUrl)
-      } catch {
-        Debug.log("[createImageThumbnails] Failed to save thumbnail for \(imageUrl): \(error)")
-      }
-    }
-    
-    DispatchQueue.main.async {
-      sidebarItem.imageThumbnailUrls = thumbnailUrls
-      // Implement any necessary model update logic here
-      self.saveData(in: model)
-    }
-  }
 }
+
 
 extension NSImage {
   /// Generates JPEG data from the image after resizing it to a specified maximum dimension and applying JPEG compression.
@@ -200,7 +210,7 @@ extension NSImage {
     return bitmapImage.representation(using: .jpeg, properties: [.compressionFactor: compressionFactor])
   }
 }
-  
+
 extension NSImage {
   /// Resizes the image to a specified maximum dimension while maintaining its aspect ratio.
   /// The image is scaled down such that its largest dimension (width or height) matches the `maxDimension` provided,
