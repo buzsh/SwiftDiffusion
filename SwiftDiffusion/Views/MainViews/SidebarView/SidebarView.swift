@@ -357,6 +357,8 @@ struct SidebarView: View {
       sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
     }
     
+    //ensureNewPromptWorkspaceItemExists()
+    
     if let newItemID = newItemID,
        let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
       Debug.log("onChange selectItem: \(selectedItem.title)")
@@ -421,7 +423,7 @@ struct WorkspaceItemView: View {
   var body: some View {
     HStack {
       if selectedItemID == item.id && item.isWorkspaceItem {
-        Text(truncatedTitle(from: currentPrompt.positivePrompt))
+        Text(truncatedOrFullTitle)
       } else {
         Text(item.title)
       }
@@ -431,15 +433,24 @@ struct WorkspaceItemView: View {
       }
     }
     .onChange(of: currentPrompt.positivePrompt) {
-      if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && currentPrompt.positivePrompt.isEmpty == false {
-        sidebarViewModel.setSelectedSidebarItemTitle(" ", in: modelContext)
+      let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
+      if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && !trimmedPrompt.isEmpty {
+        sidebarViewModel.setSelectedSidebarItemTitle(trimmedPrompt, in: modelContext)
+      } else if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" && trimmedPrompt.isEmpty {
+        sidebarViewModel.setSelectedSidebarItemTitle("Untitled", in: modelContext)
       }
     }
     
   }
   
-  private func truncatedTitle(from title: String) -> String {
-      title.count <= 45 ? title : "\(title.prefix(45))…"
+  private var truncatedOrFullTitle: String {
+    let trimmedTitle = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
+            
+    if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && trimmedTitle.isEmpty {
+      return "New Prompt"
+    }
+            
+    return trimmedTitle.count <= 45 ? trimmedTitle : "\(trimmedTitle.prefix(45))…"
   }
   
 }
