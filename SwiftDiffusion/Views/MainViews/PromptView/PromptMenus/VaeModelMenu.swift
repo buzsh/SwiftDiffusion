@@ -38,7 +38,7 @@ struct VaeModelMenu: View {
               }
               Divider()
               
-              ForEach(vaeModelsManager.models, id: \.id) { vae in
+              ForEach(vaeModelsManager.models.sorted(by: { $0.name.lowercased() < $1.name.lowercased() }), id: \.id) { vae in
                 Button(vae.name) {
                   currentPrompt.vaeModel = vae
                 }
