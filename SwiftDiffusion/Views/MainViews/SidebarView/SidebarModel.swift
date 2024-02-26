@@ -33,6 +33,8 @@ class SidebarItem: Identifiable {
   @Attribute var imageUrls: [URL]
   @Attribute var imageThumbnailUrls: [URL]?
   @Attribute var imagePreviewUrls: [URL]?
+  @Attribute var imageThumbnailDimensions: [CGFloat:CGFloat]?
+  @Attribute var imagePreviewDimensions: [CGFloat:CGFloat]?
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   
