@@ -117,6 +117,7 @@
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
 		29F91D2B2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */; };
 		29F91D2D2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */; };
+		29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -231,6 +232,7 @@
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarWorkspaceItem.swift; sourceTree = "<group>"; };
 		29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarViewModel+Thumbnails.swift"; sourceTree = "<group>"; };
+		29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarStoredItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +257,7 @@
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
 				29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
+				29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */,
 				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 			);
 			path = SidebarView;
@@ -1004,6 +1007,7 @@
 				29A7BDE12B8A40F200F9144B /* ApiCheckpointRow.swift in Sources */,
 				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
 				29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */,
+				29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */,
 				292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */,
 				297196532B71538C000F7960 /* FilePickerService.swift in Sources */,
 				29620FE82B82924E008EA5EB /* CheckpointModel.swift in Sources */,

@@ -227,52 +227,12 @@ struct SidebarView: View {
           
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
-              HStack(alignment: .center, spacing: 8) {
-                if smallPreviewsButtonToggled {
-                  let imageUrl = item.imageThumbnailUrls?.last ?? item.imageUrls.last
-                  if let imageUrl = imageUrl {
-                    AsyncImage(url: imageUrl) { image in
-                      image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 50, height: 65)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .shadow(color: .black, radius: 1, x: 0, y: 1)
-                    } placeholder: {
-                      ProgressView()
-                    }
-                  }
-                }
-                
-                VStack(alignment: .leading) {
-                  if largePreviewsButtonToggled {
-                    if let lastImageUrl = item.imageUrls.last {
-                      AsyncImage(url: lastImageUrl) { image in
-                        image
-                          .resizable()
-                          .scaledToFit()
-                          .clipShape(RoundedRectangle(cornerRadius: 12))
-                          .shadow(color: .black, radius: 1, x: 0, y: 1)
-                      } placeholder: {
-                        ProgressView()
-                      }
-                      .padding(.bottom, 8)
-                    }
-                  }
-                  
-                  Text(item.title)
-                    .lineLimit(modelNameButtonToggled ? 1 : 2)
-                  
-                  if modelNameButtonToggled, let modelName = item.prompt?.selectedModel?.name {
-                    Text(modelName)
-                      .font(.system(size: 10, weight: .light, design: .monospaced))
-                      .foregroundStyle(Color.secondary)
-                      .padding(.top, 1)
-                  }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-              }
+              SidebarStoredItemView(
+                item: item,
+                smallPreviewsButtonToggled: smallPreviewsButtonToggled,
+                largePreviewsButtonToggled: largePreviewsButtonToggled,
+                modelNameButtonToggled: modelNameButtonToggled
+              )
               .padding(.vertical, 2)
               .contentShape(Rectangle())
               .onTapGesture {
