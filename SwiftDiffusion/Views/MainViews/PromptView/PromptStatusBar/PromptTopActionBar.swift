@@ -1,5 +1,5 @@
 //
-//  PromptTopStatusBar.swift
+//  PromptTopActionBar.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/10/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PromptTopStatusBar: View {
+struct PromptTopActionBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
@@ -96,47 +96,3 @@ struct PromptTopStatusBar: View {
   }
   
 }
-
-/*
-#Preview("PromptView") {
-  CommonPreviews.promptTopStatusBarView
-}
-
-extension CommonPreviews {
-  
-  @MainActor
-  static var promptTopStatusBarView: some View {
-    let promptModelPreview = PromptModel()
-    promptModelPreview.positivePrompt = "sample, positive, prompt"
-    promptModelPreview.negativePrompt = "sample, negative, prompt"
-    
-    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
-    
-    let checkpointsManagerPreview = CheckpointsManager()
-    
-    return PromptView(
-      scriptManager: ScriptManager.preview(withState: .readyToStart)
-    )
-    .environmentObject(promptModelPreview)
-    .environmentObject(checkpointsManagerPreview)
-    .frame(width: 400, height: 600)
-  }
-}
-
-#Preview("TopStatusBar") {
-  let mockParseAndSetPromptData: (String) -> Void = { pasteboardContent in
-    print("Pasteboard content: \(pasteboardContent)")
-  }
-  let promptModelPreview = PromptModel()
-  promptModelPreview.positivePrompt = "sample, positive, prompt"
-  promptModelPreview.negativePrompt = "sample, negative, prompt"
-  promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
-  
-  return PromptTopStatusBar(
-    generationDataInPasteboard: true,
-    onPaste: mockParseAndSetPromptData
-  )
-  .environmentObject(promptModelPreview)
-  .frame(width: 400)
-}
-*/
