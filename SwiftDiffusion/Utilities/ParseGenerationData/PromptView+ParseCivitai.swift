@@ -252,6 +252,8 @@ extension PromptView {
       if let batchSize = Double(value) {
         currentPrompt.batchSize = batchSize
       }
+    case "VAE":
+      currentPrompt.updateVaeModel(with: value, in: vaeModelsManager)
       
     default:
       break
