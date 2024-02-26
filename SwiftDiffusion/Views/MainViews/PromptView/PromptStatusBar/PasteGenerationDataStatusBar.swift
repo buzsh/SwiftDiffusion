@@ -47,9 +47,3 @@ struct PasteGenerationDataStatusBar: View {
     return NSPasteboard.general.string(forType: .string)
   }
 }
-
-/*
-#Preview {
-  PasteGenerationDataStatusBar()
-}
-*/
