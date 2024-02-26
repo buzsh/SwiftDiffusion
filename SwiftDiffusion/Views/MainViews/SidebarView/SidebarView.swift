@@ -89,7 +89,6 @@ struct SidebarView: View {
     updateSelection(to: nextSelectionIndex)
     sidebarViewModel.itemToDelete = nil
     sidebarViewModel.workspaceItemToDeleteWithoutPrompt = nil
-    
   }
   
   private func moveSavableItemFromWorkspace() {
@@ -101,6 +100,8 @@ struct SidebarView: View {
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
+    Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
+    sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
@@ -227,17 +228,20 @@ struct SidebarView: View {
           Section(header: Text("Uncategorized")) {
             ForEach(sortedAndFilteredItems) { item in
               HStack(alignment: .center, spacing: 8) {
-                if smallPreviewsButtonToggled, let lastImageUrl = item.imageUrls.last {
-                  AsyncImage(url: lastImageUrl) { image in
-                    image
-                      .resizable()
-                      .aspectRatio(contentMode: .fill)
-                      .frame(width: 50, height: 65)
-                      .clipped()
-                      .clipShape(RoundedRectangle(cornerRadius: 8))
-                      .shadow(color: .black, radius: 1, x: 0, y: 1)
-                  } placeholder: {
-                    ProgressView()
+                if smallPreviewsButtonToggled {
+                  let imageUrl = item.imageThumbnailUrls?.last ?? item.imageUrls.last
+                  if let imageUrl = imageUrl {
+                    AsyncImage(url: imageUrl) { image in
+                      image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 50, height: 65)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .shadow(color: .black, radius: 1, x: 0, y: 1)
+                    } placeholder: {
+                      ProgressView()
+                    }
                   }
                 }
                 
