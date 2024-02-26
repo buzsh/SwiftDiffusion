@@ -448,6 +448,7 @@ struct WorkspaceItemView: View {
     
     if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && trimmedTitle.isEmpty {
       return "New Prompt"
+      return "Untitled"
     }
     
     return trimmedTitle.count <= 45 ? trimmedTitle : "\(trimmedTitle.prefix(45))…"
@@ -456,8 +457,6 @@ struct WorkspaceItemView: View {
   @ViewBuilder
   private func formattedTitleView(_ title: String) -> some View {
     Text(title)
-    //.italic(title == "Untitled" ? true : false)
       .foregroundColor(title == "Untitled" ? .secondary : .primary)
   }
-  
 }
