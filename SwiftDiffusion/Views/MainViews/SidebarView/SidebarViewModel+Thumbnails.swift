@@ -12,7 +12,7 @@ import SwiftData
 
 extension SidebarViewModel {
   func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
-    createImagePreviews(for: sidebarItem, in: model, maxDimension: 1000, compressionFactor: 0.5)
+    createImagePreviews(for: sidebarItem, in: model, maxDimension: 800, compressionFactor: 0.5)
     createImageThumbnails(for: sidebarItem, in: model, maxDimension: 250, compressionFactor: 0.5)
   }
 }

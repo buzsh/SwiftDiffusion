@@ -101,7 +101,7 @@ struct SidebarView: View {
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
     Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
-    sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)
+    sidebarViewModel.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
