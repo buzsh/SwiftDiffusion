@@ -33,12 +33,6 @@ class SidebarViewModel: ObservableObject {
   
   @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
   
-  @Published var changeNotifier: Int = 0
-  
-  func notifyChange() {
-    self.changeNotifier += 1 
-  }
-  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true

@@ -36,13 +36,6 @@ struct PromptView: View {
     disablePromptView = !isWorkspaceItem
   }
   
-  func storeChangesOfSelectedSidebarItem() {
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
-    }
-    updateDisabledPromptViewState()
-  }
-  
   private var leftPane: some View {
     VStack(spacing: 0) {
       
@@ -57,8 +50,6 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          // ApiCheckpointRow().padding(.top, 20)
-          
           HStack {
             CheckpointMenu()
             SamplingMethodMenu()
@@ -94,11 +85,7 @@ struct PromptView: View {
           }
         }
         .disabled(disablePromptView)
-        
-        OnChangeOfCurrentPrompt()
-          .frame(height: 0)
       }
-      
       
       PasteGenerationDataStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,
@@ -146,10 +133,6 @@ struct PromptView: View {
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
-    .onChange(of: sidebarViewModel.changeNotifier) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    
   }
   
 }
