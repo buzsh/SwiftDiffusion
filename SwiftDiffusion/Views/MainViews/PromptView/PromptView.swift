@@ -41,7 +41,7 @@ struct PromptView: View {
       DebugPromptStatusView()
       
       if isPromptTopStatusBarVisible {
-        PromptTopStatusBar(generationDataInPasteboard: generationDataInPasteboard, onPaste: parseAndSetPromptData)
+        PromptTopStatusBar()
           .transition(.move(edge: .top).combined(with: .opacity))
           .animation(.easeInOut(duration: 0.3), value: isPromptTopStatusBarVisible)
       }
