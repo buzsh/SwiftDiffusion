@@ -329,6 +329,7 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
+        sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -356,8 +357,6 @@ struct SidebarView: View {
     if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
       sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
     }
-    
-    //ensureNewPromptWorkspaceItemExists()
     
     if let newItemID = newItemID,
        let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {

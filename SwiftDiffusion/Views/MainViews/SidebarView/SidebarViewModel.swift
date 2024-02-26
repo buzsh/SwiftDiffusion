@@ -93,6 +93,14 @@ class SidebarViewModel: ObservableObject {
     sideBarItem.imageUrls = imageUrls
     savableSidebarItems.append(sideBarItem)
   }
+  /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
+  func updateSavableSidebarItems(forWorkspaceItems workspaceItems: [SidebarItem]) {
+    for sidebarItem in workspaceItems {
+      if sidebarItem.imageUrls.isEmpty == false {
+        savableSidebarItems.append(sidebarItem)
+      }
+    }
+  }
   
   @MainActor
   func createSidebarItemAndSaveToData(title: String = "New Prompt", storedPrompt: StoredPromptModel, imageUrls: [URL], isWorkspaceItem: Bool, in model: ModelContext) -> SidebarItem {
