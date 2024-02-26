@@ -31,15 +31,9 @@ class PromptModel: ObservableObject {
   @Published var clipSkip: Double = 1
   // Additional Settings
   @Published var vaeModel: VaeModel?
-  
-  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
-    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
-      self.vaeModel = matchingModel
-    } else {
-      Debug.log("No VAE Model found with the name \(name)")
-    }
-  }
 }
+
+
 
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
@@ -60,6 +54,24 @@ extension PromptModel {
     self.clipSkip = model.clipSkip
     // Additional Settings
     self.vaeModel = model.vaeModel
+  }
+}
+
+extension PromptModel {
+  func updateSamplingMethod(with name: String) {
+    if Constants.coreMLSamplingMethods.contains(name) || Constants.pythonSamplingMethods.contains(name) {
+      self.samplingMethod = name
+    } else {
+      Debug.log("No sampling method found with the name \(name)")
+    }
+  }
+  
+  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
+    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
+      self.vaeModel = matchingModel
+    } else {
+      Debug.log("No VAE Model found with the name \(name)")
+    }
   }
 }
 

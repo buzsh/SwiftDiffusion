@@ -235,7 +235,7 @@ extension PromptView {
     case "Seed":
       currentPrompt.seed = value
     case "Sampler":
-      currentPrompt.samplingMethod = value
+      currentPrompt.updateSamplingMethod(with: value)
     case "CFG scale":
       if let cfgScaleValue = Double(value) {
         currentPrompt.cfgScale = cfgScaleValue
@@ -254,7 +254,6 @@ extension PromptView {
       }
     case "VAE":
       currentPrompt.updateVaeModel(with: value, in: vaeModelsManager)
-      
     default:
       break
     }
