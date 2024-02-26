@@ -8,12 +8,6 @@
 import Foundation
 import SwiftData
 
-extension SidebarFolder: Equatable {
-  static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
-    lhs.name == rhs.name
-  }
-}
-
 @Model
 class SidebarFolder {
   @Attribute var name: String
@@ -25,9 +19,9 @@ class SidebarFolder {
   }
 }
 
-extension SidebarItem: Equatable {
-  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
-    lhs.id == rhs.id
+extension SidebarFolder: Equatable {
+  static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
+    lhs.name == rhs.name
   }
 }
 
@@ -46,6 +40,12 @@ class SidebarItem: Identifiable {
     self.imageUrls = imageUrls
     self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
+  }
+}
+
+extension SidebarItem: Equatable {
+  static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
+    lhs.id == rhs.id
   }
 }
 
@@ -97,14 +97,6 @@ class StoredCheckpointModel {
     self.type = type
     self.storedCheckpointApiModel = storedCheckpointApiModel
     
-  }
-}
-
-func mapCheckpointModelTypeToStoredCheckpointModelType(_ type: CheckpointModelType?) -> StoredCheckpointModelType? {
-  guard let type = type else { return nil }
-  switch type {
-  case .coreMl: return .coreMl
-  case .python: return .python
   }
 }
 
