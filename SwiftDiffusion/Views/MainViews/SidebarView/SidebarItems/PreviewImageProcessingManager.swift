@@ -30,7 +30,7 @@ class PreviewImageProcessingManager {
   ///   - sidebarItem: The `SidebarItem` for which previews and thumbnails will be generated.
   ///   - model: The model context within which these operations are performed, allowing for data persistence.
   func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
-    createImagePreviews(for: sidebarItem, in: model, maxDimension: 300, compressionFactor: 0.4)
+    createImagePreviews(for: sidebarItem, in: model, maxDimension: 500, compressionFactor: 0.4)
     createImageThumbnails(for: sidebarItem, in: model, maxDimension: 100, compressionFactor: 0.4)
   }
 
