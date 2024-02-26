@@ -34,6 +34,12 @@ struct FilesSection: View {
                   textValue: $userSettings.loraDirectoryPath) {
       await FilePickerService.browseForDirectory()
     }
+    
+    BrowseFileRow(labelText: "VAE models path",
+                  placeholderText: "../stable-diffusion-webui/models/VAE/",
+                  textValue: $userSettings.vaeDirectoryPath) {
+      await FilePickerService.browseForDirectory()
+    }
   }
 }
 

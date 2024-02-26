@@ -13,6 +13,8 @@ extension UserSettings {
     switch type {
     case is LoraModel.Type:
       return directoryUrl(forPath: loraDirectoryPath)
+    case is VaeModel.Type:
+      return directoryUrl(forPath: vaeDirectoryPath)
     default:
       return nil
     }
@@ -31,10 +33,6 @@ extension UserSettings {
   
   var stableDiffusionModelsDirectoryUrl: URL? {
     return directoryUrl(forPath: stableDiffusionModelsPath)
-  }
-  
-  var loraDirectoryUrl: URL? {
-    return directoryUrl(forPath: loraDirectoryPath)
   }
   
   var outputDirectoryUrl: URL? {
