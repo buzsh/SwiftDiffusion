@@ -32,14 +32,16 @@ class SidebarItem: Identifiable {
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]
   @Attribute var imageThumbnailUrls: [URL]?
+  @Attribute var imagePreviewUrls: [URL]?
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], imageThumbnailUrls: [URL]? = nil, isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], imageThumbnailUrls: [URL]? = nil, imagePreviewUrls: [URL]? = nil, isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
     self.imageThumbnailUrls = imageThumbnailUrls
+    self.imagePreviewUrls = imagePreviewUrls
     self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
   }
