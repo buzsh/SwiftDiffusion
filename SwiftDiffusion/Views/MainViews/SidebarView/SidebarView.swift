@@ -433,17 +433,24 @@ struct WorkspaceItemView: View {
       }
     }
     .onChange(of: currentPrompt.positivePrompt) {
-      let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
-      if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && !trimmedPrompt.isEmpty {
-        sidebarViewModel.setSelectedSidebarItemTitle(trimmedPrompt, in: modelContext)
-        
-      } else if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" && trimmedPrompt.isEmpty {
-        sidebarViewModel.setSelectedSidebarItemTitle("Untitled", in: modelContext)
-      }
+      updateTitleBasedOnPrompt(currentPrompt.positivePrompt)
     }
     
   }
   
+  /// Displays the title for a given sidebar item. Applies specific formatting based on the item's title,
+  /// such as italicizing "Untitled" items and adjusting the color to secondary for "Untitled" titles.
+  /// This view builder dynamically generates the appropriate view for display.
+  /// - Parameter title: The title string of the sidebar item.
+  @ViewBuilder private func formattedTitleView(_ title: String) -> some View {
+    Text(title)
+      .foregroundColor(title == "Untitled" ? .secondary : .primary)
+  }
+  
+  /// Determines the appropriate title to display for the sidebar item based on the current prompt.
+  /// It trims whitespace from the `currentPrompt.positivePrompt`, checks if the title should remain as "New Prompt",
+  /// defaults to "Untitled" if the prompt is empty, or truncates the prompt to 45 characters if necessary.
+  /// - Returns: The title string after applying the logic for truncation and defaulting to "Untitled" if needed.
   private var truncatedOrFullTitle: String {
     let trimmedTitle = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
     
@@ -456,9 +463,19 @@ struct WorkspaceItemView: View {
     return trimmedTitle.count <= 45 ? trimmedTitle : "\(trimmedTitle.prefix(45))…"
   }
   
-  @ViewBuilder
-  private func formattedTitleView(_ title: String) -> some View {
-    Text(title)
-      .foregroundColor(title == "Untitled" ? .secondary : .primary)
+  /// Responds to changes in `currentPrompt.positivePrompt` by updating the title of the selected sidebar item.
+  /// If the sidebar item is "New Prompt" and the prompt is not empty, it sets the title to the trimmed prompt.
+  /// If the prompt is empty, it sets the title to "Untitled". This method ensures the sidebar item title
+  /// accurately reflects the current state of `currentPrompt.positivePrompt`.
+  /// - Parameter prompt: The current prompt string to evaluate and potentially use for updating the sidebar item title.
+  private func updateTitleBasedOnPrompt(_ prompt: String) {
+    let trimmedPrompt = prompt.trimmingCharacters(in: .whitespaces)
+    if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" {
+      if !trimmedPrompt.isEmpty {
+        sidebarViewModel.setSelectedSidebarItemTitle(trimmedPrompt, in: modelContext)
+      }
+    } else if trimmedPrompt.isEmpty {
+      sidebarViewModel.setSelectedSidebarItemTitle("Untitled", in: modelContext)
+    }
   }
 }
