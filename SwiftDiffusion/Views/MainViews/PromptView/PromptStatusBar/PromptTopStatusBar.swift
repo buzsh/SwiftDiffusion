@@ -48,8 +48,8 @@ struct PromptTopStatusBar: View {
             Button(action: {
               sidebarViewModel.queueSelectedSidebarItemForSaving()
             }) {
-              Image(systemName: "square.and.arrow.down")
               Text("Save Generated Prompt")
+              Image(systemName: "square.and.arrow.down")
             }
             .buttonStyle(.accessoryBar)
           }
@@ -63,8 +63,8 @@ struct PromptTopStatusBar: View {
               sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
             }
           }) {
-            Image(systemName: "tray.and.arrow.up")
             Text("Copy to Workspace")
+            Image(systemName: "tray.and.arrow.up")
           }
           .buttonStyle(.accessoryBar)
         }
