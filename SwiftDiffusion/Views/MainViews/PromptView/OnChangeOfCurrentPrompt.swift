@@ -69,7 +69,3 @@ struct OnChangeOfCurrentPrompt: View {
     
   }
 }
-
-#Preview {
-  OnChange()
-}

@@ -124,19 +124,3 @@ extension SidebarViewModel {
     return newSidebarItem
   }
 }
-
-
-extension SidebarViewModel {
-  func saveCurrentPromptToSelectedItem(promptModel: PromptModel, selectedItemID: UUID?) {
-    guard let id = selectedItemID,
-          let index = allSidebarItems.firstIndex(where: { $0.id == id }) else { return }
-    
-    let selectedItem = allSidebarItems[index]
-    
-    // Convert PromptModel to StoredPromptModel and save
-    let mapModelData = MapModelData() // Assuming you have this method to convert
-    selectedItem.prompt = mapModelData.toStored(promptModel: promptModel)
-    
-    saveData(in: modelContext) // Save changes to the database
-  }
-}
