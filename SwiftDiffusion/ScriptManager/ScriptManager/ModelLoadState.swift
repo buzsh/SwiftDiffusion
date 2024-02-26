@@ -94,6 +94,7 @@ extension ScriptManager {
       
     } else if isTypeErrorThrown(output: output) {
       updateModelLoadState(to: .failed)
+      modelLoadTypeErrorThrown = true
     }
   }
   
@@ -130,7 +131,8 @@ extension ScriptManager {
   /// Checks if the output indicates a thrown TypeError.
   private func isTypeErrorThrown(output: String) -> Bool {
     let typeErrorMessages = [
-      "TypeError: Cannot convert a MPS Tensor to"
+      "TypeError: Cannot convert a MPS Tensor to",
+      "*** API error: POST: http://127.0.0.1:7860/sdapi/v1/txt2img {'error': 'TypeError'"
     ]
     
     return typeErrorMessages.contains(where: output.contains)
