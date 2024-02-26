@@ -183,6 +183,9 @@ struct PromptView: View {
     .onChange(of: currentPrompt.clipSkip) {
       storeChangesOfSelectedSidebarItem()
     }
+    .onChange(of: currentPrompt.vaeModel) {
+      storeChangesOfSelectedSidebarItem()
+    }
   }
   
 }

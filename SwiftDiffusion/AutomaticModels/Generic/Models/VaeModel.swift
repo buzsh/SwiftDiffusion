@@ -35,3 +35,9 @@ extension VaeModel: EndpointRepresentable {
     Constants.API.Endpoint.Vae.refresh
   }
 }
+
+extension VaeModel: Equatable {
+  static func == (lhs: VaeModel, rhs: VaeModel) -> Bool {
+    return lhs.id == rhs.id
+  }
+}
