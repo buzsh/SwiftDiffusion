@@ -59,11 +59,12 @@ class SidebarViewModel: ObservableObject {
   }
   
   @MainActor
-  func setSelectedSidebarItemTitle(_ title: String) {
+  func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true
     if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
       selectedSidebarItem?.title = title.count > 45 ? String(title.prefix(45)).appending("…") : title
     }
+    saveData(in: model)
   }
   
   private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {

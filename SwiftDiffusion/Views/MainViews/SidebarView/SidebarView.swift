@@ -197,20 +197,7 @@ struct SidebarView: View {
         
         Section(header: Text("Workspace")) {
           ForEach(sortedWorkspaceItems) { item in
-            HStack {
-              if selectedItemID == item.id && item.isWorkspaceItem {
-                Text(currentPrompt.positivePrompt.count <= 45 ? currentPrompt.positivePrompt : "\(currentPrompt.positivePrompt.prefix(45))…")
-                if sidebarViewModel.selectedSidebarItem.title == "New Prompt" {
-                  sidebarViewModel.setSelectedSidebarItemTitle(" ")
-                }
-              } else {
-                Text(item.title)
-              }
-              if item.title == "New Prompt" {
-                Spacer()
-                Image(systemName: "plus.circle")
-              }
-            }
+            WorkspaceItemView(item: item, selectedItemID: $selectedItemID)
             .onChange(of: sortedWorkspaceItems) {
               if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
                 selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
@@ -421,4 +408,38 @@ struct SidebarView: View {
   .environmentObject(SidebarViewModel())
   .frame(width: 200)
   .frame(height: 600)
+}
+
+
+struct WorkspaceItemView: View {
+  @Environment(\.modelContext) private var modelContext
+  var item: SidebarItem
+  @Binding var selectedItemID: UUID?
+  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  
+  var body: some View {
+    HStack {
+      if selectedItemID == item.id && item.isWorkspaceItem {
+        Text(truncatedTitle(from: currentPrompt.positivePrompt))
+      } else {
+        Text(item.title)
+      }
+      if item.title == "New Prompt" {
+        Spacer()
+        Image(systemName: "plus.circle")
+      }
+    }
+    .onChange(of: currentPrompt.positivePrompt) {
+      if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && currentPrompt.positivePrompt.isEmpty == false {
+        sidebarViewModel.setSelectedSidebarItemTitle(" ", in: modelContext)
+      }
+    }
+    
+  }
+  
+  private func truncatedTitle(from title: String) -> String {
+      title.count <= 45 ? title : "\(title.prefix(45))…"
+  }
+  
 }
