@@ -116,6 +116,12 @@ struct PromptControlBar: View {
       updateActionBarButtonItems()
       updateSavableSidebarItemState()
     }
+    .onChange(of: sidebarViewModel.selectedSidebarItem?.imageUrls) {
+      updateSavableSidebarItemState()
+    }
+    .onChange(of: sidebarViewModel.selectedSidebarItem?.isWorkspaceItem) {
+      updateActionBarButtonItems()
+    }
   }
   
   private func updateActionBarButtonItems() {
