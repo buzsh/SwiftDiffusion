@@ -28,8 +28,7 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
-  @State var deletedCheckpointModel: CheckpointModel? = nil
-  @State var showSelectedCheckpointModelWasDeletedAlert: Bool = false
+  @State private var isPromptTopStatusBarVisible: Bool = false
   
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
@@ -41,12 +40,11 @@ struct PromptView: View {
       
       DebugPromptStatusView()
       
-      PromptTopStatusBar(
-        generationDataInPasteboard: generationDataInPasteboard,
-        onPaste: { pasteboardContent in
-          self.parseAndSetPromptData(from: pasteboardContent)
-        }
-      )
+      if isPromptTopStatusBarVisible {
+        PromptTopStatusBar(generationDataInPasteboard: generationDataInPasteboard, onPaste: parseAndSetPromptData)
+          .transition(.move(edge: .top).combined(with: .opacity))
+          .animation(.easeInOut(duration: 0.3), value: isPromptTopStatusBarVisible)
+      }
       
       ScrollView {
         Form {
@@ -129,9 +127,18 @@ struct PromptView: View {
     }
     .onChange(of: sidebarViewModel.selectedSidebarItem) {
       updateDisabledPromptViewState()
+      updatePromptTopStatusBarVisibility()
     }
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
+    }
+  }
+  
+  private func updatePromptTopStatusBarVisibility() {
+    if isPromptTopStatusBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
+      withAnimation(.easeInOut(duration: 0.3)) {
+          isPromptTopStatusBarVisible.toggle()
+      }
     }
   }
   

@@ -17,64 +17,61 @@ struct PromptTopStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" {
-      
-      HStack(alignment: .center) {
-        if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-          Button(action: {
-            sidebarViewModel.queueWorkspaceItemForDeletion()
-          }) {
-            Image(systemName: "xmark")
-            Text("Close")
-          }
-          .buttonStyle(.accessoryBar)
-          Spacer()
-        } else {
-          Button(action: {
-            sidebarViewModel.queueSelectedSidebarItemForDeletion()
-          }) {
-            Image(systemName: "trash")
-            Text("Delete")
-          }
-          .buttonStyle(.accessoryBar)
-          Spacer()
+    HStack(alignment: .center) {
+      if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+        Button(action: {
+          sidebarViewModel.queueWorkspaceItemForDeletion()
+        }) {
+          Image(systemName: "xmark")
+          Text("Close")
         }
-        
-        if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-          
-          if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
-             sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
-            Spacer()
-            Button(action: {
-              sidebarViewModel.queueSelectedSidebarItemForSaving()
-            }) {
-              Text("Save Generated Prompt")
-              Image(systemName: "square.and.arrow.down")
-            }
-            .buttonStyle(.accessoryBar)
-          }
-        } else {
-          Spacer()
-          Button(action: {
-            if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
-              let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
-              let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
-              newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
-              sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
-            }
-          }) {
-            Text("Copy to Workspace")
-            Image(systemName: "tray.and.arrow.up")
-          }
-          .buttonStyle(.accessoryBar)
+        .buttonStyle(.accessoryBar)
+        Spacer()
+      } else {
+        Button(action: {
+          sidebarViewModel.queueSelectedSidebarItemForDeletion()
+        }) {
+          Image(systemName: "trash")
+          Text("Delete")
         }
-        
-        
+        .buttonStyle(.accessoryBar)
+        Spacer()
       }
-      .padding(.horizontal, 12)
-      .frame(height: 30)
-      .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
+      
+      if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+        
+        if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
+           sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+          Spacer()
+          Button(action: {
+            sidebarViewModel.queueSelectedSidebarItemForSaving()
+          }) {
+            Text("Save Generated Prompt")
+            Image(systemName: "square.and.arrow.down")
+          }
+          .buttonStyle(.accessoryBar)
+        }
+      } else {
+        Spacer()
+        Button(action: {
+          if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
+            let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
+            let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
+            newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
+            sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
+          }
+        }) {
+          Text("Copy to Workspace")
+          Image(systemName: "tray.and.arrow.up")
+        }
+        .buttonStyle(.accessoryBar)
+      }
+      
+      
     }
+    .padding(.horizontal, 12)
+    .frame(height: 30)
+    .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
   }
   
   func getPasteboardString() -> String? {
