@@ -11,6 +11,13 @@ import AppKit
 import SwiftData
 
 extension SidebarViewModel {
+  func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
+    createImagePreviews(for: sidebarItem, in: model, maxDimension: 1000, compressionFactor: 0.5)
+    createImageThumbnails(for: sidebarItem, in: model, maxDimension: 250, compressionFactor: 0.5)
+  }
+}
+
+extension SidebarViewModel {
   func createImagePreviews(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 1000, compressionFactor: CGFloat = 0.5) {
     let fileManager = FileManager.default
     guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
