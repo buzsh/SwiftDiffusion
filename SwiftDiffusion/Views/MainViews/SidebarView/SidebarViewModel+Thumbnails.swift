@@ -18,7 +18,7 @@ extension SidebarViewModel {
 }
 
 extension SidebarViewModel {
-  func trashPreviewAndThumbnailAssets(for sidebarItem: SidebarItem, in model: ModelContext, withSound: Bool = false) {
+  func trashPreviewAndThumbnailAssets(for sidebarItem: SidebarItem, in model: ModelContext, withSoundEffect: Bool = false) {
     let fileManager = FileManager.default
     
     func moveToTrash(url: URL) {
@@ -39,7 +39,7 @@ extension SidebarViewModel {
       sidebarItem.imageThumbnailUrls = nil
       self.saveData(in: model)
       
-      if withSound {
+      if withSoundEffect {
         SoundUtility.play(systemSound: .trash)
       }
     }

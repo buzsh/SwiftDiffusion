@@ -80,7 +80,7 @@ struct SidebarView: View {
     guard let itemToDelete = sidebarItem,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
     
-    sidebarViewModel.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSound: true)
+    sidebarViewModel.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
     
     modelContext.delete(sidebarItems[index])
     do {
