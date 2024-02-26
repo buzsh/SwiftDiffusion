@@ -847,11 +847,19 @@
 		29F91D292B8CF91C0047B3C9 /* SidebarItems */ = {
 			isa = PBXGroup;
 			children = (
+				29F91D312B8D41F90047B3C9 /* PreviewImageProcessing */,
 				29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */,
 				29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */,
-				29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */,
 			);
 			path = SidebarItems;
+			sourceTree = "<group>";
+		};
+		29F91D312B8D41F90047B3C9 /* PreviewImageProcessing */ = {
+			isa = PBXGroup;
+			children = (
+				29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */,
+			);
+			path = PreviewImageProcessing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

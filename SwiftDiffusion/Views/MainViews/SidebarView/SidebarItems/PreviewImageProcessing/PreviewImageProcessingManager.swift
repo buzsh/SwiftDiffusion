@@ -15,14 +15,6 @@ class PreviewImageProcessingManager {
   
   private init() {}
   
-  func saveData(in model: ModelContext) {
-    do {
-      try model.save()
-    } catch {
-      Debug.log("Error saving context: \(error)")
-    }
-  }
-  
   /// Creates both image previews and thumbnails for a given sidebar item.
   /// This function first generates image previews with a specified maximum dimension and compression factor,
   /// then generates thumbnails with their own parameters.
@@ -189,6 +181,20 @@ class PreviewImageProcessingManager {
         SoundUtility.play(systemSound: .trash)
       }
     }
+  }
+  
+  /// Attempts to save changes to the model context, encapsulating any database or data storage updates.
+  /// This method is designed to commit any pending modifications held within the model context to the underlying data store,
+  /// ensuring that changes made to the model objects are persisted across sessions.
+  /// If an error occurs during the save operation, it logs the error detail for debugging purposes.
+  /// - Parameter model: The model context that contains the changes to be saved. This context represents a session
+  ///   of work that can be committed to the data store.
+  func saveData(in model: ModelContext) {
+      do {
+          try model.save()
+      } catch {
+          Debug.log("Error saving context: \(error)")
+      }
   }
 }
 
