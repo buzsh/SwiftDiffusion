@@ -118,6 +118,7 @@
 		29F91D2B2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */; };
 		29F91D2D2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */; };
 		29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */; };
+		29F91D332B8D42390047B3C9 /* NSImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D322B8D42390047B3C9 /* NSImageExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -233,6 +234,7 @@
 		29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarWorkspaceItem.swift; sourceTree = "<group>"; };
 		29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewImageProcessingManager.swift; sourceTree = "<group>"; };
 		29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarStoredItemView.swift; sourceTree = "<group>"; };
+		29F91D322B8D42390047B3C9 /* NSImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -858,6 +860,7 @@
 			isa = PBXGroup;
 			children = (
 				29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */,
+				29F91D322B8D42390047B3C9 /* NSImageExtension.swift */,
 			);
 			path = PreviewImageProcessing;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
+				29F91D332B8D42390047B3C9 /* NSImageExtension.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
 				29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */,
