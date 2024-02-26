@@ -423,9 +423,9 @@ struct WorkspaceItemView: View {
   var body: some View {
     HStack {
       if selectedItemID == item.id && item.isWorkspaceItem {
-        Text(truncatedOrFullTitle)
+        formattedTitleView(truncatedOrFullTitle)
       } else {
-        Text(item.title)
+        formattedTitleView(item.title)
       }
       if item.title == "New Prompt" {
         Spacer()
@@ -445,12 +445,19 @@ struct WorkspaceItemView: View {
   
   private var truncatedOrFullTitle: String {
     let trimmedTitle = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
-            
+    
     if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && trimmedTitle.isEmpty {
       return "New Prompt"
     }
-            
+    
     return trimmedTitle.count <= 45 ? trimmedTitle : "\(trimmedTitle.prefix(45))…"
+  }
+  
+  @ViewBuilder
+  private func formattedTitleView(_ title: String) -> some View {
+    Text(title)
+    //.italic(title == "Untitled" ? true : false)
+      .foregroundColor(title == "Untitled" ? .secondary : .primary)
   }
   
 }
