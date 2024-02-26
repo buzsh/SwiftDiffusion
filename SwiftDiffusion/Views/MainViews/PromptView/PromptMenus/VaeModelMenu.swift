@@ -23,7 +23,7 @@ struct VaeModelMenu: View {
         if !isExpanded {
           Text(currentPrompt.vaeModel?.name ?? "None")
             .foregroundStyle(.secondary)
-            .opacity(0.5)
+            .opacity(0.8)
             .lineLimit(1)
             .truncationMode(.tail)
         }
