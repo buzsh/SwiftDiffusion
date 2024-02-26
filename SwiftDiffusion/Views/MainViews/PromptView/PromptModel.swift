@@ -87,7 +87,11 @@ extension PromptModel {
     promptMetadata += "Seed: \(seed)\n"
     promptMetadata += "Batch count: \(batchCount)\n"
     promptMetadata += "Batch size: \(batchSize)\n"
-    promptMetadata += "VAE: \(vaeModel)\n"
+    
+    if let vaeModel = vaeModel {
+      promptMetadata += "VAE: \(vaeModel.name)\n"
+    }
+    
     return promptMetadata
   }
 }
