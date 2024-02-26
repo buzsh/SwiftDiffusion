@@ -11,6 +11,12 @@ import AppKit
 import SwiftData
 
 extension SidebarViewModel {
+  /// Creates both image previews and thumbnails for a given sidebar item.
+  /// This function first generates image previews with a specified maximum dimension and compression factor,
+  /// then generates thumbnails with their own parameters.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` for which previews and thumbnails will be generated.
+  ///   - model: The model context within which these operations are performed, allowing for data persistence.
   func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
     createImagePreviews(for: sidebarItem, in: model, maxDimension: 800, compressionFactor: 0.5)
     createImageThumbnails(for: sidebarItem, in: model, maxDimension: 250, compressionFactor: 0.5)
@@ -18,6 +24,13 @@ extension SidebarViewModel {
 }
 
 extension SidebarViewModel {
+  /// Moves all preview and thumbnail assets for a given sidebar item to the trash.
+  /// This function attempts to move each file referenced in the sidebarItem's imagePreviewUrls and imageThumbnailUrls to the trash.
+  /// Optionally plays a sound effect when the trashing operation is completed.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` whose associated preview and thumbnail files are to be trashed.
+  ///   - model: The model context, allowing for the update of the `SidebarItem` state within the data model.
+  ///   - withSoundEffect: A boolean flag indicating whether a sound effect should be played upon completion. Defaults to false.
   func trashPreviewAndThumbnailAssets(for sidebarItem: SidebarItem, in model: ModelContext, withSoundEffect: Bool = false) {
     let fileManager = FileManager.default
     
@@ -48,6 +61,14 @@ extension SidebarViewModel {
 
 
 extension SidebarViewModel {
+  /// Generates image previews for a given sidebar item and stores them in a specified directory.
+  /// This function resizes and compresses the original images to a specified maximum dimension and compression factor,
+  /// then saves the processed images to the "StoredPromptPreviews" directory.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` for which image previews are being created.
+  ///   - model: The model context used for any necessary data operations related to this process.
+  ///   - maxDimension: The maximum dimension (width or height) for the previews. Defaults to 1000 pixels.
+  ///   - compressionFactor: The JPEG compression factor used when saving the previews. Defaults to 0.5.
   func createImagePreviews(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 1000, compressionFactor: CGFloat = 0.5) {
     let fileManager = FileManager.default
     guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
@@ -97,6 +118,15 @@ extension SidebarViewModel {
 }
 
 extension SidebarViewModel {
+  /// Generates thumbnails for a given sidebar item and stores them in a specified directory.
+  /// This function optionally uses generated previews as a source if available; otherwise, it uses the original images.
+  /// The images are resized and compressed to a specified maximum dimension and compression factor,
+  /// then saved to the "StoredPromptThumbnails" directory.
+  /// - Parameters:
+  ///   - sidebarItem: The `SidebarItem` for which thumbnails are being created.
+  ///   - model: The model context used for any necessary data operations related to this process.
+  ///   - maxDimension: The maximum dimension (width or height) for the thumbnails. Defaults to 250 pixels.
+  ///   - compressionFactor: The JPEG compression factor used when saving the thumbnails. Defaults to 0.5.
   func createImageThumbnails(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 250, compressionFactor: CGFloat = 0.5) {
     let fileManager = FileManager.default
     guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
@@ -149,6 +179,13 @@ extension SidebarViewModel {
 }
 
 extension NSImage {
+  /// Generates JPEG data from the image after resizing it to a specified maximum dimension and applying JPEG compression.
+  /// This method first resizes the image to ensure that its largest dimension does not exceed the specified `maxDimension`,
+  /// maintaining the original aspect ratio. It then converts the resized image to JPEG format with a specified compression factor.
+  /// - Parameters:
+  ///   - maxDimension: The maximum width or height the image should have after resizing.
+  ///   - compressionFactor: The compression quality to use when converting the image to JPEG format. Ranges from 0.0 (most compression) to 1.0 (least compression).
+  /// - Returns: The JPEG data of the resized and compressed image, or `nil` if the image could not be processed.
   func resizedAndCompressedImageData(maxDimension: CGFloat, compressionFactor: CGFloat) -> Data? {
     guard let resizedImage = self.resizedImage(to: maxDimension),
           let tiffRepresentation = resizedImage.tiffRepresentation,
@@ -160,6 +197,11 @@ extension NSImage {
 }
   
 extension NSImage {
+  /// Resizes the image to a specified maximum dimension while maintaining its aspect ratio.
+  /// The image is scaled down such that its largest dimension (width or height) matches the `maxDimension` provided,
+  /// ensuring that the aspect ratio of the original image is preserved.
+  /// - Parameter maxDimension: The maximum width or height the resized image should have.
+  /// - Returns: A new `NSImage` instance representing the resized image, or `nil` if the image could not be resized.
   func resizedImage(to maxDimension: CGFloat) -> NSImage? {
     let originalSize = self.size
     var newSize: CGSize = .zero
@@ -183,6 +225,11 @@ extension NSImage {
 }
 
 extension NSImage {
+  /// Converts the image to JPEG format using a specified compression quality.
+  /// This method generates JPEG data for the image using the provided compression factor.
+  /// - Parameter compressionQuality: The desired compression quality for the JPEG encoding.
+  ///   Values range from 0.0 (maximum compression, lowest quality) to 1.0 (minimum compression, highest quality).
+  /// - Returns: The JPEG data of the image, or `nil` if the image could not be converted.
   func jpegData(compressionQuality: CGFloat) -> Data? {
     guard let tiffRepresentation = self.tiffRepresentation,
           let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
