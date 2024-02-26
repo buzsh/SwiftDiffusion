@@ -129,3 +129,15 @@ class StoredCheckpointApiModel {
     self.config = config
   }
 }
+
+// MARK: Additional Settings
+@Model
+class StoredVaeModel {
+  @Attribute var name: String
+  @Attribute var path: String
+  
+  init(name: String, path: String) {
+    self.name = name
+    self.path = path
+  }
+}
