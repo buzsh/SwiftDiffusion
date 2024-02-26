@@ -116,6 +116,7 @@
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
 		29F91D2B2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */; };
+		29F91D2D2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -229,6 +230,7 @@
 		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarWorkspaceItem.swift; sourceTree = "<group>"; };
+		29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarViewModel+Thumbnails.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +253,7 @@
 				292CE81C2B81BA3D00116D60 /* MapModelData */,
 				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
+				29F91D2C2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
 				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 			);
@@ -952,6 +955,7 @@
 				292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */,
 				29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */,
 				29B5717F2B75AB1E0057DD50 /* HalfMaxWidthView.swift in Sources */,
+				29F91D2D2B8D1A300047B3C9 /* SidebarViewModel+Thumbnails.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
 				292CE8282B82430000116D60 /* SoundUtility.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
