@@ -18,18 +18,18 @@ struct SidebarStoredItemView: View {
   
   var body: some View {
     HStack(alignment: .center, spacing: 8) {
-      if smallPreviewsButtonToggled {
-        CachedPreviewImageView(fallbackUrl: item.imageUrls.last!, imageUrl: $currentSmallThumbnailImageUrl)
+      if smallPreviewsButtonToggled, let smallThumbnailUrl = item.imageThumbnails.last?.url {
+        CachedPreviewImageView(fallbackUrl: smallThumbnailUrl, imageUrl: $currentSmallThumbnailImageUrl)
           .frame(width: 50, height: 65)
           .clipped()
           .clipShape(RoundedRectangle(cornerRadius: 8))
           .shadow(color: .black, radius: 1, x: 0, y: 1)
-        
       }
       
       VStack(alignment: .leading) {
-        if largePreviewsButtonToggled {
-          CachedPreviewImageView(fallbackUrl: item.imagePreviewUrls?.last ?? item.imageUrls.last!, imageUrl: $currentLargeImageUrl)
+        if largePreviewsButtonToggled, let largePreviewInfo = item.imagePreviews.last {
+          CachedPreviewImageView(fallbackUrl: largePreviewInfo.url, imageUrl: $currentLargeImageUrl)
+            .scaledToFit()
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black, radius: 1, x: 0, y: 1)
             .padding(.bottom, 8)

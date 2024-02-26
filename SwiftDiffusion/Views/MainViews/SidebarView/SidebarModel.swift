@@ -26,24 +26,39 @@ extension SidebarFolder: Equatable {
 }
 
 @Model
+class ImageInfo: Identifiable {
+  @Attribute var id: UUID = UUID()
+  @Attribute var url: URL
+  @Attribute var width: CGFloat
+  @Attribute var height: CGFloat
+  
+  init(url: URL, width: CGFloat, height: CGFloat) {
+    self.url = url
+    self.width = width
+    self.height = height
+  }
+}
+
+
+@Model
 class SidebarItem: Identifiable {
   @Attribute var id: UUID = UUID()
   @Attribute var title: String
   @Attribute var timestamp: Date
-  @Attribute var imageUrls: [URL]
-  @Attribute var imageThumbnailUrls: [URL]?
-  @Attribute var imagePreviewUrls: [URL]?
-  @Attribute var imageThumbnailDimensions: [CGFloat:CGFloat]?
-  @Attribute var imagePreviewDimensions: [CGFloat:CGFloat]?
+  @Attribute var imageUrls: [URL] // Consider if this is still necessary or should be replaced entirely by ImageInfos
+  @Relationship var imageThumbnails: [ImageInfo]
+  @Relationship var imagePreviews: [ImageInfo]
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], imageThumbnailUrls: [URL]? = nil, imagePreviewUrls: [URL]? = nil, isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
+  // Assuming your framework doesn't automatically handle relationship instantiation,
+  // you might need to manually initialize these or ensure they're set post-initialization.
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
-    self.imageThumbnailUrls = imageThumbnailUrls
-    self.imagePreviewUrls = imagePreviewUrls
+    self.imageThumbnails = []
+    self.imagePreviews = []
     self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
   }

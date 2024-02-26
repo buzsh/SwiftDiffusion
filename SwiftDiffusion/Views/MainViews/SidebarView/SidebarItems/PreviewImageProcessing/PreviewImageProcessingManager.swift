@@ -46,7 +46,7 @@ class PreviewImageProcessingManager {
       return
     }
     
-    var previewUrls: [URL] = []
+    var previewInfos: [ImageInfo] = []
     
     sidebarItem.imageUrls.forEach { imageUrl in
       guard let image = NSImage(contentsOf: imageUrl) else {
@@ -54,7 +54,8 @@ class PreviewImageProcessingManager {
         return
       }
       
-      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
+      let (imageData, resizedImage) = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor)
+      guard let data = imageData, let resized = resizedImage else {
         Debug.log("[createImagePreviews] Failed to process image at \(imageUrl)")
         return
       }
@@ -73,16 +74,16 @@ class PreviewImageProcessingManager {
         let directoryUrl = newImageUrl.deletingLastPathComponent()
         try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
         
-        try imageData.write(to: newImageUrl)
-        previewUrls.append(newImageUrl)
+        try data.write(to: newImageUrl)
+        let imageInfo = ImageInfo(url: newImageUrl, width: resized.size.width, height: resized.size.height)
+        previewInfos.append(imageInfo)
       } catch {
         Debug.log("[createImagePreviews] Failed to save preview for \(imageUrl): \(error)")
       }
     }
     
-    
     DispatchQueue.main.async {
-      sidebarItem.imagePreviewUrls = previewUrls
+      sidebarItem.imagePreviews = previewInfos
       self.saveData(in: model)
     }
   }
@@ -108,9 +109,12 @@ class PreviewImageProcessingManager {
       return
     }
     
-    var thumbnailUrls: [URL] = []
+    var thumbnailInfos: [ImageInfo] = []
     
-    let sourceImageUrls = sidebarItem.imagePreviewUrls?.isEmpty == false ? sidebarItem.imagePreviewUrls! : sidebarItem.imageUrls
+    let sourceImageUrls = sidebarItem.imagePreviews.isEmpty == false ?
+    sidebarItem.imagePreviews.map { $0.url } : // Extract URLs from imagePreviewInfos
+    sidebarItem.imageUrls // Use original URLs as fallback
+    
     
     sourceImageUrls.forEach { imageUrl in
       guard let image = NSImage(contentsOf: imageUrl) else {
@@ -118,7 +122,8 @@ class PreviewImageProcessingManager {
         return
       }
       
-      guard let imageData = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor) else {
+      let (imageData, resizedImage) = image.resizedAndCompressedImageData(maxDimension: maxDimension, compressionFactor: compressionFactor)
+      guard let data = imageData, let resized = resizedImage else {
         Debug.log("[createImageThumbnails] Failed to process image at \(imageUrl)")
         return
       }
@@ -136,15 +141,17 @@ class PreviewImageProcessingManager {
         let directoryUrl = newImageUrl.deletingLastPathComponent()
         try fileManager.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
         
-        try imageData.write(to: newImageUrl)
-        thumbnailUrls.append(newImageUrl)
+        try data.write(to: newImageUrl)
+        // Note: Using resized.size might not reflect the exact dimensions due to compression, but it's a close approximation.
+        let imageInfo = ImageInfo(url: newImageUrl, width: resized.size.width, height: resized.size.height)
+        thumbnailInfos.append(imageInfo)
       } catch {
         Debug.log("[createImageThumbnails] Failed to save thumbnail for \(imageUrl): \(error)")
       }
     }
     
     DispatchQueue.main.async {
-      sidebarItem.imageThumbnailUrls = thumbnailUrls
+      sidebarItem.imageThumbnails = thumbnailInfos
       self.saveData(in: model)
     }
   }
@@ -159,22 +166,22 @@ class PreviewImageProcessingManager {
   func trashPreviewAndThumbnailAssets(for sidebarItem: SidebarItem, in model: ModelContext, withSoundEffect: Bool = false) {
     let fileManager = FileManager.default
     
-    func moveToTrash(url: URL) {
+    func moveToTrash(imageInfo: ImageInfo) {
       do {
         var resultingUrl: NSURL? = nil
-        try fileManager.trashItem(at: url, resultingItemURL: &resultingUrl)
-        Debug.log("[trashPreviewAndThumbnailAssets] Moved to trash: \(url)")
+        try fileManager.trashItem(at: imageInfo.url, resultingItemURL: &resultingUrl)
+        Debug.log("[trashPreviewAndThumbnailAssets] Moved to trash: \(imageInfo.url)")
       } catch {
-        Debug.log("[trashPreviewAndThumbnailAssets] Failed to move to trash: \(url), error: \(error)")
+        Debug.log("[trashPreviewAndThumbnailAssets] Failed to move to trash: \(imageInfo.url), error: \(error)")
       }
     }
     
-    sidebarItem.imagePreviewUrls?.forEach(moveToTrash)
-    sidebarItem.imageThumbnailUrls?.forEach(moveToTrash)
+    sidebarItem.imagePreviews.forEach(moveToTrash)
+    sidebarItem.imageThumbnails.forEach(moveToTrash)
     
     DispatchQueue.main.async {
-      sidebarItem.imagePreviewUrls = nil
-      sidebarItem.imageThumbnailUrls = nil
+      sidebarItem.imagePreviews = []
+      sidebarItem.imageThumbnails = []
       self.saveData(in: model)
       
       if withSoundEffect {
