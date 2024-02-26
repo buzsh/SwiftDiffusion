@@ -198,7 +198,14 @@ struct SidebarView: View {
         Section(header: Text("Workspace")) {
           ForEach(sortedWorkspaceItems) { item in
             HStack {
-              Text(item.title)
+              if selectedItemID == item.id && item.isWorkspaceItem {
+                Text(currentPrompt.positivePrompt.count <= 45 ? currentPrompt.positivePrompt : "\(currentPrompt.positivePrompt.prefix(45))…")
+                if sidebarViewModel.selectedSidebarItem.title == "New Prompt" {
+                  sidebarViewModel.setSelectedSidebarItemTitle(" ")
+                }
+              } else {
+                Text(item.title)
+              }
               if item.title == "New Prompt" {
                 Spacer()
                 Image(systemName: "plus.circle")
@@ -326,9 +333,6 @@ struct SidebarView: View {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
       }
-      .onChange(of: currentPrompt.positivePrompt) {
-        ensureNewPromptWorkspaceItemExists()
-      }
       .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
         if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
           ensureNewPromptWorkspaceItemExists()
@@ -354,10 +358,18 @@ struct SidebarView: View {
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
       }
     }
+    .onChange(of: currentPrompt.positivePrompt) {
+      ensureNewPromptWorkspaceItemExists()
+    }
   }
   
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
     Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
+    
+    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+    }
+    
     if let newItemID = newItemID,
        let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
       Debug.log("onChange selectItem: \(selectedItem.title)")

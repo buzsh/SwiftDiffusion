@@ -58,6 +58,14 @@ class SidebarViewModel: ObservableObject {
     }
   }
   
+  @MainActor
+  func setSelectedSidebarItemTitle(_ title: String) {
+    shouldCheckForNewSidebarItemToCreate = true
+    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      selectedSidebarItem?.title = title.count > 45 ? String(title.prefix(45)).appending("…") : title
+    }
+  }
+  
   private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
     if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
       return promptTitle.prefix(Constants.Sidebar.itemTitleLength) == sidebarItemTitle.prefix(Constants.Sidebar.itemTitleLength)
