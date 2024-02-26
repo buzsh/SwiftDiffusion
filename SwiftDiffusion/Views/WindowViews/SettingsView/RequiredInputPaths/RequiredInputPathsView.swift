@@ -46,6 +46,20 @@ struct RequiredInputPathsView: View {
               await FilePickerService.browseForDirectory()
             }
             
+            BrowseRequiredFileRow(labelText: "LoRA models path",
+                          placeholderText: "../stable-diffusion-webui/models/Lora/",
+                          textValue: $userSettings.loraDirectoryPath,
+                                  requiresEntry: false) {
+              await FilePickerService.browseForDirectory()
+            }
+            
+            BrowseRequiredFileRow(labelText: "VAE models path",
+                          placeholderText: "../stable-diffusion-webui/models/VAE/",
+                          textValue: $userSettings.vaeDirectoryPath,
+                                  requiresEntry: false) {
+              await FilePickerService.browseForDirectory()
+            }
+            
           }
         }
         .padding(.horizontal, 16)

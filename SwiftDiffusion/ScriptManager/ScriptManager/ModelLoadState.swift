@@ -94,6 +94,7 @@ extension ScriptManager {
       
     } else if isTypeErrorThrown(output: output) {
       updateModelLoadState(to: .failed)
+      modelLoadTypeErrorThrown = true
     }
   }
   
@@ -130,7 +131,8 @@ extension ScriptManager {
   /// Checks if the output indicates a thrown TypeError.
   private func isTypeErrorThrown(output: String) -> Bool {
     let typeErrorMessages = [
-      "TypeError: Cannot convert a MPS Tensor to"
+      "TypeError: Cannot convert a MPS Tensor to",
+      "{'error': 'TypeError', 'detail': '', 'body': '', 'errors': \"Cannot convert a MPS Tensor"
     ]
     
     return typeErrorMessages.contains(where: output.contains)
@@ -155,67 +157,6 @@ extension ScriptManager {
     
     return nil
   }
-  
-  
-  
-  //
-  // MARK: DEPRECATED
-  //
-  func OLDparseAndUpdateModelLoadState(output: String) async {
-    Debug.log(">> \(output)")
-    // ie. >> Update successful for model: DreamShaperXL_v2_Turbo_DpmppSDE.safetensors [4726d3bab1].
-    if output.contains("Update successful for model") {
-      //updateModelLoadState(to: .done)
-    }
-    
-    // Check for model loading time
-    if let _ = output.range(of: #"Model loaded in ([\d\.]+)s"#, options: .regularExpression) {
-      let regex = try! NSRegularExpression(pattern: #"Model loaded in ([\d\.]+)s"#, options: [])
-      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-      if let match = regex.firstMatch(in: output, options: [], range: nsRange),
-         let timeRange = Range(match.range(at: 1), in: output) {
-        let timeString = String(output[timeRange])
-        if let time = Double(timeString) {
-          updateModelLoadTime(with: time)
-        }
-      }
-    }
-    
-    // Check for thrown TypeError messages
-    // ie. TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64. Please use float32 instead.
-    let typeErrorThrownMessages = [
-      "TypeError: Cannot convert a MPS Tensor to"
-    ]
-    
-    if typeErrorThrownMessages.contains(where: output.contains) {
-      //updateModelLoadState(to: .failed)
-      modelLoadTypeErrorThrown = true
-    }
-    // Check for update successful message
-    let successRegex = try! NSRegularExpression(pattern: #"Update successful for model:(.*)"#, options: [])
-    let successNsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-    if let _ = successRegex.firstMatch(in: output, options: [], range: successNsRange) {
-      //updateModelLoadState(to: .done)
-    }
-    
-    // ie. Weights loaded in 3.5s (send model to cpu: 1.1s, load weights from disk: 0.5s, apply weights to model: 0.7s, move model to device: 1.2s).
-    let newPattern = #"Weights loaded in ([\d\.]+)s"#
-    do {
-      let regex = try NSRegularExpression(pattern: newPattern, options: [])
-      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-      
-      if let match = regex.firstMatch(in: output, options: [], range: nsRange),
-         let timeRange = Range(match.range(at: 1), in: output) {
-        let timeString = String(output[timeRange])
-        if let time = Double(timeString) {
-          updateModelLoadTime(with: time)
-        }
-      }
-    } catch {
-      Debug.log("Regex error: \(error.localizedDescription)")
-    }
-  }
-  
 }
 
 // .done:

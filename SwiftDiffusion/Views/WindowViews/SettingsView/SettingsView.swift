@@ -47,7 +47,8 @@ struct SettingsView: View {
             DeveloperSection(userSettings: userSettings)
           }
         }
-        .padding(.top).padding(.horizontal, 14)
+        .padding(.vertical)
+        .padding(.horizontal, 14)
       }
       .frame(maxHeight: .infinity)
       
