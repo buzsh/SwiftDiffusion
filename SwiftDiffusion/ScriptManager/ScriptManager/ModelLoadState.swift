@@ -132,7 +132,7 @@ extension ScriptManager {
   private func isTypeErrorThrown(output: String) -> Bool {
     let typeErrorMessages = [
       "TypeError: Cannot convert a MPS Tensor to",
-      "*** API error: POST: http://127.0.0.1:7860/sdapi/v1/txt2img {'error': 'TypeError'"
+      "{'error': 'TypeError', 'detail': '', 'body': '', 'errors': \"Cannot convert a MPS Tensor"
     ]
     
     return typeErrorMessages.contains(where: output.contains)
