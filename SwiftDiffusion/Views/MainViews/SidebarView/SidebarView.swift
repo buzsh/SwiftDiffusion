@@ -197,19 +197,13 @@ struct SidebarView: View {
         
         Section(header: Text("Workspace")) {
           ForEach(sortedWorkspaceItems) { item in
-            HStack {
-              Text(item.title)
-              if item.title == "New Prompt" {
-                Spacer()
-                Image(systemName: "plus.circle")
+            SidebarWorkspaceItem(item: item, selectedItemID: $selectedItemID)
+              .onChange(of: sortedWorkspaceItems) {
+                if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
+                  selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
+                  sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+                }
               }
-            }
-            .onChange(of: sortedWorkspaceItems) {
-              if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
-                selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
-                sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
-              }
-            }
           }
         }
         
@@ -314,25 +308,8 @@ struct SidebarView: View {
         )
       }
       
-      .onChange(of: selectedItemID) { currentItem, newItemID in
-        Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
-        if let newItemID = newItemID,
-           let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-          Debug.log("onChange selectItem: \(selectedItem.title)")
-          sidebarViewModel.selectedSidebarItem = selectedItem
-          selectedItemName = selectedItem.title
-          let mapModelData = MapModelData()
-          if let storedPromptModel = selectedItem.prompt {
-            let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
-            
-            if selectedItem.title == "New Prompt" {
-              newPrompt.selectedModel = nil
-            }
-            
-            updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
-          }
-        }
-        ensureSelectedSidebarItemForSelectedItemID()
+      .onChange(of: selectedItemID) { currentItemID, newItemID in
+        selectedSidebarItemChanged(from: currentItemID, to: newItemID)
       }
       .onChange(of: sidebarItems) {
         Debug.log("SidebarView.onChange of: sidebarItems")
@@ -343,9 +320,6 @@ struct SidebarView: View {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
       }
-      .onChange(of: currentPrompt.positivePrompt) {
-        ensureNewPromptWorkspaceItemExists()
-      }
       .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
         if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
           ensureNewPromptWorkspaceItemExists()
@@ -355,6 +329,7 @@ struct SidebarView: View {
       .onAppear {
         ensureNewPromptWorkspaceItemExists()
         ensureSelectedSidebarItemForSelectedItemID()
+        sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
       }
       
       DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
@@ -371,6 +346,35 @@ struct SidebarView: View {
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
       }
     }
+    .onChange(of: currentPrompt.positivePrompt) {
+      ensureNewPromptWorkspaceItemExists()
+    }
+  }
+  
+  private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
+    Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
+    
+    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+    }
+    
+    if let newItemID = newItemID,
+       let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
+      Debug.log("onChange selectItem: \(selectedItem.title)")
+      sidebarViewModel.selectedSidebarItem = selectedItem
+      selectedItemName = selectedItem.title
+      let mapModelData = MapModelData()
+      if let storedPromptModel = selectedItem.prompt {
+        let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+        
+        if selectedItem.title == "New Prompt" {
+          newPrompt.selectedModel = nil
+        }
+        
+        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
+      }
+    }
+    ensureSelectedSidebarItemForSelectedItemID()
   }
   
   private func ensureSelectedSidebarItemForSelectedItemID() {

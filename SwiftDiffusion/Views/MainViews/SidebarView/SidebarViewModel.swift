@@ -33,12 +33,6 @@ class SidebarViewModel: ObservableObject {
   
   @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
   
-  @Published var changeNotifier: Int = 0
-  
-  func notifyChange() {
-    self.changeNotifier += 1 
-  }
-  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true
@@ -56,6 +50,15 @@ class SidebarViewModel: ObservableObject {
       selectedSidebarItem?.timestamp = Date()
       saveData(in: model)
     }
+  }
+  
+  @MainActor
+  func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
+    shouldCheckForNewSidebarItemToCreate = true
+    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      selectedSidebarItem?.title = title.count > 45 ? String(title.prefix(45)).appending("…") : title
+    }
+    saveData(in: model)
   }
   
   private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
@@ -89,6 +92,14 @@ class SidebarViewModel: ObservableObject {
   func prepareGeneratedPromptForSaving(sideBarItem: SidebarItem, imageUrls: [URL]) {
     sideBarItem.imageUrls = imageUrls
     savableSidebarItems.append(sideBarItem)
+  }
+  /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
+  func updateSavableSidebarItems(forWorkspaceItems workspaceItems: [SidebarItem]) {
+    for sidebarItem in workspaceItems {
+      if sidebarItem.imageUrls.isEmpty == false {
+        savableSidebarItems.append(sidebarItem)
+      }
+    }
   }
   
   @MainActor

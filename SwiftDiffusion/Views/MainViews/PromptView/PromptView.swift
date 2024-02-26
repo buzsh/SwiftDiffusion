@@ -28,19 +28,9 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
-  @State var deletedCheckpointModel: CheckpointModel? = nil
-  @State var showSelectedCheckpointModelWasDeletedAlert: Bool = false
-  
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
     disablePromptView = !isWorkspaceItem
-  }
-  
-  func storeChangesOfSelectedSidebarItem() {
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
-    }
-    updateDisabledPromptViewState()
   }
   
   private var leftPane: some View {
@@ -48,17 +38,10 @@ struct PromptView: View {
       
       DebugPromptStatusView()
       
-      PromptTopStatusBar(
-        generationDataInPasteboard: generationDataInPasteboard,
-        onPaste: { pasteboardContent in
-          self.parseAndSetPromptData(from: pasteboardContent)
-        }
-      )
+      PromptControlBarView()
       
       ScrollView {
         Form {
-          // ApiCheckpointRow().padding(.top, 20)
-          
           HStack {
             CheckpointMenu()
             SamplingMethodMenu()
@@ -94,11 +77,7 @@ struct PromptView: View {
           }
         }
         .disabled(disablePromptView)
-        
-        OnChangeOfCurrentPrompt()
-          .frame(height: 0)
       }
-      
       
       PasteGenerationDataStatusBar(
         generationDataInPasteboard: generationDataInPasteboard,
@@ -146,12 +125,7 @@ struct PromptView: View {
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
-    .onChange(of: sidebarViewModel.changeNotifier) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    
   }
-  
 }
 
 #Preview {

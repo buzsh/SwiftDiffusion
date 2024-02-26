@@ -28,8 +28,8 @@ struct PasteGenerationDataStatusBar: View {
               onPaste(pasteboardContent)
             }
           }) {
-            Image(systemName: "arrow.up.doc.on.clipboard")
             Text("Paste Generation Data")
+            Image(systemName: "arrow.up.doc.on.clipboard")
           }
           .buttonStyle(.accessoryBar)
           
@@ -47,9 +47,3 @@ struct PasteGenerationDataStatusBar: View {
     return NSPasteboard.general.string(forType: .string)
   }
 }
-
-/*
-#Preview {
-  PasteGenerationDataStatusBar()
-}
-*/
