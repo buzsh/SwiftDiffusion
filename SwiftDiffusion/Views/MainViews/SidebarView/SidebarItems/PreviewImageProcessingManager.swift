@@ -1,5 +1,5 @@
 //
-//  SidebarViewModel+Thumbnails.swift
+//  PreviewImageProcessingManager.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/26/24.
@@ -10,7 +10,19 @@ import Foundation
 import AppKit
 import SwiftData
 
-extension SidebarViewModel {
+class PreviewImageProcessingManager {
+  static let shared = PreviewImageProcessingManager()
+  
+  private init() {}
+  
+  func saveData(in model: ModelContext) {
+    do {
+      try model.save()
+    } catch {
+      Debug.log("Error saving context: \(error)")
+    }
+  }
+  
   /// Creates both image previews and thumbnails for a given sidebar item.
   /// This function first generates image previews with a specified maximum dimension and compression factor,
   /// then generates thumbnails with their own parameters.
@@ -18,12 +30,10 @@ extension SidebarViewModel {
   ///   - sidebarItem: The `SidebarItem` for which previews and thumbnails will be generated.
   ///   - model: The model context within which these operations are performed, allowing for data persistence.
   func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
-    createImagePreviews(for: sidebarItem, in: model, maxDimension: 800, compressionFactor: 0.5)
-    createImageThumbnails(for: sidebarItem, in: model, maxDimension: 250, compressionFactor: 0.5)
+    createImagePreviews(for: sidebarItem, in: model, maxDimension: 500, compressionFactor: 0.4)
+    createImageThumbnails(for: sidebarItem, in: model, maxDimension: 100, compressionFactor: 0.4)
   }
-}
 
-extension SidebarViewModel {
   /// Moves all preview and thumbnail assets for a given sidebar item to the trash.
   /// This function attempts to move each file referenced in the sidebarItem's imagePreviewUrls and imageThumbnailUrls to the trash.
   /// Optionally plays a sound effect when the trashing operation is completed.
@@ -57,10 +67,7 @@ extension SidebarViewModel {
       }
     }
   }
-}
 
-
-extension SidebarViewModel {
   /// Generates image previews for a given sidebar item and stores them in a specified directory.
   /// This function resizes and compresses the original images to a specified maximum dimension and compression factor,
   /// then saves the processed images to the "StoredPromptPreviews" directory.
@@ -115,9 +122,7 @@ extension SidebarViewModel {
       self.saveData(in: model)
     }
   }
-}
 
-extension SidebarViewModel {
   /// Generates thumbnails for a given sidebar item and stores them in a specified directory.
   /// This function optionally uses generated previews as a source if available; otherwise, it uses the original images.
   /// The images are resized and compressed to a specified maximum dimension and compression factor,

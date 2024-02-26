@@ -80,7 +80,7 @@ struct SidebarView: View {
     guard let itemToDelete = sidebarItem,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
     
-    sidebarViewModel.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
+    PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
     
     modelContext.delete(sidebarItems[index])
     do {
@@ -104,7 +104,7 @@ struct SidebarView: View {
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
     Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
-    sidebarViewModel.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
+    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
