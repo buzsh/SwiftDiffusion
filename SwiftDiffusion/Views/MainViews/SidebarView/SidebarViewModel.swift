@@ -33,6 +33,12 @@ class SidebarViewModel: ObservableObject {
   
   @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
   
+  @Published var changeNotifier: Int = 0
+  
+  func notifyChange() {
+    self.changeNotifier += 1 
+  }
+  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true
@@ -116,5 +122,21 @@ extension SidebarViewModel {
     let imageUrls: [URL] = []
     let newSidebarItem = createSidebarItemAndSaveToData(title: "New Prompt", storedPrompt: storedPromptModel, imageUrls: imageUrls, isWorkspaceItem: true, in: model)
     return newSidebarItem
+  }
+}
+
+
+extension SidebarViewModel {
+  func saveCurrentPromptToSelectedItem(promptModel: PromptModel, selectedItemID: UUID?) {
+    guard let id = selectedItemID,
+          let index = allSidebarItems.firstIndex(where: { $0.id == id }) else { return }
+    
+    let selectedItem = allSidebarItems[index]
+    
+    // Convert PromptModel to StoredPromptModel and save
+    let mapModelData = MapModelData() // Assuming you have this method to convert
+    selectedItem.prompt = mapModelData.toStored(promptModel: promptModel)
+    
+    saveData(in: modelContext) // Save changes to the database
   }
 }

@@ -126,7 +126,8 @@ struct PromptView: View {
           .frame(minWidth: 370)
       }
     }
-    .frame(minWidth: isRightPaneVisible ? 740 : 370)
+    OnChangeOfCurrentPrompt()
+    //.frame(minWidth: isRightPaneVisible ? 740 : 370)
     .toolbar {
       ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {
@@ -144,48 +145,10 @@ struct PromptView: View {
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
-    .onChange(of: currentPrompt.isWorkspaceItem) {
+    .onChange(of: sidebarViewModel.changeNotifier) {
       storeChangesOfSelectedSidebarItem()
     }
-    .onChange(of: currentPrompt.selectedModel) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.samplingMethod) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.positivePrompt) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.negativePrompt) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.width) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.height) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.cfgScale) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.samplingSteps) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.seed) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.batchCount) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.batchSize) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.clipSkip) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.vaeModel) {
-      storeChangesOfSelectedSidebarItem()
-    }
+    
   }
   
 }

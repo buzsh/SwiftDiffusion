@@ -115,6 +115,7 @@
 		29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */; };
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
+		29F91D282B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D272B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -227,6 +228,7 @@
 		29F0D3022B76C9DD00BF56CE /* ModelLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadState.swift; sourceTree = "<group>"; };
 		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		29F91D272B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnChangeOfCurrentPrompt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -458,6 +460,7 @@
 			children = (
 				2952BAD82B71B79F002FC885 /* PromptModel.swift */,
 				2952BAD62B71AEFA002FC885 /* PromptView.swift */,
+				29F91D272B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift */,
 				292CE8122B81AE6F00116D60 /* PromptMenus */,
 				29145E702B77D94900BFA64B /* PromptStatusBar */,
 				29B571802B75AE250057DD50 /* PromptRows */,
@@ -994,6 +997,7 @@
 				2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
+				29F91D282B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
 				29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
