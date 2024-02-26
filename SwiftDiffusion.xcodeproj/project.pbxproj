@@ -64,6 +64,8 @@
 		297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */; };
 		2971966B2B71A5AC000F7960 /* Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2971966A2B71A5AC000F7960 /* Delay.swift */; };
 		2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF102B8BE7C30031690E /* CheckpointMenu.swift */; };
+		2975DF142B8C08800031690E /* VaeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF132B8C08800031690E /* VaeModel.swift */; };
+		2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
@@ -173,6 +175,8 @@
 		297196662B719CA5000F7960 /* ScriptManager+TerminateAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptManager+TerminateAll.swift"; sourceTree = "<group>"; };
 		2971966A2B71A5AC000F7960 /* Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delay.swift; sourceTree = "<group>"; };
 		2975DF102B8BE7C30031690E /* CheckpointMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMenu.swift; sourceTree = "<group>"; };
+		2975DF132B8C08800031690E /* VaeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModel.swift; sourceTree = "<group>"; };
+		2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModelMenu.swift; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
 		2996D0952B6ED5B000B487D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -355,6 +359,7 @@
 				29A7BDE22B8A59AD00F9144B /* Components */,
 				2975DF102B8BE7C30031690E /* CheckpointMenu.swift */,
 				292CE8152B81B17200116D60 /* SamplingMethodMenu.swift */,
+				2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */,
 			);
 			path = PromptMenus;
 			sourceTree = "<group>";
@@ -519,7 +524,7 @@
 			isa = PBXGroup;
 			children = (
 				29A1E0C82B81374500B18AC1 /* ModelManager.swift */,
-				29A1E0B72B80F44500B18AC1 /* Loras */,
+				29A1E0B72B80F44500B18AC1 /* Models */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -699,12 +704,13 @@
 			path = AutomaticModels;
 			sourceTree = "<group>";
 		};
-		29A1E0B72B80F44500B18AC1 /* Loras */ = {
+		29A1E0B72B80F44500B18AC1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				29A1E0B82B80F45900B18AC1 /* LoraModel.swift */,
+				2975DF132B8C08800031690E /* VaeModel.swift */,
 			);
-			path = Loras;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		29A1E0C02B810C8C00B18AC1 /* Observers */ = {
@@ -955,6 +961,7 @@
 				29145E7F2B782BB600BFA64B /* AppDocuments.swift in Sources */,
 				29708F902B7EB632004A95AD /* DisplayOptionsBar.swift in Sources */,
 				29B571792B756F320057DD50 /* CheckpointPreferencesView.swift in Sources */,
+				2975DF142B8C08800031690E /* VaeModel.swift in Sources */,
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				29C0F38F2B7AC3380017DD6B /* BrowseFileRow.swift in Sources */,
 				29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */,
@@ -993,6 +1000,7 @@
 				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				29145E782B77DCAE00BFA64B /* PromptBottomStatusBar.swift in Sources */,
 				29C0F3842B7ABF2E0017DD6B /* PromptSection.swift in Sources */,
+				2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */,
 				2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */,
 				29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */,
 				29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */,
