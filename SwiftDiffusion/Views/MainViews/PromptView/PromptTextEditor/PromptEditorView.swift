@@ -60,7 +60,7 @@ struct PromptEditorView: View {
           HalfMaxWidthView {}
           
           Menu {
-            ForEach(loraModelsManager.models, id: \.id) { lora in
+            ForEach(loraModelsManager.models.sorted(by: { $0.name.lowercased() < $1.name.lowercased() }), id: \.id) { lora in
               Button(lora.name) {
                 let loraSyntax = "<lora:\(lora.alias):1>"
                 text += (text.isEmpty ? "" : " ") + loraSyntax
