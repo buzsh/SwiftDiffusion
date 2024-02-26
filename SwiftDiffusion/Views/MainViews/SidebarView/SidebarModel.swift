@@ -31,13 +31,15 @@ class SidebarItem: Identifiable {
   @Attribute var title: String
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]
+  @Attribute var imageThumbnailUrls: [URL]?
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], imageThumbnailUrls: [URL]? = nil, isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
+    self.imageThumbnailUrls = imageThumbnailUrls
     self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
   }
@@ -96,7 +98,6 @@ class StoredCheckpointModel {
     self.path = path
     self.type = type
     self.storedCheckpointApiModel = storedCheckpointApiModel
-    
   }
 }
 
