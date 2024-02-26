@@ -314,25 +314,8 @@ struct SidebarView: View {
         )
       }
       
-      .onChange(of: selectedItemID) { currentItem, newItemID in
-        Debug.log("Selected item ID changed to: \(String(describing: newItemID))")
-        if let newItemID = newItemID,
-           let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-          Debug.log("onChange selectItem: \(selectedItem.title)")
-          sidebarViewModel.selectedSidebarItem = selectedItem
-          selectedItemName = selectedItem.title
-          let mapModelData = MapModelData()
-          if let storedPromptModel = selectedItem.prompt {
-            let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
-            
-            if selectedItem.title == "New Prompt" {
-              newPrompt.selectedModel = nil
-            }
-            
-            updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
-          }
-        }
-        ensureSelectedSidebarItemForSelectedItemID()
+      .onChange(of: selectedItemID) { currentItemID, newItemID in
+        selectedSidebarItemChanged(from: currentItemID, to: newItemID)
       }
       .onChange(of: sidebarItems) {
         Debug.log("SidebarView.onChange of: sidebarItems")
@@ -371,6 +354,27 @@ struct SidebarView: View {
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
       }
     }
+  }
+  
+  private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
+    Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
+    if let newItemID = newItemID,
+       let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
+      Debug.log("onChange selectItem: \(selectedItem.title)")
+      sidebarViewModel.selectedSidebarItem = selectedItem
+      selectedItemName = selectedItem.title
+      let mapModelData = MapModelData()
+      if let storedPromptModel = selectedItem.prompt {
+        let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+        
+        if selectedItem.title == "New Prompt" {
+          newPrompt.selectedModel = nil
+        }
+        
+        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
+      }
+    }
+    ensureSelectedSidebarItemForSelectedItemID()
   }
   
   private func ensureSelectedSidebarItemForSelectedItemID() {
