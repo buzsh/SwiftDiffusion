@@ -68,10 +68,11 @@ extension ContentView {
     ]
     
     if let selectedModel = currentPrompt.selectedModel, let apiModel = selectedModel.checkpointApiModel {
-      overrideSettings = [
-        "sd_model_checkpoint": apiModel.title,
-        "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
-      ]
+      overrideSettings["sd_model_checkpoint"] = apiModel.title
+    }
+    
+    if let vaeModelName = currentPrompt.vaeModel?.name {
+      overrideSettings["sd_vae"] = vaeModelName
     }
     
     payload[PayloadKey.overrideSettings.rawValue] = overrideSettings

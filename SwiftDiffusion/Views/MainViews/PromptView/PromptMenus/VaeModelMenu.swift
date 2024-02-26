@@ -15,7 +15,7 @@ struct VaeModelMenu: View {
   
   var body: some View {
     VStack {
-      ExpandableSectionHeader(title: "VAE", isExpanded: $isExpanded)
+      ExpandableSectionHeader(title: "VAE Settings", isExpanded: $isExpanded)
       
       if isExpanded {
         VStack(alignment: .leading, spacing: 0) {
@@ -27,7 +27,7 @@ struct VaeModelMenu: View {
                 }
               }
             } label: {
-              Label(currentPrompt.vaeModel?.name ?? "None", systemImage: "arkit")
+              Label(currentPrompt.vaeModel?.name ?? "None", systemImage: "line.3.crossed.swirl.circle")
             }
           }
         }

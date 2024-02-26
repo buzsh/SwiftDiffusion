@@ -31,6 +31,14 @@ class PromptModel: ObservableObject {
   @Published var clipSkip: Double = 1
   // Additional Settings
   @Published var vaeModel: VaeModel?
+  
+  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
+    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
+      self.vaeModel = matchingModel
+    } else {
+      Debug.log("No VAE Model found with the name \(name)")
+    }
+  }
 }
 
 extension PromptModel {
@@ -54,6 +62,7 @@ extension PromptModel {
     self.vaeModel = model.vaeModel
   }
 }
+
 
 
 extension PromptModel {
