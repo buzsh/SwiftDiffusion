@@ -29,7 +29,11 @@ class PromptModel: ObservableObject {
   @Published var batchCount: Double = 1
   @Published var batchSize: Double = 1
   @Published var clipSkip: Double = 1
+  // Additional Settings
+  @Published var vaeModel: VaeModel?
 }
+
+
 
 extension PromptModel {
   func updateProperties(from model: PromptModel) {
@@ -48,8 +52,29 @@ extension PromptModel {
     self.batchCount = model.batchCount
     self.batchSize = model.batchSize
     self.clipSkip = model.clipSkip
+    // Additional Settings
+    self.vaeModel = model.vaeModel
   }
 }
+
+extension PromptModel {
+  func updateSamplingMethod(with name: String) {
+    if Constants.coreMLSamplingMethods.contains(name) || Constants.pythonSamplingMethods.contains(name) {
+      self.samplingMethod = name
+    } else {
+      Debug.log("No sampling method found with the name \(name)")
+    }
+  }
+  
+  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
+    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
+      self.vaeModel = matchingModel
+    } else {
+      Debug.log("No VAE Model found with the name \(name)")
+    }
+  }
+}
+
 
 
 extension PromptModel {
@@ -74,6 +99,10 @@ extension PromptModel {
     promptMetadata += "Seed: \(seed)\n"
     promptMetadata += "Batch count: \(batchCount)\n"
     promptMetadata += "Batch size: \(batchSize)\n"
+    
+    if let vaeModel = vaeModel {
+      promptMetadata += "VAE: \(vaeModel.name)\n"
+    }
     
     return promptMetadata
   }

@@ -33,9 +33,9 @@ struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
-  
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
+  @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
   
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager = ScriptManager.shared
@@ -88,7 +88,7 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath

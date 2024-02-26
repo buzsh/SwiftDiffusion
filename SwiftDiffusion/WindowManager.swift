@@ -127,12 +127,15 @@ extension WindowManager: NSWindowDelegate {
   /// - Parameter notification: The notification object containing information about the window close event.
   func windowWillClose(_ notification: Notification) {
     if let window = notification.object as? NSWindow {
-      if window == updatesWindow {
+      switch window {
+      case updatesWindow:
         updatesWindow = nil
-      } else if window == settingsWindow {
+      case settingsWindow:
         settingsWindow = nil
-      } else if window == checkpointManagerWindow {
+      case checkpointManagerWindow:
         checkpointManagerWindow = nil
+      default:
+        break
       }
     }
   }

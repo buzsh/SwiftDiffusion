@@ -40,11 +40,17 @@ class UserSettings: ObservableObject {
   @Published var outputDirectoryPath: String {
     didSet { store.set(outputDirectoryPath, forKey: "outputDirectoryPath") }
   }
-  /// Path to the directory containing the Stable Diffusion models.
+  /// Path to the directory containing the Stable Diffusion LoRA models.
   /// This setting is essential for the application to locate and use the stable diffusion model checkpoints.
   /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
   @Published var loraDirectoryPath: String {
     didSet { store.set(loraDirectoryPath, forKey: "loraDirectoryPath") }
+  }
+  /// Path to the directory containing the Stable Diffusion VAE models.
+  /// This setting is essential for the application to locate and use the stable diffusion model checkpoints.
+  /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
+  @Published var vaeDirectoryPath: String {
+    didSet { store.set(vaeDirectoryPath, forKey: "vaeDirectoryPath") }
   }
   
   
@@ -131,6 +137,7 @@ class UserSettings: ObservableObject {
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
     self.loraDirectoryPath = store.string(forKey: "loraDirectoryPath") ?? ""
+    self.vaeDirectoryPath = store.string(forKey: "vaeDirectoryPath") ?? ""
     
     self.outputDirectoryPath = store.string(forKey: "outputDirectoryPath") ?? ""
     self.killAllPythonProcessesOnTerminate = store.bool(forKey: "killAllPythonProcessesOnTerminate")

@@ -15,6 +15,7 @@ struct CommonPreviews {
     let promptModelPreview = PromptModel()
     let checkpointsManagerPreview = CheckpointsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
+    let vaeModelsManagerPreview = ModelManager<VaeModel>()
     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
     return AnyView(EmptyView())
       .environmentObject(sidebarViewModelPreview)
@@ -22,6 +23,7 @@ struct CommonPreviews {
       .environmentObject(checkpointsManagerPreview)
       .environmentObject(scriptManagerPreview)
       .environmentObject(loraModelsManagerPreview)
+      .environmentObject(vaeModelsManagerPreview)
   }
   
   @MainActor
@@ -35,6 +37,8 @@ struct CommonPreviews {
     
     let checkpointsManagerPreview = CheckpointsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
+    let vaeModelsManagerPreview = ModelManager<VaeModel>()
+    
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
@@ -42,6 +46,7 @@ struct CommonPreviews {
     .environmentObject(promptModelPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
+    .environmentObject(vaeModelsManagerPreview)
     .frame(width: 400, height: 600)
   }
   
@@ -55,6 +60,7 @@ struct CommonPreviews {
     promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
     let checkpointsManagerPreview = CheckpointsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
+    let vaeModelsManagerPreview = ModelManager<VaeModel>()
     
     return ContentView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
@@ -63,6 +69,7 @@ struct CommonPreviews {
     .environmentObject(promptModelPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
+    .environmentObject(vaeModelsManagerPreview)
     //.frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity, minHeight: 500, idealHeight: 800, maxHeight: .infinity)
   }
   

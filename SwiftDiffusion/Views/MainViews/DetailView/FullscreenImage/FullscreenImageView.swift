@@ -12,7 +12,7 @@ struct FullscreenImageView: View {
   var onClose: () -> Void
   
   var body: some View {
-    ZStack(alignment: .topTrailing) {
+    ZStack(alignment: .topLeading) {
       Image(nsImage: image)
         .resizable()
         .aspectRatio(contentMode: .fit)

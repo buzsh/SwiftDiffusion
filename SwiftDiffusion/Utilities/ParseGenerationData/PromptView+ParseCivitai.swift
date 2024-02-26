@@ -129,11 +129,19 @@ extension PromptView {
     
   }
   
+  /// Constructs a positive prompt string from an array of lines, excluding lines that contain specific keywords.
+  ///
+  /// This function iterates over each line of input and appends it to the resulting positive prompt string unless the line contains any of the predefined keywords indicating that it pertains to parameters not related to the positive prompt itself. The predefined keywords include "Negative prompt:", "Steps:", "VAE:", "Size:", "Seed:", "Model:", "Sampler:", "CFG scale:", "Clip skip:". The construction of the positive prompt stops and returns immediately when any of these keywords are encountered in a line, even if it's partway through the input lines.
+  ///
+  /// - Parameter lines: An array of `String.SubSequence` representing the lines of text to be processed into a positive prompt.
+  /// - Returns: A `String` containing the constructed positive prompt, which may be empty if no applicable lines are found or if an excluded keyword is encountered in the first line.
   func buildPositivePrompt(from lines: [String.SubSequence]) -> String {
+    let excludedSubstrings = ["Negative prompt:", "Steps:", "VAE:", "Size:", "Seed:", "Model:", "Sampler:", "CFG scale:", "Clip skip:"]
+    
     var positivePrompt = ""
     for line in lines {
-      if !line.contains("Negative prompt:") {
-        positivePrompt = positivePrompt.appending(line)
+      if !excludedSubstrings.contains(where: line.contains) {
+        positivePrompt += String(line) + "\n"
       } else {
         return positivePrompt
       }
@@ -232,10 +240,18 @@ extension PromptView {
         currentPrompt.width = width
         currentPrompt.height = height
       }
+    case "Width":
+      if let width = Double(value) {
+        currentPrompt.width = width
+      }
+    case "Height":
+      if let height = Double(value) {
+        currentPrompt.height = height
+      }
     case "Seed":
       currentPrompt.seed = value
     case "Sampler":
-      currentPrompt.samplingMethod = value
+      currentPrompt.updateSamplingMethod(with: value)
     case "CFG scale":
       if let cfgScaleValue = Double(value) {
         currentPrompt.cfgScale = cfgScaleValue
@@ -252,7 +268,8 @@ extension PromptView {
       if let batchSize = Double(value) {
         currentPrompt.batchSize = batchSize
       }
-      
+    case "VAE":
+      currentPrompt.updateVaeModel(with: value, in: vaeModelsManager)
     default:
       break
     }

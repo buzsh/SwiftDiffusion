@@ -128,6 +128,7 @@ struct DetailView: View {
         }
         .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
         .buttonStyle(BorderlessButtonStyle())
+        .disabled(selectedImage == nil)
         
         Spacer()
         

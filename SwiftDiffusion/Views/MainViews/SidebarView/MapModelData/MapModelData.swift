@@ -84,8 +84,8 @@ struct MapModelData {
   
   @MainActor
   func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
-    var selectedModel: StoredCheckpointModel?
-    selectedModel = mapCheckpointModelToStoredCheckpointModel(promptModel.selectedModel)
+    let selectedModel = mapCheckpointModelToStoredCheckpointModel(promptModel.selectedModel)
+    let storedVaeModel = mapVaeModelToStoredVaeModel(promptModel.vaeModel)
     return StoredPromptModel(
                           isWorkspaceItem: promptModel.isWorkspaceItem,
                           samplingMethod: promptModel.samplingMethod,
@@ -99,7 +99,8 @@ struct MapModelData {
                           batchCount: promptModel.batchCount,
                           batchSize: promptModel.batchSize,
                           clipSkip: promptModel.clipSkip,
-                          selectedModel: selectedModel
+                          selectedModel: selectedModel,
+                          vaeModel: storedVaeModel
                           )
   }
   
@@ -119,6 +120,25 @@ struct MapModelData {
     promptModel.batchSize = storedPromptModel.batchSize
     promptModel.clipSkip = storedPromptModel.clipSkip
     promptModel.selectedModel = mapStoredCheckpointModelToCheckpointModel(storedPromptModel.selectedModel)
+    promptModel.vaeModel = mapStoredVaeModelToVaeModel(storedPromptModel.vaeModel)
     return promptModel
   }
+}
+
+
+@MainActor
+func mapVaeModelToStoredVaeModel(_ vaeModel: VaeModel?) -> StoredVaeModel? {
+  guard let vaeModel = vaeModel else { return nil }
+  return StoredVaeModel(name: vaeModel.name,
+                        path: vaeModel.path
+  )
+}
+
+@MainActor
+func mapStoredVaeModelToVaeModel(_ storedVaeModel: StoredVaeModel?) -> VaeModel? {
+  guard let storedVaeModel = storedVaeModel else { return nil }
+  
+  return VaeModel(name: storedVaeModel.name,
+                  path: storedVaeModel.path
+  )
 }

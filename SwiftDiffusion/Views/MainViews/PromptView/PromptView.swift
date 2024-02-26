@@ -19,6 +19,7 @@ struct PromptView: View {
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
+  @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
   
   @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
@@ -79,6 +80,8 @@ struct PromptView: View {
           SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
           
           ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
+          
+          VaeModelMenu()
         }
         .padding(.leading, 8).padding(.trailing, 16)
         
@@ -91,6 +94,9 @@ struct PromptView: View {
           }
         }
         .disabled(disablePromptView)
+        
+        OnChangeOfCurrentPrompt()
+          .frame(height: 0)
       }
       
       
@@ -123,7 +129,6 @@ struct PromptView: View {
           .frame(minWidth: 370)
       }
     }
-    .frame(minWidth: isRightPaneVisible ? 740 : 370)
     .toolbar {
       ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {
@@ -141,45 +146,10 @@ struct PromptView: View {
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
-    .onChange(of: currentPrompt.isWorkspaceItem) {
+    .onChange(of: sidebarViewModel.changeNotifier) {
       storeChangesOfSelectedSidebarItem()
     }
-    .onChange(of: currentPrompt.selectedModel) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.samplingMethod) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.positivePrompt) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.negativePrompt) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.width) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.height) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.cfgScale) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.samplingSteps) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.seed) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.batchCount) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.batchSize) {
-      storeChangesOfSelectedSidebarItem()
-    }
-    .onChange(of: currentPrompt.clipSkip) {
-      storeChangesOfSelectedSidebarItem()
-    }
+    
   }
   
 }
