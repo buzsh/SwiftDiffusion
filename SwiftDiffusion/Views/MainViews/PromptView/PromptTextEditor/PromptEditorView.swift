@@ -63,7 +63,11 @@ struct PromptEditorView: View {
             ForEach(loraModelsManager.models.sorted(by: { $0.name.lowercased() < $1.name.lowercased() }), id: \.id) { lora in
               Button(lora.name) {
                 let loraSyntax = "<lora:\(lora.alias):1>"
-                text += (text.isEmpty ? "" : " ") + loraSyntax
+                if let lastCharacter = text.last, !lastCharacter.isWhitespace {
+                  text += " " + loraSyntax
+                } else {
+                  text += loraSyntax
+                }
               }
             }
           } label: {
