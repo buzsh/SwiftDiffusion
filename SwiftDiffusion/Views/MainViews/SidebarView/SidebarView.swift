@@ -198,12 +198,12 @@ struct SidebarView: View {
         Section(header: Text("Workspace")) {
           ForEach(sortedWorkspaceItems) { item in
             WorkspaceItemView(item: item, selectedItemID: $selectedItemID)
-            .onChange(of: sortedWorkspaceItems) {
-              if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
-                selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
-                sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+              .onChange(of: sortedWorkspaceItems) {
+                if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
+                  selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
+                  sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+                }
               }
-            }
           }
         }
         
@@ -436,6 +436,7 @@ struct WorkspaceItemView: View {
       let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
       if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && !trimmedPrompt.isEmpty {
         sidebarViewModel.setSelectedSidebarItemTitle(trimmedPrompt, in: modelContext)
+        
       } else if sidebarViewModel.selectedSidebarItem?.title != "New Prompt" && trimmedPrompt.isEmpty {
         sidebarViewModel.setSelectedSidebarItemTitle("Untitled", in: modelContext)
       }
@@ -448,6 +449,7 @@ struct WorkspaceItemView: View {
     
     if sidebarViewModel.selectedSidebarItem?.title == "New Prompt" && trimmedTitle.isEmpty {
       return "New Prompt"
+    } else if trimmedTitle.isEmpty {
       return "Untitled"
     }
     
