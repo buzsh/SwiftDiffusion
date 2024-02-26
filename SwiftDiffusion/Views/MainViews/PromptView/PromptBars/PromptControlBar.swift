@@ -41,6 +41,7 @@ struct PromptControlBar: View {
   @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isWorkspaceItem: Bool = false
+  @State private var isSavableSidebarItem: Bool = false
   
   private var workspaceItemBar: some View {
     Group {
@@ -53,8 +54,7 @@ struct PromptControlBar: View {
       
       Spacer()
       
-      if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem,
-         sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+      if isSavableSidebarItem {
         Button(action: {
           sidebarViewModel.queueSelectedSidebarItemForSaving()
         }) {
@@ -107,9 +107,14 @@ struct PromptControlBar: View {
     .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
     .onAppear {
       isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem ?? false
+      
+      if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem {
+        isSavableSidebarItem = sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id })
+      }
     }
     .onChange(of: sidebarViewModel.selectedSidebarItem) {
       updateActionBarButtonItems()
+      updateSavableSidebarItemState()
     }
   }
   
@@ -118,6 +123,16 @@ struct PromptControlBar: View {
     isWorkspaceItem != selectedSidebarItemIsWorkspaceItem {
       withAnimation(.easeInOut(duration: 0.2)) {
         isWorkspaceItem.toggle()
+      }
+    }
+  }
+  
+  private func updateSavableSidebarItemState() {
+    if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem {
+      if isSavableSidebarItem != sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+          isSavableSidebarItem.toggle()
+        }
       }
     }
   }
