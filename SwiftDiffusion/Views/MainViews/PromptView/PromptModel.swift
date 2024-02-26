@@ -29,6 +29,8 @@ class PromptModel: ObservableObject {
   @Published var batchCount: Double = 1
   @Published var batchSize: Double = 1
   @Published var clipSkip: Double = 1
+  // Additional Settings
+  @Published var vaeModel: VaeModel?
 }
 
 extension PromptModel {
@@ -48,6 +50,8 @@ extension PromptModel {
     self.batchCount = model.batchCount
     self.batchSize = model.batchSize
     self.clipSkip = model.clipSkip
+    // Additional Settings
+    self.vaeModel = model.vaeModel
   }
 }
 
@@ -74,7 +78,7 @@ extension PromptModel {
     promptMetadata += "Seed: \(seed)\n"
     promptMetadata += "Batch count: \(batchCount)\n"
     promptMetadata += "Batch size: \(batchSize)\n"
-    
+    promptMetadata += "VAE: \(vaeModel)\n"
     return promptMetadata
   }
 }
