@@ -22,19 +22,20 @@ struct CheckpointMenu: View {
       HStack {
         Menu {
           Section(header: Text("􀢇 CoreML")) {
-            ForEach(checkpointsManager.models.filter { $0.type == .coreMl }) { model in
-              Button(model.name) {
-                currentPrompt.selectedModel = model
+            ForEach(checkpointsManager.models.filter { $0.type == .coreMl }
+              .sorted(by: { $0.name.lowercased() < $1.name.lowercased() })) { model in
+                Button(model.name) {
+                  currentPrompt.selectedModel = model
+                }
               }
-            }
           }
           Section(header: Text("􁻴 Python")) {
-            ForEach(checkpointsManager.models.filter { $0.type == .python }) { model in
-              Button(model.name) {
-                currentPrompt.selectedModel = model
+            ForEach(checkpointsManager.models.filter { $0.type == .python }
+              .sorted(by: { $0.name.lowercased() < $1.name.lowercased() })) { model in
+                Button(model.name) {
+                  currentPrompt.selectedModel = model
+                }
               }
-              .disabled(checkpointsManager.hasLoadedInitialCheckpointDataFromApi == false)
-            }
           }
         } label: {
           Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
