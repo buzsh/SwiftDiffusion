@@ -73,12 +73,10 @@ struct CheckpointMenu: View {
         title: Text("MPS Framework TypeError"),
         message: Text(message),
         primaryButton: .default(Text("Open Engine Settings")) {
-          currentPrompt.selectedModel = nil
           scriptManager.modelLoadTypeErrorThrown = false
           WindowManager.shared.showSettingsWindow(withTab: SettingsTab.engine)
         },
         secondaryButton: .cancel(Text("Ignore")) {
-          currentPrompt.selectedModel = nil
           scriptManager.modelLoadTypeErrorThrown = false
         }
       )
