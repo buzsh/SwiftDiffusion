@@ -81,7 +81,10 @@ extension SidebarViewModel {
     
     var thumbnailUrls: [URL] = []
     
-    sidebarItem.imageUrls.forEach { imageUrl in
+    // Determine which set of URLs to use for generating thumbnails
+    let sourceImageUrls = sidebarItem.imagePreviewUrls?.isEmpty == false ? sidebarItem.imagePreviewUrls! : sidebarItem.imageUrls
+    
+    sourceImageUrls.forEach { imageUrl in
       guard let image = NSImage(contentsOf: imageUrl) else {
         Debug.log("[createImageThumbnails] Failed to load image at \(imageUrl)")
         return
