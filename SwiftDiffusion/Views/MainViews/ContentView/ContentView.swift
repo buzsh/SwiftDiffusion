@@ -273,6 +273,11 @@ struct ContentView: View {
         
       }
     }
+    .onChange(of: scriptManager.modelLoadState) {
+      if scriptManager.modelLoadState == .failed && scriptManager.genStatus == .preparingToGenerate {
+        scriptManager.genStatus = .idle
+      }
+    }
     
   }
   
