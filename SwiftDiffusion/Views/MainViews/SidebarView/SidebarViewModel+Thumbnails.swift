@@ -18,6 +18,36 @@ extension SidebarViewModel {
 }
 
 extension SidebarViewModel {
+  func trashPreviewAndThumbnailAssets(for sidebarItem: SidebarItem, in model: ModelContext, withSound: Bool = false) {
+    let fileManager = FileManager.default
+    
+    func moveToTrash(url: URL) {
+      do {
+        var resultingUrl: NSURL? = nil
+        try fileManager.trashItem(at: url, resultingItemURL: &resultingUrl)
+        Debug.log("[trashPreviewAndThumbnailAssets] Moved to trash: \(url)")
+      } catch {
+        Debug.log("[trashPreviewAndThumbnailAssets] Failed to move to trash: \(url), error: \(error)")
+      }
+    }
+    
+    sidebarItem.imagePreviewUrls?.forEach(moveToTrash)
+    sidebarItem.imageThumbnailUrls?.forEach(moveToTrash)
+    
+    DispatchQueue.main.async {
+      sidebarItem.imagePreviewUrls = nil
+      sidebarItem.imageThumbnailUrls = nil
+      self.saveData(in: model)
+      
+      if withSound {
+        SoundUtility.play(systemSound: .trash)
+      }
+    }
+  }
+}
+
+
+extension SidebarViewModel {
   func createImagePreviews(for sidebarItem: SidebarItem, in model: ModelContext, maxDimension: CGFloat = 1000, compressionFactor: CGFloat = 0.5) {
     let fileManager = FileManager.default
     guard let outputDirectoryUrl = UserSettings.shared.outputDirectoryUrl,
@@ -120,43 +150,41 @@ extension SidebarViewModel {
 
 extension NSImage {
   func resizedAndCompressedImageData(maxDimension: CGFloat, compressionFactor: CGFloat) -> Data? {
-    guard let resizedImage = self.resizedImage(maxDimension: maxDimension),
+    guard let resizedImage = self.resizedImage(to: maxDimension),
           let tiffRepresentation = resizedImage.tiffRepresentation,
           let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
       return nil
     }
     return bitmapImage.representation(using: .jpeg, properties: [.compressionFactor: compressionFactor])
   }
+}
   
-  func resizedImage(maxDimension: CGFloat) -> NSImage? {
+extension NSImage {
+  func resizedImage(to maxDimension: CGFloat) -> NSImage? {
+    let originalSize = self.size
     var newSize: CGSize = .zero
-    let width = self.size.width
-    let height = self.size.height
     
-    let aspectRatio = width / height
-    if width > height {
-      newSize.width = maxDimension
-      newSize.height = maxDimension / aspectRatio
-    } else {
-      newSize.height = maxDimension
-      newSize.width = maxDimension * aspectRatio
-    }
+    let widthRatio = maxDimension / originalSize.width
+    let heightRatio = maxDimension / originalSize.height
+    let ratio = min(widthRatio, heightRatio)
+    
+    newSize.width = floor(originalSize.width * ratio)
+    newSize.height = floor(originalSize.height * ratio)
     
     let newImage = NSImage(size: newSize)
     newImage.lockFocus()
-    self.draw(in: CGRect(origin: .zero, size: newSize), from: CGRect(origin: .zero, size: self.size), operation: .copy, fraction: 1.0)
+    self.draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height),
+              from: NSRect(x: 0, y: 0, width: originalSize.width, height: originalSize.height),
+              operation: .copy, fraction: 1.0)
     newImage.unlockFocus()
     
     return newImage
   }
 }
 
-
-
 extension NSImage {
   func jpegData(compressionQuality: CGFloat) -> Data? {
-    guard let resizedImage = self.resizedImage(maxDimension: 250),
-          let tiffRepresentation = resizedImage.tiffRepresentation,
+    guard let tiffRepresentation = self.tiffRepresentation,
           let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
       return nil
     }
