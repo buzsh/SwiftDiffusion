@@ -15,7 +15,7 @@
 		290A34B62B7D597C00963C6E /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B52B7D597C00963C6E /* SidebarViewModel.swift */; };
 		29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */; };
 		29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */; };
-		29145E732B77D99400BFA64B /* PromptTopActionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E722B77D99400BFA64B /* PromptTopActionBar.swift */; };
+		29145E732B77D99400BFA64B /* PromptControlBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E722B77D99400BFA64B /* PromptControlBar.swift */; };
 		29145E762B77DBDA00BFA64B /* CommonPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E752B77DBDA00BFA64B /* CommonPreviews.swift */; };
 		29145E782B77DCAE00BFA64B /* PromptBottomStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */; };
 		29145E7A2B77DCEB00BFA64B /* DebugPromptActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E792B77DCEB00BFA64B /* DebugPromptActionView.swift */; };
@@ -127,7 +127,7 @@
 		290A34B52B7D597C00963C6E /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
 		29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateDebugInfo.swift; sourceTree = "<group>"; };
 		29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPromptStatusView.swift; sourceTree = "<group>"; };
-		29145E722B77D99400BFA64B /* PromptTopActionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTopActionBar.swift; sourceTree = "<group>"; };
+		29145E722B77D99400BFA64B /* PromptControlBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptControlBar.swift; sourceTree = "<group>"; };
 		29145E752B77DBDA00BFA64B /* CommonPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonPreviews.swift; sourceTree = "<group>"; };
 		29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptBottomStatusBar.swift; sourceTree = "<group>"; };
 		29145E792B77DCEB00BFA64B /* DebugPromptActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPromptActionView.swift; sourceTree = "<group>"; };
@@ -270,7 +270,7 @@
 		29145E702B77D94900BFA64B /* PromptBars */ = {
 			isa = PBXGroup;
 			children = (
-				29145E722B77D99400BFA64B /* PromptTopActionBar.swift */,
+				29145E722B77D99400BFA64B /* PromptControlBar.swift */,
 				29145E772B77DCAE00BFA64B /* PromptBottomStatusBar.swift */,
 				29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */,
 			);
@@ -961,7 +961,7 @@
 				297196672B719CA5000F7960 /* ScriptManager+TerminateAll.swift in Sources */,
 				29C0F3882B7ABF430017DD6B /* DeveloperSection.swift in Sources */,
 				29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */,
-				29145E732B77D99400BFA64B /* PromptTopActionBar.swift in Sources */,
+				29145E732B77D99400BFA64B /* PromptControlBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
 				290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */,

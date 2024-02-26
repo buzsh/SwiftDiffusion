@@ -1,5 +1,5 @@
 //
-//  PromptTopActionBar.swift
+//  PromptControlBar.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/10/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PromptTopActionBar: View {
+struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarViewModel: SidebarViewModel

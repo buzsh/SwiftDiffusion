@@ -28,7 +28,7 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
-  @State private var isPromptTopActionBarVisible: Bool = false
+  @State private var isPromptControlBarVisible: Bool = false
   
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
@@ -40,10 +40,10 @@ struct PromptView: View {
       
       DebugPromptStatusView()
       
-      if isPromptTopActionBarVisible {
-        PromptTopActionBar()
+      if isPromptControlBarVisible {
+        PromptControlBar()
           .transition(.move(edge: .top).combined(with: .opacity))
-          .animation(.easeInOut(duration: 0.3), value: isPromptTopStatusBarVisible)
+          .animation(.easeInOut(duration: 0.3), value: isPromptControlBarVisible)
       }
       
       ScrollView {
@@ -127,17 +127,17 @@ struct PromptView: View {
     }
     .onChange(of: sidebarViewModel.selectedSidebarItem) {
       updateDisabledPromptViewState()
-      updatePromptTopActionBarVisibility()
+      updatePromptControlBarVisibility()
     }
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
   }
   
-  private func updatePromptTopActionBarVisibility() {
-    if isPromptTopActionBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
+  private func updatePromptControlBarVisibility() {
+    if isPromptControlBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
       withAnimation(.easeInOut(duration: 0.3)) {
-        isPromptTopActionBarVisible.toggle()
+        isPromptControlBarVisible.toggle()
       }
     }
   }
