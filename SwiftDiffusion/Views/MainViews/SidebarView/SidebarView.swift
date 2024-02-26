@@ -69,6 +69,9 @@ struct SidebarView: View {
     sidebarViewModel.saveData(in: modelContext)
   }
   private func deleteSavedItem() {
+    if let itemToDelete = sidebarViewModel.itemToDelete {
+      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
+    }
     deleteSidebarItem(sidebarViewModel.itemToDelete)
   }
   
@@ -79,8 +82,6 @@ struct SidebarView: View {
   private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {
     guard let itemToDelete = sidebarItem,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
-    
-    PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
     
     modelContext.delete(sidebarItems[index])
     do {
