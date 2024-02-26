@@ -19,6 +19,7 @@ struct PromptView: View {
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
+  @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
   
   @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
@@ -79,6 +80,8 @@ struct PromptView: View {
           SeedRow(seed: $currentPrompt.seed, controlButtonLayout: .beside)
           
           ExportSelectionRow(batchCount: $currentPrompt.batchCount, batchSize: $currentPrompt.batchSize)
+          
+          VaeModelMenu()
         }
         .padding(.leading, 8).padding(.trailing, 16)
         
