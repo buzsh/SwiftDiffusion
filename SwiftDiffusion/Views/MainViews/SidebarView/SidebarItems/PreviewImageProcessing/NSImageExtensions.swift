@@ -1,5 +1,5 @@
 //
-//  NSImageExtension.swift
+//  NSImageExtensions.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/26/24.
