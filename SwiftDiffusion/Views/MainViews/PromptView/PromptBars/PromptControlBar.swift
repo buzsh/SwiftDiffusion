@@ -7,6 +7,33 @@
 
 import SwiftUI
 
+struct PromptControlBarView: View {
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @State private var isPromptControlBarVisible: Bool = false
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      if isPromptControlBarVisible {
+        PromptControlBar()
+          .transition(.move(edge: .top).combined(with: .opacity))
+          .animation(.easeInOut(duration: 0.3), value: isPromptControlBarVisible)
+      }
+    }
+    .onChange(of: sidebarViewModel.selectedSidebarItem) {
+      updatePromptControlBarVisibility()
+    }
+  }
+  
+  private func updatePromptControlBarVisibility() {
+    if isPromptControlBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
+      withAnimation(.easeInOut(duration: 0.3)) {
+        isPromptControlBarVisible.toggle()
+      }
+    }
+  }
+}
+
+
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel

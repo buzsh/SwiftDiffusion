@@ -28,8 +28,6 @@ struct PromptView: View {
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
-  @State private var isPromptControlBarVisible: Bool = false
-  
   func updateDisabledPromptViewState() {
     guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
     disablePromptView = !isWorkspaceItem
@@ -40,11 +38,7 @@ struct PromptView: View {
       
       DebugPromptStatusView()
       
-      if isPromptControlBarVisible {
-        PromptControlBar()
-          .transition(.move(edge: .top).combined(with: .opacity))
-          .animation(.easeInOut(duration: 0.3), value: isPromptControlBarVisible)
-      }
+      PromptControlBarView()
       
       ScrollView {
         Form {
@@ -127,21 +121,11 @@ struct PromptView: View {
     }
     .onChange(of: sidebarViewModel.selectedSidebarItem) {
       updateDisabledPromptViewState()
-      updatePromptControlBarVisibility()
     }
     .onChange(of: sidebarViewModel.itemToSave) {
       updateDisabledPromptViewState()
     }
   }
-  
-  private func updatePromptControlBarVisibility() {
-    if isPromptControlBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
-      withAnimation(.easeInOut(duration: 0.3)) {
-        isPromptControlBarVisible.toggle()
-      }
-    }
-  }
-  
 }
 
 #Preview {
