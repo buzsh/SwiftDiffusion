@@ -116,6 +116,7 @@
 		29F6D5EB2B72B15E00613242 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F6D5EA2B72B15E00613242 /* Metal.framework */; };
 		29F6D5EE2B72BCBA00613242 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 29F6D5ED2B72BCBA00613242 /* CompactSlider */; };
 		29F91D282B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D272B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift */; };
+		29F91D2B2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -229,6 +230,7 @@
 		29F0D3062B76F66A00BF56CE /* GenerationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationStatus.swift; sourceTree = "<group>"; };
 		29F6D5EA2B72B15E00613242 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		29F91D272B8C39920047B3C9 /* OnChangeOfCurrentPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnChangeOfCurrentPrompt.swift; sourceTree = "<group>"; };
+		29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarWorkspaceItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,8 +252,9 @@
 				291635A42B7EAEAB00D47EEF /* Components */,
 				292CE81C2B81BA3D00116D60 /* MapModelData */,
 				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
-				290A34B12B7C894500963C6E /* SidebarView.swift */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
+				290A34B12B7C894500963C6E /* SidebarView.swift */,
+				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 			);
 			path = SidebarView;
 			sourceTree = "<group>";
@@ -840,6 +843,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		29F91D292B8CF91C0047B3C9 /* SidebarItems */ = {
+			isa = PBXGroup;
+			children = (
+				29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */,
+			);
+			path = SidebarItems;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -985,6 +996,7 @@
 				2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */,
 				29A7BDE42B8A59C600F9144B /* ExpandableSectionHeader.swift in Sources */,
 				2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */,
+				29F91D2B2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift in Sources */,
 				2916F33D2B72867C001D14B9 /* FileRowView.swift in Sources */,
 				2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */,
 				290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */,
