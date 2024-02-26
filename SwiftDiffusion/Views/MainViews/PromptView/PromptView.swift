@@ -94,6 +94,9 @@ struct PromptView: View {
           }
         }
         .disabled(disablePromptView)
+        
+        OnChangeOfCurrentPrompt()
+          .frame(height: 0)
       }
       
       
@@ -126,8 +129,6 @@ struct PromptView: View {
           .frame(minWidth: 370)
       }
     }
-    OnChangeOfCurrentPrompt()
-    //.frame(minWidth: isRightPaneVisible ? 740 : 370)
     .toolbar {
       ToolbarItem(placement: .navigation) {
         if userSettings.showDeveloperInterface {

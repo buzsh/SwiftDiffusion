@@ -240,6 +240,14 @@ extension PromptView {
         currentPrompt.width = width
         currentPrompt.height = height
       }
+    case "Width":
+      if let width = Double(value) {
+        currentPrompt.width = width
+      }
+    case "Height":
+      if let height = Double(value) {
+        currentPrompt.height = height
+      }
     case "Seed":
       currentPrompt.seed = value
     case "Sampler":
