@@ -18,7 +18,9 @@ struct SwiftDiffusionApp: App {
   let sidebarViewModel = SidebarViewModel()
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
+  
   let loraModelsManager = ModelManager<LoraModel>()
+  let vaeModelsManager = ModelManager<VaeModel>()
   
   init() {
     let fileManager = FileManager.default
@@ -55,6 +57,7 @@ struct SwiftDiffusionApp: App {
         .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)
         .environmentObject(loraModelsManager)
+        .environmentObject(vaeModelsManager)
     }
     .modelContainer(modelContainer)
     .windowToolbarStyle(.unified(showsTitle: false))

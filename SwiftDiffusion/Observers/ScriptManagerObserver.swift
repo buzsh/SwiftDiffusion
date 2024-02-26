@@ -14,14 +14,16 @@ class ScriptManagerObserver {
   var userSettings: UserSettings
   var checkpointsManager: CheckpointsManager
   var loraModelsManager: ModelManager<LoraModel>
+  var vaeModelsManager: ModelManager<VaeModel>
   
   private var cancellables: Set<AnyCancellable> = []
   
-  init(scriptManager: ScriptManager, userSettings: UserSettings, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
+  init(scriptManager: ScriptManager, userSettings: UserSettings, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>, vaeModelsManager: ModelManager<VaeModel>) {
     self.scriptManager = scriptManager
     self.userSettings = userSettings
     self.checkpointsManager = checkpointsManager
     self.loraModelsManager = loraModelsManager
+    self.vaeModelsManager = vaeModelsManager
     
     setupObservers()
   }
@@ -45,6 +47,12 @@ class ScriptManagerObserver {
         self?.loraDirectoryPathDidChange(newPath)
       }
       .store(in: &cancellables)
+    
+    userSettings.$vaeDirectoryPath
+      .sink { [weak self] newPath in
+        self?.vaeDirectoryPathDidChange(newPath)
+      }
+      .store(in: &cancellables)
   }
   
   
@@ -54,6 +62,7 @@ class ScriptManagerObserver {
       Debug.log("[ScriptManagerObserver] newState.isActive")
       checkpointsManager.startObservingDirectory()
       loraModelsManager.startObservingDirectory()
+      vaeModelsManager.startObservingDirectory()
       
       if let serviceUrl = scriptManager.serviceUrl {
         checkpointsManager.configureApiManager(with: serviceUrl.absoluteString)
@@ -62,6 +71,7 @@ class ScriptManagerObserver {
     } else {
       checkpointsManager.stopObservingDirectory()
       loraModelsManager.stopObservingDirectory()
+      vaeModelsManager.stopObservingDirectory()
     }
   }
   
@@ -75,6 +85,12 @@ class ScriptManagerObserver {
     Debug.log("loraDirectoryPathDidChange newPath: \(newPath)")
     loraModelsManager.stopObservingDirectory()
     loraModelsManager.startObservingDirectory()
+  }
+  
+  private func vaeDirectoryPathDidChange(_ newPath: String = "") {
+    Debug.log("vaeDirectoryPathDidChange newPath: \(newPath)")
+    vaeModelsManager.stopObservingDirectory()
+    vaeModelsManager.startObservingDirectory()
   }
   
   deinit {
