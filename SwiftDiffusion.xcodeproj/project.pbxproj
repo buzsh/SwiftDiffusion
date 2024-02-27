@@ -123,6 +123,7 @@
 		29F91D2D2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */; };
 		29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */; };
 		29F91D332B8D42390047B3C9 /* NSImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D322B8D42390047B3C9 /* NSImage+Extensions.swift */; };
+		29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB923E2B8DAA660023C7C5 /* ShareButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -243,6 +244,7 @@
 		29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewImageProcessingManager.swift; sourceTree = "<group>"; };
 		29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarStoredItemView.swift; sourceTree = "<group>"; };
 		29F91D322B8D42390047B3C9 /* NSImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Extensions.swift"; sourceTree = "<group>"; };
+		29FB923E2B8DAA660023C7C5 /* ShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
+				29FB923E2B8DAA660023C7C5 /* ShareButton.swift */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
 				292CE8252B81C0B300116D60 /* FileRow */,
 				29C0F3692B79D2BA0017DD6B /* FileHierarchy */,
@@ -1008,6 +1011,7 @@
 				2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */,
 				29C0F38F2B7AC3380017DD6B /* BrowseFileRow.swift in Sources */,
 				29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */,
+				29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */,
 				2916F3372B72859D001D14B9 /* DetailView.swift in Sources */,
 				29C0F3822B7ABF210017DD6B /* FilesSection.swift in Sources */,
 				29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */,
