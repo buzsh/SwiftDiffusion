@@ -20,19 +20,15 @@ struct SidebarStoredItemView: View {
   
   var body: some View {
     HStack(alignment: .center, spacing: 8) {
-      if smallPreviewsButtonToggled {
-        CachedPreviewImageView(imageInfo: thumbnailInfo)
-          //.resizable() // Make sure the image can be resized
-          .scaledToFit()
-          .frame(width: 50, height: 65)
-          .clipped()
+      if smallPreviewsButtonToggled, let thumbnailUrl = thumbnailInfo?.url {
+        CachedThumbnailImageView(imageUrl: thumbnailUrl, width: 70, height: 70)
           .clipShape(RoundedRectangle(cornerRadius: 8))
           .shadow(color: .black, radius: 1, x: 0, y: 1)
       }
       
       VStack(alignment: .leading) {
-        if largePreviewsButtonToggled {
-          CachedPreviewImageView(imageInfo: previewInfo)
+        if largePreviewsButtonToggled, let largePreviewInfo = previewInfo {
+          CachedPreviewImageView(imageInfo: largePreviewInfo)
             .scaledToFill()
             .frame(width: sidebarViewModel.currentWidth)
             .clipShape(RoundedRectangle(cornerRadius: 12))
