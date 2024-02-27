@@ -275,14 +275,10 @@
 		290A34AE2B7C432100963C6E /* SidebarView */ = {
 			isa = PBXGroup;
 			children = (
-				29169D0C2B8EAD260099A9C5 /* SidebarModels */,
-				29169D032B8EA7A40099A9C5 /* StoredModels */,
 				291635A42B7EAEAB00D47EEF /* Components */,
-				292CE81C2B81BA3D00116D60 /* MapModelData */,
+				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
-				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
-				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 			);
 			path = SidebarView;
 			sourceTree = "<group>";
@@ -311,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				29145E752B77DBDA00BFA64B /* CommonPreviews.swift */,
+				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
 			);
 			path = CommonPreviews;
 			sourceTree = "<group>";
@@ -352,6 +349,16 @@
 				29169D0F2B8EADDF0099A9C5 /* SidebarFolder.swift */,
 			);
 			path = SidebarModels;
+			sourceTree = "<group>";
+		};
+		29169D112B8EAE1A0099A9C5 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
+				29169D0C2B8EAD260099A9C5 /* SidebarModels */,
+				29169D032B8EA7A40099A9C5 /* StoredModels */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		2916F3322B7278D4001D14B9 /* SettingsView */ = {
@@ -426,13 +433,6 @@
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
 			);
 			path = ParseGenerationData;
-			sourceTree = "<group>";
-		};
-		292CE81C2B81BA3D00116D60 /* MapModelData */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = MapModelData;
 			sourceTree = "<group>";
 		};
 		292CE81E2B81BCA000116D60 /* PromptView */ = {
@@ -705,7 +705,7 @@
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
-				29A1E0B62B80F43C00B18AC1 /* AutomaticModels */,
+				29169D112B8EAE1A0099A9C5 /* Models */,
 				292CE8242B81BDB000116D60 /* Views */,
 				2996D0A42B6EE44E00B487D5 /* ScriptManager */,
 				297196512B715380000F7960 /* Services */,
