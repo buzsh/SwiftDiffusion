@@ -8,10 +8,8 @@
 import SwiftUI
 import SwiftData
 
-extension Constants {
-  struct Sidebar {
-    static let itemTitleLength: Int = 60
-  }
+extension Constants.Sidebar {
+  static let titleLength: Int = 80
 }
 
 class SidebarViewModel: ObservableObject {
@@ -47,7 +45,7 @@ class SidebarViewModel: ObservableObject {
       
       if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
         if let newTitle = updatedPrompt?.positivePrompt {
-          selectedSidebarItem?.title = newTitle.count > 45 ? String(newTitle.prefix(45)).appending("…") : newTitle
+          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
         }
       }
       selectedSidebarItem?.prompt = updatedPrompt
@@ -60,14 +58,14 @@ class SidebarViewModel: ObservableObject {
   func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true
     if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      selectedSidebarItem?.title = title.count > 45 ? String(title.prefix(45)).appending("…") : title
+      selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
     }
     saveData(in: model)
   }
   
   private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
     if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
-      return promptTitle.prefix(Constants.Sidebar.itemTitleLength) == sidebarItemTitle.prefix(Constants.Sidebar.itemTitleLength)
+      return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
     }
     return false
   }

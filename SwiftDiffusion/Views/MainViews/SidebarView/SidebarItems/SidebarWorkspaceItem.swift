@@ -54,7 +54,7 @@ struct SidebarWorkspaceItem: View {
       return "Untitled"
     }
     
-    return trimmedTitle.count <= 45 ? trimmedTitle : "\(trimmedTitle.prefix(45))…"
+    return trimmedTitle.count <= Constants.Sidebar.titleLength ? trimmedTitle : "\(trimmedTitle.prefix(Constants.Sidebar.titleLength))…"
   }
   
   /// Responds to changes in `currentPrompt.positivePrompt` by updating the title of the selected sidebar item.

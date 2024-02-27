@@ -83,7 +83,7 @@ struct PromptControlBar: View {
       
       Button(action: {
         if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
-          let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.itemTitleLength))
+          let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
           let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
           newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
           sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id

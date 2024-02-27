@@ -104,6 +104,10 @@ struct DetailView: View {
         
         Spacer()
         
+        ShareButton(selectedImage: $selectedImage)
+        
+        Spacer()
+        
         // Reveal in finder
         Button(action: {
           Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
