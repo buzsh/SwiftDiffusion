@@ -1,5 +1,5 @@
 //
-//  SidebarModel.swift
+//  SidebarItem.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/13/24.
@@ -7,38 +7,6 @@
 
 import Foundation
 import SwiftData
-
-@Model
-class SidebarFolder {
-  @Attribute var name: String
-  @Relationship var contents: [SidebarItem]
-  
-  init(name: String, contents: [SidebarItem] = []) {
-    self.name = name
-    self.contents = contents
-  }
-}
-
-extension SidebarFolder: Equatable {
-  static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
-    lhs.name == rhs.name
-  }
-}
-
-@Model
-class ImageInfo: Identifiable {
-  @Attribute var id: UUID = UUID()
-  @Attribute var url: URL
-  @Attribute var width: CGFloat
-  @Attribute var height: CGFloat
-  
-  init(url: URL, width: CGFloat, height: CGFloat) {
-    self.url = url
-    self.width = width
-    self.height = height
-  }
-}
-
 
 @Model
 class SidebarItem: Identifiable {
@@ -69,8 +37,19 @@ extension SidebarItem: Equatable {
 }
 
 
+@Model
+class SidebarFolder {
+  @Attribute var name: String
+  @Relationship var contents: [SidebarItem]
+  
+  init(name: String, contents: [SidebarItem] = []) {
+    self.name = name
+    self.contents = contents
+  }
+}
 
-
-
-// MARK: Additional Settings
-
+extension SidebarFolder: Equatable {
+  static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
+    lhs.name == rhs.name
+  }
+}
