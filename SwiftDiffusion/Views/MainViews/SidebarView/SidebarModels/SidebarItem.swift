@@ -36,7 +36,6 @@ extension SidebarItem: Equatable {
   }
 }
 
-
 @Model
 class SidebarFolder {
   @Attribute var name: String

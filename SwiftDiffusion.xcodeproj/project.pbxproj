@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */; };
-		290A34AD2B7C360100963C6E /* SidebarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AC2B7C360100963C6E /* SidebarModel.swift */; };
+		290A34AD2B7C360100963C6E /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AC2B7C360100963C6E /* SidebarItem.swift */; };
 		290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* MapModelData.swift */; };
 		290A34B22B7C894500963C6E /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B12B7C894500963C6E /* SidebarView.swift */; };
 		290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B32B7D283600963C6E /* SidebarMockDataController.swift */; };
@@ -133,7 +133,7 @@
 
 /* Begin PBXFileReference section */
 		290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProgressBar.swift; sourceTree = "<group>"; };
-		290A34AC2B7C360100963C6E /* SidebarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModel.swift; sourceTree = "<group>"; };
+		290A34AC2B7C360100963C6E /* SidebarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		290A34AF2B7C616A00963C6E /* MapModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModelData.swift; sourceTree = "<group>"; };
 		290A34B12B7C894500963C6E /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		290A34B32B7D283600963C6E /* SidebarMockDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMockDataController.swift; sourceTree = "<group>"; };
@@ -345,7 +345,7 @@
 		29169D0C2B8EAD260099A9C5 /* SidebarModels */ = {
 			isa = PBXGroup;
 			children = (
-				290A34AC2B7C360100963C6E /* SidebarModel.swift */,
+				290A34AC2B7C360100963C6E /* SidebarItem.swift */,
 				29169D0D2B8EAD740099A9C5 /* ImageInfo.swift */,
 			);
 			path = SidebarModels;
@@ -994,7 +994,7 @@
 				29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
 				2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */,
-				290A34AD2B7C360100963C6E /* SidebarModel.swift in Sources */,
+				290A34AD2B7C360100963C6E /* SidebarItem.swift in Sources */,
 				29C0F37D2B7AB3D50017DD6B /* UserSettings+URLs.swift in Sources */,
 				29169D0E2B8EAD740099A9C5 /* ImageInfo.swift in Sources */,
 				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
