@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CachedPreviewImageView: View {
-  let imageUrl: URL
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  let imageInfo: ImageInfo?
   
   @State private var displayedImage: NSImage?
   
@@ -17,22 +18,40 @@ struct CachedPreviewImageView: View {
       if let displayedImage = displayedImage {
         Image(nsImage: displayedImage)
           .resizable()
-          //.scaledToFit()
+          .scaledToFit()
+          .frame(width: calculateWidth(), height: calculateHeight())
+          .clipped()
       } else {
-        ProgressView()
-          .onAppear(perform: loadImage)
+        Rectangle()
+          .foregroundColor(Color.gray.opacity(0.3))
+          .frame(width: calculateWidth(), height: calculateHeight())
       }
     }
+    .onAppear(perform: loadImage)
+  }
+  
+  private func calculateWidth() -> CGFloat {
+    return sidebarViewModel.currentWidth
+  }
+  
+  private func calculateHeight() -> CGFloat {
+    guard let imageInfo = imageInfo else {
+      return calculateWidth()
+    }
+    let aspectRatio = imageInfo.height / max(imageInfo.width, 1)
+    return calculateWidth() * aspectRatio
   }
   
   private func loadImage() {
-    // Check if the image is already cached
+    guard let imageUrl = imageInfo?.url else {
+      return
+    }
+    
     if let cachedImage = ImageCache.shared.image(forKey: imageUrl.path) {
       displayedImage = cachedImage
       return
     }
     
-    // Load and cache the image if not in cache
     DispatchQueue.global(qos: .userInitiated).async {
       if let image = NSImage(contentsOf: imageUrl) {
         DispatchQueue.main.async {
