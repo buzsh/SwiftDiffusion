@@ -19,6 +19,7 @@ struct Constants {
   struct Layout {}
   struct Parsing {}
   struct PromptOptions {}
+  struct Sidebar {}
   struct WindowSize {}
   
 }
