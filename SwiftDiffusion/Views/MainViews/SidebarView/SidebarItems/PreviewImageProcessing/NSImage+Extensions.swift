@@ -15,13 +15,14 @@ extension NSImage {
   ///   - maxDimension: The maximum width or height the image should have after resizing.
   ///   - compressionFactor: The compression quality to use when converting the image to JPEG format. Ranges from 0.0 (most compression) to 1.0 (least compression).
   /// - Returns: The JPEG data of the resized and compressed image, or `nil` if the image could not be processed.
-  func resizedAndCompressedImageData(maxDimension: CGFloat, compressionFactor: CGFloat) -> Data? {
+  func resizedAndCompressedImageData(maxDimension: CGFloat, compressionFactor: CGFloat) -> (Data?, NSImage?) {
     guard let resizedImage = self.resizedImage(to: maxDimension),
           let tiffRepresentation = resizedImage.tiffRepresentation,
-          let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
-      return nil
+          let bitmapImage = NSBitmapImageRep(data: tiffRepresentation),
+          let data = bitmapImage.representation(using: .jpeg, properties: [.compressionFactor: compressionFactor]) else {
+      return (nil, nil)
     }
-    return bitmapImage.representation(using: .jpeg, properties: [.compressionFactor: compressionFactor])
+    return (data, resizedImage)
   }
 }
 
