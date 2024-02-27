@@ -104,6 +104,10 @@ struct DetailView: View {
         
         Spacer()
         
+        ShareButton(selectedImage: $selectedImage)
+        
+        Spacer()
+        
         // Reveal in finder
         Button(action: {
           Debug.log("lastSelectedImagePath: \(lastSelectedImagePath)")
@@ -168,4 +172,73 @@ struct DetailView: View {
   progressViewModel.progress = 20.0
   
   return DetailView(fileHierarchyObject: mockFileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath, scriptManager: ScriptManager.preview(withState: .readyToStart)).frame(width: 300, height: 600)
+}
+
+struct ShareButton: View {
+  @Binding var selectedImage: NSImage?
+  
+  var body: some View {
+    Button(action: {
+      if let image = selectedImage {
+        SharePickerCoordinator.shared.showSharePicker(for: image)
+      }
+    }) {
+      Image(systemName: "square.and.arrow.up")
+    }
+    .buttonStyle(BorderlessButtonStyle())
+    .disabled(selectedImage == nil)
+  }
+}
+
+
+class SharePickerCoordinator: NSObject, NSSharingServicePickerDelegate {
+  static let shared = SharePickerCoordinator()
+  
+  func showSharePicker(for image: NSImage) {
+    let sharingServicePicker = NSSharingServicePicker(items: [image])
+    sharingServicePicker.delegate = self
+    
+    if let window = NSApp.keyWindow {
+      sharingServicePicker.show(relativeTo: CGRect(x: window.frame.width / 2, y: window.frame.height / 2, width: 0, height: 0), of: window.contentView!, preferredEdge: .minY)
+    }
+  }
+}
+
+struct SharePickerRepresentable: NSViewRepresentable {
+  @Binding var showingSharePicker: Bool
+  @Binding var selectedImage: NSImage?
+  
+  func makeNSView(context: Context) -> NSView {
+    let view = NSView()
+    return view
+  }
+  
+  func updateNSView(_ nsView: NSView, context: Context) {
+  }
+  
+  func makeCoordinator() -> Coordinator {
+    Coordinator(self)
+  }
+  
+  class Coordinator: NSObject, NSSharingServicePickerDelegate {
+    var parent: SharePickerRepresentable
+    
+    init(_ parent: SharePickerRepresentable) {
+      self.parent = parent
+    }
+    
+    func share() {
+      guard let image = parent.selectedImage else { return }
+      let sharingServicePicker = NSSharingServicePicker(items: [image])
+      sharingServicePicker.delegate = self
+      
+      if let window = NSApp.keyWindow {
+        sharingServicePicker.show(relativeTo: .zero, of: window.contentView!, preferredEdge: .minY)
+      }
+      
+      DispatchQueue.main.async {
+        self.parent.showingSharePicker = false
+      }
+    }
+  }
 }
