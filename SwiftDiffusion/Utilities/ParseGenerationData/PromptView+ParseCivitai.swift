@@ -96,7 +96,10 @@ extension PromptView {
   func parseAndSetPromptData(from pasteboardContent: String) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     parseLog(lines)
+    
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
+    sidebarViewModel.updateControlBarView = true
+    
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
     // Loop through each line of the pasteboard content
     var matchedCheckpointModel: CheckpointModel?

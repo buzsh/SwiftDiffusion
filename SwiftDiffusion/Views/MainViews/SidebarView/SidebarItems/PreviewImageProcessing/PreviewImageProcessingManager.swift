@@ -22,6 +22,7 @@ class PreviewImageProcessingManager {
   ///   - sidebarItem: The `SidebarItem` for which previews and thumbnails will be generated.
   ///   - model: The model context within which these operations are performed, allowing for data persistence.
   func createImagePreviewsAndThumbnails(for sidebarItem: SidebarItem, in model: ModelContext) {
+    Debug.log("[info] Starting imageUrls: \(sidebarItem.imageUrls)")
     createImagePreviews(for: sidebarItem, in: model, maxDimension: 500, compressionFactor: 0.4)
     createImageThumbnails(for: sidebarItem, in: model, maxDimension: 100, compressionFactor: 0.4)
   }
@@ -60,8 +61,13 @@ class PreviewImageProcessingManager {
         return
       }
       
+      Debug.log("basePreviewURL: \(basePreviewURL)")
+      
       let originalPath = imageUrl.path
       var relativePath = originalPath.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
+      if relativePath.hasPrefix("/") { relativePath.removeFirst() }
+      
+      Debug.log("relativePath: \(relativePath)")
       
       if let dotRange = relativePath.range(of: ".", options: .backwards) {
         relativePath.removeSubrange(dotRange.lowerBound..<relativePath.endIndex)
@@ -85,6 +91,7 @@ class PreviewImageProcessingManager {
     DispatchQueue.main.async {
       sidebarItem.imagePreviews = previewInfos
       self.saveData(in: model)
+      Debug.log("[info] Finished imagePreviews: \(previewInfos.map { $0.url })")
     }
   }
   
@@ -130,6 +137,8 @@ class PreviewImageProcessingManager {
       
       let originalPath = imageUrl.path
       var relativePath = originalPath.replacingOccurrences(of: outputDirectoryUrl.path, with: "")
+      if relativePath.hasPrefix("/") { relativePath.removeFirst() }
+      
       if let dotRange = relativePath.range(of: ".", options: .backwards) {
         relativePath.removeSubrange(dotRange.lowerBound..<relativePath.endIndex)
       }
@@ -153,6 +162,7 @@ class PreviewImageProcessingManager {
     DispatchQueue.main.async {
       sidebarItem.imageThumbnails = thumbnailInfos
       self.saveData(in: model)
+      Debug.log("[info] Finished imageThumbnails: \(thumbnailInfos.map { $0.url })")
     }
   }
   

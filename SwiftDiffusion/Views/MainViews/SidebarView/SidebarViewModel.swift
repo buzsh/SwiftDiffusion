@@ -33,6 +33,10 @@ class SidebarViewModel: ObservableObject {
   
   @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
   
+  @Published var updateControlBarView: Bool = false
+  
+  @Published var currentWidth: CGFloat = 240
+  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true

@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct CachedPreviewImageView: View {
-  let fallbackUrl: URL
-  @Binding var imageUrl: URL?
+  let imageUrl: URL
   
   @State private var displayedImage: NSImage?
   
@@ -18,43 +17,26 @@ struct CachedPreviewImageView: View {
       if let displayedImage = displayedImage {
         Image(nsImage: displayedImage)
           .resizable()
-          .scaledToFit()
+          //.scaledToFit()
       } else {
         ProgressView()
+          .onAppear(perform: loadImage)
       }
-    }
-    .onAppear {
-      loadImage()
-    }
-    .onChange(of: imageUrl) {
-      loadImage()
     }
   }
   
   private func loadImage() {
-    // Reset the displayed image to nil to ensure the progress view is shown during loading
-    displayedImage = nil
-    
-    // Attempt to load the image from the cache first
-    if let imageUrl = imageUrl, let cachedImage = ImageCache.shared.image(forKey: imageUrl.path) {
+    // Check if the image is already cached
+    if let cachedImage = ImageCache.shared.image(forKey: imageUrl.path) {
       displayedImage = cachedImage
-    } else {
-      // Attempt to load fallback image from cache if primary image is not available
-      if let fallbackImage = ImageCache.shared.image(forKey: fallbackUrl.path) {
-        displayedImage = fallbackImage
-      }
-      
-      // Load the primary or fallback image into the cache if it's not present
-      loadAndCacheImage(url: imageUrl ?? fallbackUrl)
+      return
     }
-  }
-  
-  private func loadAndCacheImage(url: URL) {
-    // Asynchronous loading and caching of the image
+    
+    // Load and cache the image if not in cache
     DispatchQueue.global(qos: .userInitiated).async {
-      if let image = NSImage(contentsOf: url) {
+      if let image = NSImage(contentsOf: imageUrl) {
         DispatchQueue.main.async {
-          ImageCache.shared.setImage(image, forKey: url.path)
+          ImageCache.shared.setImage(image, forKey: imageUrl.path)
           self.displayedImage = image
         }
       }
