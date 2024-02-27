@@ -21,6 +21,10 @@ struct PromptControlBarView: View {
     .onChange(of: sidebarViewModel.selectedSidebarItem) {
       updatePromptControlBarVisibility()
     }
+    .onChange(of: sidebarViewModel.updateControlBarView) {
+      updatePromptControlBarVisibility()
+      sidebarViewModel.updateControlBarView = false
+    }
   }
   
   private func updatePromptControlBarVisibility() {

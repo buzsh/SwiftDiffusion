@@ -8,16 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum KeyCodes {
-  case deleteKey
-  
-  var code: UInt16 {
-    switch self {
-    case .deleteKey: return 51
-    }
-  }
-}
-
 extension Constants.Layout {
   struct SidebarToolbar {
     static let itemHeight: CGFloat = 20
@@ -69,6 +59,9 @@ struct SidebarView: View {
     sidebarViewModel.saveData(in: modelContext)
   }
   private func deleteSavedItem() {
+    if let itemToDelete = sidebarViewModel.itemToDelete {
+      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
+    }
     deleteSidebarItem(sidebarViewModel.itemToDelete)
   }
   
@@ -79,6 +72,7 @@ struct SidebarView: View {
   private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {
     guard let itemToDelete = sidebarItem,
           let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
+    
     modelContext.delete(sidebarItems[index])
     do {
       try modelContext.save()
@@ -89,7 +83,6 @@ struct SidebarView: View {
     updateSelection(to: nextSelectionIndex)
     sidebarViewModel.itemToDelete = nil
     sidebarViewModel.workspaceItemToDeleteWithoutPrompt = nil
-    
   }
   
   private func moveSavableItemFromWorkspace() {
@@ -101,6 +94,8 @@ struct SidebarView: View {
     itemToSave.isWorkspaceItem = false
     selectedItemID = itemToSave.id
     sidebarViewModel.itemToSave = nil
+    Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
+    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
   }
   
   private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
@@ -161,180 +156,151 @@ struct SidebarView: View {
   }
   
   var body: some View {
-    if filterToolsButtonToggled {
-      List {
-        Section(header: Text("Sorting")) {
-          Menu(sortingOrder.rawValue) {
-            Button("Most Recent") {
-              sortingOrder = .mostRecent
-            }
-            Button("Least Recent") {
-              sortingOrder = .leastRecent
-            }
-          }
-        }
-        
-        Section(header: Text("Filters")) {
-          Menu(selectedModelName ?? "Filter by Model") {
-            Button("Show All") {
-              selectedModelName = nil
-            }
-            Divider()
-            ForEach(uniqueModelNames, id: \.self) { modelName in
-              Button(modelName) {
-                selectedModelName = modelName
-              }
-            }
-          }
-        }
-      }.frame(height: 110)
-      Divider()
-        .padding(.horizontal).padding(.bottom, 4)
-    }
-    
-    ZStack(alignment: .bottom) {
-      List(selection: $selectedItemID) {
-        
-        Section(header: Text("Workspace")) {
-          ForEach(sortedWorkspaceItems) { item in
-            SidebarWorkspaceItem(item: item, selectedItemID: $selectedItemID)
-              .onChange(of: sortedWorkspaceItems) {
-                if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
-                  selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
-                  sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+    GeometryReader { geometry in
+      VStack {
+        if filterToolsButtonToggled {
+          List {
+            Section(header: Text("Sorting")) {
+              Menu(sortingOrder.rawValue) {
+                Button("Most Recent") {
+                  sortingOrder = .mostRecent
+                }
+                Button("Least Recent") {
+                  sortingOrder = .leastRecent
                 }
               }
-          }
-        }
-        
-        if sortedAndFilteredItems.isEmpty {
-          VStack(alignment: .center) {
-            Spacer(minLength: 100)
-            HStack(alignment: .center) {
-              Spacer()
-              VStack {
-                Text("Saved prompts")
-                Text("will appear here!")
-              }
-              Spacer()
             }
             
-            Spacer()
-          }
-          .foregroundStyle(Color.secondary)
-        } else {
-          
-          Section(header: Text("Uncategorized")) {
-            ForEach(sortedAndFilteredItems) { item in
-              HStack(alignment: .center, spacing: 8) {
-                if smallPreviewsButtonToggled, let lastImageUrl = item.imageUrls.last {
-                  AsyncImage(url: lastImageUrl) { image in
-                    image
-                      .resizable()
-                      .aspectRatio(contentMode: .fill)
-                      .frame(width: 50, height: 65)
-                      .clipped()
-                      .clipShape(RoundedRectangle(cornerRadius: 8))
-                      .shadow(color: .black, radius: 1, x: 0, y: 1)
-                  } placeholder: {
-                    ProgressView()
+            Section(header: Text("Filters")) {
+              Menu(selectedModelName ?? "Filter by Model") {
+                Button("Show All") {
+                  selectedModelName = nil
+                }
+                Divider()
+                ForEach(uniqueModelNames, id: \.self) { modelName in
+                  Button(modelName) {
+                    selectedModelName = modelName
                   }
                 }
-                
-                VStack(alignment: .leading) {
-                  if largePreviewsButtonToggled {
-                    if let lastImageUrl = item.imageUrls.last {
-                      AsyncImage(url: lastImageUrl) { image in
-                        image
-                          .resizable()
-                          .scaledToFit()
-                          .clipShape(RoundedRectangle(cornerRadius: 12))
-                          .shadow(color: .black, radius: 1, x: 0, y: 1)
-                      } placeholder: {
-                        ProgressView()
-                      }
-                      .padding(.bottom, 8)
-                    }
-                  }
-                  
-                  Text(item.title)
-                    .lineLimit(modelNameButtonToggled ? 1 : 2)
-                  
-                  if modelNameButtonToggled, let modelName = item.prompt?.selectedModel?.name {
-                    Text(modelName)
-                      .font(.system(size: 10, weight: .light, design: .monospaced))
-                      .foregroundStyle(Color.secondary)
-                      .padding(.top, 1)
-                  }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-              }
-              .padding(.vertical, 2)
-              .contentShape(Rectangle())
-              .onTapGesture {
-                selectedItemID = item.id
               }
             }
-          } // Section("Uncategorized")
-          VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+          }.frame(height: 110)
+          Divider()
+            .padding(.horizontal).padding(.bottom, 4)
         }
-      } // List
-      .listStyle(SidebarListStyle())
-      //.scrollIndicators(.hidden)
-      .onChange(of: sidebarViewModel.itemToSave) {
-        if sidebarViewModel.itemToSave != nil {
-          moveSavableItemFromWorkspace()
-        }
-      }
-      .onChange(of: sidebarViewModel.itemToDelete) {
-        if sidebarViewModel.itemToDelete != nil {
-          showDeletionAlert = true
-        }
-      }
-      .onChange(of: sidebarViewModel.workspaceItemToDeleteWithoutPrompt) {
-        if sidebarViewModel.workspaceItemToDeleteWithoutPrompt != nil {
-          deleteWorkspaceItemWithoutPrompt()
-        }
-      }
-      .alert(isPresented: $showDeletionAlert) {
-        Alert(
-          title: Text("Are you sure you want to delete this item?"),
-          primaryButton: .destructive(Text("Delete")) {
-            self.deleteSavedItem()
-          },
-          secondaryButton: .cancel() {
-            sidebarViewModel.itemToDelete = nil
-          }
-        )
-      }
-      
-      .onChange(of: selectedItemID) { currentItemID, newItemID in
-        selectedSidebarItemChanged(from: currentItemID, to: newItemID)
-      }
-      .onChange(of: sidebarItems) {
-        Debug.log("SidebarView.onChange of: sidebarItems")
-        sidebarViewModel.allSidebarItems = sidebarItems
-        sidebarViewModel.workspaceItems = workspaceItems
-        sidebarViewModel.savedItems = sortedAndFilteredItems
         
-        ensureNewPromptWorkspaceItemExists()
-        ensureSelectedSidebarItemForSelectedItemID()
+        ZStack(alignment: .bottom) {
+          List(selection: $selectedItemID) {
+            
+            Section(header: Text("Workspace")) {
+              ForEach(sortedWorkspaceItems) { item in
+                SidebarWorkspaceItem(item: item, selectedItemID: $selectedItemID)
+                  .onChange(of: sortedWorkspaceItems) {
+                    if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
+                      selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
+                      sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
+                    }
+                  }
+              }
+            }
+            
+            if sortedAndFilteredItems.isEmpty {
+              VStack(alignment: .center) {
+                Spacer(minLength: 100)
+                HStack(alignment: .center) {
+                  Spacer()
+                  VStack {
+                    Text("Saved prompts")
+                    Text("will appear here!")
+                  }
+                  Spacer()
+                }
+                
+                Spacer()
+              }
+              .foregroundStyle(Color.secondary)
+            } else {
+              
+              Section(header: Text("Uncategorized")) {
+                ForEach(sortedAndFilteredItems) { item in
+                  SidebarStoredItemView(
+                    item: item,
+                    smallPreviewsButtonToggled: smallPreviewsButtonToggled,
+                    largePreviewsButtonToggled: largePreviewsButtonToggled,
+                    modelNameButtonToggled: modelNameButtonToggled
+                  )
+                  .padding(.vertical, 2)
+                  .contentShape(Rectangle())
+                  .onTapGesture {
+                    selectedItemID = item.id
+                  }
+                }
+              } // Section("Uncategorized")
+              VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+            }
+          } // List
+          .listStyle(SidebarListStyle())
+          //.scrollIndicators(.hidden)
+          .onChange(of: sidebarViewModel.itemToSave) {
+            if sidebarViewModel.itemToSave != nil {
+              moveSavableItemFromWorkspace()
+            }
+          }
+          .onChange(of: sidebarViewModel.itemToDelete) {
+            if sidebarViewModel.itemToDelete != nil {
+              showDeletionAlert = true
+            }
+          }
+          .onChange(of: sidebarViewModel.workspaceItemToDeleteWithoutPrompt) {
+            if sidebarViewModel.workspaceItemToDeleteWithoutPrompt != nil {
+              deleteWorkspaceItemWithoutPrompt()
+            }
+          }
+          .alert(isPresented: $showDeletionAlert) {
+            Alert(
+              title: Text("Are you sure you want to delete this item?"),
+              primaryButton: .destructive(Text("Delete")) {
+                self.deleteSavedItem()
+              },
+              secondaryButton: .cancel() {
+                sidebarViewModel.itemToDelete = nil
+              }
+            )
+          }
+          
+          .onChange(of: selectedItemID) { currentItemID, newItemID in
+            selectedSidebarItemChanged(from: currentItemID, to: newItemID)
+          }
+          .onChange(of: sidebarItems) {
+            Debug.log("SidebarView.onChange of: sidebarItems")
+            sidebarViewModel.allSidebarItems = sidebarItems
+            sidebarViewModel.workspaceItems = workspaceItems
+            sidebarViewModel.savedItems = sortedAndFilteredItems
+            
+            ensureNewPromptWorkspaceItemExists()
+            ensureSelectedSidebarItemForSelectedItemID()
+          }
+          .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+            if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
+              ensureNewPromptWorkspaceItemExists()
+              sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
+            }
+          }
+          .onAppear {
+            ensureNewPromptWorkspaceItemExists()
+            ensureSelectedSidebarItemForSelectedItemID()
+            sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
+          }
+          
+          DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
+          
+        } // ZStack
       }
-      .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
-        if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
-          ensureNewPromptWorkspaceItemExists()
-          sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
-        }
+      .frame(width: geometry.size.width)
+      .onChange(of: geometry.size.width) {
+        sidebarViewModel.currentWidth = geometry.size.width-32
       }
-      .onAppear {
-        ensureNewPromptWorkspaceItemExists()
-        ensureSelectedSidebarItemForSelectedItemID()
-        sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
-      }
-      
-      DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
-      
-    } // ZStack
+    }
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Button(action: {
@@ -348,6 +314,14 @@ struct SidebarView: View {
     }
     .onChange(of: currentPrompt.positivePrompt) {
       ensureNewPromptWorkspaceItemExists()
+    }
+    .onAppear {
+        preloadImages(for: sortedAndFilteredItems)
+        preloadImages(for: sortedWorkspaceItems)
+    }
+    .onChange(of: sidebarItems) {
+        preloadImages(for: sortedAndFilteredItems)
+        preloadImages(for: sortedWorkspaceItems)
     }
   }
   
@@ -394,6 +368,34 @@ struct SidebarView: View {
     
     if listOfBlankNewPrompts.isEmpty {
       _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
+    }
+  }
+  
+  private func preloadImages(for items: [SidebarItem]) {
+    items.forEach { item in
+      // Preload main images
+      /*
+      item.imageUrls.forEach { imageUrl in
+        preloadImage(from: imageUrl)
+      }
+       */
+      // Preload thumbnails
+      item.imageThumbnails.forEach { imageInfo in
+        preloadImage(from: imageInfo.url)
+      }
+      // Preload previews
+      item.imagePreviews.forEach { imageInfo in
+        preloadImage(from: imageInfo.url)
+      }
+    }
+  }
+  
+  private func preloadImage(from url: URL) {
+    DispatchQueue.global(qos: .background).async {
+      guard ImageCache.shared.image(forKey: url.path) == nil, let image = NSImage(contentsOf: url) else { return }
+      DispatchQueue.main.async {
+        ImageCache.shared.setImage(image, forKey: url.path)
+      }
     }
   }
   

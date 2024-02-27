@@ -14,7 +14,7 @@ extension Constants.Layout {
 }
 
 struct PromptView: View {
-  @Environment(\.modelContext) private var modelContext
+  @Environment(\.modelContext) var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
