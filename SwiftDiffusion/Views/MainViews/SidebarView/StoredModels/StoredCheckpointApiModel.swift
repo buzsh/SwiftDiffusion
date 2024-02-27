@@ -29,7 +29,7 @@ class StoredCheckpointApiModel {
 
 extension MapModelData {
   
-  func mapStoredCheckpointApiModelToCheckpointApiModel(storedCheckpointApiModel: StoredCheckpointApiModel? = nil) -> CheckpointApiModel? {
+  func toCheckpointApiModel(from storedCheckpointApiModel: StoredCheckpointApiModel? = nil) -> CheckpointApiModel? {
     guard let storedApiModel = storedCheckpointApiModel else { return nil }
     return CheckpointApiModel(title: storedApiModel.title,
                               modelName: storedApiModel.modelName,
@@ -37,10 +37,10 @@ extension MapModelData {
                               sha256: storedApiModel.sha256,
                               filename: storedApiModel.filename,
                               config: storedApiModel.config
-                              )
+    )
   }
   
-  func mapCheckpointApiModelToStoredCheckpointApiModel(_ checkpointApiModel: CheckpointApiModel?) -> StoredCheckpointApiModel? {
+  func toStoredCheckpointApiModel(from checkpointApiModel: CheckpointApiModel?) -> StoredCheckpointApiModel? {
     guard let checkpointApiModel = checkpointApiModel else { return nil }
     
     return StoredCheckpointApiModel(title: checkpointApiModel.title,
@@ -49,7 +49,7 @@ extension MapModelData {
                                     sha256: checkpointApiModel.sha256,
                                     filename: checkpointApiModel.filename,
                                     config: checkpointApiModel.config
-                                    )
+    )
   }
   
 }

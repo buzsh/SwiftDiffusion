@@ -31,38 +31,38 @@ enum StoredCheckpointModelType: String, Codable {
 extension MapModelData {
   
   @MainActor 
-  func mapCheckpointModelToStoredCheckpointModel(_ checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
+  func toStoredCheckpointModel(from checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
     guard let checkpointModel = checkpointModel else { return nil }
-    let storedCheckpointModelType = mapCheckpointModelTypeToStoredCheckpointModelType(checkpointModel.type)
-    let storedCheckpointApiModel = mapCheckpointApiModelToStoredCheckpointApiModel(checkpointModel.checkpointApiModel)
+    let storedCheckpointModelType = toStoredCheckpointModelType(from: checkpointModel.type)
+    let storedCheckpointApiModel = toStoredCheckpointApiModel(from: checkpointModel.checkpointApiModel)
     return StoredCheckpointModel(name: checkpointModel.name,
                                  path: checkpointModel.path,
                                  type: storedCheckpointModelType,
                                  storedCheckpointApiModel: storedCheckpointApiModel
-                                 )
+    )
   }
   
   @MainActor 
-  func mapStoredCheckpointModelToCheckpointModel(_ storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
+  func toCheckpointModel(from storedCheckpointModel: StoredCheckpointModel?) -> CheckpointModel? {
     guard let storedCheckpointModel = storedCheckpointModel else { return nil }
-    let checkpointModelType = mapStoredCheckpointModelTypeToCheckpointModelType(storedCheckpointModel.type)
-    let checkpointApiModel = mapStoredCheckpointApiModelToCheckpointApiModel(storedCheckpointApiModel: storedCheckpointModel.storedCheckpointApiModel)
+    let checkpointModelType = toCheckpointModelType(from: storedCheckpointModel.type)
+    let checkpointApiModel = toCheckpointApiModel(from: storedCheckpointModel.storedCheckpointApiModel)
     
     return CheckpointModel(name: storedCheckpointModel.name,
                            path: storedCheckpointModel.path,
                            type: checkpointModelType,
                            checkpointApiModel: checkpointApiModel
-                           )
+    )
   }
   
-  func mapCheckpointModelTypeToStoredCheckpointModelType(_ type: CheckpointModelType) -> StoredCheckpointModelType {
+  func toStoredCheckpointModelType(from type: CheckpointModelType) -> StoredCheckpointModelType {
     switch type {
     case .coreMl: return .coreMl
     case .python: return .python
     }
   }
   
-  func mapStoredCheckpointModelTypeToCheckpointModelType(_ type: StoredCheckpointModelType) -> CheckpointModelType {
+  func toCheckpointModelType(from type: StoredCheckpointModelType) -> CheckpointModelType {
     switch type {
     case .coreMl: return .coreMl
     case .python: return .python

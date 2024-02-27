@@ -10,12 +10,12 @@ import Foundation
 struct MapModelData {
   @MainActor
   func toStored(promptModel: PromptModel) -> StoredPromptModel? {
-    return mapPromptModelToStoredPromptModel(promptModel)
+    return toStoredPromptModel(from: promptModel)
   }
   
   @MainActor
   func fromStored(storedPromptModel: StoredPromptModel) -> PromptModel {
-    return mapStoredPromptModelToPromptModel(storedPromptModel)
+    return toPromptModel(from: storedPromptModel)
   }
   
 }

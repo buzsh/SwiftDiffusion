@@ -46,9 +46,9 @@ class StoredPromptModel {
 extension MapModelData {
   
   @MainActor 
-  func mapPromptModelToStoredPromptModel(_ promptModel: PromptModel) -> StoredPromptModel? {
-    let selectedModel = mapCheckpointModelToStoredCheckpointModel(promptModel.selectedModel)
-    let storedVaeModel = mapVaeModelToStoredVaeModel(promptModel.vaeModel)
+  func toStoredPromptModel(from promptModel: PromptModel) -> StoredPromptModel? {
+    let storedCheckpointModel = toStoredCheckpointModel(from: promptModel.selectedModel)
+    let storedVaeModel = toStoredVaeModel(from: promptModel.vaeModel)
     return StoredPromptModel(
                           isWorkspaceItem: promptModel.isWorkspaceItem,
                           samplingMethod: promptModel.samplingMethod,
@@ -62,13 +62,13 @@ extension MapModelData {
                           batchCount: promptModel.batchCount,
                           batchSize: promptModel.batchSize,
                           clipSkip: promptModel.clipSkip,
-                          selectedModel: selectedModel,
+                          selectedModel: storedCheckpointModel,
                           vaeModel: storedVaeModel
-                          )
+    )
   }
   
   @MainActor 
-  func mapStoredPromptModelToPromptModel(_ storedPromptModel: StoredPromptModel) -> PromptModel {
+  func toPromptModel(from storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
     promptModel.isWorkspaceItem = storedPromptModel.isWorkspaceItem
     promptModel.samplingMethod = storedPromptModel.samplingMethod
@@ -82,8 +82,8 @@ extension MapModelData {
     promptModel.batchCount = storedPromptModel.batchCount
     promptModel.batchSize = storedPromptModel.batchSize
     promptModel.clipSkip = storedPromptModel.clipSkip
-    promptModel.selectedModel = mapStoredCheckpointModelToCheckpointModel(storedPromptModel.selectedModel)
-    promptModel.vaeModel = mapStoredVaeModelToVaeModel(storedPromptModel.vaeModel)
+    promptModel.selectedModel = toCheckpointModel(from: storedPromptModel.selectedModel)
+    promptModel.vaeModel = toVaeModel(from: storedPromptModel.vaeModel)
     return promptModel
   }
   
