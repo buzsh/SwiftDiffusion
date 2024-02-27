@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// Represents a view for displaying stored sidebar items, including handling for small and large previews.
+/// This view dynamically selects and presents thumbnail or preview images based on user interaction toggles.
+/// - Parameters:
+///   - item: The `SidebarItem` to display, including all associated image and model information.
+///   - smallPreviewsButtonToggled: A Boolean value indicating whether small previews are enabled.
+///   - largePreviewsButtonToggled: A Boolean value indicating whether large previews are enabled.
+///   - modelNameButtonToggled: A Boolean value indicating whether the model name display is enabled.
 struct SidebarStoredItemView: View {
   let item: SidebarItem
   let smallPreviewsButtonToggled: Bool

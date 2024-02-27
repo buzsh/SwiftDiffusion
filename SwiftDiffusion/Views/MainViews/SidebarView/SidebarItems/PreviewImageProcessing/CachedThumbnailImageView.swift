@@ -14,7 +14,6 @@ struct CachedThumbnailImageView: View {
   let height: CGFloat
   @State private var displayedImage: NSImage?
   
-  // Initialize with optional width and height, defaulting to 50x65 if not provided
   init(imageUrl: URL, width: CGFloat = 50, height: CGFloat = 65) {
     self.imageUrl = imageUrl
     self.width = width

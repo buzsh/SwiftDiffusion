@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// A view responsible for displaying an image, either from cache or by loading it asynchronously.
+/// This view supports displaying a placeholder until the image is loaded and caches the image once loaded.
+/// - Parameters:
+///   - imageInfo: An optional `ImageInfo` object containing the image URL and its dimensions. Used for calculating aspect ratio and size if available.
 struct CachedPreviewImageView: View {
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   let imageInfo: ImageInfo?
@@ -30,10 +34,15 @@ struct CachedPreviewImageView: View {
     .onAppear(perform: loadImage)
   }
   
+  /// Calculates the width of the image to be displayed, based on the current width available in the sidebar view model.
+  /// - Returns: The calculated width as a `CGFloat`.
   private func calculateWidth() -> CGFloat {
     return sidebarViewModel.currentWidth
   }
   
+  /// Calculates the height of the image to be displayed, utilizing the aspect ratio defined in `ImageInfo` if available.
+  /// If no `ImageInfo` is available, defaults to a square based on the width.
+  /// - Returns: The calculated height as a `CGFloat`.
   private func calculateHeight() -> CGFloat {
     guard let imageInfo = imageInfo else {
       return calculateWidth()
@@ -42,6 +51,8 @@ struct CachedPreviewImageView: View {
     return calculateWidth() * aspectRatio
   }
   
+  /// Loads the image either from the cache or by fetching it asynchronously if not present in the cache.
+  /// Upon successful loading, the image is cached for future use.
   private func loadImage() {
     guard let imageUrl = imageInfo?.url else {
       return
@@ -63,17 +74,3 @@ struct CachedPreviewImageView: View {
   }
 }
 
-class ImageCache {
-  static let shared = ImageCache()
-  private var cache = NSCache<NSString, NSImage>()
-  
-  private init() {}
-  
-  func image(forKey key: String) -> NSImage? {
-    return cache.object(forKey: key as NSString)
-  }
-  
-  func setImage(_ image: NSImage, forKey key: String) {
-    cache.setObject(image, forKey: key as NSString)
-  }
-}
