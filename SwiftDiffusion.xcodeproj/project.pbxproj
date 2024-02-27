@@ -44,6 +44,7 @@
 		2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */; };
 		295A600F2B8D805000B822A9 /* CachedThumbnailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */; };
 		295A60112B8D81CF00B822A9 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60102B8D81CF00B822A9 /* ImageCache.swift */; };
+		295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60122B8D924100B822A9 /* KeyCodes.swift */; };
 		29620FDD2B826BDD008EA5EB /* DebugApiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FDC2B826BDD008EA5EB /* DebugApiView.swift */; };
 		29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE52B8291E8008EA5EB /* CheckpointsApiManager.swift */; };
 		29620FE82B82924E008EA5EB /* CheckpointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29620FE72B82924E008EA5EB /* CheckpointModel.swift */; };
@@ -162,6 +163,7 @@
 		2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelauncherUtility.swift; sourceTree = "<group>"; };
 		295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedThumbnailImageView.swift; sourceTree = "<group>"; };
 		295A60102B8D81CF00B822A9 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		295A60122B8D924100B822A9 /* KeyCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCodes.swift; sourceTree = "<group>"; };
 		29620FDC2B826BDD008EA5EB /* DebugApiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugApiView.swift; sourceTree = "<group>"; };
 		29620FE52B8291E8008EA5EB /* CheckpointsApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointsApiManager.swift; sourceTree = "<group>"; };
 		29620FE72B82924E008EA5EB /* CheckpointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointModel.swift; sourceTree = "<group>"; };
@@ -586,6 +588,7 @@
 			children = (
 				2971964B2B715191000F7960 /* Constants.swift */,
 				297196542B715A58000F7960 /* Debug.swift */,
+				295A60122B8D924100B822A9 /* KeyCodes.swift */,
 				29B1D9D62B755929009B6F03 /* AppStructure */,
 			);
 			path = App;
@@ -1014,6 +1017,7 @@
 				29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
+				295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
 				29C0F38B2B7AC25C0017DD6B /* SettingsSectionHeader.swift in Sources */,
 				29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */,

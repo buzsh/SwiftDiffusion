@@ -8,16 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum KeyCodes {
-  case deleteKey
-  
-  var code: UInt16 {
-    switch self {
-    case .deleteKey: return 51
-    }
-  }
-}
-
 extension Constants.Layout {
   struct SidebarToolbar {
     static let itemHeight: CGFloat = 20
