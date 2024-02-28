@@ -96,17 +96,25 @@ struct SidebarView: View {
     GeometryReader { geometry in
       VStack {
         
-        if filterToolsButtonToggled {
-          FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, uniqueModelNames: uniqueModelNames)
-          
-          Divider()
-            .padding(.horizontal).padding(.bottom, 4)
-        }
+        FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, filterToolsButtonToggled: $filterToolsButtonToggled, uniqueModelNames: uniqueModelNames)
         
         ZStack(alignment: .bottom) {
           List(selection: $selectedItemID) {
             
             WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
+            
+            Section(header: Text("Folders")) {
+              ForEach(sidebarFolders, id: \.self) { folder in
+                HStack {
+                  Image(systemName: "folder")
+                  Text(folder.name)
+                  Spacer()
+                  Image(systemName: "chevron.right")
+                    .foregroundColor(.secondary)
+                }
+                //action
+              }
+            }
             
             UncategorizedSection(
               sortedAndFilteredItems: sortedAndFilteredItems,
@@ -187,6 +195,12 @@ struct SidebarView: View {
             .foregroundColor(filterToolsButtonToggled ? .blue : .secondary)
         }
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+        
+        Button(action: {
+          newFolderToData(title: "Untitled Folder")
+        }) {
+          Image(systemName: "folder.badge.plus")
+        }
       }
       
     }
