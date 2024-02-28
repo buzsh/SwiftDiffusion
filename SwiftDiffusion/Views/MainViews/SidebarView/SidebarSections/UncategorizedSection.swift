@@ -32,12 +32,7 @@ struct UncategorizedSection: View {
     } else {
       Section(header: Text("Uncategorized")) {
         ForEach(sortedAndFilteredItems) { item in
-          SidebarStoredItemView(
-            item: item,
-            smallPreviewsButtonToggled: smallPreviewsButtonToggled,
-            largePreviewsButtonToggled: largePreviewsButtonToggled,
-            modelNameButtonToggled: modelNameButtonToggled
-          )
+          SidebarStoredItemView(item: item)
           .padding(.vertical, 2)
           .contentShape(Rectangle())
           .onTapGesture {
