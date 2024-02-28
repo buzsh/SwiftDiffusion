@@ -29,6 +29,8 @@ class SidebarViewModel: ObservableObject {
   
   @Published var newlyCreatedSidebarWorkspaceItemIdToSelect: UUID?
   
+  @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
+  
   @Published var updateControlBarView: Bool = false
   @Published var currentWidth: CGFloat = 240
   
