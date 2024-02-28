@@ -95,7 +95,6 @@ struct SidebarView: View {
   var body: some View {
     GeometryReader { geometry in
       VStack {
-        SidebarItemDeletionHandler(selectedItemID: $selectedItemID)
         
         if filterToolsButtonToggled {
           FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, uniqueModelNames: uniqueModelNames)

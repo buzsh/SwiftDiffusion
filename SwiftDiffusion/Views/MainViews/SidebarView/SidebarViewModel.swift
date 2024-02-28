@@ -13,24 +13,17 @@ extension Constants.Sidebar {
 }
 
 class SidebarViewModel: ObservableObject {
-  
-  @Published var selectedSidebarItem: SidebarItem? = nil
-  
-  @Published var itemToDelete: SidebarItem? = nil
-  @Published var workspaceItemToDeleteWithoutPrompt: SidebarItem? = nil
-  
   @Published var allSidebarItems: [SidebarItem] = []
   @Published var savedItems: [SidebarItem] = []
   @Published var workspaceItems: [SidebarItem] = []
-  
+  @Published var selectedSidebarItem: SidebarItem? = nil
   @Published var savableSidebarItems: [SidebarItem] = []
   @Published var itemToSave: SidebarItem? = nil
   @Published var sidebarItemCurrentlyGeneratingOut: SidebarItem? = nil
-  
+  @Published var itemToDelete: SidebarItem? = nil
+  @Published var workspaceItemToDeleteWithoutPrompt: SidebarItem? = nil
   @Published var newlyCreatedSidebarWorkspaceItemIdToSelect: UUID?
-  
   @Published var shouldCheckForNewSidebarItemToCreate: Bool = false
-  
   @Published var updateControlBarView: Bool = false
   @Published var currentWidth: CGFloat = 240
   
