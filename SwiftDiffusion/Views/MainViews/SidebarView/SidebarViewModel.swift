@@ -155,3 +155,13 @@ extension SidebarViewModel {
     folderPath.last
   }
 }
+
+extension SidebarFolder {
+  func addItem(_ item: SidebarItem) {
+    self.items.append(item)
+  }
+  
+  func removeItem(_ item: SidebarItem) {
+    self.items.removeAll { $0.id == item.id }
+  }
+}
