@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FilterSortingSection: View {
-  @Binding var sortingOrder: SidebarView.SortingOrder
+  @Binding var sortingOrder: SidebarViewModel.SortingOrder
   @Binding var selectedModelName: String?
   @Binding var filterToolsButtonToggled: Bool
   let uniqueModelNames: [String]

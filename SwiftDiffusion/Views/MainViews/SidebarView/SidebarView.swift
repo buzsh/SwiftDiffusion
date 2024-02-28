@@ -35,39 +35,6 @@ struct SidebarView: View {
   @State private var editingItemId: UUID? = nil
   @State private var draftTitle: String = ""
   @State private var showDeletionAlert: Bool = false
-  @State private var sortingOrder: SortingOrder = .mostRecent
-  
-  @State private var selectedModelName: String? = nil
-  
-  enum SortingOrder: String {
-    case mostRecent = "Most Recent"
-    case leastRecent = "Least Recent"
-  }
-  
-  var uniqueModelNames: [String] {
-    Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
-  }
-  
-  var filteredItems: [SidebarItem] {
-    let filtered = sidebarItems.filter {
-      let isWorkspaceItem = $0.isWorkspaceItem
-      return !isWorkspaceItem
-    }
-    if let selectedModelName = selectedModelName {
-      return filtered.filter { $0.prompt?.selectedModel?.name == selectedModelName }
-    } else {
-      return filtered
-    }
-  }
-  
-  var sortedAndFilteredItems: [SidebarItem] {
-    switch sortingOrder {
-    case .mostRecent:
-      return filteredItems.sorted { $0.timestamp > $1.timestamp }
-    case .leastRecent:
-      return filteredItems.sorted { $0.timestamp < $1.timestamp }
-    }
-  }
   
   var workspaceItems: [SidebarItem] {
     sidebarItems.filter {
@@ -91,18 +58,24 @@ struct SidebarView: View {
     GeometryReader { geometry in
       VStack {
         
-        FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, filterToolsButtonToggled: $filterToolsButtonToggled, uniqueModelNames: uniqueModelNames)
+        FilterSortingSection(sortingOrder: $sidebarViewModel.sortingOrder, selectedModelName: $sidebarViewModel.selectedModelName, filterToolsButtonToggled: $filterToolsButtonToggled, uniqueModelNames: sidebarViewModel.uniqueModelNames)
         
         ZStack(alignment: .bottom) {
           List(selection: $selectedItemID) {
             
             WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
             
+            /*
             if let currentFolder = sidebarViewModel.currentFolder {
               SidebarItemSection(title: currentFolder.name, items: currentFolder.items, folders: currentFolder.folders, selectedItemID: $selectedItemID)
             } else {
               SidebarItemSection(title: "Uncategorized", items: sortedAndFilteredItems, folders: sidebarFolders, selectedItemID: $selectedItemID)
-            }
+            }*/
+            
+            SidebarItemSection(title: sidebarViewModel.currentFolder?.name ?? "Uncategorized",
+                               items: sidebarViewModel.displayedItems,
+                               folders: sidebarViewModel.displayedFolders,
+                               selectedItemID: $selectedItemID)
             
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
@@ -142,7 +115,7 @@ struct SidebarView: View {
             Debug.log("SidebarView.onChange of: sidebarItems")
             sidebarViewModel.allSidebarItems = sidebarItems
             sidebarViewModel.workspaceItems = workspaceItems
-            sidebarViewModel.savedItems = sortedAndFilteredItems
+            sidebarViewModel.savedItems = sidebarViewModel.displayedItems
             
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
@@ -190,11 +163,11 @@ struct SidebarView: View {
       
     }
     .onAppear {
-        preloadImages(for: sortedAndFilteredItems)
+      preloadImages(for: sidebarViewModel.displayedItems)
         preloadImages(for: sortedWorkspaceItems)
     }
     .onChange(of: sidebarItems) {
-        preloadImages(for: sortedAndFilteredItems)
+        preloadImages(for: sidebarViewModel.displayedItems)
         preloadImages(for: sortedWorkspaceItems)
     }
   }
@@ -202,26 +175,32 @@ struct SidebarView: View {
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
     Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
     
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
-    }
-    
-    if let newItemID = newItemID,
-       let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-      Debug.log("onChange selectItem: \(selectedItem.title)")
-      sidebarViewModel.selectedSidebarItem = selectedItem
-      selectedItemName = selectedItem.title
-      let mapModelData = MapModelData()
-      if let storedPromptModel = selectedItem.prompt {
+    // Check if the newItemID corresponds to a folder
+    if let folder = sidebarViewModel.allFolders.first(where: { $0.id == newItemID }) {
+      Debug.log("Selected Folder: \(folder.name)")
+      sidebarViewModel.selectedFolder = folder
+      sidebarViewModel.selectedObject = folder // New logic to handle folder selection
+    } else if let item = sidebarItems.first(where: { $0.id == newItemID }) {
+      Debug.log("Selected Item: \(item.title)")
+      sidebarViewModel.selectedSidebarItem = item
+      sidebarViewModel.selectedObject = item // Existing item selection logic
+      selectedItemName = item.title
+      
+      if let storedPromptModel = item.prompt {
+        let mapModelData = MapModelData()
         let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
         
-        if selectedItem.title == "New Prompt" {
+        if item.title == "New Prompt" {
           newPrompt.selectedModel = nil
         }
         
-        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
+        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: item.imageUrls)
       }
+    } else {
+      // Handle case where neither an item nor a folder is found for the given ID
+      Debug.log("No item or folder found with ID: \(String(describing: newItemID))")
     }
+    
     ensureSelectedSidebarItemForSelectedItemID()
   }
   
