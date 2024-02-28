@@ -14,6 +14,7 @@ struct SidebarItemSection: View {
   let title: String
   let items: [SidebarItem]
   let folders: [SidebarFolder]
+  
   @Binding var selectedItemID: UUID?
   
   var body: some View {

@@ -107,6 +107,9 @@ struct SidebarView: View {
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
           .listStyle(SidebarListStyle()) // .scrollIndicators(.hidden)
+          .onChange(of: sidebarFolders) {
+            sidebarViewModel.allFolders = sidebarFolders
+          }
           .onChange(of: sidebarViewModel.itemToSave) {
             moveSavableItemFromWorkspace()
           }
@@ -154,6 +157,8 @@ struct SidebarView: View {
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
             sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
+            sidebarViewModel.allFolders = sidebarFolders
+            sidebarViewModel.allSidebarItems = sidebarItems
           }
           
           DisplayOptionsBar()

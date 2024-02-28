@@ -27,6 +27,8 @@ class SidebarViewModel: ObservableObject {
   @Published var updateControlBarView: Bool = false
   @Published var currentWidth: CGFloat = 240
   
+  @Published var allFolders: [SidebarFolder] = []
+  
   @Published var folderPath: [SidebarFolder] = []
   
   @Published var modelNameButtonToggled: Bool = true
@@ -159,13 +161,19 @@ extension SidebarViewModel {
 
 extension SidebarViewModel {
   func moveItem(_ itemId: UUID, toFolder folder: SidebarFolder, in model: ModelContext) {
-    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }) else { return }
+    Debug.log("[DD] Attempting to move item: \(itemId)")
+    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }) else {
+      Debug.log("[DD] Item not found in allSidebarItems")
+      return
+    }
     let item = allSidebarItems.remove(at: itemIndex)
     folder.addItem(item)
+    
     saveData(in: model)
   }
   
   func moveItemUp(_ itemId: UUID, in model: ModelContext) {
+    Debug.log("[DD] Attempting to move item: \(itemId)")
     guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }),
           let currentFolder = currentFolder,
           let parentIndex = folderPath.firstIndex(of: currentFolder),
@@ -174,7 +182,21 @@ extension SidebarViewModel {
     let item = allSidebarItems.remove(at: itemIndex)
     let parentFolder = folderPath[parentIndex - 1]
     parentFolder.addItem(item)
+    
+    if let currentFolder = findFolderContainingItem(itemId) {
+      currentFolder.removeItem(withId: itemId)
+    }
+    
     saveData(in: model)
+  }
+  
+  func findFolderContainingItem(_ itemId: UUID) -> SidebarFolder? {
+    for folder in allFolders {
+      if folder.items.contains(where: { $0.id == itemId }) {
+        return folder
+      }
+    }
+    return nil
   }
 }
 
@@ -185,5 +207,9 @@ extension SidebarFolder {
   
   func removeItem(_ item: SidebarItem) {
     self.items.removeAll { $0.id == item.id }
+  }
+  
+  func removeItem(withId itemId: UUID) {
+    self.items.removeAll { $0.id == itemId }
   }
 }
