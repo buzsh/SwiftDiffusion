@@ -16,17 +16,20 @@ struct SidebarItemSection: View {
   
   var body: some View {
     Section(header: Text("Folders")) {
-      // Optional "Back" button
-      if sidebarViewModel.currentFolder != nil {
-        Button(action: {
-          sidebarViewModel.navigateBack()
-        }) {
-          HStack {
-            Image(systemName: "chevron.left")
-            Text("Back")
-          }
+      if let _ = sidebarViewModel.currentFolder {
+        HStack {
+          Image(systemName: "chevron.left")
+          Text("Back")
+          Spacer()
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+          sidebarViewModel.navigateBack()
+        }
+        
+        Divider()
       }
+      
       ForEach(folders, id: \.self) { folder in
         FolderItemView(folder: folder)
       }
