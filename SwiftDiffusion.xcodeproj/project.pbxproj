@@ -30,6 +30,8 @@
 		29169D162B8EB4820099A9C5 /* FilterSortingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D152B8EB4820099A9C5 /* FilterSortingSection.swift */; };
 		29169D182B8EB4A80099A9C5 /* WorkspaceSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D172B8EB4A80099A9C5 /* WorkspaceSection.swift */; };
 		29169D1A2B8EB6510099A9C5 /* UncategorizedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D192B8EB6510099A9C5 /* UncategorizedSection.swift */; };
+		29169D1F2B8F8D710099A9C5 /* SidebarItemSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D1E2B8F8D710099A9C5 /* SidebarItemSection.swift */; };
+		29169D212B8F8DC40099A9C5 /* FolderItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D202B8F8DC40099A9C5 /* FolderItemView.swift */; };
 		2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3332B7278FD001D14B9 /* SettingsView.swift */; };
 		2916F3372B72859D001D14B9 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3362B72859D001D14B9 /* DetailView.swift */; };
 		2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3382B728604001D14B9 /* FileHierarchy.swift */; };
@@ -158,6 +160,8 @@
 		29169D152B8EB4820099A9C5 /* FilterSortingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSortingSection.swift; sourceTree = "<group>"; };
 		29169D172B8EB4A80099A9C5 /* WorkspaceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSection.swift; sourceTree = "<group>"; };
 		29169D192B8EB6510099A9C5 /* UncategorizedSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncategorizedSection.swift; sourceTree = "<group>"; };
+		29169D1E2B8F8D710099A9C5 /* SidebarItemSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemSection.swift; sourceTree = "<group>"; };
+		29169D202B8F8DC40099A9C5 /* FolderItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderItemView.swift; sourceTree = "<group>"; };
 		2916F3332B7278FD001D14B9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2916F3362B72859D001D14B9 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		2916F3382B728604001D14B9 /* FileHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHierarchy.swift; sourceTree = "<group>"; };
@@ -372,6 +376,8 @@
 				29169D152B8EB4820099A9C5 /* FilterSortingSection.swift */,
 				29169D172B8EB4A80099A9C5 /* WorkspaceSection.swift */,
 				29169D192B8EB6510099A9C5 /* UncategorizedSection.swift */,
+				29169D1E2B8F8D710099A9C5 /* SidebarItemSection.swift */,
+				29169D202B8F8DC40099A9C5 /* FolderItemView.swift */,
 			);
 			path = SidebarSections;
 			sourceTree = "<group>";
@@ -1028,6 +1034,7 @@
 				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
+				29169D212B8F8DC40099A9C5 /* FolderItemView.swift in Sources */,
 				29F91D332B8D42390047B3C9 /* NSImage+Extensions.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
 				292CE8102B81958700116D60 /* Txt2ImgService.swift in Sources */,
@@ -1109,6 +1116,7 @@
 				29620FE82B82924E008EA5EB /* CheckpointModel.swift in Sources */,
 				295A60112B8D81CF00B822A9 /* ImageCache.swift in Sources */,
 				2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */,
+				29169D1F2B8F8D710099A9C5 /* SidebarItemSection.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
