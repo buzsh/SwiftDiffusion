@@ -117,22 +117,36 @@ struct SidebarView: View {
             
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
-          .listStyle(SidebarListStyle()) //.scrollIndicators(.hidden)
-          
+          .listStyle(SidebarListStyle())
+          //.scrollIndicators(.hidden)
           .onChange(of: sidebarViewModel.itemToSave) {
             moveSavableItemFromWorkspace()
+          }
+          .onChange(of: sidebarViewModel.itemToDelete) {
+            if sidebarViewModel.itemToDelete != nil {
+              showDeletionAlert = true
+            }
+          }
+          .onChange(of: sidebarViewModel.workspaceItemToDeleteWithoutPrompt) {
+            if sidebarViewModel.workspaceItemToDeleteWithoutPrompt != nil {
+              deleteWorkspaceItemWithoutPrompt()
+            }
+          }
+          .alert(isPresented: $showDeletionAlert) {
+            Alert(
+              title: Text("Are you sure you want to delete this item?"),
+              primaryButton: .destructive(Text("Delete")) {
+                self.deleteSavedItem()
+              },
+              secondaryButton: .cancel() {
+                sidebarViewModel.itemToDelete = nil
+              }
+            )
           }
           
           .onChange(of: selectedItemID) { currentItemID, newItemID in
             selectedSidebarItemChanged(from: currentItemID, to: newItemID)
           }
-          .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
-            if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
-              ensureNewPromptWorkspaceItemExists()
-              sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
-            }
-          }
-          
           .onChange(of: sidebarItems) {
             Debug.log("SidebarView.onChange of: sidebarItems")
             sidebarViewModel.allSidebarItems = sidebarItems
@@ -142,6 +156,12 @@ struct SidebarView: View {
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
           }
+          .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+            if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
+              ensureNewPromptWorkspaceItemExists()
+              sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
+            }
+          }
           .onAppear {
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
@@ -149,14 +169,13 @@ struct SidebarView: View {
           }
           
           DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
-        }
+          
+        } // ZStack
       }
       .frame(width: geometry.size.width)
       .onChange(of: geometry.size.width) {
         sidebarViewModel.currentWidth = geometry.size.width-32
       }
-      
-      SidebarItemDeletionHandler(selectedItemID: $selectedItemID, showDeletionAlert: $showDeletionAlert)
     }
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
