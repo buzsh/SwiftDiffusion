@@ -32,6 +32,7 @@
 		29169D1A2B8EB6510099A9C5 /* UncategorizedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D192B8EB6510099A9C5 /* UncategorizedSection.swift */; };
 		29169D1F2B8F8D710099A9C5 /* SidebarItemSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D1E2B8F8D710099A9C5 /* SidebarItemSection.swift */; };
 		29169D212B8F8DC40099A9C5 /* FolderItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D202B8F8DC40099A9C5 /* FolderItemView.swift */; };
+		29169D232B8FAFE40099A9C5 /* DebugSelectedSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29169D222B8FAFE40099A9C5 /* DebugSelectedSidebarItem.swift */; };
 		2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3332B7278FD001D14B9 /* SettingsView.swift */; };
 		2916F3372B72859D001D14B9 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3362B72859D001D14B9 /* DetailView.swift */; };
 		2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916F3382B728604001D14B9 /* FileHierarchy.swift */; };
@@ -162,6 +163,7 @@
 		29169D192B8EB6510099A9C5 /* UncategorizedSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncategorizedSection.swift; sourceTree = "<group>"; };
 		29169D1E2B8F8D710099A9C5 /* SidebarItemSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemSection.swift; sourceTree = "<group>"; };
 		29169D202B8F8DC40099A9C5 /* FolderItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderItemView.swift; sourceTree = "<group>"; };
+		29169D222B8FAFE40099A9C5 /* DebugSelectedSidebarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSelectedSidebarItem.swift; sourceTree = "<group>"; };
 		2916F3332B7278FD001D14B9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2916F3362B72859D001D14B9 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		2916F3382B728604001D14B9 /* FileHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHierarchy.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 				29A7BDE02B8A40F200F9144B /* ApiCheckpointRow.swift */,
 				29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */,
 				29145E792B77DCEB00BFA64B /* DebugPromptActionView.swift */,
+				29169D222B8FAFE40099A9C5 /* DebugSelectedSidebarItem.swift */,
 			);
 			path = DebugPromptViews;
 			sourceTree = "<group>";
@@ -1096,6 +1099,7 @@
 				29C0F38B2B7AC25C0017DD6B /* SettingsSectionHeader.swift in Sources */,
 				29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
+				29169D232B8FAFE40099A9C5 /* DebugSelectedSidebarItem.swift in Sources */,
 				29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */,
 				29169D092B8EA8F10099A9C5 /* StoredCheckpointApiModel.swift in Sources */,
 				29169D182B8EB4A80099A9C5 /* WorkspaceSection.swift in Sources */,
