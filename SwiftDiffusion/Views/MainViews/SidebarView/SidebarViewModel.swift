@@ -27,6 +27,13 @@ class SidebarViewModel: ObservableObject {
   @Published var updateControlBarView: Bool = false
   @Published var currentWidth: CGFloat = 240
   
+  @Published var folderPath: [SidebarFolder] = []
+  
+  @Published var modelNameButtonToggled: Bool = true
+  @Published var noPreviewsItemButtonToggled: Bool = false
+  @Published var smallPreviewsButtonToggled: Bool = true
+  @Published var largePreviewsButtonToggled: Bool = false
+  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     shouldCheckForNewSidebarItemToCreate = true
