@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct SidebarItemSection: View {
+  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   let title: String
   let items: [SidebarItem]
   let folders: [SidebarFolder]
-  
   @Binding var selectedItemID: UUID?
   
   var body: some View {
     Section(header: Text("Folders")) {
+      // Optional "Back" button
+      if sidebarViewModel.currentFolder != nil {
+        Button(action: {
+          sidebarViewModel.navigateBack()
+        }) {
+          HStack {
+            Image(systemName: "chevron.left")
+            Text("Back")
+          }
+        }
+      }
       ForEach(folders, id: \.self) { folder in
         FolderItemView(folder: folder)
       }
@@ -23,11 +34,11 @@ struct SidebarItemSection: View {
     Section(header: Text(title)) {
       ForEach(items) { item in
         SidebarStoredItemView(item: item)
-        .padding(.vertical, 2)
-        .contentShape(Rectangle())
-        .onTapGesture {
-          selectedItemID = item.id
-        }
+          .padding(.vertical, 2)
+          .contentShape(Rectangle())
+          .onTapGesture {
+            selectedItemID = item.id
+          }
       }
     }
   }

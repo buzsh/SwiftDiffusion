@@ -99,22 +99,10 @@ struct SidebarView: View {
             WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
             
             if let currentFolder = sidebarViewModel.currentFolder {
-              Button(action: sidebarViewModel.navigateBack) {
-                HStack {
-                  Image(systemName: "chevron.left")
-                  Text("Back")
-                }
-              }
               SidebarItemSection(title: currentFolder.name, items: currentFolder.items, folders: currentFolder.folders, selectedItemID: $selectedItemID)
             } else {
               SidebarItemSection(title: "Uncategorized", items: sortedAndFilteredItems, folders: sidebarFolders, selectedItemID: $selectedItemID)
             }
-            /*
-            UncategorizedSection(
-              sortedAndFilteredItems: sortedAndFilteredItems,
-              selectedItemID: $selectedItemID
-            )
-             */
             
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
