@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 class SidebarFolder {
+  @Attribute var id: UUID = UUID()
   @Attribute var name: String
   @Relationship var items: [SidebarItem]
   @Relationship var folders: [SidebarFolder]
