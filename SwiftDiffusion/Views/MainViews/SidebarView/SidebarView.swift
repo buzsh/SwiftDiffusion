@@ -159,32 +159,8 @@ struct SidebarView: View {
     GeometryReader { geometry in
       VStack {
         if filterToolsButtonToggled {
-          List {
-            Section(header: Text("Sorting")) {
-              Menu(sortingOrder.rawValue) {
-                Button("Most Recent") {
-                  sortingOrder = .mostRecent
-                }
-                Button("Least Recent") {
-                  sortingOrder = .leastRecent
-                }
-              }
-            }
-            
-            Section(header: Text("Filters")) {
-              Menu(selectedModelName ?? "Filter by Model") {
-                Button("Show All") {
-                  selectedModelName = nil
-                }
-                Divider()
-                ForEach(uniqueModelNames, id: \.self) { modelName in
-                  Button(modelName) {
-                    selectedModelName = modelName
-                  }
-                }
-              }
-            }
-          }.frame(height: 110)
+          FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, uniqueModelNames: uniqueModelNames)
+          
           Divider()
             .padding(.horizontal).padding(.bottom, 4)
         }
@@ -192,52 +168,17 @@ struct SidebarView: View {
         ZStack(alignment: .bottom) {
           List(selection: $selectedItemID) {
             
-            Section(header: Text("Workspace")) {
-              ForEach(sortedWorkspaceItems) { item in
-                SidebarWorkspaceItem(item: item, selectedItemID: $selectedItemID)
-                  .onChange(of: sortedWorkspaceItems) {
-                    if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
-                      selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
-                      sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
-                    }
-                  }
-              }
-            }
+            WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
             
-            if sortedAndFilteredItems.isEmpty {
-              VStack(alignment: .center) {
-                Spacer(minLength: 100)
-                HStack(alignment: .center) {
-                  Spacer()
-                  VStack {
-                    Text("Saved prompts")
-                    Text("will appear here!")
-                  }
-                  Spacer()
-                }
-                
-                Spacer()
-              }
-              .foregroundStyle(Color.secondary)
-            } else {
-              
-              Section(header: Text("Uncategorized")) {
-                ForEach(sortedAndFilteredItems) { item in
-                  SidebarStoredItemView(
-                    item: item,
-                    smallPreviewsButtonToggled: smallPreviewsButtonToggled,
-                    largePreviewsButtonToggled: largePreviewsButtonToggled,
-                    modelNameButtonToggled: modelNameButtonToggled
-                  )
-                  .padding(.vertical, 2)
-                  .contentShape(Rectangle())
-                  .onTapGesture {
-                    selectedItemID = item.id
-                  }
-                }
-              } // Section("Uncategorized")
-              VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
-            }
+            UncategorizedSection(
+              sortedAndFilteredItems: sortedAndFilteredItems,
+              selectedItemID: $selectedItemID,
+              smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
+              largePreviewsButtonToggled: $largePreviewsButtonToggled,
+              modelNameButtonToggled: $modelNameButtonToggled
+            )
+            
+            VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           } // List
           .listStyle(SidebarListStyle())
           //.scrollIndicators(.hidden)
