@@ -136,3 +136,22 @@ extension SidebarViewModel {
     return newSidebarItem
   }
 }
+
+
+// MARK: Folder Nav
+
+extension SidebarViewModel {
+  func navigateToFolder(_ folder: SidebarFolder) {
+    folderPath.append(folder)
+  }
+  
+  // Navigate back to the previous folder
+  func navigateBack() {
+    _ = folderPath.popLast()
+  }
+  
+  // Current view's content based on navigation
+  var currentFolder: SidebarFolder? {
+    folderPath.last
+  }
+}

@@ -27,11 +27,6 @@ struct SidebarView: View {
   
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
-  
-  @AppStorage("modelNameButtonToggled") private var modelNameButtonToggled: Bool = true
-  @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
-  @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
-  @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
@@ -103,26 +98,23 @@ struct SidebarView: View {
             
             WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
             
-            Section(header: Text("Folders")) {
-              ForEach(sidebarFolders, id: \.self) { folder in
+            if let currentFolder = sidebarViewModel.currentFolder {
+              Button(action: sidebarViewModel.navigateBack) {
                 HStack {
-                  Image(systemName: "folder")
-                  Text(folder.name)
-                  Spacer()
-                  Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
+                  Image(systemName: "chevron.left")
+                  Text("Back")
                 }
-                //action
               }
+              SidebarItemSection(title: currentFolder.name, items: currentFolder.items, folders: currentFolder.folders, selectedItemID: $selectedItemID)
+            } else {
+              SidebarItemSection(title: "Uncategorized", items: sortedAndFilteredItems, folders: sidebarFolders, selectedItemID: $selectedItemID)
             }
-            
+            /*
             UncategorizedSection(
               sortedAndFilteredItems: sortedAndFilteredItems,
-              selectedItemID: $selectedItemID,
-              smallPreviewsButtonToggled: $smallPreviewsButtonToggled,
-              largePreviewsButtonToggled: $largePreviewsButtonToggled,
-              modelNameButtonToggled: $modelNameButtonToggled
+              selectedItemID: $selectedItemID
             )
+             */
             
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
@@ -176,7 +168,7 @@ struct SidebarView: View {
             sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
           }
           
-          DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
+          DisplayOptionsBar()
           
         } // ZStack
       }
