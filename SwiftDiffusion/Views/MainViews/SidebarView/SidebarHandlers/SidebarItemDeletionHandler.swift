@@ -11,11 +11,12 @@ struct SidebarItemDeletionHandler: View {
   @Environment(\.modelContext) var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @Binding var selectedItemID: UUID?
-  @Binding var showDeletionAlert: Bool
+  @State var showDeletionAlert: Bool = false
   
   var body: some View {
     EmptyView()
       .onChange(of: sidebarViewModel.itemToDelete) {
+        Debug.log("sidebarViewModel.itemToDelete TRIGGERED")
         if sidebarViewModel.itemToDelete != nil {
           showDeletionAlert = true
         }

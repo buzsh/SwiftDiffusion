@@ -95,6 +95,8 @@ struct SidebarView: View {
   var body: some View {
     GeometryReader { geometry in
       VStack {
+        SidebarItemDeletionHandler(selectedItemID: $selectedItemID)
+        
         if filterToolsButtonToggled {
           FilterSortingSection(sortingOrder: $sortingOrder, selectedModelName: $selectedModelName, uniqueModelNames: uniqueModelNames)
           
@@ -117,8 +119,7 @@ struct SidebarView: View {
             
             VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
-          .listStyle(SidebarListStyle())
-          //.scrollIndicators(.hidden)
+          .listStyle(SidebarListStyle()) // .scrollIndicators(.hidden)
           .onChange(of: sidebarViewModel.itemToSave) {
             moveSavableItemFromWorkspace()
           }
@@ -190,9 +191,6 @@ struct SidebarView: View {
       }
       
     }
-    .onChange(of: currentPrompt.positivePrompt) {
-      ensureNewPromptWorkspaceItemExists()
-    }
     .onAppear {
         preloadImages(for: sortedAndFilteredItems)
         preloadImages(for: sortedWorkspaceItems)
@@ -242,11 +240,11 @@ struct SidebarView: View {
   }
   /// Creates a "New Prompt" item if the existing one was overwritten.
   func ensureNewPromptWorkspaceItemExists() {
-    Debug.log("ensureNewPromptWorkspaceItemExists()")
     let listOfBlankNewPrompts = workspaceItems.filter { $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
       _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
+      sidebarViewModel.updateControlBarView = true
     }
   }
   
