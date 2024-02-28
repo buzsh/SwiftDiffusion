@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct FolderItemView: View {
+  @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   let folder: SidebarFolder
   
@@ -23,5 +25,18 @@ struct FolderItemView: View {
     .onTapGesture {
       sidebarViewModel.navigateToFolder(folder)
     }
+    .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+      providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
+        guard let itemIDStr = nsItem as? NSString else { return }
+        let itemIdStr = String(itemIDStr)
+        DispatchQueue.main.async {
+          if let itemId = UUID(uuidString: itemIdStr) {
+            self.sidebarViewModel.moveItem(itemId, toFolder: self.folder, in: modelContext)
+          }
+        }
+      }
+      return true
+    }
+    
   }
 }
