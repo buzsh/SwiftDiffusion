@@ -11,11 +11,13 @@ import SwiftData
 @Model
 class SidebarFolder {
   @Attribute var name: String
-  @Relationship var contents: [SidebarItem]
+  @Relationship var items: [SidebarItem]
+  @Relationship var folders: [SidebarFolder]
   
-  init(name: String, contents: [SidebarItem] = []) {
+  init(name: String, items: [SidebarItem] = [], folders: [SidebarFolder] = []) {
     self.name = name
-    self.contents = contents
+    self.items = items
+    self.folders = folders
   }
 }
 
