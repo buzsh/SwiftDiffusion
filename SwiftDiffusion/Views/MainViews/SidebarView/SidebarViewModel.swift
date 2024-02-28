@@ -156,6 +156,27 @@ extension SidebarViewModel {
   }
 }
 
+extension SidebarViewModel {
+  func moveItem(_ itemId: UUID, toFolder folder: SidebarFolder, in model: ModelContext) {
+    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }) else { return }
+    let item = allSidebarItems.remove(at: itemIndex)
+    folder.addItem(item)
+    saveData(in: model)
+  }
+  
+  func moveItemUp(_ itemId: UUID, in model: ModelContext) {
+    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }),
+          let currentFolder = currentFolder,
+          let parentIndex = folderPath.firstIndex(of: currentFolder),
+          parentIndex > 0 else { return }
+    
+    let item = allSidebarItems.remove(at: itemIndex)
+    let parentFolder = folderPath[parentIndex - 1]
+    parentFolder.addItem(item)
+    saveData(in: model)
+  }
+}
+
 extension SidebarFolder {
   func addItem(_ item: SidebarItem) {
     self.items.append(item)
