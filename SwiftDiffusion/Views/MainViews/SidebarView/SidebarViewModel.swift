@@ -118,8 +118,9 @@ class SidebarViewModel: ObservableObject {
   func saveData(in model: ModelContext) {
     do {
       try model.save()
+      Debug.log("[DD] Data successfully saved")
     } catch {
-      Debug.log("Error saving context: \(error)")
+      Debug.log("[DD] Error saving context: \(error)")
     }
   }
 }

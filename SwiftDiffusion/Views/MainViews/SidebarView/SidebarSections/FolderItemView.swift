@@ -26,16 +26,21 @@ struct FolderItemView: View {
       sidebarViewModel.navigateToFolder(folder)
     }
     .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
-      providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
-        guard let itemIDStr = nsItem as? NSString else { return }
+      Debug.log("[DD] Attempting to drop on folder: \(folder.id)")
+      return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
+        guard let itemIDStr = nsItem as? NSString else {
+          Debug.log("Failed to load item as NSString")
+          return
+        }
         let itemIdStr = String(itemIDStr)
+        Debug.log("[DD] Dropped item ID: \(itemIdStr)")
         DispatchQueue.main.async {
           if let itemId = UUID(uuidString: itemIdStr) {
+            Debug.log("[DD] Moving item \(itemId) to folder: \(self.folder.id)")
             self.sidebarViewModel.moveItem(itemId, toFolder: self.folder, in: modelContext)
           }
         }
-      }
-      return true
+      } != nil
     }
     
   }
