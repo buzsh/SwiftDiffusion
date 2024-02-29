@@ -42,6 +42,9 @@ extension SidebarFolder {
     folder.parent = self
     self.folders.append(folder)
   }
+  func remove(item: SidebarItem) {
+    self.items.removeAll(where: { $0.id == item.id })
+  }
 }
 
 // MARK: DEPRECATED

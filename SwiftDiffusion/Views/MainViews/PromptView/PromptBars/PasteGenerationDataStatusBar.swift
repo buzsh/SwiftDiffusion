@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PasteGenerationDataStatusBar: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var currentPrompt: PromptModel
   @ObservedObject var userSettings = UserSettings.shared
   
@@ -16,9 +16,10 @@ struct PasteGenerationDataStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+    if sidebarModel.selectedItemIsWorkspaceItem() {
+    
       
-      if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
+        if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
         HStack(alignment: .center) {
           
           Spacer()

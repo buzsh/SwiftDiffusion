@@ -269,7 +269,9 @@ struct ContentView: View {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
         
-        sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
+        
+        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+        //sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -287,11 +289,15 @@ struct ContentView: View {
   func imagesDidGenerateSuccessfully() {
     NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
     
+    /*
     if let savableSidebarItem = sidebarViewModel.sidebarItemCurrentlyGeneratingOut {
       sidebarViewModel.prepareGeneratedPromptForSaving(sideBarItem: savableSidebarItem, imageUrls: lastSavedImageUrls)
     }
-    
     sidebarViewModel.sidebarItemCurrentlyGeneratingOut = nil
+    */
+    if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
+      sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
+    }
     
     Task {
       await fileHierarchy.refresh()

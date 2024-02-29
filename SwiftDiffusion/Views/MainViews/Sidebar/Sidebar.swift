@@ -15,16 +15,74 @@ class SidebarModel: ObservableObject {
   @Published var selectedSidebarItem: SidebarItem? = nil
   @Published var currentFolder: SidebarFolder? = nil
   
+  @Published var currentlyGeneratingSidebarItem: SidebarItem? = nil
+  
+  
+  /// SidebarItems that have been generated and can now be stored to the user's library.
+  @Published var storableSidebarItems: [SidebarItem] = []
+  
+  func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
+    sidebarItem.imageUrls = imageUrls
+    storableSidebarItems.append(sidebarItem)
+  }
+  
+  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, in modelContext: ModelContext) {
+    storableSidebarItems.removeAll(where: { $0 == sidebarItem })
+    workspaceFolder?.remove(item: sidebarItem)
+    currentFolder?.add(item: sidebarItem)
+    saveData(in: modelContext)
+  }
+  
+  func removeSelectedWorkspaceItem() {
+    if let workspaceFolder = workspaceFolder, let selectedSidebarItem = selectedSidebarItem {
+      if workspaceFolder.items.contains(where: { $0.id == selectedSidebarItem.id }) {
+        workspaceFolder.remove(item: selectedSidebarItem)
+      }
+    }
+  }
+  
+  func selectedItemIsWorkspaceItem() -> Bool {
+    if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0 == selectedSidebarItem }) {
+      return true
+    }
+    return false
+  }
+  
+  func selectedItemIsStorableItem() -> Bool {
+    if let selectedSidebarItem = selectedSidebarItem, storableSidebarItems.contains(where: { $0 == selectedSidebarItem }) {
+      return true
+    }
+    return false
+  }
+  
   func setCurrentFolder(to folder: SidebarFolder?) {
-    Debug.log("[DD] ---")
-    Debug.log("[DD] setCurrentFolder to: \(String(describing: folder?.name)) \(String(describing: folder?.id))")
-    self.currentFolder = folder
-    Debug.log("[DD]  self.currentFolder = \(String(describing: folder?.name)) \(String(describing: folder?.id))")
-    Debug.log("[DD] ---")
+    if folder != workspaceFolder {
+      self.currentFolder = folder
+    }
   }
   
   func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
     self.selectedSidebarItem = sidebarItem
+  }
+  
+  /*
+  func prepareGeneratedSidebarItemForSaving(sidebarItem: SidebarItem, imageUrls: [URL]) {
+    sidebarItem.imageUrls = imageUrls
+    addSelectedSidebarItemToStorableSidebarItems()
+  }
+   */
+  /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
+  func updateStorableSidebarItemsInWorkspace() {
+    if let workspaceItems = workspaceFolder?.items {
+      for sidebarItem in workspaceItems {
+        if sidebarItem.imageUrls.isEmpty == false {
+          storableSidebarItems.append(sidebarItem)
+        }
+      }
+    }
+    
+    
+    
   }
 }
 
@@ -49,7 +107,8 @@ struct Sidebar: View {
     }
     .onAppear {
       ensureNecessaryFoldersExist()
-      sidebarModel.currentFolder = sidebarModel.rootFolder
+      sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
+      sidebarModel.updateStorableSidebarItemsInWorkspace()
     }
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
@@ -91,6 +150,7 @@ struct Sidebar: View {
   }
   
   func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
+    Debug.log("updatePromptAndSelectedImage")
     currentPrompt.updateProperties(from: newPrompt)
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image

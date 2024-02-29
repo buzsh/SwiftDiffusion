@@ -8,7 +8,33 @@
 import Foundation
 import SwiftData
 
-
+extension SidebarModel {
+  
+  @MainActor
+  func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
+    //shouldCheckForNewSidebarItemToCreate = true
+    
+    if selectedItemIsWorkspaceItem() {
+      let mapModelData = MapModelData()
+      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
+      
+      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
+        if let newTitle = updatedPrompt?.positivePrompt {
+          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
+        }
+      }
+      selectedSidebarItem?.prompt = updatedPrompt
+      selectedSidebarItem?.timestamp = Date()
+      saveData(in: model)
+    }
+  }
+  private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
+    if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
+      return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
+    }
+    return false
+  }
+}
 
 extension SidebarModel {
   func findSidebarItem(by id: UUID?, in sidebarFolders: [SidebarFolder]) -> SidebarItem? {

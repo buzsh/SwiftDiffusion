@@ -19,7 +19,7 @@ struct WorkspaceFolderView: View {
     
     Section(header: Text("Workspace")) {
       ForEach(workspaceItems) { item in
-        SidebarWorkspaceItem(item: item, selectedItemID: $sidebarModel.selectedItemID)
+        WorkspaceItemView(item: item, selectedItemID: $sidebarModel.selectedItemID)
       }
     }
     .onChange(of: sidebarModel.workspaceFolder?.items) {
@@ -32,6 +32,7 @@ struct WorkspaceFolderView: View {
       Spacer()
       Button(action: {
         let newPromptItem = SidebarItem(title: "New Prompt", imageUrls: [], isWorkspaceItem: true)
+        newPromptItem.prompt = StoredPromptModel(isWorkspaceItem: true)
         sidebarModel.workspaceFolder?.add(item: newPromptItem)
         sidebarModel.saveData(in: modelContext)
       }) {
