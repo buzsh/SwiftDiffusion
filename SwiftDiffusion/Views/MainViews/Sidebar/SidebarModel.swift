@@ -34,6 +34,19 @@ class SidebarModel: ObservableObject {
   @Published var queueDestinationFolderID: UUID? = nil
   @Published var beginMovableSidebarItemQueue: Bool = false
   
+  func setCurrentFolder(to folder: SidebarFolder?, selectItem: Bool = false) {
+    if let folder = folder, folder != workspaceFolder  {
+      currentFolder = folder
+      if selectItem {
+        selectedItemID = folder.id
+      }
+    }
+  }
+  
+  func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
+    selectedItemID = sidebarItem?.id
+  }
+  
   func moveSidebarItem(withId sidebarItemId: UUID, toFolderWithId folderId: UUID) {
     queueMovableSidebarItemID = sidebarItemId
     queueDestinationFolderID = folderId
@@ -115,19 +128,6 @@ class SidebarModel: ObservableObject {
       return true
     }
     return false
-  }
-  
-  func setCurrentFolder(to folder: SidebarFolder?, selectItem: Bool = false) {
-    if let folder = folder, folder != workspaceFolder  {
-      currentFolder = folder
-      if selectItem {
-        selectedItemID = folder.id
-      }
-    }
-  }
-  
-  func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
-    selectedItemID = sidebarItem?.id
   }
   
   /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.

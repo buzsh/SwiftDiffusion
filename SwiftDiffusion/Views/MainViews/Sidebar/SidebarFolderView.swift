@@ -37,22 +37,6 @@ struct SidebarFolderView: View {
           .onTapGesture {
             sidebarModel.setCurrentFolder(to: parentFolder)
           }
-          .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
-            Debug.log("[DD] Attempting to drop on folder with ID: \(parentFolder.id)")
-            return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
-              guard let itemIDStr = nsItem as? String else {
-                Debug.log("[DD] Failed to load the dropped item ID string")
-                return
-              }
-              DispatchQueue.main.async {
-                if let itemId = UUID(uuidString: itemIDStr) {
-                  Debug.log("[DD] Successfully identified item with ID: \(itemId) for dropping into folder ID: \(parentFolder.id)")
-                  sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: parentFolder.id)
-                  DragState.shared.isDragging = false
-                }
-              }
-            } != nil
-          }
       }
       
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
