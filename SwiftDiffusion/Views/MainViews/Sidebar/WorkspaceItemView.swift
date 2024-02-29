@@ -27,7 +27,6 @@ struct WorkspaceItemView: View {
     .onChange(of: currentPrompt.positivePrompt) {
       if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {
         let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
-        //sidebarItem.title = trimmedPrompt
         sidebarModel.setSelectedWorkspaceItemTitle(trimmedPrompt, in: modelContext)
       }
     }
