@@ -43,6 +43,9 @@ struct WorkspaceFolderView: View {
         }
       }
     }
+    .onChange(of: sidebarModel.workspaceItemHasJustBeenRemoved) {
+      //sidebarModel.selectNewWorkspaceItemIfApplicable()
+    }
     
     
     

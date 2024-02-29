@@ -106,6 +106,7 @@ struct FolderTitleControl: View {
         sidebarModel.setCurrentFolder(to: parentFolder)
         parentFolder.remove(folder: folder)
         sidebarModel.saveData(in: modelContext)
+        sidebarModel.sidebarFolderHasJustBeenDeleted = true
       }
     }
   }

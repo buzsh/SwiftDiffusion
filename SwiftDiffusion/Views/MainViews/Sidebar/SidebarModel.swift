@@ -38,6 +38,11 @@ class SidebarModel: ObservableObject {
   @Published var sidebarItemHasJustBeenDeleted: Bool = false
   @Published var sidebarFolderHasJustBeenDeleted: Bool = false
   
+  enum SortingOrder: String {
+    case mostRecent = "Most Recent"
+    case leastRecent = "Least Recent"
+  }
+  
   func setCurrentFolder(to folder: SidebarFolder?, selectItem: Bool = false) {
     if let folder = folder, folder != workspaceFolder  {
       currentFolder = folder
@@ -72,57 +77,93 @@ class SidebarModel: ObservableObject {
   }
   
   func deleteFromWorkspace(sidebarItem: SidebarItem, in modelContext: ModelContext) {
+    selectNextClosestSidebarItemIfApplicable(sortedItems: sortedWorkspaceFolderItems, sortingOrder: .mostRecent)
     workspaceFolder?.remove(item: sidebarItem)
     saveData(in: modelContext)
-    
-    /*
-    if let workspaceFolder = workspaceFolder, let selectedSidebarItem = selectedSidebarItem {
-      if workspaceFolder.items.contains(where: { $0.id == selectedSidebarItem.id }) {
-        workspaceFolder.remove(item: selectedSidebarItem)
-        saveData(in: modelContext)
-      }
-    }
-     */
   }
+  
+  func selectNewWorkspaceItemIfApplicable() {
+    let sortedItems = sortedWorkspaceFolderItems
+    guard !sortedItems.isEmpty else {
+      setSelectedSidebarItem(to: nil)
+      return
+    }
+    if let currentItem = selectedSidebarItem,
+       let currentIndex = sortedItems.firstIndex(of: currentItem) {
+      if currentIndex > 0 {
+        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
+      }
+      else if sortedItems.count > 1 {
+        setSelectedSidebarItem(to: sortedItems[min(currentIndex + 1, sortedItems.count - 1)])
+      }
+      else {
+        setSelectedSidebarItem(to: nil)
+      }
+    } else {
+      setSelectedSidebarItem(to: sortedItems.first)
+    }
+  }
+  
   
   func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
     if let selectedSidebarItem = selectedSidebarItem {
+      selectNextClosestSidebarItemIfApplicable(sortedItems: sortedCurrentFolderItems, sortingOrder: .leastRecent)
       PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: selectedSidebarItem, in: modelContext, withSoundEffect: true)
-      
-      debugLogCurrentFolderContents()
-      
       if let currentFolder = currentFolder {
         Debug.log("[Delete] item: \(selectedSidebarItem.title), from currentFolder: \(currentFolder.name)")
       }
-      
       currentFolder?.remove(item: selectedSidebarItem)
       saveData(in: modelContext)
-      
-      debugLogCurrentFolderContents()
+      sidebarItemHasJustBeenDeleted = true
     }
-    
   }
   
-  func debugLogCurrentFolderContents() {
-    if let currentFolder = currentFolder {
-      
-      Debug.log("[Delete] Contents of currentFolder.items:")
-      for item in currentFolder.items {
-        Debug.log("  > \(item.title)")
+  
+  func selectNextClosestSidebarItemIfApplicable(sortedItems: [SidebarItem], sortingOrder: SortingOrder) {
+    guard !sortedItems.isEmpty else {
+      setSelectedSidebarItem(to: nil)
+      return
+    }
+    
+    guard let currentItem = selectedSidebarItem, let currentIndex = sortedItems.firstIndex(of: currentItem) else {
+      // If no current selection or the current item is not found,
+      // select the first or last item based on the sorting order.
+      setSelectedSidebarItem(to: sortingOrder == .leastRecent ? sortedItems.first : sortedItems.last)
+      return
+    }
+    
+    switch sortingOrder {
+    case .leastRecent:
+      // Priority for least recent: try to select the next item "down" first, then "up".
+      if currentIndex + 1 < sortedItems.count {
+        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
+      } else if currentIndex > 0 {
+        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
+      } else {
+        setSelectedSidebarItem(to: nil)
+      }
+    case .mostRecent:
+      // Priority for most recent: try to select an earlier item "up" first, then "down".
+      if currentIndex > 0 {
+        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
+      } else if currentIndex + 1 < sortedItems.count {
+        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
+      } else {
+        setSelectedSidebarItem(to: nil)
       }
     }
   }
+
   
+  
+
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)
   }
   
   func workspaceFolderContains(sidebarItem: SidebarItem?) -> Bool {
     if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0.id == sidebarItem?.id }) {
-      Debug.log("Found: Workspace folder does contain sidebarItem: \(String(describing: sidebarItem?.title))")
       return true
-    } else {
-      //Debug.log("Not found: Workspace folder does not contain sidebarItem: \(String(describing: sidebarItem?.title))")
     }
     return false
   }
