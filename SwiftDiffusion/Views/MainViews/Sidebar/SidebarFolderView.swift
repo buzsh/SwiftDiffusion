@@ -35,7 +35,9 @@ struct SidebarFolderView: View {
       if let parentFolder = sidebarModel.currentFolder?.parent {
         ParentFolderListItem(parentFolder: parentFolder)
           .onTapGesture {
-            sidebarModel.setCurrentFolder(to: parentFolder)
+            withAnimation {
+              sidebarModel.setCurrentFolder(to: parentFolder)
+            }
           }
       }
       
@@ -43,7 +45,9 @@ struct SidebarFolderView: View {
         VStack(spacing: 0) {
           SidebarFolderItem(folder: folder)
             .onTapGesture {
-              sidebarModel.setCurrentFolder(to: folder)
+              withAnimation {
+                sidebarModel.setCurrentFolder(to: folder)
+              }
             }
         }
         .listRowInsets(EdgeInsets())
@@ -126,5 +130,20 @@ struct ParentFolderListItem: View {
       }
     })
     .onDropHandling(isHovering: $isHovering, folderId: parentFolder.id, sidebarModel: sidebarModel)
+  }
+}
+
+
+extension AnyTransition {
+  static var slideRightToLeft: AnyTransition {
+    let insertion = AnyTransition.move(edge: .trailing)
+    let removal = AnyTransition.move(edge: .leading)
+    return .asymmetric(insertion: insertion, removal: removal)
+  }
+  
+  static var slideLeftToRight: AnyTransition {
+    let insertion = AnyTransition.move(edge: .leading)
+    let removal = AnyTransition.move(edge: .trailing)
+    return .asymmetric(insertion: insertion, removal: removal)
   }
 }
