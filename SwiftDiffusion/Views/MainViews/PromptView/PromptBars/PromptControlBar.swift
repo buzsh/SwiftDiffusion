@@ -79,7 +79,7 @@ struct PromptControlBar: View {
   private var storedItemBar: some View {
     HStack {
       Button(action: {
-          sidebarViewModel.queueSelectedSidebarItemForDeletion()
+        sidebarModel.promptUserToConfirmDeletion = true
       }) {
         Image(systemName: "trash")
         Text("Delete")

@@ -277,15 +277,17 @@ struct SidebarView: View {
     }
   }
   
+  
+  
+  private func deleteWorkspaceItemWithoutPrompt() {
+    deleteSidebarItem(sidebarViewModel.workspaceItemToDeleteWithoutPrompt)
+  }
+  
   private func deleteSavedItem() {
     if let itemToDelete = sidebarViewModel.itemToDelete {
       PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
     }
     deleteSidebarItem(sidebarViewModel.itemToDelete)
-  }
-  
-  private func deleteWorkspaceItemWithoutPrompt() {
-    deleteSidebarItem(sidebarViewModel.workspaceItemToDeleteWithoutPrompt)
   }
   
   private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {

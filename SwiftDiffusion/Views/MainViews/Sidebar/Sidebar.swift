@@ -14,6 +14,8 @@ struct Sidebar: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   @Query private var sidebarFolders: [SidebarFolder]
   
+  @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
+  
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
   
@@ -38,6 +40,20 @@ struct Sidebar: View {
     }
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
+    }
+    .onChange(of: sidebarModel.promptUserToConfirmDeletion) {
+      showingDeleteSelectedSidebarItemConfirmationAlert = sidebarModel.promptUserToConfirmDeletion
+    }
+    .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
+      Alert(
+        title: Text("Are you sure you want to delete this item?"),
+        primaryButton: .destructive(Text("Delete")) {
+          sidebarModel.deleteSelectedSidebarItemFromStorage(in: modelContext)
+        },
+        secondaryButton: .cancel() {
+          //
+        }
+      )
     }
   }
   
@@ -97,8 +113,6 @@ struct Sidebar: View {
     }
   }
 }
-
-
 
 
 

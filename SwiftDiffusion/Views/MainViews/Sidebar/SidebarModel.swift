@@ -25,6 +25,8 @@ class SidebarModel: ObservableObject {
   @Published var smallPreviewsButtonToggled: Bool = true
   @Published var largePreviewsButtonToggled: Bool = false
   @Published var currentWidth: CGFloat = 240
+
+  @Published var promptUserToConfirmDeletion: Bool = false
   
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
@@ -46,6 +48,15 @@ class SidebarModel: ObservableObject {
         workspaceFolder.remove(item: selectedSidebarItem)
       }
     }
+  }
+  
+  func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
+    if let selectedSidebarItem = selectedSidebarItem {
+      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: selectedSidebarItem, in: modelContext, withSoundEffect: true)
+      currentFolder?.removeItem(selectedSidebarItem)
+      saveData(in: modelContext)
+    }
+    
   }
   
   func selectedItemIsWorkspaceItem() -> Bool {
@@ -86,6 +97,12 @@ class SidebarModel: ObservableObject {
 
 
 extension SidebarModel {
+  @MainActor func storeChangesOfSelectedSidebarItem(with prompt: PromptModel, in modelContext: ModelContext) {
+    if let selectedSidebarItem = selectedSidebarItem {
+      storeChanges(of: selectedSidebarItem, with: prompt, in: modelContext)
+    }
+  }
+  
   @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
     //shouldCheckForNewSidebarItemToCreate = true
     if selectedItemIsWorkspaceItem() {
