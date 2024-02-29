@@ -192,10 +192,15 @@ extension SidebarModel {
   }
 }
 
+extension Constants.Sidebar {
+  static let rootFolderName = "Documents"
+  static let workspaceFolderName = "Workspace"
+}
+
 extension SidebarModel {
   func ensureRootFolderExists(for folderQuery: [SidebarFolder], in modelContext: ModelContext) {
     if folderQuery.isEmpty {
-      let newRootFolder = SidebarFolder(name: "Root", isRoot: true)
+      let newRootFolder = SidebarFolder(name: Constants.Sidebar.rootFolderName, isRoot: true)
       modelContext.insert(newRootFolder)
       try? modelContext.save()
       Debug.log("[SidebarModel] Root folder created.")
@@ -208,7 +213,7 @@ extension SidebarModel {
   
   func ensureWorkspaceFolderExists(for folderQuery: [SidebarFolder], in modelContext: ModelContext) {
     if folderQuery.isEmpty {
-      let newWorkspaceFolder = SidebarFolder(name: "Workspace", isWorkspace: true)
+      let newWorkspaceFolder = SidebarFolder(name: Constants.Sidebar.workspaceFolderName, isWorkspace: true)
       modelContext.insert(newWorkspaceFolder)
       try? modelContext.save()
       Debug.log("[SidebarModel] Workspace folder created.")
