@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 extension SidebarModel {
   var sortedCurrentFolderItems: [SidebarItem] {
@@ -36,12 +37,47 @@ struct SidebarFolderView: View {
           .onTapGesture {
             sidebarModel.setCurrentFolder(to: parentFolder)
           }
+          .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+            let targetFolderId = parentFolder.id // Assuming `self.folder` is the current folder view's context
+            Debug.log("[DD] Attempting to drop on folder with ID: \(targetFolderId)")
+            return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
+              guard let itemIDStr = nsItem as? String else {
+                Debug.log("[DD] Failed to load the dropped item ID string")
+                return
+              }
+              DispatchQueue.main.async {
+                if let itemId = UUID(uuidString: itemIDStr) {
+                  Debug.log("[DD] Successfully identified item with ID: \(itemId) for dropping into folder ID: \(targetFolderId)")
+                  sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: targetFolderId)
+                }
+              }
+            } != nil
+          }
       }
       
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
         SidebarFolderItem(folder: folder)
           .onTapGesture {
             sidebarModel.setCurrentFolder(to: folder)
+          }
+          .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+            Debug.log("[DD] Attempting to drop on SidebarFolder/SidebarItem")
+            return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
+              guard let itemIDStr = nsItem as? String else {
+                Debug.log("[DD] Failed to load the dropped item ID string")
+                return
+              }
+              DispatchQueue.main.async {
+                if let itemId = UUID(uuidString: itemIDStr) {
+                  Debug.log("[DD] Successfully dropped item with ID: \(itemId). Preparing to move the item.")
+                  // Assuming you have a method to get the folder name or ID where the item will be moved
+                  let targetFolderName = "Target Folder Name" // Example placeholder
+                  Debug.log("[DD] Moving item with ID: \(itemId) to \(targetFolderName)")
+                  // Perform the move operation
+                  sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: folder.id)
+                }
+              }
+            } != nil
           }
       }
     }
@@ -55,9 +91,10 @@ struct SidebarFolderView: View {
             sidebarModel.setSelectedSidebarItem(to: sidebarItem)
           }
           .onDrag {
-            Debug.log("[DD] Dragging item with ID: \(sidebarItem.id.uuidString)")
+            Debug.log("[DD] Dragging item with ID: \(sidebarItem.id.uuidString) - Title: \(sidebarItem.title)")
             return NSItemProvider(object: String(sidebarItem.id.uuidString) as NSString)
           }
+          
       }
     }
   }
@@ -103,5 +140,10 @@ struct SidebarFolderView: View {
       .contentShape(Rectangle())
     }
   }
+  
+}
+
+
+extension SidebarFolderView {
   
 }

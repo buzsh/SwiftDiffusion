@@ -61,6 +61,16 @@ struct Sidebar: View {
         secondaryButton: .cancel()
       )
     }
+    .onChange(of: sidebarModel.beginMovableSidebarItemQueue) {
+      if sidebarModel.beginMovableSidebarItemQueue,
+          let sidebarId = sidebarModel.queueMovableSidebarItemID,
+          let folderId = sidebarModel.queueDestinationFolderID {
+        moveItem(sidebarId, toFolderWithId: folderId)
+      }
+      sidebarModel.queueMovableSidebarItemID = nil
+      sidebarModel.queueDestinationFolderID = nil
+      sidebarModel.beginMovableSidebarItemQueue = false
+    }
   }
   
   
@@ -119,19 +129,6 @@ struct Sidebar: View {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 extension Sidebar {
   
   // Utility function to find a SidebarFolder by ID
@@ -181,4 +178,40 @@ extension Sidebar {
     return nil
   }
   
+}
+
+extension Sidebar {
+  // Function to move an item to a specified folder
+  func moveItem(_ itemId: UUID, toFolderWithId targetFolderId: UUID) {
+    Debug.log("[Sidebar] moveItem - Moving item with ID: \(itemId) to folder with ID: \(targetFolderId)")
+    
+    guard let sourceFolder = findFolderForItem(itemId),
+          let targetFolder = findSidebarFolder(by: targetFolderId, in: sidebarFolders),
+          let itemIndex = sourceFolder.items.firstIndex(where: { $0.id == itemId }) else {
+      Debug.log("[Sidebar] Error: Unable to find source or target folder for item ID: \(itemId)")
+      return
+    }
+    
+    let itemToMove = sourceFolder.items.remove(at: itemIndex)
+    targetFolder.items.append(itemToMove)
+    Debug.log("[Sidebar] Successfully moved item \(itemToMove.title) to \(targetFolder.name)")
+    sidebarModel.saveData(in: modelContext)
+  }
+  
+  // Function to move an item to its parent folder
+  func moveItemToParent(_ itemId: UUID) {
+    Debug.log("[Sidebar] moveItemToParent - Moving item with ID: \(itemId) to its parent folder")
+    
+    guard let sourceFolder = findFolderForItem(itemId),
+          let parentFolder = sourceFolder.parent,
+          let itemIndex = sourceFolder.items.firstIndex(where: { $0.id == itemId }) else {
+      Debug.log("[Sidebar] Error: Unable to find source folder or parent for item ID: \(itemId)")
+      return
+    }
+    
+    let itemToMove = sourceFolder.items.remove(at: itemIndex)
+    parentFolder.items.append(itemToMove)
+    Debug.log("[Sidebar] Successfully moved item \(itemToMove.title) to parent folder \(parentFolder.name)")
+    sidebarModel.saveData(in: modelContext)
+  }
 }

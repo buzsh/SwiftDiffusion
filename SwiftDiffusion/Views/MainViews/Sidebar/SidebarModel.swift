@@ -30,6 +30,16 @@ class SidebarModel: ObservableObject {
   @Published var updateControlBarView: Bool = false
   @Published var promptUserToConfirmDeletion: Bool = false
   
+  @Published var queueMovableSidebarItemID: UUID? = nil
+  @Published var queueDestinationFolderID: UUID? = nil
+  @Published var beginMovableSidebarItemQueue: Bool = false
+  
+  func moveSidebarItem(withId sidebarItemId: UUID, toFolderWithId folderId: UUID) {
+    queueMovableSidebarItemID = sidebarItemId
+    queueDestinationFolderID = folderId
+    beginMovableSidebarItemQueue = true
+  }
+  
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
     storableSidebarItems.append(sidebarItem)
