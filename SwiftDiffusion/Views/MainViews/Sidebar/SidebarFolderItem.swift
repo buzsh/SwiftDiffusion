@@ -26,8 +26,7 @@ struct SidebarFolderItem: View {
       Text(folder.name)
         .foregroundColor(isHovering ? .white : .primary)
       Spacer()
-      Image(systemName: "chevron.right")
-        .foregroundColor(isHovering ? .white : .secondary)
+      //Image(systemName: "chevron.right").foregroundColor(isHovering ? .white : .secondary)
     }
     .padding(.vertical, 8).padding(.horizontal, 4)
     .contentShape(Rectangle())

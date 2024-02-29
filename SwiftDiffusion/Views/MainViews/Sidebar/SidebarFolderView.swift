@@ -29,7 +29,9 @@ struct SidebarFolderView: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   
   var body: some View {
-    newFolderButtonView
+    //newFolderButtonView
+    
+    
     
     Section(header: Text("Folders")) {
       if let parentFolder = sidebarModel.currentFolder?.parent {
@@ -130,20 +132,5 @@ struct ParentFolderListItem: View {
       }
     })
     .onDropHandling(isHovering: $isHovering, folderId: parentFolder.id, sidebarModel: sidebarModel)
-  }
-}
-
-
-extension AnyTransition {
-  static var slideRightToLeft: AnyTransition {
-    let insertion = AnyTransition.move(edge: .trailing)
-    let removal = AnyTransition.move(edge: .leading)
-    return .asymmetric(insertion: insertion, removal: removal)
-  }
-  
-  static var slideLeftToRight: AnyTransition {
-    let insertion = AnyTransition.move(edge: .leading)
-    let removal = AnyTransition.move(edge: .trailing)
-    return .asymmetric(insertion: insertion, removal: removal)
   }
 }
