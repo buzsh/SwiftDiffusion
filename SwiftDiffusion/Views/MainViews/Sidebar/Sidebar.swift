@@ -240,7 +240,6 @@ extension SidebarModel {
   func createNewWorkspaceItem(in modelContext: ModelContext) {
     let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
     newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    newPromptSidebarItem.timestamp = Date()
     workspaceFolder?.add(item: newPromptSidebarItem)
     saveData(in: modelContext)
     setSelectedSidebarItem(to: newPromptSidebarItem)
