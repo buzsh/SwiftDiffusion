@@ -50,6 +50,7 @@ struct Sidebar: View {
       ensureNecessaryFoldersExist()
       sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
       sidebarModel.updateStorableSidebarItemsInWorkspace()
+      sidebarModel.createNewWorkspaceItem(in: modelContext)
     }
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
@@ -72,13 +73,13 @@ struct Sidebar: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Button(action: {
-          createNewUntitledFolderInCurrentFolder()
+          sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
         }) {
           Image(systemName: "folder.badge.plus")
         }
         
         Button(action: {
-          createNewWorkspaceItem()
+          sidebarModel.createNewWorkspaceItem(in: modelContext)
         }) {
           Image(systemName: "plus.bubble")
         }
@@ -87,30 +88,7 @@ struct Sidebar: View {
     }
   }
   
-  private func createNewWorkspaceItem() {
-    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
-    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    newPromptSidebarItem.timestamp = Date()
-    sidebarModel.workspaceFolder?.add(item: newPromptSidebarItem)
-    sidebarModel.saveData(in: modelContext)
-    sidebarModel.setSelectedSidebarItem(to: newPromptSidebarItem)
-  }
   
-  private func createNewUntitledFolderInCurrentFolder() {
-    var newFolderName = "Untitled Folder"
-    let existingFolderNames = sidebarModel.currentFolder?.folders.map { $0.name } ?? []
-    if existingFolderNames.contains(newFolderName) {
-      var suffix = 2
-      while existingFolderNames.contains("\(newFolderName) \(suffix)") {
-        suffix += 1
-      }
-      newFolderName = "\(newFolderName) \(suffix)"
-    }
-    
-    let newFolderItem = SidebarFolder(name: newFolderName)
-    sidebarModel.currentFolder?.add(folder: newFolderItem)
-    sidebarModel.saveData(in: modelContext)
-  }
   
   
   private func ensureNecessaryFoldersExist() {
@@ -142,6 +120,7 @@ struct Sidebar: View {
       Debug.log("[Sidebar] No newlySelectedFolder")
     }
     
+    cleanUpEmptyWorkspaceItemsIfNecessary()
     
   }
   
@@ -217,4 +196,53 @@ extension Sidebar {
     return nil
   }
   
+}
+
+
+extension Sidebar {
+  func cleanUpEmptyWorkspaceItemsIfNecessary() {
+    if let workspaceFolder = sidebarModel.workspaceFolder {
+      let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
+      
+      let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
+      
+      for item in emptyPromptItems {
+        if let latestItem = latestEmptyPromptItem, item != latestItem {
+          workspaceFolder.remove(item: item)
+        }
+      }
+    }
+  }
+}
+
+
+extension StoredPromptModel {
+  var isEmptyPrompt: Bool {
+    return isWorkspaceItem == true &&
+    selectedModel == nil &&
+    samplingMethod == nil &&
+    positivePrompt.isEmpty &&
+    negativePrompt.isEmpty &&
+    width == 512 &&
+    height == 512 &&
+    cfgScale == 7 &&
+    samplingSteps == 20 &&
+    seed == "-1" &&
+    batchCount == 1 &&
+    batchSize == 1 &&
+    clipSkip == 1 &&
+    vaeModel == nil
+  }
+}
+
+
+extension SidebarModel {
+  func createNewWorkspaceItem(in modelContext: ModelContext) {
+    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
+    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
+    newPromptSidebarItem.timestamp = Date()
+    workspaceFolder?.add(item: newPromptSidebarItem)
+    saveData(in: modelContext)
+    setSelectedSidebarItem(to: newPromptSidebarItem)
+  }
 }

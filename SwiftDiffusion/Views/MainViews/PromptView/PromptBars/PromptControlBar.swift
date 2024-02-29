@@ -28,7 +28,7 @@ struct PromptControlBarView: View {
   }
   
   private func updatePromptControlBarVisibility() {
-    if isPromptControlBarVisible != (sidebarModel.selectedSidebarItem?.title != "") { // "New Prompt"
+    if isPromptControlBarVisible != (sidebarModel.selectedSidebarItem?.title != "New Prompt") {
       withAnimation(.easeInOut(duration: 0.2)) {
         isPromptControlBarVisible.toggle()
       }
