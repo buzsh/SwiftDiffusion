@@ -93,6 +93,7 @@
 		299BCB8A2B8FDDF100AB839F /* SidebarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB892B8FDDF100AB839F /* SidebarModel.swift */; };
 		299BCB8D2B8FEAB000AB839F /* WorkspaceFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */; };
 		299BCB8F2B8FEACF00AB839F /* SidebarFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */; };
+		29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
@@ -233,6 +234,7 @@
 		299BCB892B8FDDF100AB839F /* SidebarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModel.swift; sourceTree = "<group>"; };
 		299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceFolderView.swift; sourceTree = "<group>"; };
 		299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFolderView.swift; sourceTree = "<group>"; };
+		29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sidebar+Move.swift"; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
@@ -792,6 +794,7 @@
 			isa = PBXGroup;
 			children = (
 				29169D242B8FCB780099A9C5 /* Sidebar.swift */,
+				29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */,
 				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
 				299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */,
 				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
@@ -1119,6 +1122,7 @@
 				29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
+				29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */,
 				295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
 				29C0F38B2B7AC25C0017DD6B /* SettingsSectionHeader.swift in Sources */,
