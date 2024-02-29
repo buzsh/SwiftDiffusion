@@ -9,7 +9,10 @@ import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
   
+  private var dragEventMonitor: DragEventMonitor?
+  
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    dragEventMonitor = nil
     ScriptManager.shared.terminateImmediately()
     
     return .terminateNow
@@ -18,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   
   func applicationDidFinishLaunching(_ notification: Notification) {
     Debug.log("applicationDidFinishLaunching")
+    dragEventMonitor = DragEventMonitor()
     // TODO: Python PID tracker
     
     // NSUserDefaults Python PID
@@ -31,4 +35,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // on terminate, kill all tracked PIDs
   }
   
+}
+
+import Cocoa
+
+class DragEventMonitor {
+  private var dragMonitor: Any?
+  
+  init() {
+    dragMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseUp]) { event in
+      DragState.shared.isDragging = false
+      return event
+    }
+  }
+  
+  deinit {
+    if let dragMonitor = dragMonitor {
+      NSEvent.removeMonitor(dragMonitor)
+    }
+  }
 }

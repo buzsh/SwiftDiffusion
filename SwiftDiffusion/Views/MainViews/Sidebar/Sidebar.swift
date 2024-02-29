@@ -7,12 +7,13 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct Sidebar: View {
-  @Environment(\.modelContext) private var modelContext
+  @Environment(\.modelContext) var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
-  @Query private var sidebarFolders: [SidebarFolder]
+  @Query var sidebarFolders: [SidebarFolder]
   
   @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
   
@@ -35,6 +36,10 @@ struct Sidebar: View {
           SidebarFolderView()
         }
         .listStyle(SidebarListStyle())
+        .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+          DragState.shared.isDragging = false
+          return false
+        }
       }
       .frame(width: geometry.size.width)
       .onChange(of: geometry.size.width) {
@@ -125,7 +130,7 @@ struct Sidebar: View {
 extension Sidebar {
   
   // Utility function to find a SidebarFolder by ID
-  private func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {
+  func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {
     Debug.log("[Sidebar] findSidebarFolder - Searching for ID: \(String(describing: id))")
     guard let id = id else { return nil }
     for folder in folders {
@@ -142,7 +147,7 @@ extension Sidebar {
   }
   
   // Utility function to find the parent folder for an item
-  private func findFolderForItem(_ itemId: UUID?) -> SidebarFolder? {
+  func findFolderForItem(_ itemId: UUID?) -> SidebarFolder? {
     Debug.log("[Sidebar] findFolderForItem - Searching for item ID: \(String(describing: itemId))")
     guard let itemId = itemId else { return nil }
     for folder in sidebarFolders {
@@ -171,35 +176,4 @@ extension Sidebar {
     return nil
   }
   
-}
-
-extension Sidebar {
-  func moveItemInItemQueue() {
-    if sidebarModel.beginMovableSidebarItemQueue,
-        let sidebarId = sidebarModel.queueMovableSidebarItemID,
-        let folderId = sidebarModel.queueDestinationFolderID {
-      moveItem(sidebarId, toFolderWithId: folderId)
-    }
-    sidebarModel.queueMovableSidebarItemID = nil
-    sidebarModel.queueDestinationFolderID = nil
-    sidebarModel.beginMovableSidebarItemQueue = false
-  }
-}
-
-extension Sidebar {
-  func moveItem(_ itemId: UUID, toFolderWithId targetFolderId: UUID) {
-    Debug.log("[Sidebar] moveItem - Moving item with ID: \(itemId) to folder with ID: \(targetFolderId)")
-    
-    guard let sourceFolder = findFolderForItem(itemId),
-          let targetFolder = findSidebarFolder(by: targetFolderId, in: sidebarFolders),
-          let itemIndex = sourceFolder.items.firstIndex(where: { $0.id == itemId }) else {
-      Debug.log("[Sidebar] Error: Unable to find source or target folder for item ID: \(itemId)")
-      return
-    }
-    
-    let itemToMove = sourceFolder.items.remove(at: itemIndex)
-    targetFolder.items.append(itemToMove)
-    Debug.log("[Sidebar] Successfully moved item \(itemToMove.title) to \(targetFolder.name)")
-    sidebarModel.saveData(in: modelContext)
-  }
 }

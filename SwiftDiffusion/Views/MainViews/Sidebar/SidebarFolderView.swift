@@ -39,6 +39,7 @@ struct SidebarFolderView: View {
           }
           .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
             Debug.log("[DD] Attempting to drop on folder with ID: \(parentFolder.id)")
+            DragState.shared.isDragging = false
             return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
               guard let itemIDStr = nsItem as? String else {
                 Debug.log("[DD] Failed to load the dropped item ID string")
@@ -61,6 +62,7 @@ struct SidebarFolderView: View {
           }
           .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
             Debug.log("[DD] Attempting to drop on SidebarFolder/SidebarItem")
+            DragState.shared.isDragging = false
             return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
               guard let itemIDStr = nsItem as? String else {
                 Debug.log("[DD] Failed to load the dropped item ID string")
@@ -89,6 +91,7 @@ struct SidebarFolderView: View {
           }
           .onDrag {
             Debug.log("[DD] Dragging item with ID: \(sidebarItem.id.uuidString) - Title: \(sidebarItem.title)")
+            DragState.shared.isDragging = true
             return NSItemProvider(object: String(sidebarItem.id.uuidString) as NSString)
           }
           
