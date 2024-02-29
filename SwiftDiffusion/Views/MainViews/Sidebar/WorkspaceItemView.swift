@@ -27,7 +27,8 @@ struct WorkspaceItemView: View {
     .onChange(of: currentPrompt.positivePrompt) {
       if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {
         let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
-        sidebarItem.title = trimmedPrompt
+        //sidebarItem.title = trimmedPrompt
+        sidebarModel.setSelectedWorkspaceItemTitle(trimmedPrompt, in: modelContext)
       }
     }
     
@@ -48,8 +49,9 @@ extension SidebarModel {
     //shouldCheckForNewSidebarItemToCreate = true
     if workspaceFolderContainsSelectedSidebarItem() {
       selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
+      saveData(in: model)
+      updateControlBarView = true
     }
-    saveData(in: model)
   }
   func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
     if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {

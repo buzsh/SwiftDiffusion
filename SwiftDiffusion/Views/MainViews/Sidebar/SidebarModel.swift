@@ -26,6 +26,8 @@ class SidebarModel: ObservableObject {
   @Published var largePreviewsButtonToggled: Bool = false
   @Published var currentWidth: CGFloat = 240
 
+  
+  @Published var updateControlBarView: Bool = false
   @Published var promptUserToConfirmDeletion: Bool = false
   
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
@@ -93,7 +95,7 @@ class SidebarModel: ObservableObject {
       Debug.log("Found: Workspace folder does contain sidebarItem: \(String(describing: sidebarItem?.title))")
       return true
     } else {
-      Debug.log("Not found: Workspace folder does not contain sidebarItem: \(String(describing: sidebarItem?.title))")
+      //Debug.log("Not found: Workspace folder does not contain sidebarItem: \(String(describing: sidebarItem?.title))")
     }
     return false
   }
@@ -151,7 +153,7 @@ extension SidebarModel {
       }
       
       selectedSidebarItem?.prompt = updatedPrompt
-      selectedSidebarItem?.timestamp = Date()
+      //selectedSidebarItem?.timestamp = Date()
       saveData(in: modelContext)
     }
   }

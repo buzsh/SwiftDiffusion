@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct PromptControlBarView: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
-  
   @EnvironmentObject var sidebarModel: SidebarModel
   @State private var isPromptControlBarVisible: Bool = false
   
@@ -23,14 +21,14 @@ struct PromptControlBarView: View {
     .onChange(of: sidebarModel.selectedSidebarItem) {
       updatePromptControlBarVisibility()
     }
-    .onChange(of: sidebarViewModel.updateControlBarView) {
+    .onChange(of: sidebarModel.updateControlBarView) {
       updatePromptControlBarVisibility()
-      sidebarViewModel.updateControlBarView = false
+      sidebarModel.updateControlBarView = false
     }
   }
   
   private func updatePromptControlBarVisibility() {
-    if isPromptControlBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
+    if isPromptControlBarVisible != (sidebarModel.selectedSidebarItem?.title != "") { // "New Prompt"
       withAnimation(.easeInOut(duration: 0.2)) {
         isPromptControlBarVisible.toggle()
       }

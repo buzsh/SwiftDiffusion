@@ -125,10 +125,12 @@ struct SidebarView: View {
             ensureSelectedSidebarItemForSelectedItemID()
           }
           .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+            /*
             if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
               ensureNewPromptWorkspaceItemExists()
               sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
             }
+             */
           }
           .onAppear {
             ensureRootFolderExists()
@@ -244,8 +246,8 @@ struct SidebarView: View {
     let listOfBlankNewPrompts = workspaceItems.filter { $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
-      sidebarViewModel.updateControlBarView = true
+      //_ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
+      //sidebarViewModel.updateControlBarView = true
     }
   }
   

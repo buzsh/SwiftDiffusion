@@ -19,6 +19,14 @@ struct Sidebar: View {
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
   
+  @Query(filter: #Predicate<SidebarFolder> { folder in
+    folder.isRoot == true
+  }) private var queryRootFolders: [SidebarFolder]
+  
+  @Query(filter: #Predicate<SidebarFolder> { folder in
+    folder.isWorkspace == true
+  }) private var queryWorkspaceFolders: [SidebarFolder]
+  
   var body: some View {
     GeometryReader { geometry in
       VStack {
@@ -54,16 +62,6 @@ struct Sidebar: View {
       )
     }
   }
-  
-  
-  
-  @Query(filter: #Predicate<SidebarFolder> { folder in
-    folder.isRoot == true
-  }) private var queryRootFolders: [SidebarFolder]
-  
-  @Query(filter: #Predicate<SidebarFolder> { folder in
-    folder.isWorkspace == true
-  }) private var queryWorkspaceFolders: [SidebarFolder]
   
   
   private func ensureNecessaryFoldersExist() {

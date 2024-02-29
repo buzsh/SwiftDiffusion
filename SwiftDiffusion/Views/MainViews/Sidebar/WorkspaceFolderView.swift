@@ -8,6 +8,12 @@
 import SwiftUI
 import SwiftData
 
+extension SidebarModel {
+  var sortedWorkspaceFolderItems: [SidebarItem] {
+    workspaceFolder?.items.sorted(by: { $0.timestamp < $1.timestamp }) ?? []
+  }
+}
+
 struct WorkspaceFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
@@ -16,7 +22,7 @@ struct WorkspaceFolderView: View {
     newPromptButtonView
     
     Section(header: Text("Workspace")) {
-      ForEach(sidebarModel.workspaceFolder?.items ?? []) { sidebarItem in
+      ForEach(sidebarModel.sortedWorkspaceFolderItems) { sidebarItem in
         WorkspaceItemView(sidebarItem: sidebarItem)
           .onTapGesture {
             sidebarModel.setSelectedSidebarItem(to: sidebarItem)
@@ -31,6 +37,7 @@ struct WorkspaceFolderView: View {
       Button(action: {
         let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
         newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
+        newPromptSidebarItem.timestamp = Date()
         sidebarModel.workspaceFolder?.add(item: newPromptSidebarItem)
         sidebarModel.saveData(in: modelContext)
         sidebarModel.setSelectedSidebarItem(to: newPromptSidebarItem)
