@@ -8,84 +8,6 @@
 import SwiftUI
 import SwiftData
 
-class SidebarModel: ObservableObject {
-  @Published var rootFolder: SidebarFolder? = nil
-  @Published var workspaceFolder: SidebarFolder? = nil
-  @Published var selectedItemID: UUID? = nil
-  @Published var selectedSidebarItem: SidebarItem? = nil
-  @Published var currentFolder: SidebarFolder? = nil
-  
-  @Published var currentlyGeneratingSidebarItem: SidebarItem? = nil
-  
-  
-  /// SidebarItems that have been generated and can now be stored to the user's library.
-  @Published var storableSidebarItems: [SidebarItem] = []
-  
-  func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
-    sidebarItem.imageUrls = imageUrls
-    storableSidebarItems.append(sidebarItem)
-  }
-  
-  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, in modelContext: ModelContext) {
-    storableSidebarItems.removeAll(where: { $0 == sidebarItem })
-    workspaceFolder?.remove(item: sidebarItem)
-    currentFolder?.add(item: sidebarItem)
-    saveData(in: modelContext)
-  }
-  
-  func removeSelectedWorkspaceItem() {
-    if let workspaceFolder = workspaceFolder, let selectedSidebarItem = selectedSidebarItem {
-      if workspaceFolder.items.contains(where: { $0.id == selectedSidebarItem.id }) {
-        workspaceFolder.remove(item: selectedSidebarItem)
-      }
-    }
-  }
-  
-  func selectedItemIsWorkspaceItem() -> Bool {
-    if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0 == selectedSidebarItem }) {
-      return true
-    }
-    return false
-  }
-  
-  func selectedItemIsStorableItem() -> Bool {
-    if let selectedSidebarItem = selectedSidebarItem, storableSidebarItems.contains(where: { $0 == selectedSidebarItem }) {
-      return true
-    }
-    return false
-  }
-  
-  func setCurrentFolder(to folder: SidebarFolder?) {
-    if folder != workspaceFolder {
-      self.currentFolder = folder
-    }
-  }
-  
-  func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
-    self.selectedSidebarItem = sidebarItem
-  }
-  
-  /*
-  func prepareGeneratedSidebarItemForSaving(sidebarItem: SidebarItem, imageUrls: [URL]) {
-    sidebarItem.imageUrls = imageUrls
-    addSelectedSidebarItemToStorableSidebarItems()
-  }
-   */
-  /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
-  func updateStorableSidebarItemsInWorkspace() {
-    if let workspaceItems = workspaceFolder?.items {
-      for sidebarItem in workspaceItems {
-        if sidebarItem.imageUrls.isEmpty == false {
-          storableSidebarItems.append(sidebarItem)
-        }
-      }
-    }
-    
-    
-    
-  }
-}
-
 struct Sidebar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
@@ -143,20 +65,24 @@ struct Sidebar: View {
     }
     
     if let newlySelectedItem = newlySelectedItem {
-      sidebarModel.setSelectedSidebarItem(to: newlySelectedItem)
-      sidebarModel.setCurrentFolder(to: findFolderForItem(newItemID))
-      
-      if let storedPromptModel = newlySelectedItem.prompt {
-        let mapModelData = MapModelData()
-        let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
-        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: newlySelectedItem.imageUrls)
-      }
+      handleNewlySelected(sidebarItem: newlySelectedItem, withID: newItemID)
       
     } else {
       if let newSelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
         sidebarModel.setCurrentFolder(to: newSelectedFolder)//sidebarModel.currentFolder = newSelectedFolder
         sidebarModel.setSelectedSidebarItem(to: nil) //sidebarModel.selectedSidebarItem = nil
       }
+    }
+  }
+  
+  func handleNewlySelected(sidebarItem: SidebarItem, withID newItemID: UUID?) {
+    sidebarModel.setSelectedSidebarItem(to: sidebarItem)
+    sidebarModel.setCurrentFolder(to: findFolderForItem(newItemID))
+    
+    if let storedPromptModel = sidebarItem.prompt {
+      let mapModelData = MapModelData()
+      let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+      updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: sidebarItem.imageUrls)
     }
   }
   
