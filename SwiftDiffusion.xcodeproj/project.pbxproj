@@ -94,6 +94,7 @@
 		299BCB8D2B8FEAB000AB839F /* WorkspaceFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */; };
 		299BCB8F2B8FEACF00AB839F /* SidebarFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */; };
 		29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */; };
+		29A1A3832B911E9300CC3D1B /* DropHandlerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
@@ -235,6 +236,7 @@
 		299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceFolderView.swift; sourceTree = "<group>"; };
 		299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFolderView.swift; sourceTree = "<group>"; };
 		29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sidebar+Move.swift"; sourceTree = "<group>"; };
+		29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropHandlerModifier.swift; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
@@ -801,6 +803,7 @@
 				299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */,
 				292A30DA2B8FFF2700344DA8 /* SidebarFolderItem.swift */,
 				29C5118C2B90C50B0050F171 /* SidebarItemView.swift */,
+				29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1046,6 +1049,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				290A34B22B7C894500963C6E /* SidebarView.swift in Sources */,
+				29A1A3832B911E9300CC3D1B /* DropHandlerModifier.swift in Sources */,
 				29B571822B75AE410057DD50 /* PromptRows.swift in Sources */,
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
