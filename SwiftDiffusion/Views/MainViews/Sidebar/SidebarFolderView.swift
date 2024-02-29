@@ -24,6 +24,71 @@ extension SidebarModel {
   }
 }
 
+struct FolderTitleControl: View {
+  @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var sidebarModel: SidebarModel
+  let folder: SidebarFolder?
+  @State private var isEditing: Bool = false
+  @State private var editableName: String = ""
+  
+  var body: some View {
+    Divider()
+    
+    HStack(spacing: 0) {
+      if isEditing {
+        TextField("Untitled", text: $editableName, onCommit: {
+          isEditing = false
+          sidebarModel.currentFolder?.name = editableName
+        })
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+      } else {
+        Text(sidebarModel.currentFolder?.name ?? "Untitled")
+          .onTapGesture(count: 2) {
+            isEditing = true
+            editableName = sidebarModel.currentFolder?.name ?? ""
+          }
+      }
+      
+      Spacer()
+      
+      if isEditing {
+        Button(action: {
+          isEditing = false
+          sidebarModel.currentFolder?.name = editableName
+          sidebarModel.saveData(in: modelContext)
+        }) {
+          Image(systemName: "checkmark")
+        }
+        .buttonStyle(.accessoryBar)
+      } else {
+        Button(action: {
+          isEditing = true
+          editableName = sidebarModel.currentFolder?.name ?? ""
+        }) {
+          Image(systemName: "pencil")
+        }
+        .buttonStyle(.accessoryBar)
+      }
+      
+      Button(action: {
+        if let parentFolder = sidebarModel.currentFolder?.parent, let folder = folder {
+          // TODO: AlertConfirmation
+          withAnimation {
+            sidebarModel.setCurrentFolder(to: parentFolder)
+            parentFolder.remove(folder: folder)
+            sidebarModel.saveData(in: modelContext)
+          }
+        }
+      }) {
+        Image(systemName: "trash")
+      }
+      .buttonStyle(.accessoryBar)
+      .padding(.leading, 2)
+    }
+    .listRowInsets(EdgeInsets())
+  }
+}
+
 struct SidebarFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
@@ -31,7 +96,9 @@ struct SidebarFolderView: View {
   var body: some View {
     //newFolderButtonView
     
-    
+    if sidebarModel.currentFolder != sidebarModel.rootFolder {
+      FolderTitleControl(folder: sidebarModel.currentFolder)
+    }
     
     Section(header: Text("Folders")) {
       if let parentFolder = sidebarModel.currentFolder?.parent {
@@ -69,7 +136,7 @@ struct SidebarFolderView: View {
             DragState.shared.isDragging = true
             return NSItemProvider(object: String(sidebarItem.id.uuidString) as NSString)
           }
-          
+        
       }
     }
   }
