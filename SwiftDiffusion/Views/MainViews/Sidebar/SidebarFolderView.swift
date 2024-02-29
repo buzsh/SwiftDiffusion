@@ -11,13 +11,12 @@ import SwiftData
 struct SidebarFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
-  var currentFolder: SidebarFolder?
   
   var body: some View {
     newFolderButtonView
     
     Section(header: Text("Folders")) {
-      if let parentFolder = currentFolder?.parent {
+      if let parentFolder = sidebarModel.currentFolder?.parent {
         HStack {
           Button(action: {
             sidebarModel.setCurrentFolder(to: parentFolder)
@@ -30,7 +29,7 @@ struct SidebarFolderView: View {
         .contentShape(Rectangle())
       }
       
-      ForEach(currentFolder?.folders ?? []) { folder in
+      ForEach(sidebarModel.currentFolder?.folders ?? []) { folder in
         SidebarFolderItem(folder: folder)
           .onTapGesture {
             sidebarModel.setCurrentFolder(to: folder)
@@ -38,8 +37,8 @@ struct SidebarFolderView: View {
       }
     }
     
-    Section(header: Text(currentFolder?.name ?? "N/A")) {
-      ForEach(currentFolder?.items ?? []) { item in
+    Section(header: Text(sidebarModel.currentFolder?.name ?? "N/A")) {
+      ForEach(sidebarModel.currentFolder?.items ?? []) { item in
         SidebarStoredItemView(item: item)
           .padding(.vertical, 2)
           .contentShape(Rectangle())
@@ -60,7 +59,7 @@ struct SidebarFolderView: View {
       Spacer()
       Button(action: {
         let newFolderItem = SidebarFolder(name: "New Folder")
-        currentFolder?.add(folder: newFolderItem)
+        sidebarModel.currentFolder?.add(folder: newFolderItem)
         sidebarModel.saveData(in: modelContext)
       }) {
         Text("New Folder")

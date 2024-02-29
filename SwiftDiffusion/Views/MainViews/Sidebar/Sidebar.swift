@@ -37,27 +37,20 @@ struct Sidebar: View {
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
   
-  @State var currentFuckingFolder: SidebarFolder? = nil
-  
   var body: some View {
     GeometryReader { geometry in
       VStack {
         List(selection: $sidebarModel.selectedItemID) {
           WorkspaceFolderView()
-          SidebarFolderView(currentFolder: currentFuckingFolder)
+          SidebarFolderView()
         }
         .listStyle(SidebarListStyle())
       }
     }
     .onAppear {
       ensureNecessaryFoldersExist()
-      currentFuckingFolder = sidebarModel.rootFolder
+      sidebarModel.currentFolder = sidebarModel.rootFolder
     }
-    .onChange(of: sidebarModel.currentFolder) {
-      Debug.log("[DD] .onChange(of: sidebarModel.currentFolder) \(sidebarModel.currentFolder?.name)")
-      currentFuckingFolder = sidebarModel.currentFolder
-    }
-    
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
     }
