@@ -135,12 +135,25 @@ struct Sidebar: View {
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
     Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
     
-    let newSelectedItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
+    let currentlySelectedItem = sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
+    let newlySelectedItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
-    if let newSelectedItem = newSelectedItem {
-      sidebarModel.setSelectedSidebarItem(to: newSelectedItem)//sidebarModel.selectedSidebarItem = newSelectedItem
-      updatePromptAndSelectedImage(newPrompt: currentPrompt, imageUrls: newSelectedItem.imageUrls)
+    
+    if let currentlySelectedItem = currentlySelectedItem {
+      let mapModelData = MapModelData()
+      sidebarModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+    }
+    
+    if let newlySelectedItem = newlySelectedItem {
+      sidebarModel.setSelectedSidebarItem(to: newlySelectedItem)
       sidebarModel.setCurrentFolder(to: findFolderForItem(newItemID))
+      
+      if let storedPromptModel = newlySelectedItem.prompt {
+        let mapModelData = MapModelData()
+        let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
+        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: newlySelectedItem.imageUrls)
+      }
+      
     } else {
       if let newSelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
         sidebarModel.setCurrentFolder(to: newSelectedFolder)//sidebarModel.currentFolder = newSelectedFolder

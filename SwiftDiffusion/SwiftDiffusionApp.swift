@@ -32,7 +32,7 @@ struct SwiftDiffusionApp: App {
     let storeURL = appSupportURL
       .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
       .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent("StoredLocalUserData7.store") // Constants.FileStructure.AppSwiftDataFileName
+      .appendingPathComponent("StoredLocalUserData8.store") // Constants.FileStructure.AppSwiftDataFileName
     
     let subfolderURL = storeURL.deletingLastPathComponent()
     if !fileManager.fileExists(atPath: subfolderURL.path) {
