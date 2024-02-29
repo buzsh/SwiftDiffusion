@@ -9,21 +9,52 @@ import Foundation
 import SwiftData
 
 @Model
-class SidebarFolder {
-  @Attribute var id: UUID = UUID()
+class SidebarFolder: Identifiable {
+  @Attribute(.unique) var id: UUID = UUID()
   @Attribute var name: String
+  @Attribute var isRoot: Bool = false
+  @Attribute var isWorkspace: Bool = false
   @Relationship var items: [SidebarItem]
   @Relationship var folders: [SidebarFolder]
+  @Relationship var parent: SidebarFolder?
   
-  init(name: String, items: [SidebarItem] = [], folders: [SidebarFolder] = []) {
+  init(name: String, isRoot: Bool = false, isWorkspace: Bool = false, items: [SidebarItem] = [], folders: [SidebarFolder] = [], parent: SidebarFolder? = nil) {
     self.name = name
+    self.isRoot = isRoot
+    self.isWorkspace = isWorkspace
     self.items = items
     self.folders = folders
+    self.parent = parent
   }
 }
 
 extension SidebarFolder: Equatable {
   static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
     lhs.name == rhs.name
+  }
+}
+
+extension SidebarFolder {
+  func add(item: SidebarItem) {
+    self.items.append(item)
+  }
+  func add(folder: SidebarFolder) {
+    folder.parent = self
+    self.folders.append(folder)
+  }
+}
+
+// MARK: DEPRECATED
+extension SidebarFolder {
+  func addItem(_ item: SidebarItem) {
+    self.items.append(item)
+  }
+  
+  func removeItem(_ item: SidebarItem) {
+    self.items.removeAll { $0.id == item.id }
+  }
+  
+  func removeItem(withId itemId: UUID) {
+    self.items.removeAll { $0.id == itemId }
   }
 }

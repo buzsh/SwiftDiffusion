@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class SidebarItem: Identifiable {
-  @Attribute var id: UUID = UUID()
+  @Attribute(.unique) var id: UUID = UUID()
   @Attribute var title: String
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]

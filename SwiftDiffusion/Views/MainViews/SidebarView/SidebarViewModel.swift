@@ -14,7 +14,14 @@ extension Constants.Sidebar {
 
 class SidebarViewModel: ObservableObject {
   @Published var selectedObject: Any? = nil
-  @Published var selectedFolder: SidebarFolder?
+  @Published var selectedFolder: SidebarFolder? = nil
+  
+  
+  
+  @Published var rootFolder: SidebarFolder? = nil
+  //@Published var itemToSave: SidebarItem?
+  
+  
   
   @Published var allSidebarItems: [SidebarItem] = []
   @Published var savedItems: [SidebarItem] = []
@@ -215,20 +222,6 @@ extension SidebarViewModel {
     }
     Debug.log("[DD] No folder found containing item: \(itemId)")
     return nil
-  }
-}
-
-extension SidebarFolder {
-  func addItem(_ item: SidebarItem) {
-    self.items.append(item)
-  }
-  
-  func removeItem(_ item: SidebarItem) {
-    self.items.removeAll { $0.id == item.id }
-  }
-  
-  func removeItem(withId itemId: UUID) {
-    self.items.removeAll { $0.id == itemId }
   }
 }
 
