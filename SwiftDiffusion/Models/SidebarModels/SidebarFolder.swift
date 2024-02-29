@@ -12,14 +12,16 @@ import SwiftData
 class SidebarFolder: Identifiable {
   @Attribute(.unique) var id: UUID = UUID()
   @Attribute var name: String
+  @Attribute var timestamp: Date
   @Attribute var isRoot: Bool = false
   @Attribute var isWorkspace: Bool = false
   @Relationship var items: [SidebarItem]
   @Relationship var folders: [SidebarFolder]
   @Relationship var parent: SidebarFolder?
   
-  init(name: String, isRoot: Bool = false, isWorkspace: Bool = false, items: [SidebarItem] = [], folders: [SidebarFolder] = [], parent: SidebarFolder? = nil) {
+  init(name: String, timestamp: Date = Date(), isRoot: Bool = false, isWorkspace: Bool = false, items: [SidebarItem] = [], folders: [SidebarFolder] = [], parent: SidebarFolder? = nil) {
     self.name = name
+    self.timestamp = timestamp
     self.isRoot = isRoot
     self.isWorkspace = isWorkspace
     self.items = items
