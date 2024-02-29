@@ -64,7 +64,7 @@ struct PromptControlBar: View {
       if isStorableSidebarItem {
         Button(action: {
           if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, in: modelContext)
+            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt, in: modelContext)
           }
         }) {
           Text("Save Generated Prompt")

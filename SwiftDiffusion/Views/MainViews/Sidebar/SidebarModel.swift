@@ -24,16 +24,19 @@ class SidebarModel: ObservableObject {
   @Published var noPreviewsItemButtonToggled: Bool = false
   @Published var smallPreviewsButtonToggled: Bool = true
   @Published var largePreviewsButtonToggled: Bool = false
+  @Published var currentWidth: CGFloat = 240
   
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
     storableSidebarItems.append(sidebarItem)
   }
   
-  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, in modelContext: ModelContext) {
+  @MainActor
+  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel, in modelContext: ModelContext) {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
     workspaceFolder?.remove(item: sidebarItem)
     currentFolder?.add(item: sidebarItem)
+    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
     saveData(in: modelContext)
   }
   
@@ -83,7 +86,6 @@ class SidebarModel: ObservableObject {
 
 
 extension SidebarModel {
-  
   @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
     //shouldCheckForNewSidebarItemToCreate = true
     if selectedItemIsWorkspaceItem() {
@@ -95,10 +97,27 @@ extension SidebarModel {
           selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
         }
       }
+      
       selectedSidebarItem?.prompt = updatedPrompt
       selectedSidebarItem?.timestamp = Date()
       saveData(in: modelContext)
     }
+  }
+}
+
+extension SidebarModel {
+  func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
+    //shouldCheckForNewSidebarItemToCreate = true
+    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+      selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
+    }
+    saveData(in: model)
+  }
+  private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
+    if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
+      return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
+    }
+    return false
   }
 }
 

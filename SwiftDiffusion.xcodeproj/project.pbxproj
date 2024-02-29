@@ -129,6 +129,7 @@
 		29C0F38F2B7AC3380017DD6B /* BrowseFileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F38E2B7AC3380017DD6B /* BrowseFileRow.swift */; };
 		29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */; };
 		29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */; };
+		29C5118D2B90C50B0050F171 /* SidebarItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C5118C2B90C50B0050F171 /* SidebarItemView.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -268,6 +269,7 @@
 		29C0F38E2B7AC3380017DD6B /* BrowseFileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFileRow.swift; sourceTree = "<group>"; };
 		29C0F3902B7AC36B0017DD6B /* ToggleWithHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleWithHeader.swift; sourceTree = "<group>"; };
 		29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
+		29C5118C2B90C50B0050F171 /* SidebarItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemView.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
 				299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */,
 				292A30DA2B8FFF2700344DA8 /* SidebarFolderItem.swift */,
+				29C5118C2B90C50B0050F171 /* SidebarItemView.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1157,6 +1160,7 @@
 				29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */,
 				29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */,
 				29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */,
+				29C5118D2B90C50B0050F171 /* SidebarItemView.swift in Sources */,
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,

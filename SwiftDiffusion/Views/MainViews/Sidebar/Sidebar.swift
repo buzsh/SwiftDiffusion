@@ -26,6 +26,10 @@ struct Sidebar: View {
         }
         .listStyle(SidebarListStyle())
       }
+      .frame(width: geometry.size.width)
+      .onChange(of: geometry.size.width) {
+        sidebarModel.currentWidth = geometry.size.width - 32
+      }
     }
     .onAppear {
       ensureNecessaryFoldersExist()
@@ -66,12 +70,9 @@ struct Sidebar: View {
     
     if let newlySelectedItem = newlySelectedItem {
       handleNewlySelected(sidebarItem: newlySelectedItem, withID: newItemID)
-      
-    } else {
-      if let newSelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
-        sidebarModel.setCurrentFolder(to: newSelectedFolder)//sidebarModel.currentFolder = newSelectedFolder
-        sidebarModel.setSelectedSidebarItem(to: nil) //sidebarModel.selectedSidebarItem = nil
-      }
+    } else if let newSelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
+      sidebarModel.setCurrentFolder(to: newSelectedFolder)
+      sidebarModel.setSelectedSidebarItem(to: nil)
     }
   }
   
@@ -96,6 +97,18 @@ struct Sidebar: View {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

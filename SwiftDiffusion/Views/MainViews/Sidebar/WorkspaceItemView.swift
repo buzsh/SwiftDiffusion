@@ -74,15 +74,3 @@ struct WorkspaceItemView: View {
     }
   }
 }
-
-extension SidebarModel {
-  
-  func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
-    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
-    }
-    saveData(in: model)
-  }
-  
-}
