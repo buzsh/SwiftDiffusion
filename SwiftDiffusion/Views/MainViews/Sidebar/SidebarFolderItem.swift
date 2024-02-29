@@ -14,6 +14,7 @@ struct SidebarFolderItem: View {
   var body: some View {
     HStack {
       Image(systemName: "folder")
+        .foregroundStyle(.blue)
       Text(folder.name)
       Spacer()
       Image(systemName: "chevron.right")

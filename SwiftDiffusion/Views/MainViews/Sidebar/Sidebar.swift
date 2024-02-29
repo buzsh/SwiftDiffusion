@@ -50,9 +50,7 @@ struct Sidebar: View {
         primaryButton: .destructive(Text("Delete")) {
           sidebarModel.deleteSelectedSidebarItemFromStorage(in: modelContext)
         },
-        secondaryButton: .cancel() {
-          //
-        }
+        secondaryButton: .cancel()
       )
     }
   }
@@ -75,21 +73,35 @@ struct Sidebar: View {
   
   
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
-    Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
+    Debug.log("[Sidebar] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
+    
+    Debug.log("[Sidebar] selectedSidebarItemChanged - Entry")
+    Debug.log("[Sidebar] From ID: \(String(describing: currentItemID)), To ID: \(String(describing: newItemID))")
+
     
     let currentlySelectedItem = sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
-    let newlySelectedItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
+    let newlySelectedSidebarItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
     if let currentlySelectedItem = currentlySelectedItem {
       sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
     }
     
-    if let newlySelectedItem = newlySelectedItem {
-      handleNewlySelected(sidebarItem: newlySelectedItem, withID: newItemID)
-    } else if let newSelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
-      sidebarModel.setCurrentFolder(to: newSelectedFolder)
-      sidebarModel.setSelectedSidebarItem(to: nil)
+    if let newlySelectedSidebarItem = newlySelectedSidebarItem {
+      handleNewlySelected(sidebarItem: newlySelectedSidebarItem, withID: newItemID)
+      Debug.log("[Sidebar] Newly selected SidebarItem: \(newlySelectedSidebarItem.title)")
+    } else {
+      Debug.log("[Sidebar] No newly selected item found, trying to find folder")
     }
+    
+    if let newlySelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
+      //sidebarModel.selectedItemID = nil
+      
+      Debug.log("[Sidebar] Newly selected Folder: \(newlySelectedFolder.name)")
+    } else {
+      Debug.log("[Sidebar] No newlySelectedFolder")
+    }
+    
+    
   }
   
   func handleNewlySelected(sidebarItem: SidebarItem, withID newItemID: UUID?) {
@@ -131,11 +143,14 @@ extension Sidebar {
   
   // Utility function to find a SidebarFolder by ID
   private func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {
+    Debug.log("[Sidebar] findSidebarFolder - Searching for ID: \(String(describing: id))")
     guard let id = id else { return nil }
     for folder in folders {
       if folder.id == id {
+        Debug.log("[Sidebar] Folder matched ID: \(folder.name)")
         return folder
       }
+      Debug.log("[Sidebar] Recursing into folder: \(folder.name)")
       if let foundFolder = findSidebarFolder(by: id, in: folder.folders) {
         return foundFolder
       }
@@ -145,11 +160,14 @@ extension Sidebar {
   
   // Utility function to find the parent folder for an item
   private func findFolderForItem(_ itemId: UUID?) -> SidebarFolder? {
+    Debug.log("[Sidebar] findFolderForItem - Searching for item ID: \(String(describing: itemId))")
     guard let itemId = itemId else { return nil }
     for folder in sidebarFolders {
       if folder.items.contains(where: { $0.id == itemId }) {
+        Debug.log("[Sidebar] Found item in folder: \(folder.name)")
         return folder
       }
+      Debug.log("[Sidebar] Recursing into folder: \(folder.name) for item search")
       if let foundFolder = findFolderForItemRecursive(itemId, in: folder.folders) {
         return foundFolder
       }

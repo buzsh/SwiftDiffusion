@@ -36,8 +36,8 @@ class SidebarModel: ObservableObject {
   @MainActor
   func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel, in modelContext: ModelContext) {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
-    workspaceFolder?.remove(item: sidebarItem)
     currentFolder?.add(item: sidebarItem)
+    workspaceFolder?.remove(item: sidebarItem)
     PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
     saveData(in: modelContext)
   }
@@ -53,10 +53,29 @@ class SidebarModel: ObservableObject {
   func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
     if let selectedSidebarItem = selectedSidebarItem {
       PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: selectedSidebarItem, in: modelContext, withSoundEffect: true)
-      currentFolder?.removeItem(selectedSidebarItem)
+      
+      debugLogCurrentFolderContents()
+      
+      if let currentFolder = currentFolder {
+        Debug.log("[Delete] item: \(selectedSidebarItem.title), from currentFolder: \(currentFolder.name)")
+      }
+      
+      currentFolder?.remove(item: selectedSidebarItem)
       saveData(in: modelContext)
+      
+      debugLogCurrentFolderContents()
     }
     
+  }
+  
+  func debugLogCurrentFolderContents() {
+    if let currentFolder = currentFolder {
+      
+      Debug.log("[Delete] Contents of currentFolder.items:")
+      for item in currentFolder.items {
+        Debug.log("  > \(item.title)")
+      }
+    }
   }
   
   func selectedItemIsWorkspaceItem() -> Bool {
@@ -74,13 +93,15 @@ class SidebarModel: ObservableObject {
   }
   
   func setCurrentFolder(to folder: SidebarFolder?) {
-    if folder != workspaceFolder {
-      self.currentFolder = folder
+    if let folder = folder, folder != workspaceFolder  {
+      currentFolder = folder
+      selectedItemID = folder.id
     }
   }
   
   func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
     self.selectedSidebarItem = sidebarItem
+    self.selectedItemID = sidebarItem?.id
   }
   
   /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
