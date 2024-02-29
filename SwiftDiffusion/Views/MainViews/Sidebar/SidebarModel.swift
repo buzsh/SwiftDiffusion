@@ -34,6 +34,10 @@ class SidebarModel: ObservableObject {
   @Published var queueDestinationFolderID: UUID? = nil
   @Published var beginMovableSidebarItemQueue: Bool = false
   
+  @Published var workspaceItemHasJustBeenRemoved: Bool = false
+  @Published var sidebarItemHasJustBeenDeleted: Bool = false
+  @Published var sidebarFolderHasJustBeenDeleted: Bool = false
+  
   func setCurrentFolder(to folder: SidebarFolder?, selectItem: Bool = false) {
     if let folder = folder, folder != workspaceFolder  {
       currentFolder = folder

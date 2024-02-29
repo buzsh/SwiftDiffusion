@@ -109,7 +109,6 @@ extension SidebarModel {
       }
       newFolderName = "\(newFolderName) \(suffix)"
     }
-    
     let newFolderItem = SidebarFolder(name: newFolderName)
     currentFolder?.add(folder: newFolderItem)
     saveData(in: modelContext)

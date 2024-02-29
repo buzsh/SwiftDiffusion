@@ -73,13 +73,17 @@ struct Sidebar: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Button(action: {
-          sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
+          withAnimation {
+            sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
+          }
         }) {
           Image(systemName: "folder.badge.plus")
         }
         
         Button(action: {
-          sidebarModel.createNewWorkspaceItem(in: modelContext)
+          withAnimation {
+            sidebarModel.createNewWorkspaceItem(in: modelContext)
+          }
         }) {
           Image(systemName: "plus.bubble")
         }
@@ -208,7 +212,9 @@ extension Sidebar {
       
       for item in emptyPromptItems {
         if let latestItem = latestEmptyPromptItem, item != latestItem {
-          workspaceFolder.remove(item: item)
+          withAnimation {
+            workspaceFolder.remove(item: item)
+          }
         }
       }
     }
