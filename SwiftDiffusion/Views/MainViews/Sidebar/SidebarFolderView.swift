@@ -56,28 +56,31 @@ struct SidebarFolderView: View {
       }
       
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
-        SidebarFolderItem(folder: folder)
-          .onTapGesture {
-            sidebarModel.setCurrentFolder(to: folder)
-          }
-          .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
-            Debug.log("[DD] Attempting to drop on SidebarFolder/SidebarItem")
-            DragState.shared.isDragging = false
-            return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
-              guard let itemIDStr = nsItem as? String else {
-                Debug.log("[DD] Failed to load the dropped item ID string")
-                return
-              }
-              DispatchQueue.main.async {
-                if let itemId = UUID(uuidString: itemIDStr) {
-                  Debug.log("[DD] Successfully dropped item with ID: \(itemId). Preparing to move the item.")
-                  let targetFolderName = "Target Folder Name"
-                  Debug.log("[DD] Moving item with ID: \(itemId) to \(targetFolderName)")
-                  sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: folder.id)
+        VStack(spacing: 0) {
+          SidebarFolderItem(folder: folder)
+            .onTapGesture {
+              sidebarModel.setCurrentFolder(to: folder)
+            }
+            .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+              Debug.log("[DD] Attempting to drop on SidebarFolder/SidebarItem")
+              DragState.shared.isDragging = false
+              return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
+                guard let itemIDStr = nsItem as? String else {
+                  Debug.log("[DD] Failed to load the dropped item ID string")
+                  return
                 }
-              }
-            } != nil
-          }
+                DispatchQueue.main.async {
+                  if let itemId = UUID(uuidString: itemIDStr) {
+                    Debug.log("[DD] Successfully dropped item with ID: \(itemId). Preparing to move the item.")
+                    let targetFolderName = "Target Folder Name"
+                    Debug.log("[DD] Moving item with ID: \(itemId) to \(targetFolderName)")
+                    sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: folder.id)
+                  }
+                }
+              } != nil
+            }
+        }
+        .listRowInsets(EdgeInsets())
       }
     }
     
