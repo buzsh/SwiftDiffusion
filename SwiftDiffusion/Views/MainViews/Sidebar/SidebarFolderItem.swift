@@ -29,8 +29,7 @@ struct SidebarFolderItem: View {
       Image(systemName: "chevron.right")
         .foregroundColor(isHovering ? .white : .secondary)
     }
-    .padding(.vertical, 8)
-    .padding(.horizontal, 4)
+    .padding(.vertical, 8).padding(.horizontal, 4)
     .contentShape(Rectangle())
     .onHover { hovering in
       if DragState.shared.isDragging {

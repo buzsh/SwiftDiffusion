@@ -33,7 +33,7 @@ struct SidebarFolderView: View {
     
     Section(header: Text("Folders")) {
       if let parentFolder = sidebarModel.currentFolder?.parent {
-        ListBackButtonItem(parentFolder: parentFolder)
+        ParentFolderListItem(parentFolder: parentFolder)
           .onTapGesture {
             sidebarModel.setCurrentFolder(to: parentFolder)
           }
@@ -60,24 +60,6 @@ struct SidebarFolderView: View {
           SidebarFolderItem(folder: folder)
             .onTapGesture {
               sidebarModel.setCurrentFolder(to: folder)
-            }
-            .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
-              Debug.log("[DD] Attempting to drop on SidebarFolder/SidebarItem")
-              return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
-                guard let itemIDStr = nsItem as? String else {
-                  Debug.log("[DD] Failed to load the dropped item ID string")
-                  return
-                }
-                DispatchQueue.main.async {
-                  if let itemId = UUID(uuidString: itemIDStr) {
-                    Debug.log("[DD] Successfully dropped item with ID: \(itemId). Preparing to move the item.")
-                    let targetFolderName = "Target Folder Name"
-                    Debug.log("[DD] Moving item with ID: \(itemId) to \(targetFolderName)")
-                    sidebarModel.moveSidebarItem(withId: itemId, toFolderWithId: folder.id)
-                    DragState.shared.isDragging = false
-                  }
-                }
-              } != nil
             }
         }
         .listRowInsets(EdgeInsets())
@@ -128,20 +110,37 @@ struct SidebarFolderView: View {
     }
   }
   
-  private struct ListBackButtonItem: View {
-    var parentFolder: SidebarFolder
-    
-    var body: some View {
-      HStack {
-        Image(systemName: "arrow.turn.left.up")
-          .foregroundStyle(.secondary)
-          .frame(width: 26)
-        Text(parentFolder.name)
-        Spacer()
-      }
-      .padding(.vertical, 8)
-      .contentShape(Rectangle())
-    }
-  }
+}
+
+
+struct ParentFolderListItem: View {
+  @EnvironmentObject var sidebarModel: SidebarModel
+  var parentFolder: SidebarFolder
+  @State private var isHovering = false
   
+  var body: some View {
+    HStack {
+      Image(systemName: "arrow.turn.left.up")
+        .foregroundStyle(isHovering ? .white : .secondary)
+        .frame(width: 26)
+      Text(parentFolder.name)
+        .foregroundColor(isHovering ? .white : .primary)
+      Spacer()
+    }
+    .padding(.vertical, 8).padding(.horizontal, 4)
+    .contentShape(Rectangle())
+    .onHover { hovering in
+      if DragState.shared.isDragging {
+        isHovering = hovering
+      }
+    }
+    .cornerRadius(8)
+    .background(Group {
+      if isHovering {
+        RoundedRectangle(cornerRadius: 8)
+          .fill(Color.blue.opacity(0.9))
+      }
+    })
+    .onDropHandling(isHovering: $isHovering, folderId: parentFolder.id, sidebarModel: sidebarModel)
+  }
 }
