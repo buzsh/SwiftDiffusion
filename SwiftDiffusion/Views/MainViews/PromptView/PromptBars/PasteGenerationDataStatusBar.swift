@@ -18,7 +18,7 @@ struct PasteGenerationDataStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    if sidebarModel.selectedItemIsWorkspaceItem() {
+    if sidebarModel.workspaceFolderContainsSelectedSidebarItem() {
       
       
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {

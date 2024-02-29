@@ -12,18 +12,16 @@ struct WorkspaceFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
   
-  @State private var workspaceItems: [SidebarItem] = []
-  
   var body: some View {
     newPromptButtonView
     
     Section(header: Text("Workspace")) {
-      ForEach(workspaceItems) { item in
-        WorkspaceItemView(item: item, selectedItemID: $sidebarModel.selectedItemID)
+      ForEach(sidebarModel.workspaceFolder?.items ?? []) { sidebarItem in
+        WorkspaceItemView(sidebarItem: sidebarItem)
+          .onTapGesture {
+            sidebarModel.setSelectedSidebarItem(to: sidebarItem)
+          }
       }
-    }
-    .onChange(of: sidebarModel.workspaceFolder?.items) {
-      workspaceItems = sidebarModel.workspaceFolder?.items ?? []
     }
   }
   
@@ -31,10 +29,11 @@ struct WorkspaceFolderView: View {
     HStack {
       Spacer()
       Button(action: {
-        let newPromptItem = SidebarItem(title: "New Prompt", imageUrls: [], isWorkspaceItem: true)
-        newPromptItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-        sidebarModel.workspaceFolder?.add(item: newPromptItem)
+        let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
+        newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
+        sidebarModel.workspaceFolder?.add(item: newPromptSidebarItem)
         sidebarModel.saveData(in: modelContext)
+        sidebarModel.setSelectedSidebarItem(to: newPromptSidebarItem)
       }) {
         Text("New Prompt")
         Image(systemName: "plus")

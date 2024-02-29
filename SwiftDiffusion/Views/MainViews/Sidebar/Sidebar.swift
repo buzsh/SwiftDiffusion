@@ -89,13 +89,7 @@ struct Sidebar: View {
     if let newlySelectedSidebarItem = newlySelectedSidebarItem {
       handleNewlySelected(sidebarItem: newlySelectedSidebarItem, withID: newItemID)
       Debug.log("[Sidebar] Newly selected SidebarItem: \(newlySelectedSidebarItem.title)")
-    } else {
-      Debug.log("[Sidebar] No newly selected item found, trying to find folder")
-    }
-    
-    if let newlySelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
-      //sidebarModel.selectedItemID = nil
-      
+    } else if let newlySelectedFolder = findSidebarFolder(by: newItemID, in: sidebarFolders) {
       Debug.log("[Sidebar] Newly selected Folder: \(newlySelectedFolder.name)")
     } else {
       Debug.log("[Sidebar] No newlySelectedFolder")
@@ -105,7 +99,6 @@ struct Sidebar: View {
   }
   
   func handleNewlySelected(sidebarItem: SidebarItem, withID newItemID: UUID?) {
-    sidebarModel.setSelectedSidebarItem(to: sidebarItem)
     sidebarModel.setCurrentFolder(to: findFolderForItem(newItemID))
     
     if let storedPromptModel = sidebarItem.prompt {
@@ -113,6 +106,8 @@ struct Sidebar: View {
       let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
       updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: sidebarItem.imageUrls)
     }
+    
+    sidebarModel.selectedSidebarItem = sidebarItem
   }
   
   func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {

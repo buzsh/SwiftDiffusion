@@ -42,12 +42,18 @@ class SidebarModel: ObservableObject {
     saveData(in: modelContext)
   }
   
-  func removeSelectedWorkspaceItem() {
+  func deleteFromWorkspace(sidebarItem: SidebarItem, in modelContext: ModelContext) {
+    workspaceFolder?.remove(item: sidebarItem)
+    saveData(in: modelContext)
+    
+    /*
     if let workspaceFolder = workspaceFolder, let selectedSidebarItem = selectedSidebarItem {
       if workspaceFolder.items.contains(where: { $0.id == selectedSidebarItem.id }) {
         workspaceFolder.remove(item: selectedSidebarItem)
+        saveData(in: modelContext)
       }
     }
+     */
   }
   
   func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
@@ -78,9 +84,16 @@ class SidebarModel: ObservableObject {
     }
   }
   
-  func selectedItemIsWorkspaceItem() -> Bool {
-    if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0 == selectedSidebarItem }) {
+  func workspaceFolderContainsSelectedSidebarItem() -> Bool {
+    workspaceFolderContains(sidebarItem: selectedSidebarItem)
+  }
+  
+  func workspaceFolderContains(sidebarItem: SidebarItem?) -> Bool {
+    if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0.id == sidebarItem?.id }) {
+      Debug.log("Found: Workspace folder does contain sidebarItem: \(String(describing: sidebarItem?.title))")
       return true
+    } else {
+      Debug.log("Not found: Workspace folder does not contain sidebarItem: \(String(describing: sidebarItem?.title))")
     }
     return false
   }
@@ -92,16 +105,17 @@ class SidebarModel: ObservableObject {
     return false
   }
   
-  func setCurrentFolder(to folder: SidebarFolder?) {
+  func setCurrentFolder(to folder: SidebarFolder?, selectItem: Bool = false) {
     if let folder = folder, folder != workspaceFolder  {
       currentFolder = folder
-      selectedItemID = folder.id
+      if selectItem {
+        selectedItemID = folder.id
+      }
     }
   }
   
   func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
-    self.selectedSidebarItem = sidebarItem
-    self.selectedItemID = sidebarItem?.id
+    selectedItemID = sidebarItem?.id
   }
   
   /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
@@ -126,7 +140,7 @@ extension SidebarModel {
   
   @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
     //shouldCheckForNewSidebarItemToCreate = true
-    if selectedItemIsWorkspaceItem() {
+    if workspaceFolderContains(sidebarItem: sidebarItem) {
       let mapModelData = MapModelData()
       let updatedPrompt = mapModelData.toStored(promptModel: prompt)
       
@@ -140,22 +154,6 @@ extension SidebarModel {
       selectedSidebarItem?.timestamp = Date()
       saveData(in: modelContext)
     }
-  }
-}
-
-extension SidebarModel {
-  func setSelectedSidebarItemTitle(_ title: String, in model: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
-    if let isWorkspaceItem = selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
-    }
-    saveData(in: model)
-  }
-  private func selectedSidebarItemTitle(hasEqualTitleTo storedPromptModel: StoredPromptModel?) -> Bool {
-    if let promptTitle = storedPromptModel?.positivePrompt, let sidebarItemTitle = selectedSidebarItem?.title {
-      return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
-    }
-    return false
   }
 }
 

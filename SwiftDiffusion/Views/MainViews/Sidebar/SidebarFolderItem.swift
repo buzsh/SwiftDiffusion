@@ -15,6 +15,7 @@ struct SidebarFolderItem: View {
     HStack {
       Image(systemName: "folder")
         .foregroundStyle(.blue)
+        .frame(width: 26)
       Text(folder.name)
       Spacer()
       Image(systemName: "chevron.right")

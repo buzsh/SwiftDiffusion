@@ -53,7 +53,9 @@ struct PromptControlBar: View {
   private var workspaceItemBar: some View {
     HStack {
       Button(action: {
-        sidebarModel.removeSelectedWorkspaceItem()
+        if let sidebarItem = sidebarModel.selectedSidebarItem {
+          sidebarModel.deleteFromWorkspace(sidebarItem: sidebarItem, in: modelContext)
+        }
       }) {
         Image(systemName: "xmark")
         Text("Close")
@@ -115,7 +117,7 @@ struct PromptControlBar: View {
     .frame(height: 30)
     .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
     .onAppear {
-      isWorkspaceItem = sidebarModel.selectedItemIsWorkspaceItem()
+      isWorkspaceItem = sidebarModel.workspaceFolderContainsSelectedSidebarItem()
       
       if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
         isStorableSidebarItem = sidebarModel.storableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id })
