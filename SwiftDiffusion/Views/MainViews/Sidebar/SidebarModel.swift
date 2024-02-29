@@ -10,6 +10,23 @@ import SwiftData
 
 extension SidebarModel {
   
+  @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
+    //shouldCheckForNewSidebarItemToCreate = true
+    if selectedItemIsWorkspaceItem() {
+      let mapModelData = MapModelData()
+      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
+      
+      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
+        if let newTitle = updatedPrompt?.positivePrompt {
+          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
+        }
+      }
+      selectedSidebarItem?.prompt = updatedPrompt
+      selectedSidebarItem?.timestamp = Date()
+      saveData(in: modelContext)
+    }
+  }
+  
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
     //shouldCheckForNewSidebarItemToCreate = true

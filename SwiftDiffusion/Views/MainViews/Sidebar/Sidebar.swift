@@ -138,10 +138,8 @@ struct Sidebar: View {
     let currentlySelectedItem = sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
     let newlySelectedItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
-    
     if let currentlySelectedItem = currentlySelectedItem {
-      let mapModelData = MapModelData()
-      sidebarModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
+      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
     }
     
     if let newlySelectedItem = newlySelectedItem {
