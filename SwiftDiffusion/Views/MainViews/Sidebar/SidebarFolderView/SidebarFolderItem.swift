@@ -22,11 +22,10 @@ struct SidebarFolderItem: View {
     HStack {
       Image(systemName: "folder")
         .foregroundStyle(isHovering ? .white : .blue)
-        .frame(width: 26)
+        .frame(width: 20)
       Text(folder.name)
         .foregroundColor(isHovering ? .white : .primary)
       Spacer()
-      //Image(systemName: "chevron.right").foregroundColor(isHovering ? .white : .secondary)
     }
     .padding(.vertical, 8).padding(.horizontal, 4)
     .contentShape(Rectangle())

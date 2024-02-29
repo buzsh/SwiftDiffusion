@@ -95,6 +95,8 @@
 		299BCB8F2B8FEACF00AB839F /* SidebarFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */; };
 		29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */; };
 		29A1A3832B911E9300CC3D1B /* DropHandlerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */; };
+		29A1A3862B912F9D00CC3D1B /* ParentFolderListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3852B912F9D00CC3D1B /* ParentFolderListItem.swift */; };
+		29A1A3882B912FD500CC3D1B /* FolderTitleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1A3872B912FD500CC3D1B /* FolderTitleControl.swift */; };
 		29A1E0B92B80F45900B18AC1 /* LoraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0B82B80F45900B18AC1 /* LoraModel.swift */; };
 		29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */; };
 		29A1E0C52B81200200B18AC1 /* AutomaticApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */; };
@@ -237,6 +239,8 @@
 		299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFolderView.swift; sourceTree = "<group>"; };
 		29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sidebar+Move.swift"; sourceTree = "<group>"; };
 		29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropHandlerModifier.swift; sourceTree = "<group>"; };
+		29A1A3852B912F9D00CC3D1B /* ParentFolderListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentFolderListItem.swift; sourceTree = "<group>"; };
+		29A1A3872B912FD500CC3D1B /* FolderTitleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderTitleControl.swift; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
@@ -800,12 +804,22 @@
 				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
 				299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */,
 				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
+				29A1A3842B912F8200CC3D1B /* SidebarFolderView */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		29A1A3842B912F8200CC3D1B /* SidebarFolderView */ = {
+			isa = PBXGroup;
+			children = (
 				299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */,
+				29A1A3872B912FD500CC3D1B /* FolderTitleControl.swift */,
 				292A30DA2B8FFF2700344DA8 /* SidebarFolderItem.swift */,
+				29A1A3852B912F9D00CC3D1B /* ParentFolderListItem.swift */,
 				29C5118C2B90C50B0050F171 /* SidebarItemView.swift */,
 				29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */,
 			);
-			path = Sidebar;
+			path = SidebarFolderView;
 			sourceTree = "<group>";
 		};
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
@@ -1156,6 +1170,7 @@
 				295A60112B8D81CF00B822A9 /* ImageCache.swift in Sources */,
 				2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */,
 				29169D1F2B8F8D710099A9C5 /* SidebarItemSection.swift in Sources */,
+				29A1A3862B912F9D00CC3D1B /* ParentFolderListItem.swift in Sources */,
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
@@ -1169,6 +1184,7 @@
 				29F0D3072B76F66A00BF56CE /* GenerationStatus.swift in Sources */,
 				29C0F3912B7AC36B0017DD6B /* ToggleWithHeader.swift in Sources */,
 				29C5118D2B90C50B0050F171 /* SidebarItemView.swift in Sources */,
+				29A1A3882B912FD500CC3D1B /* FolderTitleControl.swift in Sources */,
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,

@@ -69,6 +69,47 @@ struct Sidebar: View {
     .onChange(of: sidebarModel.beginMovableSidebarItemQueue) {
       moveItemInItemQueue()
     }
+    .toolbar {
+      ToolbarItemGroup(placement: .automatic) {
+        Button(action: {
+          createNewUntitledFolderInCurrentFolder()
+        }) {
+          Image(systemName: "folder.badge.plus")
+        }
+        
+        Button(action: {
+          createNewWorkspaceItem()
+        }) {
+          Image(systemName: "plus.bubble")
+        }
+      }
+      
+    }
+  }
+  
+  private func createNewWorkspaceItem() {
+    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
+    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
+    newPromptSidebarItem.timestamp = Date()
+    sidebarModel.workspaceFolder?.add(item: newPromptSidebarItem)
+    sidebarModel.saveData(in: modelContext)
+    sidebarModel.setSelectedSidebarItem(to: newPromptSidebarItem)
+  }
+  
+  private func createNewUntitledFolderInCurrentFolder() {
+    var newFolderName = "Untitled Folder"
+    let existingFolderNames = sidebarModel.currentFolder?.folders.map { $0.name } ?? []
+    if existingFolderNames.contains(newFolderName) {
+      var suffix = 2
+      while existingFolderNames.contains("\(newFolderName) \(suffix)") {
+        suffix += 1
+      }
+      newFolderName = "\(newFolderName) \(suffix)"
+    }
+    
+    let newFolderItem = SidebarFolder(name: newFolderName)
+    sidebarModel.currentFolder?.add(folder: newFolderItem)
+    sidebarModel.saveData(in: modelContext)
   }
   
   

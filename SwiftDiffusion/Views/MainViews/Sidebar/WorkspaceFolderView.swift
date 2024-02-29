@@ -19,7 +19,7 @@ struct WorkspaceFolderView: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   
   var body: some View {
-    newPromptButtonView
+    //newPromptButtonView
     
     Section(header: Text("Workspace")) {
       ForEach(sidebarModel.sortedWorkspaceFolderItems) { sidebarItem in
