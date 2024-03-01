@@ -17,15 +17,19 @@ struct FolderTitleControl: View {
   
   @State private var showDeleteFolderConfirmationAlert: Bool = false
   
+  func storeChanges() {
+    isEditing = false
+    sidebarModel.currentFolder?.name = editableName
+    sidebarModel.saveData(in: modelContext)
+  }
+  
   var body: some View {
     Divider()
     
     HStack(spacing: 0) {
       if isEditing {
         TextField("Untitled", text: $editableName, onCommit: {
-          isEditing = false
-          sidebarModel.currentFolder?.name = editableName
-          sidebarModel.saveData(in: modelContext)
+          storeChanges()
         })
         .textFieldStyle(RoundedBorderTextFieldStyle())
       } else {
