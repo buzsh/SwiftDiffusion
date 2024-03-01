@@ -12,13 +12,10 @@ import SwiftData
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
-  
   var scriptManager = ScriptManager.shared
-  
-  let sidebarViewModel = SidebarViewModel()
+  let sidebarModel = SidebarModel()
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
-  
   let loraModelsManager = ModelManager<LoraModel>()
   let vaeModelsManager = ModelManager<VaeModel>()
   
@@ -30,7 +27,7 @@ struct SwiftDiffusionApp: App {
     let storeURL = appSupportURL
       .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
       .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent("StoredUserData.store") // Constants.FileStructure.AppSwiftDataFileName
+      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
     
     let subfolderURL = storeURL.deletingLastPathComponent()
     if !fileManager.fileExists(atPath: subfolderURL.path) {
@@ -46,14 +43,13 @@ struct SwiftDiffusionApp: App {
     setupAppFileStructure()
   }
   
-  
   var body: some Scene {
     WindowGroup {
       ContentView()
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(scriptManager)
-        .environmentObject(sidebarViewModel)
+        .environmentObject(sidebarModel)
         .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)
         .environmentObject(loraModelsManager)

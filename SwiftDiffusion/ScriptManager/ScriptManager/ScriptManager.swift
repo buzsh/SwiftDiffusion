@@ -48,6 +48,9 @@ class ScriptManager: ObservableObject {
   @Published var genStatus: GenerationStatus = .idle
   @Published var genProgress: Double = 0
   
+  @Published var genIterationPerSecond: String = ""
+  @Published var genCurrentStepOutOfTotalSteps: String = ""
+  
   @Published var modelLoadState: ModelLoadState = .idle
   @Published var modelLoadTime: Double = 0
   @Published var modelLoadStateShouldExpire: Bool = false

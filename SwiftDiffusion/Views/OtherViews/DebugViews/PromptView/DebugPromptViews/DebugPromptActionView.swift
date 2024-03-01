@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DebugPromptActionView: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>

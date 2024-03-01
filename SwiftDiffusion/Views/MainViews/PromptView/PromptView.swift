@@ -15,7 +15,7 @@ extension Constants.Layout {
 
 struct PromptView: View {
   @Environment(\.modelContext) var modelContext
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
@@ -29,8 +29,7 @@ struct PromptView: View {
   @State var disablePromptView: Bool = false
   
   func updateDisabledPromptViewState() {
-    guard let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem else { return }
-    disablePromptView = !isWorkspaceItem
+    disablePromptView = !sidebarModel.workspaceFolderContainsSelectedSidebarItem()
   }
   
   private var leftPane: some View {
@@ -76,7 +75,8 @@ struct PromptView: View {
             await checkPasteboardAndUpdateFlag()
           }
         }
-        .disabled(disablePromptView)
+        //.disabled(disablePromptView)
+        .disabled(!sidebarModel.workspaceFolderContainsSelectedSidebarItem())
       }
       
       PasteGenerationDataStatusBar(
@@ -119,10 +119,10 @@ struct PromptView: View {
         }
       }
     }
-    .onChange(of: sidebarViewModel.selectedSidebarItem) {
+    .onChange(of: sidebarModel.selectedSidebarItem) {
       updateDisabledPromptViewState()
     }
-    .onChange(of: sidebarViewModel.itemToSave) {
+    .onChange(of: sidebarModel.workspaceFolder?.items) {
       updateDisabledPromptViewState()
     }
   }

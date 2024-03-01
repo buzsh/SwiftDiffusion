@@ -48,8 +48,10 @@ class MockDataController {
     let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)
     let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel2)
     
-    let sidebarFolder1 = SidebarFolder(name: "Personal", contents: [sidebarItem1, sidebarItem2])
-    let sidebarFolder2 = SidebarFolder(name: "Shared", contents: [sidebarItem1, sidebarItem2])
+    let sidebarFolder1 = SidebarFolder(name: "Personal", items: [sidebarItem1, sidebarItem2], folders: [])
+    let sidebarFolder3 = SidebarFolder(name: "Embedded", items: [sidebarItem1, sidebarItem2], folders: [])
+    let sidebarFolder2 = SidebarFolder(name: "Shared", items: [sidebarItem1, sidebarItem2],  folders: [sidebarFolder3])
+    let sidebarFolder4 = SidebarFolder(name: "Embedded", items: [sidebarItem1, sidebarItem2], folders: [])
     
     context.insert(storedCheckpointModel1)
     context.insert(storedCheckpointModel2)
@@ -59,6 +61,8 @@ class MockDataController {
     context.insert(sidebarItem2)
     context.insert(sidebarFolder1)
     context.insert(sidebarFolder2)
+    context.insert(sidebarFolder3)
+    context.insert(sidebarFolder4)
     
     do {
       try context.save()

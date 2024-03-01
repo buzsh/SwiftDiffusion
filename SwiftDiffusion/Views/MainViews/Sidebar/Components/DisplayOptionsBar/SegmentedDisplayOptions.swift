@@ -170,14 +170,3 @@ struct SegmentedDisplayOptions: View {
   return SegmentedDisplayOptions(noPreviewsItemButtonToggled: $toggle1, smallPreviewsButtonToggled: $toggle2, largePreviewsButtonToggled: $toggle3)
     .frame(width: 200, height: 60)
 }
-
-#Preview("SidebarView") {
-  SidebarView(
-    selectedImage: .constant(MockDataController.shared.lastImage),
-    lastSavedImageUrls: .constant(MockDataController.shared.mockImageUrls)
-  )
-  .modelContainer(MockDataController.shared.container)
-  .environmentObject(PromptModel())
-  .environmentObject(SidebarViewModel())
-  .frame(width: 200)
-}
