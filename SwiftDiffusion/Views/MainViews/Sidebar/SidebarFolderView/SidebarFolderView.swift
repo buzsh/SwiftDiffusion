@@ -50,7 +50,6 @@ struct SidebarFolderView: View {
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
         VStack(spacing: 0) {
           SidebarFolderItem(folder: folder)
-            .listRowInsets(EdgeInsets(top: 0, leading: sidebarModel.applyCustomLeadingInsets ? -9 : 0, bottom: 0, trailing: 0))
             .onTapGesture {
               withAnimation {
                 sidebarModel.setCurrentFolder(to: folder)

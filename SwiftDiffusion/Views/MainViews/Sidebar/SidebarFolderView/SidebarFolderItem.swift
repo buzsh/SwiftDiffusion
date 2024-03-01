@@ -37,7 +37,7 @@ struct SidebarFolderItem: View {
         .foregroundColor(.secondary)
         .font(.caption)
     }
-    .padding(.vertical, 6)
+    .frame(height: 30)
     .padding(.horizontal, 4)
     .contentShape(Rectangle())
     .onHover { hovering in
