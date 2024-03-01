@@ -50,6 +50,7 @@ struct SidebarFolderView: View {
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
         VStack(spacing: 0) {
           SidebarFolderItem(folder: folder)
+            .listRowInsets(EdgeInsets(top: 0, leading: sidebarModel.applyCustomLeadingInsets ? -9 : 0, bottom: 0, trailing: 0))
             .onTapGesture {
               withAnimation {
                 sidebarModel.setCurrentFolder(to: folder)
@@ -62,8 +63,10 @@ struct SidebarFolderView: View {
     Section(header: Text(sidebarModel.currentFolder?.name ?? "Files")) {
       ForEach(sidebarModel.sortedCurrentFolderItems) { sidebarItem in
         SidebarStoredItemView(item: sidebarItem)
-          .padding(.vertical, 2)
+          .padding(.vertical, 4)
           .contentShape(Rectangle())
+          .listRowInsets(EdgeInsets(top: 2, leading: sidebarModel.applyCustomLeadingInsets ? -9 : 0, bottom: 2, trailing: 0))
+        
           .onTapGesture {
             sidebarModel.setSelectedSidebarItem(to: sidebarItem)
           }
@@ -72,6 +75,11 @@ struct SidebarFolderView: View {
             DragState.shared.isDragging = true
             return NSItemProvider(object: String(sidebarItem.id.uuidString) as NSString)
           }
+      }
+    }
+    .onChange(of: sidebarModel.currentFolder) { lastFolder, nextFolder in
+      if lastFolder == sidebarModel.rootFolder && nextFolder != sidebarModel.rootFolder {
+        sidebarModel.applyCustomLeadingInsets = true
       }
     }
   }

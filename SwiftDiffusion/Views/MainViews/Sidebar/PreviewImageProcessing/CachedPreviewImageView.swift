@@ -25,6 +25,7 @@ struct CachedPreviewImageView: View {
           .scaledToFit()
           .frame(width: calculateWidth(), height: calculateHeight())
           .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 12))
       } else {
         Rectangle()
           .foregroundColor(Color.gray.opacity(0.3))

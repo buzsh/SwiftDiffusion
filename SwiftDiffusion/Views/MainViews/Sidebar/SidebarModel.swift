@@ -25,7 +25,9 @@ class SidebarModel: ObservableObject {
   @Published var smallPreviewsButtonToggled: Bool = true
   @Published var largePreviewsButtonToggled: Bool = false
   @Published var currentWidth: CGFloat = 240
-
+  @Published var widthOffset: CGFloat = 32 // 50
+  
+  @Published var applyCustomLeadingInsets = false
   
   @Published var updateControlBarView: Bool = false
   @Published var promptUserToConfirmDeletion: Bool = false

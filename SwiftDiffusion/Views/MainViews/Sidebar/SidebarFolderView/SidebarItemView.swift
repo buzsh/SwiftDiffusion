@@ -28,12 +28,12 @@ struct SidebarItemView: View {
           .shadow(color: .black, radius: 1, x: 0, y: 1)
       }
       
-      VStack(alignment: .leading) {
+      VStack(alignment: .center) {
         if sidebarModel.largePreviewsButtonToggled, let largePreviewInfo = previewInfo {
           CachedPreviewImageView(imageInfo: largePreviewInfo)
             .scaledToFill()
             .frame(width: sidebarModel.currentWidth)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            //.clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black, radius: 1, x: 0, y: 1)
             .padding(.bottom, 8)
         }

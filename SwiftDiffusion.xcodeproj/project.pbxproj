@@ -307,7 +307,6 @@
 		290A34AE2B7C432100963C6E /* SidebarView */ = {
 			isa = PBXGroup;
 			children = (
-				291635A42B7EAEAB00D47EEF /* Components */,
 				29F91D292B8CF91C0047B3C9 /* SidebarItems */,
 				290A34B52B7D597C00963C6E /* SidebarViewModel.swift */,
 				290A34B12B7C894500963C6E /* SidebarView.swift */,
@@ -805,6 +804,8 @@
 				299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */,
 				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
 				29A1A3842B912F8200CC3D1B /* SidebarFolderView */,
+				291635A42B7EAEAB00D47EEF /* Components */,
+				29F91D312B8D41F90047B3C9 /* PreviewImageProcessing */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -814,10 +815,11 @@
 			children = (
 				299BCB8E2B8FEACF00AB839F /* SidebarFolderView.swift */,
 				29A1A3872B912FD500CC3D1B /* FolderTitleControl.swift */,
-				292A30DA2B8FFF2700344DA8 /* SidebarFolderItem.swift */,
 				29A1A3852B912F9D00CC3D1B /* ParentFolderListItem.swift */,
+				292A30DA2B8FFF2700344DA8 /* SidebarFolderItem.swift */,
 				29C5118C2B90C50B0050F171 /* SidebarItemView.swift */,
 				29A1A3822B911E9300CC3D1B /* DropHandlerModifier.swift */,
+				29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */,
 			);
 			path = SidebarFolderView;
 			sourceTree = "<group>";
@@ -967,9 +969,7 @@
 		29F91D292B8CF91C0047B3C9 /* SidebarItems */ = {
 			isa = PBXGroup;
 			children = (
-				29F91D312B8D41F90047B3C9 /* PreviewImageProcessing */,
 				29F91D2A2B8CF9530047B3C9 /* SidebarWorkspaceItem.swift */,
-				29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */,
 			);
 			path = SidebarItems;
 			sourceTree = "<group>";

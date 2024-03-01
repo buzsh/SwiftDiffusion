@@ -20,21 +20,22 @@ struct SidebarStoredItemView: View {
   @State private var currentSmallThumbnailImageUrl: URL?
   @State private var currentLargeImageUrl: URL?
   
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   
   var body: some View {
-    HStack(alignment: .center, spacing: 8) {
-      if sidebarViewModel.smallPreviewsButtonToggled, let thumbnailUrl = thumbnailInfo?.url {
+    HStack(alignment: .center, spacing: 0) {
+      if sidebarModel.smallPreviewsButtonToggled, let thumbnailUrl = thumbnailInfo?.url {
         CachedThumbnailImageView(imageUrl: thumbnailUrl, width: 70, height: 70)
           .clipShape(RoundedRectangle(cornerRadius: 8))
           .shadow(color: .black, radius: 1, x: 0, y: 1)
+          .padding(.trailing, 8)
       }
       
       VStack(alignment: .leading) {
-        if sidebarViewModel.largePreviewsButtonToggled, let largePreviewInfo = previewInfo {
+        if sidebarModel.largePreviewsButtonToggled, let largePreviewInfo = previewInfo {
           CachedPreviewImageView(imageInfo: largePreviewInfo)
             .scaledToFill()
-            .frame(width: sidebarViewModel.currentWidth)
+            .frame(width: sidebarModel.currentWidth)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black, radius: 1, x: 0, y: 1)
             .padding(.bottom, 8)
@@ -43,7 +44,7 @@ struct SidebarStoredItemView: View {
         Text(item.title)
           .lineLimit(2)
         
-        if sidebarViewModel.modelNameButtonToggled, let modelName = item.prompt?.selectedModel?.name {
+        if sidebarModel.modelNameButtonToggled, let modelName = item.prompt?.selectedModel?.name {
           Text(modelName)
             .font(.system(size: 10, weight: .light, design: .monospaced))
             .foregroundStyle(Color.secondary)

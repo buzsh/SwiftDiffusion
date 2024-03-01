@@ -31,19 +31,26 @@ struct Sidebar: View {
   var body: some View {
     GeometryReader { geometry in
       VStack {
-        List(selection: $sidebarModel.selectedItemID) {
-          WorkspaceFolderView()
-          SidebarFolderView()
-        }
-        .listStyle(SidebarListStyle())
-        .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
-          DragState.shared.isDragging = false
-          return false
+        ZStack(alignment: .bottom) {
+          List(selection: $sidebarModel.selectedItemID) {
+            WorkspaceFolderView()
+            SidebarFolderView()
+          }
+          .listStyle(SidebarListStyle())
+          .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
+            DragState.shared.isDragging = false
+            return false
+          }
+          
+          EmptyView()
+            .frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+          
+          DisplayOptionsBar()
         }
       }
       .frame(width: geometry.size.width)
       .onChange(of: geometry.size.width) {
-        sidebarModel.currentWidth = geometry.size.width - 32
+        sidebarModel.currentWidth = geometry.size.width - sidebarModel.widthOffset
       }
     }
     .onAppear {
