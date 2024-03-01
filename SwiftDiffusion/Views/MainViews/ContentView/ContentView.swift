@@ -32,7 +32,6 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
-  
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
@@ -85,6 +84,7 @@ struct ContentView: View {
     }
     .onChange(of: columnVisibility) {
       Debug.log("columnVisibility: \(columnVisibility)")
+      sidebarModel.sidebarIsVisible = (columnVisibility != .doubleColumn)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)

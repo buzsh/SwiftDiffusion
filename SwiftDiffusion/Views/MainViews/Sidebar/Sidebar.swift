@@ -79,23 +79,24 @@ struct Sidebar: View {
     }
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
-        Button(action: {
-          withAnimation {
-            sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
+        if sidebarModel.sidebarIsVisible {
+          Button(action: {
+            withAnimation {
+              sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
+            }
+          }) {
+            Image(systemName: "folder.badge.plus")
           }
-        }) {
-          Image(systemName: "folder.badge.plus")
-        }
-        
-        Button(action: {
-          withAnimation {
-            sidebarModel.createNewWorkspaceItem(in: modelContext)
+          
+          Button(action: {
+            withAnimation {
+              sidebarModel.createNewWorkspaceItem(in: modelContext)
+            }
+          }) {
+            Image(systemName: "plus.bubble")
           }
-        }) {
-          Image(systemName: "plus.bubble")
         }
       }
-      
     }
   }
   
