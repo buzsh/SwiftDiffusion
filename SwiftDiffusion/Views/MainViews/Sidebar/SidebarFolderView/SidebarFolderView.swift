@@ -56,7 +56,6 @@ struct SidebarFolderView: View {
               }
             }
         }
-        .listRowInsets(EdgeInsets())
       }
     }
     
