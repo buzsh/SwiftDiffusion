@@ -93,7 +93,7 @@ class WindowManager: NSObject, ObservableObject {
     checkpointManagerWindow?.makeKeyAndOrderFront(nil)
   }
   
-  func showDebugApiWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, sidebarViewModel: SidebarViewModel, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
+  func showDebugApiWindow(scriptManager: ScriptManager, currentPrompt: PromptModel, checkpointsManager: CheckpointsManager, loraModelsManager: ModelManager<LoraModel>) {
     if checkpointManagerWindow == nil {
       checkpointManagerWindow = NSWindow(
         contentRect: NSRect(x: 20, y: 20, width: Constants.WindowSize.DebugApi.defaultWidth, height: Constants.WindowSize.DebugApi.defaultHeight),
@@ -105,7 +105,6 @@ class WindowManager: NSObject, ObservableObject {
                   .environmentObject(scriptManager)
                   .environmentObject(checkpointsManager)
                   .environmentObject(currentPrompt)
-                  .environmentObject(sidebarViewModel)
                   .environmentObject(loraModelsManager)
               
      checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)

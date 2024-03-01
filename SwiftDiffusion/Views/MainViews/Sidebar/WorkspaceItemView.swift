@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 
+extension Constants.Sidebar {
+  static let titleLength: Int = 80
+}
+
 struct WorkspaceItemView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel

@@ -98,7 +98,6 @@ extension PromptView {
     parseLog(lines)
     
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
-    sidebarViewModel.updateControlBarView = true
     
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
     // Loop through each line of the pasteboard content

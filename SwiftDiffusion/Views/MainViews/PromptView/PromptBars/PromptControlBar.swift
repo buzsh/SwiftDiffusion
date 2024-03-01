@@ -43,8 +43,6 @@ struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
-  
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isWorkspaceItem: Bool = false
