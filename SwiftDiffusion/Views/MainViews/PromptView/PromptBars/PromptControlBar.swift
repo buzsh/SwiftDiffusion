@@ -18,6 +18,8 @@ struct PromptControlBarView: View {
           .transition(.move(edge: .top).combined(with: .opacity))
       }
     }
+    
+    
     .onChange(of: sidebarModel.selectedSidebarItem) {
       updatePromptControlBarVisibility()
     }
@@ -88,11 +90,16 @@ struct PromptControlBar: View {
       Spacer()
       
       Button(action: {
-        if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
-          let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
-          let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
-          newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
-          sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
+        if let selectedSidebarItem = sidebarModel.selectedSidebarItem, let clonedPrompt = selectedSidebarItem.prompt {
+          let clonedTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
+          let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
+          clonedItem.prompt = clonedPrompt
+          withAnimation {
+            sidebarModel.workspaceFolder?.add(item: clonedItem)
+            sidebarModel.saveData(in: modelContext)
+            sidebarModel.setSelectedSidebarItem(to: clonedItem)
+          }
+          sidebarModel.addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: selectedSidebarItem.imageUrls)
         }
       }) {
         Text("Copy to Workspace")
@@ -121,6 +128,11 @@ struct PromptControlBar: View {
         isStorableSidebarItem = sidebarModel.storableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id })
       }
     }
+    .onChange(of: sidebarModel.workspaceFolderContainsSelectedSidebarItem()) {
+      updateActionBarButtonItems()
+      updateSavableSidebarItemState()
+    }
+    
     .onChange(of: sidebarModel.selectedSidebarItem) {
       updateActionBarButtonItems()
       updateSavableSidebarItemState()
@@ -131,8 +143,7 @@ struct PromptControlBar: View {
   }
   
   private func updateActionBarButtonItems() {
-    if let selectedSidebarItemIsWorkspaceItem = sidebarModel.workspaceFolder?.items.contains(where: { $0 == sidebarModel.selectedSidebarItem }),
-       isWorkspaceItem != selectedSidebarItemIsWorkspaceItem {
+    if isWorkspaceItem != sidebarModel.workspaceFolderContainsSelectedSidebarItem() {
       withAnimation(.easeInOut(duration: 0.2)) {
         isWorkspaceItem.toggle()
       }
