@@ -13,12 +13,10 @@ import SwiftData
 /// - Parameters:
 ///   - item: The `SidebarItem` to display, including all associated image and model information.
 struct SidebarItemView: View {
+  @EnvironmentObject var sidebarModel: SidebarModel
   let item: SidebarItem
-  
   @State private var currentSmallThumbnailImageUrl: URL?
   @State private var currentLargeImageUrl: URL?
-  
-  @EnvironmentObject var sidebarModel: SidebarModel
   
   var body: some View {
     HStack(alignment: .center, spacing: 8) {
@@ -33,7 +31,6 @@ struct SidebarItemView: View {
           CachedPreviewImageView(imageInfo: largePreviewInfo)
             .scaledToFill()
             .frame(width: sidebarModel.currentWidth)
-            //.clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black, radius: 1, x: 0, y: 1)
             .padding(.bottom, 8)
         }

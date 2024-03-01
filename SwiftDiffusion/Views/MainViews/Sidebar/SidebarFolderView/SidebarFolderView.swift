@@ -27,6 +27,7 @@ extension SidebarModel {
 struct SidebarFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
+  @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
   
   var body: some View {
     if sidebarModel.currentFolder != sidebarModel.rootFolder {
@@ -80,6 +81,18 @@ struct SidebarFolderView: View {
       if lastFolder == sidebarModel.rootFolder && nextFolder != sidebarModel.rootFolder {
         sidebarModel.applyCustomLeadingInsets = true
       }
+    }
+    .onChange(of: sidebarModel.promptUserToConfirmDeletion) {
+      showingDeleteSelectedSidebarItemConfirmationAlert = sidebarModel.promptUserToConfirmDeletion
+    }
+    .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
+      Alert(
+        title: Text("Are you sure you want to delete this item?"),
+        primaryButton: .destructive(Text("Delete")) {
+          sidebarModel.deleteSelectedSidebarItemFromStorage(in: modelContext)
+        },
+        secondaryButton: .cancel()
+      )
     }
   }
   
