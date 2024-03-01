@@ -760,12 +760,10 @@
 		299BCB8B2B8FEA9600AB839F /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
-				29169D242B8FCB780099A9C5 /* Sidebar.swift */,
-				29A1A3892B919E7100CC3D1B /* Sidebar+Preload.swift */,
-				29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */,
 				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
-				299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */,
-				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
+				29169D242B8FCB780099A9C5 /* Sidebar.swift */,
+				29A1A38E2B91A80700CC3D1B /* SidebarExtensions */,
+				29A1A38D2B91A7F300CC3D1B /* WorkspaceFolderView */,
 				29A1A3842B912F8200CC3D1B /* SidebarFolderView */,
 				291635A42B7EAEAB00D47EEF /* Components */,
 				29F91D312B8D41F90047B3C9 /* PreviewImageProcessing */,
@@ -785,6 +783,24 @@
 				29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */,
 			);
 			path = SidebarFolderView;
+			sourceTree = "<group>";
+		};
+		29A1A38D2B91A7F300CC3D1B /* WorkspaceFolderView */ = {
+			isa = PBXGroup;
+			children = (
+				299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */,
+				292A30DC2B9017F700344DA8 /* WorkspaceItemView.swift */,
+			);
+			path = WorkspaceFolderView;
+			sourceTree = "<group>";
+		};
+		29A1A38E2B91A80700CC3D1B /* SidebarExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				29A1A3892B919E7100CC3D1B /* Sidebar+Preload.swift */,
+				29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */,
+			);
+			path = SidebarExtensions;
 			sourceTree = "<group>";
 		};
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
