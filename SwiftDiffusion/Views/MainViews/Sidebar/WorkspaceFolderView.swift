@@ -17,7 +17,6 @@ extension SidebarModel {
 struct WorkspaceFolderView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
-  
   @State var showWorkspaceItemsPlaceholderButton: Bool = false
   
   var body: some View {
@@ -42,30 +41,6 @@ struct WorkspaceFolderView: View {
           }
         }
       }
-    }
-    .onChange(of: sidebarModel.workspaceItemHasJustBeenRemoved) {
-      //sidebarModel.selectNewWorkspaceItemIfApplicable()
-    }
-    
-    
-    
-  }
-  
-  private var newPromptButtonView: some View {
-    HStack {
-      Spacer()
-      Button(action: {
-        let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
-        newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-        newPromptSidebarItem.timestamp = Date()
-        sidebarModel.workspaceFolder?.add(item: newPromptSidebarItem)
-        sidebarModel.saveData(in: modelContext)
-        sidebarModel.setSelectedSidebarItem(to: newPromptSidebarItem)
-      }) {
-        Text("New Prompt")
-        Image(systemName: "plus")
-      }
-      .buttonStyle(.accessoryBar)
     }
   }
   
