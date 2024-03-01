@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PasteGenerationDataStatusBar: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var currentPrompt: PromptModel
   @ObservedObject var userSettings = UserSettings.shared
   
@@ -16,7 +18,8 @@ struct PasteGenerationDataStatusBar: View {
   var onPaste: (String) -> Void
   
   var body: some View {
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
+    if sidebarModel.workspaceFolderContainsSelectedSidebarItem() {
+      
       
       if generationDataInPasteboard || userSettings.alwaysShowPasteboardGenerationDataButton {
         HStack(alignment: .center) {
@@ -27,6 +30,7 @@ struct PasteGenerationDataStatusBar: View {
             if let pasteboardContent = getPasteboardString() {
               onPaste(pasteboardContent)
             }
+            sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
           }) {
             Text("Paste Generation Data")
             Image(systemName: "arrow.up.doc.on.clipboard")

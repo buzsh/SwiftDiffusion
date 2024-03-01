@@ -22,16 +22,16 @@ struct SidebarView: View {
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   
-  @Query private var sidebarItems: [SidebarItem]
+  // TODO: workspace items
+  @Query private var unsavedWorkspaceItems: [SidebarItem] // unsaved items
   @Query private var sidebarFolders: [SidebarFolder]
+  
+  @Query(filter: #Predicate<SidebarFolder> { folder in
+    folder.isRoot == true
+  }) var rootFolders: [SidebarFolder]
   
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
-  
-  @AppStorage("modelNameButtonToggled") private var modelNameButtonToggled: Bool = true
-  @AppStorage("noPreviewsButtonToggled") private var noPreviewsItemButtonToggled: Bool = false
-  @AppStorage("smallPreviewsButtonToggled") private var smallPreviewsButtonToggled: Bool = true
-  @AppStorage("largePreviewsButtonToggled") private var largePreviewsButtonToggled: Bool = false
   @AppStorage("filterToolsButtonToggled") private var filterToolsButtonToggled: Bool = false
   
   @State private var selectedItemID: UUID?
@@ -40,111 +40,22 @@ struct SidebarView: View {
   @State private var editingItemId: UUID? = nil
   @State private var draftTitle: String = ""
   @State private var showDeletionAlert: Bool = false
-  @State private var sortingOrder: SortingOrder = .mostRecent
   
-  @State private var selectedModelName: String? = nil
-  
-  enum SortingOrder: String {
-    case mostRecent = "Most Recent"
-    case leastRecent = "Least Recent"
-  }
-  
-  var uniqueModelNames: [String] {
-    Set(sidebarItems.compactMap { $0.prompt?.selectedModel?.name }).sorted()
-  }
-  
-  func newFolderToData(title: String) {
-    let newFolder = SidebarFolder(name: title)
-    modelContext.insert(newFolder)
-    sidebarViewModel.saveData(in: modelContext)
-  }
-  private func deleteSavedItem() {
-    if let itemToDelete = sidebarViewModel.itemToDelete {
-      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
-    }
-    deleteSidebarItem(sidebarViewModel.itemToDelete)
-  }
-  
-  private func deleteWorkspaceItemWithoutPrompt() {
-    deleteSidebarItem(sidebarViewModel.workspaceItemToDeleteWithoutPrompt)
-  }
-  
-  private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {
-    guard let itemToDelete = sidebarItem,
-          let index = sidebarItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
-    
-    modelContext.delete(sidebarItems[index])
-    do {
-      try modelContext.save()
-    } catch {
-      Debug.log("Failed to delete item: \(error.localizedDescription)")
-    }
-    let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
-    updateSelection(to: nextSelectionIndex)
-    sidebarViewModel.itemToDelete = nil
-    sidebarViewModel.workspaceItemToDeleteWithoutPrompt = nil
-  }
-  
-  private func moveSavableItemFromWorkspace() {
-    guard let itemToSave = sidebarViewModel.itemToSave else { return }
-    let mapModel = MapModelData()
-    itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
-    itemToSave.prompt?.isWorkspaceItem = false
-    itemToSave.timestamp = Date()
-    itemToSave.isWorkspaceItem = false
-    selectedItemID = itemToSave.id
-    sidebarViewModel.itemToSave = nil
-    Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
-    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
-  }
-  
-  private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
-    if index > 0 { return index - 1 }
-    else if sidebarItems.count > 1 { return 0 }
-    else { return nil }
-  }
-  
-  private func updateSelection(to index: Int?) {
-    if let newIndex = index, sidebarItems.indices.contains(newIndex) {
-      selectedItemID = sidebarItems[newIndex].id
+  func ensureRootFolderExists() {
+    if rootFolders.isEmpty {
+      let newRootFolder = SidebarFolder(name: "Root", isRoot: true)
+      modelContext.insert(newRootFolder)
+      try? modelContext.save()
+      Debug.log("[DD] Root folder created.")
+      sidebarViewModel.rootFolder = newRootFolder
     } else {
-      selectedItemID = nil
-    }
-  }
-  
-  func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
-    currentPrompt.updateProperties(from: newPrompt)
-    
-    if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
-      selectedImage = image
-    } else {
-      selectedImage = nil
-    }
-  }
-  
-  var filteredItems: [SidebarItem] {
-    let filtered = sidebarItems.filter {
-      let isWorkspaceItem = $0.isWorkspaceItem
-      return !isWorkspaceItem
-    }
-    if let selectedModelName = selectedModelName {
-      return filtered.filter { $0.prompt?.selectedModel?.name == selectedModelName }
-    } else {
-      return filtered
-    }
-  }
-  
-  var sortedAndFilteredItems: [SidebarItem] {
-    switch sortingOrder {
-    case .mostRecent:
-      return filteredItems.sorted { $0.timestamp > $1.timestamp }
-    case .leastRecent:
-      return filteredItems.sorted { $0.timestamp < $1.timestamp }
+      Debug.log("[DD] Root folder already exists.")
+      sidebarViewModel.rootFolder = rootFolders.first
     }
   }
   
   var workspaceItems: [SidebarItem] {
-    sidebarItems.filter {
+    unsavedWorkspaceItems.filter {
       $0.isWorkspaceItem == true
     }
   }
@@ -158,93 +69,26 @@ struct SidebarView: View {
   var body: some View {
     GeometryReader { geometry in
       VStack {
-        if filterToolsButtonToggled {
-          List {
-            Section(header: Text("Sorting")) {
-              Menu(sortingOrder.rawValue) {
-                Button("Most Recent") {
-                  sortingOrder = .mostRecent
-                }
-                Button("Least Recent") {
-                  sortingOrder = .leastRecent
-                }
-              }
-            }
-            
-            Section(header: Text("Filters")) {
-              Menu(selectedModelName ?? "Filter by Model") {
-                Button("Show All") {
-                  selectedModelName = nil
-                }
-                Divider()
-                ForEach(uniqueModelNames, id: \.self) { modelName in
-                  Button(modelName) {
-                    selectedModelName = modelName
-                  }
-                }
-              }
-            }
-          }.frame(height: 110)
-          Divider()
-            .padding(.horizontal).padding(.bottom, 4)
-        }
+        
+        FilterSortingSection(sortingOrder: $sidebarViewModel.sortingOrder, selectedModelName: $sidebarViewModel.selectedModelName, filterToolsButtonToggled: $filterToolsButtonToggled, uniqueModelNames: sidebarViewModel.uniqueModelNames)
         
         ZStack(alignment: .bottom) {
           List(selection: $selectedItemID) {
             
-            Section(header: Text("Workspace")) {
-              ForEach(sortedWorkspaceItems) { item in
-                SidebarWorkspaceItem(item: item, selectedItemID: $selectedItemID)
-                  .onChange(of: sortedWorkspaceItems) {
-                    if sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect != nil {
-                      selectedItemID = sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect
-                      sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = nil
-                    }
-                  }
-              }
-            }
+            WorkspaceSection(workspaceItems: workspaceItems, selectedItemID: $selectedItemID)
             
-            if sortedAndFilteredItems.isEmpty {
-              VStack(alignment: .center) {
-                Spacer(minLength: 100)
-                HStack(alignment: .center) {
-                  Spacer()
-                  VStack {
-                    Text("Saved prompts")
-                    Text("will appear here!")
-                  }
-                  Spacer()
-                }
-                
-                Spacer()
-              }
-              .foregroundStyle(Color.secondary)
-            } else {
-              
-              Section(header: Text("Uncategorized")) {
-                ForEach(sortedAndFilteredItems) { item in
-                  SidebarStoredItemView(
-                    item: item,
-                    smallPreviewsButtonToggled: smallPreviewsButtonToggled,
-                    largePreviewsButtonToggled: largePreviewsButtonToggled,
-                    modelNameButtonToggled: modelNameButtonToggled
-                  )
-                  .padding(.vertical, 2)
-                  .contentShape(Rectangle())
-                  .onTapGesture {
-                    selectedItemID = item.id
-                  }
-                }
-              } // Section("Uncategorized")
-              VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
-            }
-          } // List
-          .listStyle(SidebarListStyle())
-          //.scrollIndicators(.hidden)
+            // Use rootFolder as the default source for items and folders
+            SidebarItemSection(selectedItemID: $selectedItemID)
+              .frame(minHeight: 200, idealHeight: .infinity, maxHeight: .infinity)
+            
+            VStack {}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+          }
+          .listStyle(SidebarListStyle()) // .scrollIndicators(.hidden)
+          .onChange(of: sidebarFolders) {
+            sidebarViewModel.allFolders = sidebarFolders
+          }
           .onChange(of: sidebarViewModel.itemToSave) {
-            if sidebarViewModel.itemToSave != nil {
-              moveSavableItemFromWorkspace()
-            }
+            moveSavableItemFromWorkspace()
           }
           .onChange(of: sidebarViewModel.itemToDelete) {
             if sidebarViewModel.itemToDelete != nil {
@@ -271,28 +115,34 @@ struct SidebarView: View {
           .onChange(of: selectedItemID) { currentItemID, newItemID in
             selectedSidebarItemChanged(from: currentItemID, to: newItemID)
           }
-          .onChange(of: sidebarItems) {
-            Debug.log("SidebarView.onChange of: sidebarItems")
-            sidebarViewModel.allSidebarItems = sidebarItems
+          .onChange(of: unsavedWorkspaceItems) {
+            Debug.log("SidebarView.onChange of: unsavedWorkspaceItems")
+            //sidebarViewModel.allSidebarItems = unsavedWorkspaceItems
             sidebarViewModel.workspaceItems = workspaceItems
-            sidebarViewModel.savedItems = sortedAndFilteredItems
+            //sidebarViewModel.savedItems = sidebarViewModel.displayedItems
             
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
           }
           .onChange(of: sidebarViewModel.shouldCheckForNewSidebarItemToCreate) {
+            /*
             if sidebarViewModel.shouldCheckForNewSidebarItemToCreate {
               ensureNewPromptWorkspaceItemExists()
               sidebarViewModel.shouldCheckForNewSidebarItemToCreate = false
             }
+             */
           }
           .onAppear {
+            ensureRootFolderExists()
+            
             ensureNewPromptWorkspaceItemExists()
             ensureSelectedSidebarItemForSelectedItemID()
             sidebarViewModel.updateSavableSidebarItems(forWorkspaceItems: sortedWorkspaceItems)
+            sidebarViewModel.allFolders = sidebarFolders
+            //sidebarViewModel.allSidebarItems = sidebarItems
           }
           
-          DisplayOptionsBar(modelNameButtonToggled: $modelNameButtonToggled, noPreviewsItemButtonToggled: $noPreviewsItemButtonToggled, smallPreviewsButtonToggled: $smallPreviewsButtonToggled, largePreviewsButtonToggled: $largePreviewsButtonToggled)
+          DisplayOptionsBar()
           
         } // ZStack
       }
@@ -303,6 +153,7 @@ struct SidebarView: View {
     }
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
+        
         Button(action: {
           filterToolsButtonToggled.toggle()
         }) {
@@ -310,44 +161,72 @@ struct SidebarView: View {
             .foregroundColor(filterToolsButtonToggled ? .blue : .secondary)
         }
         .frame(width: Constants.Layout.SidebarToolbar.itemWidth, height: Constants.Layout.SidebarToolbar.itemHeight)
+        
+        Button(action: {
+          newFolderToData(title: "Untitled Folder")
+        }) {
+          Image(systemName: "folder.badge.plus")
+        }
       }
-    }
-    .onChange(of: currentPrompt.positivePrompt) {
-      ensureNewPromptWorkspaceItemExists()
+      
     }
     .onAppear {
-        preloadImages(for: sortedAndFilteredItems)
-        preloadImages(for: sortedWorkspaceItems)
+      //preloadImages(for: sidebarViewModel.displayedItems)
+      //preloadImages(for: sortedWorkspaceItems)
     }
-    .onChange(of: sidebarItems) {
-        preloadImages(for: sortedAndFilteredItems)
-        preloadImages(for: sortedWorkspaceItems)
+    .onChange(of: unsavedWorkspaceItems) {
+      //preloadImages(for: sidebarViewModel.displayedItems)
+      //preloadImages(for: sortedWorkspaceItems)
     }
+  }
+  
+  func newFolderToData(title: String) {
+    let newFolder = SidebarFolder(name: title)
+
+    if let currentFolder = sidebarViewModel.currentFolder {
+     modelContext.insert(newFolder)
+      currentFolder.folders.append(newFolder)
+    }
+    
+    /*
+    if let rootFolder = sidebarViewModel.rootFolder {
+      modelContext.insert(newFolder)
+      rootFolder.folders.append(newFolder)
+    }
+    
+     */
+    sidebarViewModel.saveData(in: modelContext)
   }
   
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
     Debug.log("[SidebarView] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
     
-    if let isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem, isWorkspaceItem {
-      sidebarViewModel.storeChangesOfSelectedSidebarItem(for: currentPrompt, in: modelContext)
-    }
-    
-    if let newItemID = newItemID,
-       let selectedItem = sidebarItems.first(where: { $0.id == newItemID }) {
-      Debug.log("onChange selectItem: \(selectedItem.title)")
-      sidebarViewModel.selectedSidebarItem = selectedItem
-      selectedItemName = selectedItem.title
-      let mapModelData = MapModelData()
-      if let storedPromptModel = selectedItem.prompt {
+    // Check if the newItemID corresponds to a folder
+    if let folder = sidebarViewModel.allFolders.first(where: { $0.id == newItemID }) {
+      Debug.log("Selected Folder: \(folder.name)")
+      sidebarViewModel.selectedFolder = folder
+      sidebarViewModel.selectedObject = folder // New logic to handle folder selection
+    } else if let item = unsavedWorkspaceItems.first(where: { $0.id == newItemID }) {
+      Debug.log("Selected Item: \(item.title)")
+      sidebarViewModel.selectedSidebarItem = item
+      sidebarViewModel.selectedObject = item // Existing item selection logic
+      selectedItemName = item.title
+      
+      if let storedPromptModel = item.prompt {
+        let mapModelData = MapModelData()
         let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
         
-        if selectedItem.title == "New Prompt" {
+        if item.title == "New Prompt" {
           newPrompt.selectedModel = nil
         }
         
-        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: selectedItem.imageUrls)
+        updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: item.imageUrls)
       }
+    } else {
+      // Handle case where neither an item nor a folder is found for the given ID
+      Debug.log("No item or folder found with ID: \(String(describing: newItemID))")
     }
+    
     ensureSelectedSidebarItemForSelectedItemID()
   }
   
@@ -358,7 +237,7 @@ struct SidebarView: View {
   }
   /// Will select the "New Prompt" item from workspace items.
   private func selectNewPromptItemIfAvailable() {
-    if let newPromptItemID = sidebarItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true })?.id {
+    if let newPromptItemID = unsavedWorkspaceItems.first(where: { $0.title == "New Prompt" && $0.isWorkspaceItem == true })?.id {
       selectedItemID = newPromptItemID
     }
   }
@@ -367,7 +246,8 @@ struct SidebarView: View {
     let listOfBlankNewPrompts = workspaceItems.filter { $0.title == "New Prompt" }
     
     if listOfBlankNewPrompts.isEmpty {
-      _ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
+      //_ = sidebarViewModel.createNewPromptSidebarWorkspaceItem(in: modelContext)
+      //sidebarViewModel.updateControlBarView = true
     }
   }
   
@@ -375,9 +255,9 @@ struct SidebarView: View {
     items.forEach { item in
       // Preload main images
       /*
-      item.imageUrls.forEach { imageUrl in
-        preloadImage(from: imageUrl)
-      }
+       item.imageUrls.forEach { imageUrl in
+       preloadImage(from: imageUrl)
+       }
        */
       // Preload thumbnails
       item.imageThumbnails.forEach { imageInfo in
@@ -396,6 +276,83 @@ struct SidebarView: View {
       DispatchQueue.main.async {
         ImageCache.shared.setImage(image, forKey: url.path)
       }
+    }
+  }
+  
+  
+  
+  private func deleteWorkspaceItemWithoutPrompt() {
+    deleteSidebarItem(sidebarViewModel.workspaceItemToDeleteWithoutPrompt)
+  }
+  
+  private func deleteSavedItem() {
+    if let itemToDelete = sidebarViewModel.itemToDelete {
+      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: itemToDelete, in: modelContext, withSoundEffect: true)
+    }
+    deleteSidebarItem(sidebarViewModel.itemToDelete)
+  }
+  
+  private func deleteSidebarItem(_ sidebarItem: SidebarItem?) {
+    guard let itemToDelete = sidebarItem,
+          let index = unsavedWorkspaceItems.firstIndex(where: { $0.id == itemToDelete.id }) else { return }
+    
+    modelContext.delete(unsavedWorkspaceItems[index])
+    do {
+      try modelContext.save()
+    } catch {
+      Debug.log("Failed to delete item: \(error.localizedDescription)")
+    }
+    let nextSelectionIndex = determineNextSelectionIndex(afterDeleting: index)
+    updateSelection(to: nextSelectionIndex)
+    sidebarViewModel.itemToDelete = nil
+    sidebarViewModel.workspaceItemToDeleteWithoutPrompt = nil
+  }
+  
+  private func moveSavableItemFromWorkspace() {
+    guard let itemToSave = sidebarViewModel.itemToSave else { return }
+    let mapModel = MapModelData()
+    itemToSave.prompt = mapModel.toStored(promptModel: currentPrompt)
+    itemToSave.prompt?.isWorkspaceItem = false
+    itemToSave.timestamp = Date()
+    itemToSave.isWorkspaceItem = false
+    selectedItemID = itemToSave.id
+    sidebarViewModel.itemToSave = nil
+    
+    /*
+    if let currentFolder = sidebarViewModel.currentFolder {
+      currentFolder.addItem(itemToSave)
+    } else if let rootFolder = sidebarViewModel.rootFolder {
+      rootFolder.addItem(itemToSave)
+    }
+     */
+    
+    Debug.log("sidebarViewModel.createImageThumbnails(for: itemToSave, in: modelContext)")
+    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: itemToSave, in: modelContext)
+    
+    sidebarViewModel.saveData(in: modelContext)
+  }
+  
+  private func determineNextSelectionIndex(afterDeleting index: Int) -> Int? {
+    if index > 0 { return index - 1 }
+    else if unsavedWorkspaceItems.count > 1 { return 0 }
+    else { return nil }
+  }
+  
+  private func updateSelection(to index: Int?) {
+    if let newIndex = index, unsavedWorkspaceItems.indices.contains(newIndex) {
+      selectedItemID = unsavedWorkspaceItems[newIndex].id
+    } else {
+      selectedItemID = nil
+    }
+  }
+  
+  func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
+    currentPrompt.updateProperties(from: newPrompt)
+    
+    if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
+      selectedImage = image
+    } else {
+      selectedImage = nil
     }
   }
   

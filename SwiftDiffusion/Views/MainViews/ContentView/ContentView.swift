@@ -32,6 +32,8 @@ extension ViewManager: Hashable, Identifiable {
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
+  
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
@@ -64,7 +66,8 @@ struct ContentView: View {
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
-      SidebarView(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
+      Sidebar(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
+      //SidebarView(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
         .navigationSplitViewColumnWidth(min: 200, ideal: 240, max: 340)
       
     } content: {
@@ -266,7 +269,9 @@ struct ContentView: View {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
         
-        sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
+        
+        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+        //sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -284,11 +289,15 @@ struct ContentView: View {
   func imagesDidGenerateSuccessfully() {
     NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
     
+    /*
     if let savableSidebarItem = sidebarViewModel.sidebarItemCurrentlyGeneratingOut {
       sidebarViewModel.prepareGeneratedPromptForSaving(sideBarItem: savableSidebarItem, imageUrls: lastSavedImageUrls)
     }
-    
     sidebarViewModel.sidebarItemCurrentlyGeneratingOut = nil
+    */
+    if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
+      sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
+    }
     
     Task {
       await fileHierarchy.refresh()

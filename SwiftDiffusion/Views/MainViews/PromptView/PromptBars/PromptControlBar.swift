@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PromptControlBarView: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   @State private var isPromptControlBarVisible: Bool = false
   
   var body: some View {
@@ -18,17 +18,19 @@ struct PromptControlBarView: View {
           .transition(.move(edge: .top).combined(with: .opacity))
       }
     }
-    .onChange(of: sidebarViewModel.selectedSidebarItem) {
+    
+    
+    .onChange(of: sidebarModel.selectedSidebarItem) {
       updatePromptControlBarVisibility()
     }
-    .onChange(of: sidebarViewModel.updateControlBarView) {
+    .onChange(of: sidebarModel.updateControlBarView) {
       updatePromptControlBarVisibility()
-      sidebarViewModel.updateControlBarView = false
+      sidebarModel.updateControlBarView = false
     }
   }
   
   private func updatePromptControlBarVisibility() {
-    if isPromptControlBarVisible != (sidebarViewModel.selectedSidebarItem?.title != "New Prompt") {
+    if isPromptControlBarVisible != (sidebarModel.selectedSidebarItem?.title != "New Prompt") {
       withAnimation(.easeInOut(duration: 0.2)) {
         isPromptControlBarVisible.toggle()
       }
@@ -40,16 +42,20 @@ struct PromptControlBarView: View {
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarModel: SidebarModel
+  
   @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @ObservedObject var userSettings = UserSettings.shared
   
   @State private var isWorkspaceItem: Bool = false
-  @State private var isSavableSidebarItem: Bool = false
+  @State private var isStorableSidebarItem: Bool = false
   
   private var workspaceItemBar: some View {
-    Group {
+    HStack {
       Button(action: {
-        sidebarViewModel.queueWorkspaceItemForDeletion()
+        if let sidebarItem = sidebarModel.selectedSidebarItem {
+          sidebarModel.deleteFromWorkspace(sidebarItem: sidebarItem, in: modelContext)
+        }
       }) {
         Image(systemName: "xmark")
         Text("Close")
@@ -57,9 +63,11 @@ struct PromptControlBar: View {
       
       Spacer()
       
-      if isSavableSidebarItem {
+      if isStorableSidebarItem {
         Button(action: {
-          sidebarViewModel.queueSelectedSidebarItemForSaving()
+          if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt, in: modelContext)
+          }
         }) {
           Text("Save Generated Prompt")
           Image(systemName: "square.and.arrow.down")
@@ -71,9 +79,9 @@ struct PromptControlBar: View {
   }
   
   private var storedItemBar: some View {
-    Group {
+    HStack {
       Button(action: {
-          sidebarViewModel.queueSelectedSidebarItemForDeletion()
+        sidebarModel.promptUserToConfirmDeletion = true
       }) {
         Image(systemName: "trash")
         Text("Delete")
@@ -82,11 +90,16 @@ struct PromptControlBar: View {
       Spacer()
       
       Button(action: {
-        if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem, let promptCopy = selectedSidebarItem.prompt {
-          let newItemTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
-          let newWorkspaceSidebarItem = sidebarViewModel.createSidebarItemAndSaveToData(title: newItemTitle, storedPrompt: promptCopy, imageUrls: selectedSidebarItem.imageUrls, isWorkspaceItem: true, in: modelContext)
-          newWorkspaceSidebarItem.timestamp = selectedSidebarItem.timestamp
-          sidebarViewModel.newlyCreatedSidebarWorkspaceItemIdToSelect = newWorkspaceSidebarItem.id
+        if let selectedSidebarItem = sidebarModel.selectedSidebarItem, let clonedPrompt = selectedSidebarItem.prompt {
+          let clonedTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
+          let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
+          clonedItem.prompt = clonedPrompt
+          withAnimation {
+            sidebarModel.workspaceFolder?.add(item: clonedItem)
+            sidebarModel.saveData(in: modelContext)
+            sidebarModel.setSelectedSidebarItem(to: clonedItem)
+          }
+          sidebarModel.addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: selectedSidebarItem.imageUrls)
         }
       }) {
         Text("Copy to Workspace")
@@ -109,27 +122,28 @@ struct PromptControlBar: View {
     .frame(height: 30)
     .background(VisualEffectBlurView(material: .sheet, blendingMode: .behindWindow))
     .onAppear {
-      isWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem ?? false
+      isWorkspaceItem = sidebarModel.workspaceFolderContainsSelectedSidebarItem()
       
-      if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem {
-        isSavableSidebarItem = sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id })
+      if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+        isStorableSidebarItem = sidebarModel.storableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id })
       }
     }
-    .onChange(of: sidebarViewModel.selectedSidebarItem) {
+    .onChange(of: sidebarModel.workspaceFolderContainsSelectedSidebarItem()) {
       updateActionBarButtonItems()
       updateSavableSidebarItemState()
     }
-    .onChange(of: sidebarViewModel.selectedSidebarItem?.imageUrls) {
+    
+    .onChange(of: sidebarModel.selectedSidebarItem) {
+      updateActionBarButtonItems()
       updateSavableSidebarItemState()
     }
-    .onChange(of: sidebarViewModel.selectedSidebarItem?.isWorkspaceItem) {
-      updateActionBarButtonItems()
+    .onChange(of: sidebarModel.selectedSidebarItem?.imageUrls) {
+      updateSavableSidebarItemState()
     }
   }
   
   private func updateActionBarButtonItems() {
-    if let selectedSidebarItemIsWorkspaceItem = sidebarViewModel.selectedSidebarItem?.isWorkspaceItem,
-    isWorkspaceItem != selectedSidebarItemIsWorkspaceItem {
+    if isWorkspaceItem != sidebarModel.workspaceFolderContainsSelectedSidebarItem() {
       withAnimation(.easeInOut(duration: 0.2)) {
         isWorkspaceItem.toggle()
       }
@@ -137,13 +151,11 @@ struct PromptControlBar: View {
   }
   
   private func updateSavableSidebarItemState() {
-    if let selectedSidebarItem = sidebarViewModel.selectedSidebarItem {
-      if isSavableSidebarItem != sidebarViewModel.savableSidebarItems.contains(where: { $0.id == selectedSidebarItem.id }) {
+     if isStorableSidebarItem != sidebarModel.selectedItemIsStorableItem() {
         withAnimation(.easeInOut(duration: 0.2)) {
-          isSavableSidebarItem.toggle()
+          isStorableSidebarItem.toggle()
         }
       }
-    }
   }
   
 }

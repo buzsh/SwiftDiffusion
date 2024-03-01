@@ -28,6 +28,7 @@ struct DebugPromptStatusView: View {
         Divider().padding(.top, 10)
         
         ApiCheckpointRow()
+        DebugSelectedSidebarItem()
       }
       .padding(.horizontal)
       .padding(.vertical, 6)
