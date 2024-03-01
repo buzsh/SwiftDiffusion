@@ -18,6 +18,10 @@ struct SidebarFolderItem: View {
   let folder: SidebarFolder
   @State private var isHovering = false
   
+  var totalNumberOfItemsContained: Int {
+    folder.folders.count + folder.items.count
+  }
+  
   var body: some View {
     HStack {
       Image(systemName: "folder")
@@ -26,6 +30,12 @@ struct SidebarFolderItem: View {
       Text(folder.name)
         .foregroundColor(isHovering ? .white : .primary)
       Spacer()
+      Text("\(totalNumberOfItemsContained)")
+        .frame(minWidth: 20)
+        .padding(2)
+        .background(Capsule().fill(Color.black).opacity(0.2))
+        .foregroundColor(.secondary)
+        .font(.caption)
     }
     .padding(.vertical, 8)
     .padding(.horizontal, 4)

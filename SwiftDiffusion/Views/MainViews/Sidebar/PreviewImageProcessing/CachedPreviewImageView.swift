@@ -12,7 +12,7 @@ import SwiftUI
 /// - Parameters:
 ///   - imageInfo: An optional `ImageInfo` object containing the image URL and its dimensions. Used for calculating aspect ratio and size if available.
 struct CachedPreviewImageView: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   let imageInfo: ImageInfo?
   
   @State private var displayedImage: NSImage?
@@ -38,7 +38,7 @@ struct CachedPreviewImageView: View {
   /// Calculates the width of the image to be displayed, based on the current width available in the sidebar view model.
   /// - Returns: The calculated width as a `CGFloat`.
   private func calculateWidth() -> CGFloat {
-    return sidebarViewModel.currentWidth
+    return sidebarModel.currentWidth
   }
   
   /// Calculates the height of the image to be displayed, utilizing the aspect ratio defined in `ImageInfo` if available.

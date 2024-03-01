@@ -2,13 +2,13 @@
 //  FilterSortingSection.swift
 //  SwiftDiffusion
 //
-//  Created by Justin Bush on 2/27/24.
+//  Created by Justin Bush on 2/29/24.
 //
 
 import SwiftUI
 
 struct FilterSortingSection: View {
-  @Binding var sortingOrder: SidebarViewModel.SortingOrder
+  @Binding var sortingOrder: SidebarModel.SortingOrder
   @Binding var selectedModelName: String?
   @Binding var filterToolsButtonToggled: Bool
   let uniqueModelNames: [String]
@@ -39,3 +39,9 @@ struct FilterSortingSection: View {
     }
   }
 }
+
+/*
+#Preview {
+    FilterSortingSection()
+}
+*/

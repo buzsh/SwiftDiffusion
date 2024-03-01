@@ -31,9 +31,7 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var sidebarModel: SidebarModel
-  
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
@@ -67,8 +65,7 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       Sidebar(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
-      //SidebarView(selectedImage: $selectedImage, lastSavedImageUrls: $lastSavedImageUrls)
-        .navigationSplitViewColumnWidth(min: 200, ideal: 240, max: 340)
+        .navigationSplitViewColumnWidth(min: 220, ideal: 240, max: 340)
       
     } content: {
       switch selectedView {
@@ -87,6 +84,7 @@ struct ContentView: View {
     }
     .onChange(of: columnVisibility) {
       Debug.log("columnVisibility: \(columnVisibility)")
+      sidebarModel.sidebarIsVisible = (columnVisibility != .doubleColumn)
     }
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
@@ -163,14 +161,6 @@ struct ContentView: View {
       }
       
       ToolbarItemGroup(placement: .principal) {
-        /*
-        Button("Add to Queue") {
-          Debug.log("Add to queue")
-        }
-        .buttonStyle(BorderBackgroundButtonStyle())
-        .disabled(true)
-         */
-        
         Button(action: {
           fetchAndSaveGeneratedImages()
         }) {
@@ -217,17 +207,9 @@ struct ContentView: View {
           ContentProgressBar(scriptManager: scriptManager)
         }
         
-        /*
-        if scriptManager.scriptState.isActive && checkpointsManager.apiHasLoadedInitialCheckpointModel != true {
-          ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(0.5)
-        }
-         */
-        
         if userSettings.showDeveloperInterface {
           Button(action: {
-            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, sidebarViewModel: sidebarViewModel, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
           }) {
             Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
           }

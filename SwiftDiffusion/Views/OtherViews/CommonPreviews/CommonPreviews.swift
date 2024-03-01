@@ -11,14 +11,12 @@ struct CommonPreviews {
   
   @MainActor
   static var previewEnvironment: some View {
-    let sidebarViewModelPreview = SidebarViewModel()
     let promptModelPreview = PromptModel()
     let checkpointsManagerPreview = CheckpointsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
     let vaeModelsManagerPreview = ModelManager<VaeModel>()
     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
     return AnyView(EmptyView())
-      .environmentObject(sidebarViewModelPreview)
       .environmentObject(promptModelPreview)
       .environmentObject(checkpointsManagerPreview)
       .environmentObject(scriptManagerPreview)
@@ -28,8 +26,6 @@ struct CommonPreviews {
   
   @MainActor
   static var promptView: some View {
-    let sidebarViewModelPreview = SidebarViewModel()
-    
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
@@ -42,7 +38,6 @@ struct CommonPreviews {
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .environmentObject(sidebarViewModelPreview)
     .environmentObject(promptModelPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
@@ -52,8 +47,6 @@ struct CommonPreviews {
   
   @MainActor
   static var contentView: some View {
-    let sidebarViewModelPreview = SidebarViewModel()
-    
     let promptModelPreview = PromptModel()
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
@@ -65,7 +58,6 @@ struct CommonPreviews {
     return ContentView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .environmentObject(sidebarViewModelPreview)
     .environmentObject(promptModelPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(loraModelsManagerPreview)

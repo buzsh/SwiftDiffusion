@@ -40,6 +40,8 @@ class SidebarModel: ObservableObject {
   @Published var sidebarItemHasJustBeenDeleted: Bool = false
   @Published var sidebarFolderHasJustBeenDeleted: Bool = false
   
+  @Published var sidebarIsVisible: Bool = true
+  
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"

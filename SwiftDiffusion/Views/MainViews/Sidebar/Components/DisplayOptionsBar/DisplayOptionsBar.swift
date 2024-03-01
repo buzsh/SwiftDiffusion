@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+extension Constants.Layout {
+  struct SidebarToolbar {
+    static let itemHeight: CGFloat = 20
+    static let itemWidth: CGFloat = 30
+    
+    static let bottomBarHeight: CGFloat = 50
+  }
+}
+
 struct DisplayOptionsBar: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   

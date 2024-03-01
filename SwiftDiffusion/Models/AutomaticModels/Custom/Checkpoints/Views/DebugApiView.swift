@@ -19,7 +19,6 @@ struct DebugApiView: View {
   
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
@@ -139,13 +138,11 @@ struct DebugApiView: View {
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
   promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
-  let sidebarViewModelPreview = SidebarViewModel()
   let checkpointsManagerPreview = CheckpointsManager()
   let loraModelsManagerPreview = ModelManager<LoraModel>()
   return DebugApiView()
     .environmentObject(scriptManagerPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(promptModelPreview)
-    .environmentObject(sidebarViewModelPreview)
     .environmentObject(loraModelsManagerPreview)
 }
