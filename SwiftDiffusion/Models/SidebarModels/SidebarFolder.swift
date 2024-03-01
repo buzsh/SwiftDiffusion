@@ -51,18 +51,3 @@ extension SidebarFolder {
     self.folders.removeAll(where: { $0.id == folder.id })
   }
 }
-
-// MARK: DEPRECATED
-extension SidebarFolder {
-  func addItem(_ item: SidebarItem) {
-    self.items.append(item)
-  }
-  
-  func removeItem(_ item: SidebarItem) {
-    self.items.removeAll { $0.id == item.id }
-  }
-  
-  func removeItem(withId itemId: UUID) {
-    self.items.removeAll { $0.id == itemId }
-  }
-}
