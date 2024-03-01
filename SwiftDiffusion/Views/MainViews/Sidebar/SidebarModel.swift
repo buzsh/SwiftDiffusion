@@ -259,6 +259,8 @@ extension SidebarModel {
     } else {
       Debug.log("[SidebarModel] Root folder exists.")
       rootFolder = folderQuery.first
+      rootFolder?.name = "Documents"
+      saveData(in: modelContext)
     }
   }
   

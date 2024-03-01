@@ -30,8 +30,15 @@ struct SidebarFolderView: View {
   @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
   
   var body: some View {
-    if sidebarModel.currentFolder != sidebarModel.rootFolder {
+    if let currentFolder = sidebarModel.currentFolder,
+       !currentFolder.isRoot || currentFolder.name.isEmpty {
       FolderTitleControl(folder: sidebarModel.currentFolder)
+        .onChange(of: currentFolder.name) {
+          if currentFolder.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            currentFolder.name = "Untitled Folder"
+            sidebarModel.saveData(in: modelContext)
+          }
+        }
     }
     
     Section(header: Text("Folders")) {
