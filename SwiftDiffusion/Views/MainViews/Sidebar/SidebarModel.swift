@@ -72,6 +72,8 @@ class SidebarModel: ObservableObject {
   @MainActor
   func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel, in modelContext: ModelContext) {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
+    let mapModelData = MapModelData()
+    sidebarItem.prompt = mapModelData.toStored(promptModel: prompt)
     currentFolder?.add(item: sidebarItem)
     workspaceFolder?.remove(item: sidebarItem)
     PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
