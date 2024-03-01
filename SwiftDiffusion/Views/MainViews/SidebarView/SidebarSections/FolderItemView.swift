@@ -22,9 +22,11 @@ struct FolderItemView: View {
         .foregroundColor(.secondary)
     }
     .contentShape(Rectangle())
+    /*
     .onTapGesture {
       sidebarViewModel.navigateToFolder(folder)
     }
+     */
     .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
       Debug.log("[DD] Attempting to drop on folder: \(folder.id)")
       return providers.first?.loadObject(ofClass: NSString.self) { (nsItem, error) in
