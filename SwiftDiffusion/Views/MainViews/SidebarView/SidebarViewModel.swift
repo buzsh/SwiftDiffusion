@@ -13,6 +13,16 @@ extension Constants.Sidebar {
 }
 
 class SidebarViewModel: ObservableObject {
+  @Published var selectedObject: Any? = nil
+  @Published var selectedFolder: SidebarFolder? = nil
+  
+  
+  
+  @Published var rootFolder: SidebarFolder? = nil
+  //@Published var itemToSave: SidebarItem?
+  
+  
+  
   @Published var allSidebarItems: [SidebarItem] = []
   @Published var savedItems: [SidebarItem] = []
   @Published var workspaceItems: [SidebarItem] = []
@@ -27,12 +37,22 @@ class SidebarViewModel: ObservableObject {
   @Published var updateControlBarView: Bool = false
   @Published var currentWidth: CGFloat = 240
   
+  @Published var allFolders: [SidebarFolder] = []
+  
   @Published var folderPath: [SidebarFolder] = []
   
   @Published var modelNameButtonToggled: Bool = true
   @Published var noPreviewsItemButtonToggled: Bool = false
   @Published var smallPreviewsButtonToggled: Bool = true
   @Published var largePreviewsButtonToggled: Bool = false
+  
+  @Published var sortingOrder: SortingOrder = .mostRecent
+  @Published var selectedModelName: String? = nil
+  
+  enum SortingOrder: String {
+    case mostRecent = "Most Recent"
+    case leastRecent = "Least Recent"
+  }
   
   @MainActor
   func storeChangesOfSelectedSidebarItem(for prompt: PromptModel, in model: ModelContext) {
@@ -118,8 +138,9 @@ class SidebarViewModel: ObservableObject {
   func saveData(in model: ModelContext) {
     do {
       try model.save()
+      Debug.log("[DD] Data successfully saved")
     } catch {
-      Debug.log("Error saving context: \(error)")
+      Debug.log("[DD] Error saving context: \(error)")
     }
   }
 }
@@ -153,5 +174,89 @@ extension SidebarViewModel {
   // Current view's content based on navigation
   var currentFolder: SidebarFolder? {
     folderPath.last
+  }
+}
+
+extension SidebarViewModel {
+  func moveItem(_ itemId: UUID, toFolder folder: SidebarFolder, in model: ModelContext) {
+    Debug.log("[DD] Attempting to move item: \(itemId)")
+    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }) else {
+      Debug.log("[DD] Item not found in allSidebarItems")
+      return
+    }
+    let item = allSidebarItems.remove(at: itemIndex)
+    folder.addItem(item)
+    
+    saveData(in: model)
+  }
+  
+  func moveItemUp(_ itemId: UUID, in model: ModelContext) {
+    Debug.log("[DD] Attempting to move item up: \(itemId)")
+    guard let itemIndex = allSidebarItems.firstIndex(where: { $0.id == itemId }) else {
+      Debug.log("[DD] Item not found in allSidebarItems for move up")
+      return
+    }
+    
+    guard let currentFolder = currentFolder, let parentIndex = folderPath.firstIndex(of: currentFolder), parentIndex > 0 else {
+      Debug.log("[DD] Current folder not found or no parent folder")
+      return
+    }
+    
+    let item = allSidebarItems.remove(at: itemIndex)
+    let parentFolder = folderPath[parentIndex - 1]
+    parentFolder.addItem(item)
+    
+    if let currentFolder = findFolderContainingItem(itemId) {
+      currentFolder.removeItem(withId: itemId)
+    }
+    
+    saveData(in: model)
+  }
+  
+  func findFolderContainingItem(_ itemId: UUID) -> SidebarFolder? {
+    for folder in allFolders {
+      if folder.items.contains(where: { $0.id == itemId }) {
+        Debug.log("[DD] Found folder \(folder.id) containing item: \(itemId)")
+        return folder
+      }
+    }
+    Debug.log("[DD] No folder found containing item: \(itemId)")
+    return nil
+  }
+}
+
+extension SidebarViewModel {
+  var displayedItems: [SidebarItem] {
+    var items: [SidebarItem]
+    
+    if let currentFolder = currentFolder {
+      items = currentFolder.items
+    } else {
+      items = allSidebarItems.filter { !$0.isWorkspaceItem }
+    }
+    
+    if let modelName = selectedModelName {
+      items = items.filter { $0.prompt?.selectedModel?.name == modelName }
+    }
+    
+    switch sortingOrder {
+    case .mostRecent:
+      items.sort(by: { $0.timestamp > $1.timestamp })
+    case .leastRecent:
+      items.sort(by: { $0.timestamp < $1.timestamp })
+    }
+    
+    return items
+  }
+  
+  var displayedFolders: [SidebarFolder] {
+    return currentFolder?.folders ?? allFolders
+  }
+}
+
+extension SidebarViewModel {
+  var uniqueModelNames: [String] {
+    let modelNames = allSidebarItems.compactMap { $0.prompt?.selectedModel?.name }
+    return Set(modelNames).sorted()
   }
 }

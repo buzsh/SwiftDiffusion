@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DisplayOptionsBar: View {
-  @EnvironmentObject var sidebarViewModel: SidebarViewModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   
   var body: some View {
     VisualEffectView(material: .sidebar, blendingMode: .withinWindow)
@@ -19,14 +19,14 @@ struct DisplayOptionsBar: View {
           
           Spacer()
           
-          HoverToggleButton(buttonToggled: $sidebarViewModel.modelNameButtonToggled, symbol: "arkit")
+          HoverToggleButton(buttonToggled: $sidebarModel.modelNameButtonToggled, symbol: "arkit")
           
           Spacer()
           
           SegmentedDisplayOptions(
-            noPreviewsItemButtonToggled: $sidebarViewModel.noPreviewsItemButtonToggled,
-            smallPreviewsButtonToggled: $sidebarViewModel.smallPreviewsButtonToggled,
-            largePreviewsButtonToggled: $sidebarViewModel.largePreviewsButtonToggled)
+            noPreviewsItemButtonToggled: $sidebarModel.noPreviewsItemButtonToggled,
+            smallPreviewsButtonToggled: $sidebarModel.smallPreviewsButtonToggled,
+            largePreviewsButtonToggled: $sidebarModel.largePreviewsButtonToggled)
           .padding(.trailing, 4)
           
           Spacer()
