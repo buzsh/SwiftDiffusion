@@ -24,7 +24,7 @@ struct PromptView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
   
-  @State private var isRightPaneVisible: Bool = false
+  @State var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
   @State var disablePromptView: Bool = false
   
@@ -75,7 +75,6 @@ struct PromptView: View {
             await checkPasteboardAndUpdateFlag()
           }
         }
-        //.disabled(disablePromptView)
         .disabled(!sidebarModel.workspaceFolderContainsSelectedSidebarItem())
       }
       
@@ -92,7 +91,6 @@ struct PromptView: View {
     .background(Color(NSColor.windowBackgroundColor))
   }
   
-  // TODO: PROMPT QUEUE
   private var rightPane: some View {
     ConsoleView(scriptManager: scriptManager)
       .background(Color(NSColor.windowBackgroundColor))
@@ -106,17 +104,6 @@ struct PromptView: View {
       if isRightPaneVisible {
         rightPane
           .frame(minWidth: 370)
-      }
-    }
-    .toolbar {
-      ToolbarItem(placement: .navigation) {
-        if userSettings.showDeveloperInterface {
-          Button(action: {
-            isRightPaneVisible.toggle()
-          }) {
-            Image(systemName: "apple.terminal")
-          }
-        }
       }
     }
     .onChange(of: sidebarModel.selectedSidebarItem) {
