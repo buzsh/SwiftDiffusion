@@ -170,10 +170,10 @@ class ScriptManager: ObservableObject {
   }
   
   func parseServiceUrl(from output: String) {
-    if serviceUrl == nil, output.contains("Running on local URL") {
-      let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
+    if serviceUrl == nil, output.contains("running on") {
+      let pattern = "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)"
       do {
-        let regex = try NSRegularExpression(pattern: pattern)
+        let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
         let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
         if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
           let urlRange = Range(match.range(at: 1), in: output)!
