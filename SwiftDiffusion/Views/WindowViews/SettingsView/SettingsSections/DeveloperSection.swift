@@ -18,8 +18,9 @@ struct DeveloperSection: View {
       
       ToggleWithHeader(isToggled: $userSettings.showDeveloperInterface, header: "Show developer interface", description: "This will show the developer tools, live variable states and other debugging information.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
-      ToggleWithHeader(isToggled: $userSettings.killAllPythonProcessesOnTerminate, header: "Kill all Python processes on terminate", description: "Will terminate all Python processes on terminate. Useful for Xcode development force stopping.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
+      ToggleWithHeader(isToggled: $userSettings.launchWebUiAlongsideScriptLaunch, header: "Launch webui with script", description: "This will cause the --nowebui command line argument to be excluded from the launch conditions. Useful for needing to debug in a web browser.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
       
+      ToggleWithHeader(isToggled: $userSettings.killAllPythonProcessesOnTerminate, header: "Kill all Python processes on terminate", description: "Will terminate all Python processes on terminate. Useful for Xcode development force stopping.", showAllDescriptions: userSettings.alwaysShowSettingsHelp)
     }
   }
 }
