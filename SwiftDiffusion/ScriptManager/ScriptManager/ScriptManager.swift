@@ -10,7 +10,7 @@ import SwiftUI
 
 extension Constants.CommandLine {
   
-  static let baseArgs = "--api --api-log --no-download-sd-model --no-half"
+  static let baseArgs = "--nowebui --api --api-log --no-half --no-download-sd-model"
   
   
   static var defaultCommand: (String, String) -> String = { dir, name in
