@@ -82,7 +82,7 @@ extension ContentView {
       scriptManager.mostRecentApiRequestPayload = jsonString
     } else {
       Debug.log("Failed to serialize payload to JSON string")
-      scriptManager.mostRecentApiRequestPayload = "{}"
+      scriptManager.mostRecentApiRequestPayload = "{} ERROR"
     }
     
     return payload

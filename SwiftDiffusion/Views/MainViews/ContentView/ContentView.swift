@@ -13,14 +13,13 @@ extension Constants.Layout {
 }
 
 enum ViewManager {
-  case prompt, console, models, settings
+  case prompt, console, split
   
   var title: String {
     switch self {
     case .prompt: return "Prompt"
     case .console: return "Console"
-    case .models: return "Models"
-    case .settings: return "Settings"
+    case .split: return "Split"
     }
   }
 }
@@ -73,10 +72,8 @@ struct ContentView: View {
         PromptView()
       case .console:
         ConsoleView()
-      case .models:
-        CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
-      case .settings:
-        SettingsView()
+      case .split:
+        PromptView(isRightPaneVisible: true)
       }
       
     } detail: {
@@ -119,7 +116,7 @@ struct ContentView: View {
               .padding(.trailing, 2)
           }
           
-          if userSettings.showPythonEnvironmentControls {
+          if userSettings.showPythonEnvironmentControls && userSettings.launchWebUiAlongsideScriptLaunch {
             if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
               Button(action: {
                 NSWorkspace.shared.open(url)
@@ -130,14 +127,15 @@ struct ContentView: View {
             }
           }
           
-          Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
-          
           if userSettings.showDeveloperInterface {
             Picker("Options", selection: $selectedView) {
               Text("Prompt").tag(ViewManager.prompt)
               Text("Console").tag(ViewManager.console)
+              Text("Split").tag(ViewManager.split)
             }
             .pickerStyle(SegmentedPickerStyle())
+          } else {
+            Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
           }
           
           if userSettings.showPythonEnvironmentControls {
@@ -173,11 +171,6 @@ struct ContentView: View {
           (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
           currentPrompt.selectedModel == nil
         )
-        
-        if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
-          RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
-        }
-        
       }
       
       ToolbarItemGroup(placement: .automatic) {
@@ -205,6 +198,10 @@ struct ContentView: View {
         
         if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {
           ContentProgressBar(scriptManager: scriptManager)
+        }
+        
+        if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+          RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
         }
         
         if userSettings.showDeveloperInterface {
@@ -241,19 +238,16 @@ struct ContentView: View {
     }) {
       RequiredInputPathsView()
     }
-    .onChange(of: userSettings.webuiShellPath) {
+    .onChange(of: userSettings.automaticDirectoryPath) {
       handleScriptOnLaunch()
     }
-    .onChange(of: userSettings.stableDiffusionModelsPath) {
+    .onChange(of: userSettings.webuiShellPath) {
       handleScriptOnLaunch()
     }
     .onChange(of: scriptManager.genStatus) {
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-        
-        
         sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
-        //sidebarViewModel.sidebarItemCurrentlyGeneratingOut = sidebarViewModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -271,12 +265,6 @@ struct ContentView: View {
   func imagesDidGenerateSuccessfully() {
     NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
     
-    /*
-    if let savableSidebarItem = sidebarViewModel.sidebarItemCurrentlyGeneratingOut {
-      sidebarViewModel.prepareGeneratedPromptForSaving(sideBarItem: savableSidebarItem, imageUrls: lastSavedImageUrls)
-    }
-    sidebarViewModel.sidebarItemCurrentlyGeneratingOut = nil
-    */
     if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
       sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
     }
@@ -287,7 +275,7 @@ struct ContentView: View {
   }
   
   private var userHasEnteredBothRequiredFields: Bool {
-    return !userSettings.webuiShellPath.isEmpty && !userSettings.stableDiffusionModelsPath.isEmpty
+    return !userSettings.automaticDirectoryPath.isEmpty && !userSettings.webuiShellPath.isEmpty
   }
   
   private func loadLastSelectedImage() async {
