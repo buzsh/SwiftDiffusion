@@ -81,10 +81,6 @@ class UserSettings: ObservableObject {
     didSet { store.set(showPythonEnvironmentControls, forKey: "showPythonEnvironmentControls") }
   }
   
-  @Published var launchWebUiAlongsideScriptLaunch: Bool {
-    didSet { store.set(launchWebUiAlongsideScriptLaunch, forKey: "launchWebUiAlongsideScriptLaunch") }
-  }
-  
   private let initialShowPythonEnvironmentControlsKey = "initialShowPythonEnvironmentControls"
   /// Stores the initial state of `showPythonEnvironmentControls` to restore it later if needed.
   /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
@@ -107,6 +103,11 @@ class UserSettings: ObservableObject {
       store.set(showDeveloperInterface, forKey: "showDeveloperInterface")
       updateEnvironmentControlsBasedOnDeveloperInterface()
     }
+  }
+  /// Controls whether the Automatic webui is launched with the `--nowebui` command argument excluded, causing the script to load in the default web browser on launch.
+  /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
+  @Published var launchWebUiAlongsideScriptLaunch: Bool {
+    didSet { store.set(launchWebUiAlongsideScriptLaunch, forKey: "launchWebUiAlongsideScriptLaunch") }
   }
   
   
