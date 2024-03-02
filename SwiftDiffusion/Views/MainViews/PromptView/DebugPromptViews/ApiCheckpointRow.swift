@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ApiCheckpointRow: View {
+  @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var scriptManager = ScriptManager.shared
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
@@ -15,8 +16,7 @@ struct ApiCheckpointRow: View {
   @State var loadedCheckpointName: String = "nil"
   @State private var isExpanded: Bool = false
   
-  @State var mostRecentCheckpointPayload: String = "{}"
-  
+  @State var selectedSidebarItemApiPayload: String = "{}"
   @State private var isPrettyPrinted: Bool = false
   
   var body: some View {
@@ -39,11 +39,14 @@ struct ApiCheckpointRow: View {
               Spacer()
             }
             
-            TextEditor(text: $mostRecentCheckpointPayload)
+            TextEditor(text: $selectedSidebarItemApiPayload)
               .font(.system(size: 9, design: .monospaced))
               .frame(minHeight: 20, idealHeight: 40, maxHeight: 180)
               .border(Color.gray.opacity(0.5))
-              .onChange(of: scriptManager.mostRecentApiRequestPayload) {
+              .onChange(of: scriptManager.apiRequestPayloadHistory) {
+                formatJsonString()
+              }
+              .onChange(of: sidebarModel.selectedSidebarItem) {
                 formatJsonString()
               }
             
@@ -73,17 +76,21 @@ struct ApiCheckpointRow: View {
     }
     .padding(.vertical, 10)
     .onAppear {
-      mostRecentCheckpointPayload = scriptManager.mostRecentApiRequestPayload
+      formatJsonString()
     }
   }
   
   private func formatJsonString() {
-    let jsonString = scriptManager.mostRecentApiRequestPayload
+    var jsonString = "{}"
+    
+    if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+      jsonString = scriptManager.getApiRequestPayloadFromHistory(for: selectedSidebarItem) ?? "{}"
+    }
     
     if isPrettyPrinted {
-      mostRecentCheckpointPayload = jsonString.prettyPrintedJSONString() ?? jsonString
+      selectedSidebarItemApiPayload = jsonString.prettyPrintedJSONString() ?? jsonString
     } else {
-      mostRecentCheckpointPayload = jsonString.oneLineJSONString() ?? jsonString
+      selectedSidebarItemApiPayload = jsonString.oneLineJSONString() ?? jsonString
     }
   }
 }

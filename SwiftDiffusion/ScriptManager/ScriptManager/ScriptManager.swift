@@ -70,7 +70,15 @@ class ScriptManager: ObservableObject {
   
   @Published var apiConsoleOutput: String = ""
   
-  @Published var mostRecentApiRequestPayload: String = "{}"
+  @Published var apiRequestPayloadHistory: [UUID: String] = [:]
+  
+  func addApiRequestPayloadToHistory(_ payload: String, forSidebarItem sidebarItem: SidebarItem) {
+    apiRequestPayloadHistory[sidebarItem.id] = payload
+  }
+  
+  func getApiRequestPayloadFromHistory(for sidebarItem: SidebarItem) -> String? {
+    return apiRequestPayloadHistory[sidebarItem.id]
+  }
   
   func updateScriptState(_ state: ScriptState) {
     Debug.log("[ScriptManager] updateScriptState: \(state.debugInfo)")
@@ -190,7 +198,6 @@ class ScriptManager: ObservableObject {
     
     parser.parseURL(from: output, withConfigs: configs) { [weak self] url in
       guard let self = self, let parsedUrl = url else {
-        // no found match
         return
       }
       
@@ -200,7 +207,6 @@ class ScriptManager: ObservableObject {
       } else {
         self.serviceUrl = parsedUrl
       }
-      
       
       Debug.log("Successfully parsed serviceUrl: \(String(describing: serviceUrl))")
       updateScriptState(.active)
