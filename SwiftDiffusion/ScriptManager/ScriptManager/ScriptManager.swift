@@ -10,16 +10,24 @@ import SwiftUI
 
 extension Constants.CommandLine {
   
-  static let baseArgs = "--api --api-log --no-download-sd-model --no-half"
-  
-  
   static var defaultCommand: (String, String) -> String = { dir, name in
-    let disableModelLoadingRamOptimizations = UserSettings.shared.disableModelLoadingRamOptimizations
-    if UserSettings.shared.disableModelLoadingRamOptimizations {
-      Debug.log("disableModelLoadingRamOptimizations: \(disableModelLoadingRamOptimizations)")
-      return "cd \(dir); ./\(name) \(baseArgs) --disable-model-loading-ram-optimization"
+    var args: [String] = []
+    
+    args.append("--no-half")
+    args.append("--api")
+    args.append("--api-log")
+    
+    if UserSettings.shared.launchWebUiAlongsideScriptLaunch == false {
+      args.append("--nowebui")
     }
-    return "cd \(dir); ./\(name) \(baseArgs)"
+    
+    if UserSettings.shared.disableModelLoadingRamOptimizations {
+      args.append("--disable-model-loading-ram-optimization")
+    }
+    
+    let clArgs = args.joined(separator: " ")
+    
+    return "cd \(dir); ./\(name) \(clArgs)"
   }
 }
 
@@ -40,7 +48,6 @@ class ScriptManager: ObservableObject {
   
   @Published var serviceUrl: URL? = nil
   
-  private let configManager: ConfigFileManager?
   private var originalLaunchBrowserLine: String?
   
   var shouldTrimOutput: Bool = false
@@ -63,22 +70,19 @@ class ScriptManager: ObservableObject {
   
   @Published var apiConsoleOutput: String = ""
   
-  @Published var mostRecentApiRequestPayload: String = "{}"
+  @Published var apiRequestPayloadHistory: [UUID: String] = [:]
   
-  /// Initializes a new instance of `ScriptManager`.
-  init() {
-    self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)
+  func addApiRequestPayloadToHistory(_ payload: String, forSidebarItem sidebarItem: SidebarItem) {
+    apiRequestPayloadHistory[sidebarItem.id] = payload
+  }
+  
+  func getApiRequestPayloadFromHistory(for sidebarItem: SidebarItem) -> String? {
+    return apiRequestPayloadHistory[sidebarItem.id]
   }
   
   func updateScriptState(_ state: ScriptState) {
     Debug.log("[ScriptManager] updateScriptState: \(state.debugInfo)")
     self.scriptState = state
-    
-    if scriptState == .active {
-      Delay.by(3) {
-        self.restoreLaunchBrowserInConfigJson()
-      }
-    }
     
     if state == .terminated || state == .unableToLocateScript {
       handleUiOnTermination()
@@ -139,8 +143,6 @@ class ScriptManager: ObservableObject {
       Debug.log("GUARD: (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath)")
       return }
     
-    disableLaunchBrowserInConfigJson()
-    
     pythonProcess = PythonProcess()
     pythonProcess?.delegate = self
     pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
@@ -168,10 +170,7 @@ class ScriptManager: ObservableObject {
       terminateAllPythonProcesses()
     } else {
       pythonProcess?.terminate()
-      restoreLaunchBrowserInConfigJson()
     }
-    
-    // Handle post-termination logic
     
     completion(.success("Process terminated successfully."))
     updateScriptState(.terminated)
@@ -180,67 +179,37 @@ class ScriptManager: ObservableObject {
   /// Terminates the script execution immediately.
   func terminateImmediately() {
     pythonProcess?.terminate()
-    restoreLaunchBrowserInConfigJson()
     updateScriptState(.terminated)
     Debug.log("Process terminated immediately.")
   }
   
-  func disableLaunchBrowserInConfigJson() {
-    guard let configManager = self.configManager else {
-      updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
-      return
-    }
-    
-    configManager.disableLaunchBrowser { [weak self] result in
-      switch result {
-      case .success(let originalLine):
-        self?.originalLaunchBrowserLine = originalLine
-        self?.updateDebugConsoleOutput(with: "[config.json] >> \(originalLine)")
-        self?.updateDebugConsoleOutput(with: "[config.json] << \(Constants.ConfigFile.autoLaunchBrowserDisabled)")
-        self?.updateDebugConsoleOutput(with: "[config.json] successfully modified")
-      case .failure(let error):
-        self?.updateDebugConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
-      }
-    }
-  }
-  
-  func restoreLaunchBrowserInConfigJson() {
-    guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
-      updateDebugConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
-      return
-    }
-    
-    configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
-      switch result {
-      case .success():
-        self?.updateDebugConsoleOutput(with: "[config.json] << \(originalLine)")
-        self?.updateDebugConsoleOutput(with: "[config.json] successfully restored")
-      case .failure(let error):
-        self?.updateDebugConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
-      }
-    }
-  }
-  
   func parseServiceUrl(from output: String) {
-    if serviceUrl == nil, output.contains("Running on local URL") {
-      let pattern = "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)"
-      do {
-        let regex = try NSRegularExpression(pattern: pattern)
-        let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-        if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
-          let urlRange = Range(match.range(at: 1), in: output)!
-          let url = String(output[urlRange])
-          self.serviceUrl = URL(string: url)
-          DispatchQueue.main.async {
-            self.updateScriptState(.active)
-            Debug.log("serviceURL successfully parsed from console: \(url)")
-          }
-        } else {
-          Debug.log("No URL match found.")
-        }
-      } catch {
-        Debug.log("Regex error: \(error)")
+    let parser = URLParserUtility()
+    var configs = [
+      URLParserUtility.URLParsingConfig(pattern: "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)", messageContains: "running on"),
+    ]
+    
+    if userSettings.launchWebUiAlongsideScriptLaunch {
+      let webuiDebugUrlPattern = URLParserUtility.URLParsingConfig(pattern: "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)", messageContains: "Running on local URL")
+      configs.append(webuiDebugUrlPattern)
+    }
+    
+    var parsedUrlString: String = ""
+    
+    parser.parseURL(from: output, withConfigs: configs) { [weak self] url in
+      guard let self = self, let parsedUrl = url else {
+        return
       }
+      
+      if parsedUrl.absoluteString.contains("0.0.0.0") {
+        parsedUrlString = parsedUrl.absoluteString.replacingOccurrences(of: "0.0.0.0", with: "127.0.0.1")
+        self.serviceUrl = URL(string: parsedUrlString)
+      } else {
+        self.serviceUrl = parsedUrl
+      }
+      
+      Debug.log("Successfully parsed serviceUrl: \(String(describing: serviceUrl))")
+      updateScriptState(.active)
     }
   }
   

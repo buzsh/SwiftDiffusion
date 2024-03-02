@@ -63,6 +63,8 @@ extension ContentView {
       PayloadKey.doNotSaveSamples.rawValue : false
     ]
     
+    sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
+    
     var overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
     ]
@@ -78,11 +80,14 @@ extension ContentView {
     payload[PayloadKey.overrideSettings.rawValue] = overrideSettings
     
     if let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
-       let jsonString = String(data: jsonData, encoding: .utf8) {
-      scriptManager.mostRecentApiRequestPayload = jsonString
-    } else {
+       let jsonString = String(data: jsonData, encoding: .utf8),
+       let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+        scriptManager.addApiRequestPayloadToHistory(jsonString, forSidebarItem: selectedSidebarItem)
+    } else if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+      scriptManager.addApiRequestPayloadToHistory("Error: {}", forSidebarItem: selectedSidebarItem)
       Debug.log("Failed to serialize payload to JSON string")
-      scriptManager.mostRecentApiRequestPayload = "{}"
+    } else {
+      Debug.log("Failed to serialize payload to JSON string with selectedSidebarItem")
     }
     
     return payload

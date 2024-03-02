@@ -24,6 +24,7 @@ struct BrowseFileRow: View {
       }
       HStack {
         TextField(placeholderText, text: $textValue)
+          .truncationMode(.middle)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(size: 11, design: .monospaced))
           .disabled(true)

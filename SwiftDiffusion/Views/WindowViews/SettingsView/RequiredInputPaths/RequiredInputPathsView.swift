@@ -13,57 +13,47 @@ struct RequiredInputPathsView: View {
   @Environment(\.presentationMode) var presentationMode
   
   private var buttonTitle: String {
-    userSettings.webuiShellPath.isEmpty || userSettings.stableDiffusionModelsPath.isEmpty ? "Later" : "Done"
+    (userSettings.webuiShellPath.isEmpty || userSettings.automaticDirectoryPath.isEmpty) ? "Later" : "Done"
   }
   
   var body: some View {
     VStack {
       ScrollView {
-        VStack {
-          VStack(alignment: .leading) {
-            HStack {
-              Text("Select Automatic Paths")
-                .font(.largeTitle)
-                .padding(.vertical, 20)
-                .padding(.horizontal, 14)
-              Spacer()
-              
-            }
-            
-            Text("To enable Automatic1111, please provide the webui.sh file, as well as the folder in which the stable diffusion models are located.")
+        VStack(alignment: .leading) {
+          HStack {
+            Text("Locate Automatic Folder")
+              .font(.largeTitle)
+              .padding(.vertical, 20)
               .padding(.horizontal, 14)
-              .padding(.bottom, 30)
-            
-            BrowseRequiredFileRow(labelText: "webui.sh file",
-                                  placeholderText: "../stable-diffusion-webui/webui.sh",
-                                  textValue: $userSettings.webuiShellPath, requiresEntry: true) {
-              await FilePickerService.browseForShellFile()
-            }
-            
-            BrowseRequiredFileRow(labelText: "Stable diffusion models",
-                                  placeholderText: "../stable-diffusion-webui/models/Stable-diffusion/",
-                                  textValue: $userSettings.stableDiffusionModelsPath, requiresEntry: true) {
-              await FilePickerService.browseForDirectory()
-            }
-            
-            BrowseRequiredFileRow(labelText: "LoRA models path",
-                          placeholderText: "../stable-diffusion-webui/models/Lora/",
-                          textValue: $userSettings.loraDirectoryPath,
-                                  requiresEntry: false) {
-              await FilePickerService.browseForDirectory()
-            }
-            
-            BrowseRequiredFileRow(labelText: "VAE models path",
-                          placeholderText: "../stable-diffusion-webui/models/VAE/",
-                          textValue: $userSettings.vaeDirectoryPath,
-                                  requiresEntry: false) {
-              await FilePickerService.browseForDirectory()
-            }
-            
+            Spacer()
+          }
+          
+          Text("To enable Automatic1111, please locate the stable-diffusion-webui folder")
+            .padding(.horizontal, 14)
+            .padding(.bottom, 30)
+          
+          BrowseRequiredFileRow(labelText: "Automatic path directory",
+                                placeholderText: "../stable-diffusion-webui/",
+                                textValue: $userSettings.automaticDirectoryPath,
+                                requiresEntry: true
+          ){
+            await FilePickerService.browseForDirectory()
+          }
+          .onChange(of: userSettings.automaticDirectoryPath) {
+            userSettings.setDefaultPathsForEmptySettings()
+          }
+          
+          BrowseRequiredFileRow(labelText: "webui.sh file",
+                                placeholderText: "../stable-diffusion-webui/webui.sh",
+                                textValue: $userSettings.webuiShellPath,
+                                requiresEntry: true
+          ){
+            await FilePickerService.browseForShellFile()
           }
         }
+        .padding(.vertical, 20)
         .padding(.horizontal, 16)
-      }//scrollview
+      }
       VStack {
         HStack {
           Spacer()
@@ -80,7 +70,6 @@ struct RequiredInputPathsView: View {
       .background(Color(NSColor.windowBackgroundColor))
     }
     .padding(2)
-    .navigationTitle("Select Automatic Paths")
     .frame(minWidth: 500, idealWidth: 500, minHeight: 350, idealHeight: 400)
   }
 }
@@ -110,7 +99,7 @@ struct BrowseRequiredFileRow: View {
       case .xmark:
         return "xmark.circle.fill"
       case .none:
-        return ""
+        return "square.dashed"
       }
     }
     
@@ -157,11 +146,10 @@ struct BrowseRequiredFileRow: View {
       }
       .padding(.bottom, 14)
     }
-    .onChange(of: textValue) { newValue, _ in
-      updateIndicator(for: newValue)
+    .onChange(of: textValue) {
+      updateIndicator(for: textValue)
     }
     .onAppear {
-      // Initial update based on the initial value of textValue
       updateIndicator(for: textValue)
     }
   }

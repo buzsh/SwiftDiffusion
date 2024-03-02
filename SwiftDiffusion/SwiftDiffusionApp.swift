@@ -39,7 +39,6 @@ struct SwiftDiffusionApp: App {
     } catch {
       fatalError("Failed to configure SwiftData container: \(error)")
     }
-    
     setupAppFileStructure()
   }
   

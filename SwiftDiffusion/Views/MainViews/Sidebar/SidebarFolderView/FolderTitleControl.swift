@@ -13,9 +13,6 @@ struct FolderTitleControl: View {
   let folder: SidebarFolder?
   @State private var isEditing: Bool = false
   @State private var editableName: String = ""
-  @State private var isHovering: Bool = false
-  
-  @State private var showDeleteFolderConfirmationAlert: Bool = false
   
   func storeChanges() {
     isEditing = false
@@ -34,6 +31,7 @@ struct FolderTitleControl: View {
         .textFieldStyle(RoundedBorderTextFieldStyle())
       } else {
         Text(sidebarModel.currentFolder?.name ?? "Untitled")
+          .fontWeight(.medium)
           .onTapGesture {
             isEditing = true
             editableName = sidebarModel.currentFolder?.name ?? ""
@@ -63,35 +61,42 @@ struct FolderTitleControl: View {
           .buttonStyle(.accessoryBar)
         }
         
-        Button(action: {
-          if let folder = sidebarModel.currentFolder {
-            Debug.log("folder = folder")
-            for item in folder.folders {
-              Debug.log(" > folder.folders.name: \(item.name)")
-            }
-            for item in folder.items {
-              Debug.log(" > folder.items.name: \(item.title)")
-            }
-          }
-          
-          if let folder = folder, folder.folders.isEmpty && folder.items.isEmpty {
-            deleteFolder()
-          } else {
-            showDeleteFolderConfirmationAlert = true
-          }
-        }) {
-          Image(systemName: "trash")
-        }
-        .buttonStyle(.accessoryBar)
-        .padding(.leading, 2)
+        TrashFolderButton(folder: folder)
+          .padding(.leading, 2)
       }
-      .opacity(isHovering ? 1 : 0)
-      .animation(.easeInOut, value: isHovering)
+      .frame(minWidth: 0)
     }
     .listRowInsets(EdgeInsets())
-    .onHover { hovering in
-      isHovering = hovering
+  }
+}
+
+struct TrashFolderButton: View {
+  @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var sidebarModel: SidebarModel
+  @State private var showDeleteFolderConfirmationAlert: Bool = false
+  
+  let folder: SidebarFolder?
+  var body: some View {
+    Button(action: {
+      if let folder = sidebarModel.currentFolder {
+        Debug.log("folder = folder")
+        for item in folder.folders {
+          Debug.log(" > folder.folders.name: \(item.name)")
+        }
+        for item in folder.items {
+          Debug.log(" > folder.items.name: \(item.title)")
+        }
+      }
+      
+      if let folder = folder, folder.folders.isEmpty && folder.items.isEmpty {
+        deleteFolder()
+      } else {
+        showDeleteFolderConfirmationAlert = true
+      }
+    }) {
+      Image(systemName: "trash")
     }
+    .buttonStyle(.accessoryBar)
     .alert(isPresented: $showDeleteFolderConfirmationAlert) {
       Alert(
         title: Text("Are you sure you want to delete this folder?"),
