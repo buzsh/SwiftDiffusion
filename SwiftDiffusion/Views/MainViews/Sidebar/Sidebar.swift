@@ -63,6 +63,11 @@ struct Sidebar: View {
     .onChange(of: sidebarModel.beginMovableSidebarItemQueue) {
       moveItemInItemQueue()
     }
+    .onChange(of: sidebarModel.currentFolder) {
+      if let currentFolder = sidebarModel.currentFolder {
+        preloadImages(for: currentFolder.items)
+      }
+    }
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         if sidebarModel.sidebarIsVisible {
