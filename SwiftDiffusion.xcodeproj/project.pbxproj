@@ -226,6 +226,7 @@
 		29A1A3872B912FD500CC3D1B /* FolderTitleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderTitleControl.swift; sourceTree = "<group>"; };
 		29A1A3892B919E7100CC3D1B /* Sidebar+Preload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sidebar+Preload.swift"; sourceTree = "<group>"; };
 		29A1A38B2B919F1900CC3D1B /* FilterSortingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSortingSection.swift; sourceTree = "<group>"; };
+		29A1A38F2B93BDFB00CC3D1B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		29A1E0B82B80F45900B18AC1 /* LoraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoraModel.swift; sourceTree = "<group>"; };
 		29A1E0BE2B81057300B18AC1 /* ScriptManagerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManagerObserver.swift; sourceTree = "<group>"; };
 		29A1E0C42B81200200B18AC1 /* AutomaticApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomaticApiService.swift; sourceTree = "<group>"; };
@@ -443,7 +444,6 @@
 		292CE81E2B81BCA000116D60 /* PromptView */ = {
 			isa = PBXGroup;
 			children = (
-				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
 			);
 			path = PromptView;
 			sourceTree = "<group>";
@@ -521,6 +521,7 @@
 				292CE8122B81AE6F00116D60 /* PromptMenus */,
 				29B571802B75AE250057DD50 /* PromptRows */,
 				29A1E0C32B81136300B18AC1 /* PromptTextEditor */,
+				29145E6D2B77D80400BFA64B /* DebugPromptViews */,
 			);
 			path = PromptView;
 			sourceTree = "<group>";
@@ -698,6 +699,7 @@
 		2996D0922B6ED5B000B487D5 /* SwiftDiffusion */ = {
 			isa = PBXGroup;
 			children = (
+				29A1A38F2B93BDFB00CC3D1B /* Info.plist */,
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
 				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
@@ -1287,6 +1289,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftDiffusion/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "2024 Justin Bush";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1314,6 +1317,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftDiffusion/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "2024 Justin Bush";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

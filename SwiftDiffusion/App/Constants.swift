@@ -10,6 +10,7 @@ import Foundation
 struct Constants {
   
   struct Api {}
+  struct App {}
   struct CommandLine {}
   struct Debug {}
   struct Delays {}
@@ -22,6 +23,10 @@ struct Constants {
   struct Sidebar {}
   struct WindowSize {}
   
+}
+
+extension Constants.App {
+  static let name = "SwiftDiffusion"
 }
 
 extension Constants.CommandLine {
