@@ -13,7 +13,7 @@ struct FolderTitleControl: View {
   let folder: SidebarFolder?
   @State private var isEditing: Bool = false
   @State private var editableName: String = ""
-  @State private var isHovering: Bool = false
+  @State private var isHovering: Bool = true//false
   
   @State private var showDeleteFolderConfirmationAlert: Bool = false
   
@@ -34,9 +34,16 @@ struct FolderTitleControl: View {
         .textFieldStyle(RoundedBorderTextFieldStyle())
       } else {
         Text(sidebarModel.currentFolder?.name ?? "Untitled")
+          .fontWeight(.medium)
           .onTapGesture {
             isEditing = true
             editableName = sidebarModel.currentFolder?.name ?? ""
+          }
+          .onAppear {
+            isHovering = true
+            Delay.by(2) {
+              isHovering = false
+            }
           }
       }
       
@@ -90,7 +97,13 @@ struct FolderTitleControl: View {
     }
     .listRowInsets(EdgeInsets())
     .onHover { hovering in
-      isHovering = hovering
+      if isEditing {
+        isHovering = true
+      } else if isHovering == true {
+        Delay.by(1) { isHovering = false }
+      } else {
+        isHovering = hovering
+      }
     }
     .alert(isPresented: $showDeleteFolderConfirmationAlert) {
       Alert(
