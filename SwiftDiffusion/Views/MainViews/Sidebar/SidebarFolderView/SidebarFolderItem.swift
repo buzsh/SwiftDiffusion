@@ -17,6 +17,7 @@ struct SidebarFolderItem: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   let folder: SidebarFolder
   @State private var isHovering = false
+  @State private var isHoveringWithoutDragging: Bool = false
   
   var totalNumberOfItemsContained: Int {
     folder.folders.count + folder.items.count
