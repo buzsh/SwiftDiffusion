@@ -13,17 +13,37 @@ import SwiftUI
 class WindowManager: NSObject, ObservableObject {
   /// Shared instance of `WindowManager` for global access.
   static let shared = WindowManager()
+  /// Window instance for BetaOnboardingView.
+  private var betaOnboardingWindow: NSWindow?
   /// Window instance for UpdatesView.
   private var updatesWindow: NSWindow?
   /// Window instance for SettingsView.
   private var settingsWindow: NSWindow?
   /// Window instance for ModelsManagerView.
   private var checkpointManagerWindow: NSWindow?
-  
+  /// Window instance for DebugApiView.
   private var debugApiView: NSWindow?
   
   /// Initializes a new `WindowManager`. It is private to ensure `WindowManager` can only be accessed through its shared instance.
   override private init() { }
+  
+  /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
+  func showBetaOnboardingWindow() {
+    if betaOnboardingWindow == nil {
+      betaOnboardingWindow = NSWindow(
+        contentRect: NSRect(x: 20, y: 20, width: 480, height: 300),
+        styleMask: [.titled, .closable, .resizable, .miniaturizable],
+        backing: .buffered, defer: false)
+      betaOnboardingWindow?.center()
+      betaOnboardingWindow?.contentView = NSHostingView(rootView: BetaOnboardingView())
+      
+      betaOnboardingWindow?.isReleasedWhenClosed = false
+      betaOnboardingWindow?.delegate = self
+      
+      betaOnboardingWindow?.standardWindowButton(.zoomButton)?.isHidden = true
+    }
+    betaOnboardingWindow?.makeKeyAndOrderFront(nil)
+  }
   
   /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
   func showUpdatesWindow() {
@@ -108,9 +128,6 @@ class WindowManager: NSObject, ObservableObject {
                   .environmentObject(loraModelsManager)
               
      checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
-      
-      
-      
       
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self

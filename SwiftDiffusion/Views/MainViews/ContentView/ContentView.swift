@@ -41,6 +41,9 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
+  @AppStorage("hasLaunchedBefore") var hasLaunchedBefore: Bool = false
+  @State private var showingBetaOnboardingSheetView: Bool = false
+  
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
@@ -227,11 +230,20 @@ struct ContentView: View {
       
     }
     .onAppear {
+      Delay.by(0.5) {
+        showingBetaOnboardingSheetView = true
+      }
       if !CanvasPreview && !userHasEnteredBothRequiredFields {
         showingRequiredInputPathsView = true
       } else {
         handleScriptOnLaunch()
       }
+    }
+    .sheet(isPresented: $showingBetaOnboardingSheetView, onDismiss: {
+      showingBetaOnboardingSheetView = false
+      hasLaunchedBefore = true
+    }) {
+      BetaOnboardingView()
     }
     .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
       hasDismissedRequiredInputPathsView = true

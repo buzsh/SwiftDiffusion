@@ -28,7 +28,7 @@ struct RequiredInputPathsView: View {
             Spacer()
           }
           
-          Text("To enable Automatic1111, please locate the stable-diffusion-webui folder")
+          Text("To enable interfacing with PyTorch through Automatic, please locate the stable-diffusion-webui folder.")
             .padding(.horizontal, 14)
             .padding(.bottom, 30)
           
