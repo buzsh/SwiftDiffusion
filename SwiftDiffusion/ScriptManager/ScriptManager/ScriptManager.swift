@@ -40,7 +40,6 @@ class ScriptManager: ObservableObject {
   
   @Published var serviceUrl: URL? = nil
   
-  private let configManager: ConfigFileManager?
   private var originalLaunchBrowserLine: String?
   
   var shouldTrimOutput: Bool = false
@@ -65,20 +64,9 @@ class ScriptManager: ObservableObject {
   
   @Published var mostRecentApiRequestPayload: String = "{}"
   
-  /// Initializes a new instance of `ScriptManager`.
-  init() {
-    self.configManager = ConfigFileManager(scriptPath: UserSettings.shared.webuiShellPath)
-  }
-  
   func updateScriptState(_ state: ScriptState) {
     Debug.log("[ScriptManager] updateScriptState: \(state.debugInfo)")
     self.scriptState = state
-    
-    if scriptState == .active {
-      Delay.by(3) {
-        self.restoreLaunchBrowserInConfigJson()
-      }
-    }
     
     if state == .terminated || state == .unableToLocateScript {
       handleUiOnTermination()
@@ -139,8 +127,6 @@ class ScriptManager: ObservableObject {
       Debug.log("GUARD: (scriptDirectory, scriptName) = ScriptSetupHelper.setupScriptPath(userSettings.webuiShellPath)")
       return }
     
-    disableLaunchBrowserInConfigJson()
-    
     pythonProcess = PythonProcess()
     pythonProcess?.delegate = self
     pythonProcess?.runScript(at: scriptDirectory, scriptName: scriptName)
@@ -168,7 +154,6 @@ class ScriptManager: ObservableObject {
       terminateAllPythonProcesses()
     } else {
       pythonProcess?.terminate()
-      restoreLaunchBrowserInConfigJson()
     }
     
     // Handle post-termination logic
@@ -180,45 +165,8 @@ class ScriptManager: ObservableObject {
   /// Terminates the script execution immediately.
   func terminateImmediately() {
     pythonProcess?.terminate()
-    restoreLaunchBrowserInConfigJson()
     updateScriptState(.terminated)
     Debug.log("Process terminated immediately.")
-  }
-  
-  func disableLaunchBrowserInConfigJson() {
-    guard let configManager = self.configManager else {
-      updateDebugConsoleOutput(with: "Error: ConfigFileManager is not initialized.")
-      return
-    }
-    
-    configManager.disableLaunchBrowser { [weak self] result in
-      switch result {
-      case .success(let originalLine):
-        self?.originalLaunchBrowserLine = originalLine
-        self?.updateDebugConsoleOutput(with: "[config.json] >> \(originalLine)")
-        self?.updateDebugConsoleOutput(with: "[config.json] << \(Constants.ConfigFile.autoLaunchBrowserDisabled)")
-        self?.updateDebugConsoleOutput(with: "[config.json] successfully modified")
-      case .failure(let error):
-        self?.updateDebugConsoleOutput(with: "Failed to modify config.json: \(error.localizedDescription)")
-      }
-    }
-  }
-  
-  func restoreLaunchBrowserInConfigJson() {
-    guard let configManager = self.configManager, let originalLine = self.originalLaunchBrowserLine else {
-      updateDebugConsoleOutput(with: "Error: Pre-conditions not met for restoring config.json.")
-      return
-    }
-    
-    configManager.restoreLaunchBrowser(originalLine: originalLine) { [weak self] result in
-      switch result {
-      case .success():
-        self?.updateDebugConsoleOutput(with: "[config.json] << \(originalLine)")
-        self?.updateDebugConsoleOutput(with: "[config.json] successfully restored")
-      case .failure(let error):
-        self?.updateDebugConsoleOutput(with: "Failed to restore config.json: \(error.localizedDescription)")
-      }
-    }
   }
   
   func parseServiceUrl(from output: String) {

@@ -80,7 +80,6 @@
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
 		2996D09B2B6ED5B100B487D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */; };
 		2996D0A72B6EE47A00B487D5 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */; };
-		2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */; };
 		2996D0AC2B6F1FBD00B487D5 /* ScriptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */; };
 		299BCB8A2B8FDDF100AB839F /* SidebarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB892B8FDDF100AB839F /* SidebarModel.swift */; };
 		299BCB8D2B8FEAB000AB839F /* WorkspaceFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */; };
@@ -217,7 +216,6 @@
 		2996D09A2B6ED5B100B487D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2996D09C2B6ED5B100B487D5 /* SwiftDiffusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftDiffusion.entitlements; sourceTree = "<group>"; };
 		2996D0A62B6EE47A00B487D5 /* ScriptManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
-		2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
 		2996D0AB2B6F1FBD00B487D5 /* ScriptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptState.swift; sourceTree = "<group>"; };
 		299BCB892B8FDDF100AB839F /* SidebarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarModel.swift; sourceTree = "<group>"; };
 		299BCB8C2B8FEAB000AB839F /* WorkspaceFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceFolderView.swift; sourceTree = "<group>"; };
@@ -647,14 +645,6 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		2971965A2B7174AD000F7960 /* FileManagers */ = {
-			isa = PBXGroup;
-			children = (
-				2996D0A82B6EEFA700B487D5 /* ConfigFileManager.swift */,
-			);
-			path = FileManagers;
-			sourceTree = "<group>";
-		};
 		2971965B2B717672000F7960 /* PythonProcess */ = {
 			isa = PBXGroup;
 			children = (
@@ -737,7 +727,6 @@
 			isa = PBXGroup;
 			children = (
 				2971965B2B717672000F7960 /* PythonProcess */,
-				2971965A2B7174AD000F7960 /* FileManagers */,
 				2996D0A52B6EE45E00B487D5 /* ScriptManager */,
 			);
 			path = ScriptManager;
@@ -1141,7 +1130,6 @@
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
 				29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
-				2996D0A92B6EEFA700B487D5 /* ConfigFileManager.swift in Sources */,
 				29C0F3842B7ABF2E0017DD6B /* PromptSection.swift in Sources */,
 				2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */,
 				2916F3392B728604001D14B9 /* FileHierarchy.swift in Sources */,
