@@ -1,5 +1,5 @@
 //
-//  URLParser.swift
+//  URLParserUtility.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 3/2/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class URLParser {
+class URLParserUtility {
   struct URLParsingConfig {
     let pattern: String
     let messageContains: String

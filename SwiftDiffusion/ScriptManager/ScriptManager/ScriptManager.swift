@@ -176,13 +176,13 @@ class ScriptManager: ObservableObject {
   }
   
   func parseServiceUrl(from output: String) {
-    let parser = URLParser()
+    let parser = URLParserUtility()
     var configs = [
-      URLParser.URLParsingConfig(pattern: "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)", messageContains: "running on"),
+      URLParserUtility.URLParsingConfig(pattern: "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)", messageContains: "running on"),
     ]
     
     if userSettings.launchWebUiAlongsideScriptLaunch {
-      let webuiDebugUrlPattern = URLParser.URLParsingConfig(pattern: "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)", messageContains: "Running on local URL")
+      let webuiDebugUrlPattern = URLParserUtility.URLParsingConfig(pattern: "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)", messageContains: "Running on local URL")
       configs.append(webuiDebugUrlPattern)
     }
     
