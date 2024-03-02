@@ -10,16 +10,24 @@ import SwiftUI
 
 extension Constants.CommandLine {
   
-  static let baseArgs = "--nowebui --api --api-log --no-half --no-download-sd-model"
-  
-  
   static var defaultCommand: (String, String) -> String = { dir, name in
-    let disableModelLoadingRamOptimizations = UserSettings.shared.disableModelLoadingRamOptimizations
-    if UserSettings.shared.disableModelLoadingRamOptimizations {
-      Debug.log("disableModelLoadingRamOptimizations: \(disableModelLoadingRamOptimizations)")
-      return "cd \(dir); ./\(name) \(baseArgs) --disable-model-loading-ram-optimization"
+    var args: [String] = []
+    
+    args.append("--no-half")
+    args.append("--api")
+    args.append("--api-log")
+    
+    if UserSettings.shared.launchWebUiAlongsideScriptLaunch == false {
+      args.append("--nowebui")
     }
-    return "cd \(dir); ./\(name) \(baseArgs)"
+    
+    if UserSettings.shared.disableModelLoadingRamOptimizations {
+      args.append("--disable-model-loading-ram-optimization")
+    }
+    
+    let clArgs = args.joined(separator: " ")
+    
+    return "cd \(dir); ./\(name) \(clArgs)"
   }
 }
 
@@ -156,8 +164,6 @@ class ScriptManager: ObservableObject {
       pythonProcess?.terminate()
     }
     
-    // Handle post-termination logic
-    
     completion(.success("Process terminated successfully."))
     updateScriptState(.terminated)
   }
@@ -170,26 +176,74 @@ class ScriptManager: ObservableObject {
   }
   
   func parseServiceUrl(from output: String) {
-    if serviceUrl == nil, output.contains("running on") {
-      let pattern = "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)"
-      do {
-        let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-        let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
-        if let match = regex.firstMatch(in: output, options: [], range: nsRange) {
-          let urlRange = Range(match.range(at: 1), in: output)!
-          let url = String(output[urlRange])
-          self.serviceUrl = URL(string: url)
-          DispatchQueue.main.async {
-            self.updateScriptState(.active)
-            Debug.log("serviceURL successfully parsed from console: \(url)")
-          }
-        } else {
-          Debug.log("No URL match found.")
-        }
-      } catch {
-        Debug.log("Regex error: \(error)")
+    let parser = URLParser()
+    var configs = [
+      URLParser.URLParsingConfig(pattern: "running on (https?://[\\w\\.-]+(:\\d+)?(/[\\w\\./-]*)?)", messageContains: "running on"),
+    ]
+    
+    if userSettings.launchWebUiAlongsideScriptLaunch {
+      let webuiDebugUrlPattern = URLParser.URLParsingConfig(pattern: "Running on local URL: \\s*(http://127\\.0\\.0\\.1:\\d+)", messageContains: "Running on local URL")
+      configs.append(webuiDebugUrlPattern)
+    }
+    
+    var parsedUrlString: String = ""
+    
+    parser.parseURL(from: output, withConfigs: configs) { [weak self] url in
+      guard let self = self, let parsedUrl = url else {
+        // no found match
+        return
       }
+      
+      if parsedUrl.absoluteString.contains("0.0.0.0") {
+        parsedUrlString = parsedUrl.absoluteString.replacingOccurrences(of: "0.0.0.0", with: "127.0.0.1")
+        self.serviceUrl = URL(string: parsedUrlString)
+      } else {
+        self.serviceUrl = parsedUrl
+      }
+      
+      
+      Debug.log("Successfully parsed serviceUrl: \(String(describing: serviceUrl))")
+      updateScriptState(.active)
     }
   }
   
+}
+
+
+class URLParser {
+  struct URLParsingConfig {
+    let pattern: String
+    let messageContains: String
+  }
+  
+  func parseURL(from output: String, withConfigs configs: [URLParsingConfig], completion: @escaping (URL?) -> Void) {
+    for config in configs {
+      if let urlStr = extractURL(from: output, using: config), let url = URL(string: urlStr) {
+        DispatchQueue.main.async {
+          completion(url)
+        }
+        return
+      }
+    }
+    DispatchQueue.main.async {
+      completion(nil)
+    }
+  }
+  
+  private func extractURL(from output: String, using config: URLParsingConfig) -> String? {
+    guard output.contains(config.messageContains) else { return nil }
+    
+    do {
+      let regex = try NSRegularExpression(pattern: config.pattern, options: .caseInsensitive)
+      let nsRange = NSRange(output.startIndex..<output.endIndex, in: output)
+      if let match = regex.firstMatch(in: output, options: [], range: nsRange),
+         let urlRange = Range(match.range(at: 1), in: output) {
+        return String(output[urlRange])
+      }
+    } catch {
+      Debug.log("[URLParser.extractURL] Regex error: \(error)")
+    }
+    
+    return nil
+  }
 }

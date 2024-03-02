@@ -22,6 +22,12 @@ class UserSettings: ObservableObject {
   
   
   // MARK: - File Path Settings
+  /// Path to the Automatic1111's root directory.
+  /// This path is persisted across app launches and is used for indexing all of Automatic1111's contents.
+  /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
+  @Published var automaticDirectoryPath: String {
+    didSet { store.set(automaticDirectoryPath, forKey: "automaticDirectoryPath") }
+  }
   /// Path to the Automatic1111's webui.sh shell script used by the application.
   /// This path is persisted across app launches and is used to execute Automatic1111's web UI shell script.
   /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
@@ -73,6 +79,10 @@ class UserSettings: ObservableObject {
   /// - Note: Changes to this property are automatically persisted to `UserDefaults`.
   @Published var showPythonEnvironmentControls: Bool {
     didSet { store.set(showPythonEnvironmentControls, forKey: "showPythonEnvironmentControls") }
+  }
+  
+  @Published var launchWebUiAlongsideScriptLaunch: Bool {
+    didSet { store.set(launchWebUiAlongsideScriptLaunch, forKey: "launchWebUiAlongsideScriptLaunch") }
   }
   
   private let initialShowPythonEnvironmentControlsKey = "initialShowPythonEnvironmentControls"
@@ -134,6 +144,8 @@ class UserSettings: ObservableObject {
     store.register(defaults: defaults)
     
     self.alwaysShowSettingsHelp = store.bool(forKey: "alwaysShowSettingsHelp")
+    
+    self.automaticDirectoryPath = store.string(forKey: "automaticDirectoryPath") ?? ""
     self.webuiShellPath = store.string(forKey: "webuiShellPath") ?? ""
     self.stableDiffusionModelsPath = store.string(forKey: "stableDiffusionModelsPath") ?? ""
     self.loraDirectoryPath = store.string(forKey: "loraDirectoryPath") ?? ""
@@ -144,6 +156,8 @@ class UserSettings: ObservableObject {
     self.alwaysStartPythonEnvironmentAtLaunch = store.bool(forKey: "alwaysStartPythonEnvironmentAtLaunch")
     self.showDeveloperInterface = store.bool(forKey: "showDeveloperInterface")
     self.showPythonEnvironmentControls = store.bool(forKey: "showPythonEnvironmentControls")
+    self.launchWebUiAlongsideScriptLaunch = store.bool(forKey: "launchWebUiAlongsideScriptLaunch")
+    
     self.disablePasteboardParsingForGenerationData = store.bool(forKey: "disablePasteboardParsingForGenerationData")
     self.alwaysShowPasteboardGenerationDataButton = store.bool(forKey: "alwaysShowPasteboardGenerationDataButton")
     self.disableModelLoadingRamOptimizations = store.bool(forKey: "disableModelLoadingRamOptimizations")
@@ -153,8 +167,10 @@ class UserSettings: ObservableObject {
     outputDirectoryPath = ""
     killAllPythonProcessesOnTerminate = false
     alwaysStartPythonEnvironmentAtLaunch = true
+    alwaysShowSettingsHelp = true
     showDeveloperInterface = false
     showPythonEnvironmentControls = false
+    launchWebUiAlongsideScriptLaunch = false
     disablePasteboardParsingForGenerationData = false
     alwaysShowPasteboardGenerationDataButton = false
     disableModelLoadingRamOptimizations = false
