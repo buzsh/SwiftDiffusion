@@ -72,6 +72,9 @@ struct ApiCheckpointRow: View {
       
     }
     .padding(.vertical, 10)
+    .onAppear {
+      mostRecentCheckpointPayload = scriptManager.mostRecentApiRequestPayload
+    }
   }
   
   private func formatJsonString() {
