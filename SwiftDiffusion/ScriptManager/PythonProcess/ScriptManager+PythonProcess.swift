@@ -26,6 +26,7 @@ extension ScriptManager: PythonProcessDelegate {
     let filteredOutput = shouldTrimOutput ? output.trimmingCharacters(in: .whitespacesAndNewlines) : output
     DispatchQueue.main.async {
       self.consoleOutput += "\n\(filteredOutput)"
+      self.detectExistingPythonProcesses(from: filteredOutput)
       self.parseServiceUrl(from: filteredOutput)
       self.updateProgressBasedOnOutput(output: output)
       self.updateModelLoadStateBasedOnOutput(output: output)
