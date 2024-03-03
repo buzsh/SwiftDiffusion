@@ -92,20 +92,26 @@ class UpdateManager: ObservableObject {
       return false
     }
     
-    guard let html = await fetchReleasesPage(url: url) else {
-      Debug.log("Failed to fetch releases page")
+    do {
+      let html = try await fetchReleasesPage(url: url)
+      Debug.log("Fetched HTML successfully")
+      
+      let releases = parseReleases(from: html)
+      if !releases.isEmpty {
+        for release in releases {
+          Debug.log("GitReleases\n > Title: \(release.releaseTitle)\n > Build Number: \(release.releaseBuildNumber)")
+        }
+        return true
+      } else {
+        Debug.log("No releases found or parsing failed")
+        return false
+      }
+    } catch {
+      Debug.log("Failed to fetch releases page or parse HTML: \(error)")
       return false
     }
-    
-    let releases = parseReleases(from: html)
-    for release in releases {
-      Debug.log("Title: \(release.releaseTitle), Build Number: \(release.releaseBuildNumber)")
-    }
-    
-    // Placeholder logic to determine if an update is available
-    // You would compare the fetched releases against the current app version and build number
-    return !releases.isEmpty
   }
+  
 }
 
 extension UpdateManager {
@@ -131,34 +137,27 @@ struct GitRelease {
 
 
 extension UpdateManager {
-  func fetchReleasesPage(url: URL) async -> String? {
-    do {
-      let (data, _) = try await URLSession.shared.data(from: url)
-      return String(decoding: data, as: UTF8.self)
-    } catch {
-      Debug.log("Error fetching releases page: \(error)")
-      return nil
-    }
+  func fetchReleasesPage(url: URL) async throws -> String {
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return String(decoding: data, as: UTF8.self)
   }
   
   func parseReleases(from html: String) -> [GitRelease] {
-    let sections = html.components(separatedBy: "<section aria-labelledby=")
+    let sections = html.components(separatedBy: "<section aria-labelledby=").dropFirst()
     var releases: [GitRelease] = []
     
-    for section in sections.dropFirst() {
-      if let titleStartRange = section.range(of: ">"),
-         let titleEndRange = section.range(of: "</h2>") {
-        let title = String(section[titleStartRange.upperBound..<titleEndRange.lowerBound])
+    for section in sections {
+      if let titleStartRange = section.range(of: "<h2"),
+         let titleCloseTagRange = section.range(of: ">", range: titleStartRange.upperBound..<section.endIndex),
+         let titleEndRange = section.range(of: "</h2>", range: titleCloseTagRange.upperBound..<section.endIndex) {
+        let title = String(section[titleCloseTagRange.upperBound..<titleEndRange.lowerBound])
+          .trimmingCharacters(in: .whitespacesAndNewlines)
         
         if let buildNumberStartRange = section.range(of: "<sup><code>b"),
-           let buildNumberEndRange = section.range(of: "</code></sup>", range: buildNumberStartRange.lowerBound..<section.endIndex) {
-          let buildNumberString = String(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound])
-            .filter { "0"..."9" ~= $0 }
-          
-          if let buildNumber = Int(buildNumberString) {
-            let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
-            releases.append(release)
-          }
+           let buildNumberEndRange = section.range(of: "</code></sup>", range: buildNumberStartRange.upperBound..<section.endIndex),
+           let buildNumber = Int(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound].filter("0123456789".contains)) {
+          let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
+          releases.append(release)
         }
       }
     }
