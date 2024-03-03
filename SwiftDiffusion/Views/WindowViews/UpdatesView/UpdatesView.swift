@@ -28,25 +28,25 @@ enum UpdateViewState {
   case checkingForUpdate
   case newVersionAvailable
   
-  var updateStatusText: String {
+  var statusText: String {
     switch self {
-    case .defaultState: ""
+    case .defaultState: "Haven't checked for updates."
     case .latestVersion: "You are on the latest version."
     case .checkingForUpdate: "Checking for new update..."
     case .newVersionAvailable: "There's a new version available!"
     }
   }
   
-  var updateSymbol: String {
+  var symbol: String {
     switch self {
     case .defaultState: "icloud.slash.fill"
     case .latestVersion: "checkmark.circle.fill"
     case .checkingForUpdate: "arrow.triangle.2.circlepath.icloud.fill"
-    case .newVersionAvailable: "icloud.and.arrow.down.fill"
+    case .newVersionAvailable: "exclamationmark.circle.fill"
     }
   }
   
-  var updateSymbolColor: Color {
+  var symbolColor: Color {
     switch self {
     case .defaultState: Color.secondary
     case .latestVersion: Color.green
@@ -104,11 +104,11 @@ struct UpdatesView: View {
       Spacer()
       
       HStack(alignment: .top) {
-        Image(systemName: "checkmark.circle.fill")
-          .foregroundStyle(Color.green)
+        Image(systemName: updateViewState.symbol)
+          .foregroundStyle(updateViewState.symbolColor)
           .padding(.trailing, 2)
         VStack(alignment: .leading) {
-          Text("You are on the latest version.")
+          Text(updateViewState.statusText)
             .bold()
             .padding(.bottom, 1)
           Text("SwiftDiffusion \(AppInfo.versionAndBuild)")
@@ -133,17 +133,19 @@ struct UpdatesView: View {
       .padding(.bottom, 10)
       .disabled(updateManager.isCheckingForUpdate)
       .onChange(of: updateManager.isCheckingForUpdate) {
-        updateViewState = .checkingForUpdate
+        if updateManager.isCheckingForUpdate {
+          updateViewState = .checkingForUpdate
+        }
       }
-      .onChange(of: updateManager.latestRelease) {
+      .onChange(of: updateManager.currentBuildIsLatestVersion) {
+        Debug.log(".onChange(of: updateManager.currentBuildIsLatestVersion): \(String(describing: updateManager.currentBuildIsLatestVersion))")
+        
         if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
           if currentBuildIsLatestVersion == false {
             updateViewState = .newVersionAvailable
           } else {
             updateViewState = .latestVersion
           }
-        } else {
-          //updateViewState = .defaultState
         }
       }
       
@@ -170,6 +172,9 @@ struct UpdatesView: View {
     .padding()
     .frame(width: 400, height: showUpdateFrequencySection ? expandedFrameHeight : initialFrameHeight)
     .animation(.easeInOut, value: showUpdateFrequencySection)
+    .onAppear {
+      
+    }
     
     .navigationTitle("Updates")
     .toolbar {
@@ -194,6 +199,20 @@ struct UpdatesView: View {
       }
     }
   }
+  func updateStateBasedOnManager() {
+    if updateManager.isCheckingForUpdate {
+      updateViewState = .checkingForUpdate
+    } else if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
+      if currentBuildIsLatestVersion == false {
+        updateViewState = .newVersionAvailable
+      } else {
+        updateViewState = .latestVersion
+      }
+    } else {
+      updateViewState = .defaultState
+    }
+  }
+  
   private var itemFormatter: DateFormatter {
     let formatter = DateFormatter()
     formatter.dateStyle = .medium
