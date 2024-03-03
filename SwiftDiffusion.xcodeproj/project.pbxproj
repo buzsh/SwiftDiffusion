@@ -110,6 +110,7 @@
 		29C06C2D2B940D8200F950C4 /* BlueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2C2B940D8200F950C4 /* BlueButton.swift */; };
 		29C06C2F2B94C55900F950C4 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2E2B94C55900F950C4 /* UpdateManager.swift */; };
 		29C06C312B95003600F950C4 /* GitHubReleaseFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C302B95003600F950C4 /* GitHubReleaseFetcher.swift */; };
+		29C06C332B95196200F950C4 /* UpdateViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C322B95196200F950C4 /* UpdateViewState.swift */; };
 		29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */; };
 		29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */; };
 		29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */; };
@@ -252,6 +253,7 @@
 		29C06C2C2B940D8200F950C4 /* BlueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButton.swift; sourceTree = "<group>"; };
 		29C06C2E2B94C55900F950C4 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		29C06C302B95003600F950C4 /* GitHubReleaseFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubReleaseFetcher.swift; sourceTree = "<group>"; };
+		29C06C322B95196200F950C4 /* UpdateViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateViewState.swift; sourceTree = "<group>"; };
 		29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUtility.swift; sourceTree = "<group>"; };
 		29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenImageView.swift; sourceTree = "<group>"; };
 		29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowManager.swift; sourceTree = "<group>"; };
@@ -919,6 +921,7 @@
 		29C0F37B2B7AB37E0017DD6B /* UpdatesView */ = {
 			isa = PBXGroup;
 			children = (
+				29C06C322B95196200F950C4 /* UpdateViewState.swift */,
 				29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */,
 				29C06C2E2B94C55900F950C4 /* UpdateManager.swift */,
 				29C06C302B95003600F950C4 /* GitHubReleaseFetcher.swift */,
@@ -1096,6 +1099,7 @@
 				29A1A38A2B919E7100CC3D1B /* Sidebar+Preload.swift in Sources */,
 				297196652B719C32000F7960 /* ScriptManager+ServiceAvailability.swift in Sources */,
 				292CE8282B82430000116D60 /* SoundUtility.swift in Sources */,
+				29C06C332B95196200F950C4 /* UpdateViewState.swift in Sources */,
 				2916F3342B7278FD001D14B9 /* SettingsView.swift in Sources */,
 				29F0D3032B76C9DD00BF56CE /* ModelLoadState.swift in Sources */,
 				29169D252B8FCB780099A9C5 /* Sidebar.swift in Sources */,
