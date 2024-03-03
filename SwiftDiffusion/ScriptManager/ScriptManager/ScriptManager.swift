@@ -164,7 +164,6 @@ class ScriptManager: ObservableObject {
   /// }
   func terminate(completion: @escaping (ScriptResult) -> Void = { _ in }) {
     updateScriptState(.isTerminating)
-    pythonProcess?.terminate()
     
     if userSettings.killAllPythonProcessesOnTerminate {
       terminateAllPythonProcesses()
@@ -181,6 +180,22 @@ class ScriptManager: ObservableObject {
     pythonProcess?.terminate()
     updateScriptState(.terminated)
     Debug.log("Process terminated immediately.")
+  }
+  
+  // TODO: Parse for [Errno 48] error while attempting to bind on address ('0.0.0.0', 7861): address already in use
+  // TODO: killall Python, restart
+  
+  func detectExistingPythonProcesses(from output: String) {
+    if output.contains("error while attempting to bind on address") && output.contains("address already in use") {
+      Debug.log("[NOTICE] Detected existing Python processes. Attempting to override...")
+      
+      terminateAllPythonProcesses()
+      
+      Delay.by(0.5) {
+        self.updateScriptState(.launching)
+        self.run()
+      }
+    }
   }
   
   func parseServiceUrl(from output: String) {
