@@ -99,7 +99,7 @@ class UpdateManager: ObservableObject {
       let releases = parseReleases(from: html)
       if !releases.isEmpty {
         for release in releases {
-          Debug.log("GitReleases\n > Title: \(release.releaseTitle)\n > Build Number: \(release.releaseBuildNumber)\n > Release Date: \(release.releaseDate)\n Release Tag: \(release.releaseTag)")
+          Debug.log("GitReleases\n > Title: \(String(describing: release.releaseTitle))\n > Build Number: \(String(describing: release.releaseBuildNumber))\n > Release Date: \(String(describing: release.releaseDate))\n > Release Tag: \(String(describing: release.releaseTag))\n > Download URL: \(String(describing: release.releaseDownloadUrlString))")
         }
         return true
       } else {
@@ -128,10 +128,11 @@ extension UpdateManager {
 }
 
 struct GitRelease {
-  var releaseTitle: String
-  var releaseDate: String
-  var releaseTag: String
-  var releaseBuildNumber: Int
+  var releaseTitle: String?
+  var releaseDate: String?
+  var releaseTag: String?
+  var releaseBuildNumber: Int?
+  var releaseDownloadUrlString: String?
 }
 
 
@@ -150,12 +151,14 @@ extension UpdateManager {
       let buildNumber = extractBuildNumber(from: section)
       let releaseDate = extractReleaseDate(from: section)
       let releaseTag = extractReleaseTag(from: section)
+      let releaseDownloadUrlString = extractReleaseDownloadUrl(from: section)
       
       if let title = title, let buildNumber = buildNumber {
         let release = GitRelease(releaseTitle: title,
-                                 releaseDate: releaseDate ?? "Unknown Date",
-                                 releaseTag: releaseTag ?? "Unknown Tag",
-                                 releaseBuildNumber: buildNumber)
+                                 releaseDate: releaseDate,
+                                 releaseTag: releaseTag,
+                                 releaseBuildNumber: buildNumber,
+                                 releaseDownloadUrlString: releaseDownloadUrlString)
         releases.append(release)
       }
     }
@@ -184,7 +187,6 @@ extension UpdateManager {
   }
   
   func extractReleaseDate(from section: String) -> String? {
-    Debug.log("Attempting to extract release date from section: \(section.prefix(500))")
     
     guard let dateStartRange = section.range(of: "<relative-time class=\"no-wrap\" prefix=\"\" datetime=\"") else {
       Debug.log("No <relative-time> tag found in section.")
@@ -205,28 +207,47 @@ extension UpdateManager {
   
   
   func extractReleaseTag(from section: String) -> String? {
-    Debug.log("Attempting to extract release tag from section: \(section.prefix(2000))")
+    let pattern = #"<svg[^>]+octicon-tag[^>]+></svg>\s*<span[^>]*>\s*([^<]+)</span>"#
     
-    if let tagUrlStartRange = section.range(of: "href=\"/revblaze/ReleaseParsingTest/tree/") {
-      let tagUrlEndIndex = section[tagUrlStartRange.upperBound...].firstIndex(of: "\"") ?? section.endIndex
-      let tagUrl = section[tagUrlStartRange.upperBound..<tagUrlEndIndex]
+    do {
+      let regex = try NSRegularExpression(pattern: pattern, options: [])
+      let nsRange = NSRange(section.startIndex..<section.endIndex, in: section)
       
-      if let tagStartIndex = tagUrl.lastIndex(of: "/") {
-        let tag = tagUrl[tagUrl.index(after: tagStartIndex)...]
-        Debug.log("Extracted release tag from URL: \(tag)")
-        return String(tag)
-      } else {
-        Debug.log("No '/' found in tag URL.")
+      if let match = regex.firstMatch(in: section, options: [], range: nsRange) {
+        if let tagRange = Range(match.range(at: 1), in: section) {
+          let tag = String(section[tagRange])
+          Debug.log("Extracted release tag: \(tag)")
+          return tag
+        }
       }
-    } else {
-      Debug.log("No <a href> tag with release tag found in section.")
+    } catch {
+      Debug.log("Regex error: \(error)")
     }
     
+    Debug.log("Failed to extract release tag.")
     return nil
   }
   
-  
-  
-  
+  func extractReleaseDownloadUrl(from section: String) -> String? {
+    let pattern = #"<a href=\"([^\"]+/releases/download/[^\"]+)\".*?>Download SwiftDiffusion.app</a>"#
+    
+    do {
+      let regex = try NSRegularExpression(pattern: pattern, options: [])
+      let nsRange = NSRange(section.startIndex..<section.endIndex, in: section)
+      
+      if let match = regex.firstMatch(in: section, options: [], range: nsRange) {
+        if let urlRange = Range(match.range(at: 1), in: section) {
+          let urlString = String(section[urlRange])
+          Debug.log("Extracted download URL: \(urlString)")
+          return urlString
+        }
+      }
+    } catch {
+      Debug.log("Regex error: \(error)")
+    }
+    
+    Debug.log("Failed to extract download URL.")
+    return nil
+  }
   
 }
