@@ -75,7 +75,7 @@ struct UpdatesView: View {
       
       Button("Check for Updates") {
         Task {
-          await updateManager.checkForUpdatesIfNeeded()
+          await updateManager.checkForUpdatesIfNeeded(force: true)
         }
       }
       .padding(.bottom, 10)

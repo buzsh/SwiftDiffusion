@@ -39,14 +39,15 @@ class UpdateManager: ObservableObject {
     UserDefaults.standard.set(lastCheckedTimestamp, forKey: "lastCheckedTimestamp")
   }
   
-  func checkForUpdatesIfNeeded() async {
-    guard shouldCheckForUpdates() else { return }
+  func checkForUpdatesIfNeeded(force: Bool = false) async {
+    guard force || shouldCheckForUpdates() else { return }
     
     isCheckingForUpdate = true
     let updateAvailable = await checkForUpdates()
     isCheckingForUpdate = false
     
     if updateAvailable {
+      Debug.log("updateAvailable!")
       // If true, there is an update available. Open the UpdatesView with download button.
       // This part will depend on your app's architecture.
       // You might post a notification, use a state manager, etc., to switch the view.
@@ -79,10 +80,25 @@ class UpdateManager: ObservableObject {
     }
   }
   
-  private func checkForUpdates() async -> Bool {
-    // Here, you would check for updates. This is a placeholder for your update logic.
-    // Return true if an update is available, false otherwise.
-    return false // Placeholder return value
+  func checkForUpdates() async -> Bool {
+    guard let url = URL(string: "https://github.com/revblaze/ReleaseParsingTest/releases") else {
+      Debug.log("Invalid URL")
+      return false
+    }
+    
+    guard let html = await fetchReleasesPage(url: url) else {
+      Debug.log("Failed to fetch releases page")
+      return false
+    }
+    
+    let releases = parseReleases(from: html)
+    for release in releases {
+      Debug.log("Title: \(release.releaseTitle), Build Number: \(release.releaseBuildNumber)")
+    }
+    
+    // Placeholder logic to determine if an update is available
+    // You would compare the fetched releases against the current app version and build number
+    return !releases.isEmpty
   }
 }
 
@@ -96,5 +112,51 @@ extension UpdateManager {
     } else {
       return "Never"
     }
+  }
+}
+
+struct GitRelease {
+  var releaseTitle: String
+  var releaseDate: String
+  var releaseTag: String
+  var releaseBuildNumber: Int
+  var releaseAssets: [String: String]
+}
+
+
+extension UpdateManager {
+  func fetchReleasesPage(url: URL) async -> String? {
+    do {
+      let (data, _) = try await URLSession.shared.data(from: url)
+      return String(decoding: data, as: UTF8.self)
+    } catch {
+      Debug.log("Error fetching releases page: \(error)")
+      return nil
+    }
+  }
+  
+  func parseReleases(from html: String) -> [GitRelease] {
+    let sections = html.components(separatedBy: "<section aria-labelledby=")
+    var releases: [GitRelease] = []
+    
+    for section in sections.dropFirst() {
+      if let titleStartRange = section.range(of: ">"),
+         let titleEndRange = section.range(of: "</h2>") {
+        let title = String(section[titleStartRange.upperBound..<titleEndRange.lowerBound])
+        
+        if let buildNumberStartRange = section.range(of: "<sup><code>b"),
+           let buildNumberEndRange = section.range(of: "</code></sup>", range: buildNumberStartRange.lowerBound..<section.endIndex) {
+          let buildNumberString = String(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound])
+            .filter { "0"..."9" ~= $0 }
+          
+          if let buildNumber = Int(buildNumberString) {
+            let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
+            releases.append(release)
+          }
+        }
+      }
+    }
+    
+    return releases
   }
 }
