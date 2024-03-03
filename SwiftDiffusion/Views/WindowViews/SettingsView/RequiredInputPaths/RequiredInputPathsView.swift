@@ -11,10 +11,7 @@ struct RequiredInputPathsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @Environment(\.presentationMode) var presentationMode
-  
-  private var buttonTitle: String {
-    (userSettings.webuiShellPath.isEmpty || userSettings.automaticDirectoryPath.isEmpty) ? "Later" : "Done"
-  }
+  @State private var showBrowseShellRow = false
   
   var body: some View {
     VStack {
@@ -41,17 +38,22 @@ struct RequiredInputPathsView: View {
           }
           .onChange(of: userSettings.automaticDirectoryPath) {
             userSettings.setDefaultPathsForEmptySettings()
+            checkForShellFileAndAnimate()
           }
+          .padding(.horizontal, 20)
           
-          /*
-          BrowseRequiredFileRow(labelText: "webui.sh file",
-                                placeholderText: "../stable-diffusion-webui/webui.sh",
-                                textValue: $userSettings.webuiShellPath,
-                                requiresEntry: true
-          ){
-            await FilePickerService.browseForShellFile()
+          if showBrowseShellRow {
+            BrowseRequiredFileRow(labelText: "webui.sh file",
+                                  placeholderText: "../stable-diffusion-webui/webui.sh",
+                                  textValue: $userSettings.webuiShellPath,
+                                  requiresEntry: true
+            ){
+              await FilePickerService.browseForShellFile()
+            }
+            .opacity(showBrowseShellRow ? 1 : 0)
+            .offset(y: showBrowseShellRow ? 0 : -50)
+            .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
           }
-          */
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 16)
@@ -59,31 +61,32 @@ struct RequiredInputPathsView: View {
       VStack {
         HStack {
           if userSettings.automaticDirectoryPath.isEmpty {
-            Button(action: {
+            OutlineButton(title: "Later") {
               presentationMode.wrappedValue.dismiss()
-            }) {
-              Text("Later")
             }
-            .buttonStyle(BorderBackgroundButtonStyle())
           }
-          
           Spacer()
-          
-          Button(action: {
+          BlueButton(title: "Done") {
             presentationMode.wrappedValue.dismiss()
-          }) {
-            Text("Done")
           }
-          .buttonStyle(BlueBackgroundButtonStyle())
           .disabled(userSettings.automaticDirectoryPath.isEmpty)
           
         }
         .padding(10)
       }
-      .background(Color(NSColor.windowBackgroundColor))
     }
     .padding(2)
-    .frame(minWidth: 500, idealWidth: 500, minHeight: 350, idealHeight: 400)
+    .frame(width: 500, height: 320)
+  }
+  
+  func checkForShellFileAndAnimate() {
+    if !userSettings.automaticDirectoryPath.isEmpty {
+      if !FileManager.default.fileExists(atPath: userSettings.webuiShellPath) {
+        withAnimation {
+          showBrowseShellRow = true
+        }
+      }
+    }
   }
 }
 
@@ -134,11 +137,11 @@ struct BrowseRequiredFileRow: View {
         if requiresEntry || !textValue.isEmpty {
           Image(systemName: indicatorType.imageName)
             .foregroundColor(indicatorType.imageColor)
+            .padding(.bottom, 2)
         }
         
         if let label = labelText {
           Text(label)
-          //.font(.system(size: 20, weight: .semibold, design: .rounded))
             .font(.system(size: 14, weight: .semibold, design: .rounded))
             .padding(.bottom, 5)
         }

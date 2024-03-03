@@ -162,12 +162,9 @@ struct ContentView: View {
       }
       
       ToolbarItemGroup(placement: .principal) {
-        Button(action: {
+        BlueButton(title: "Generate") {
           fetchAndSaveGeneratedImages()
-        }) {
-          Text("Generate")
         }
-        .buttonStyle(BlueBackgroundButtonStyle())
         // TODO: queue generation instead
         .disabled(
           scriptManager.scriptState != .active ||

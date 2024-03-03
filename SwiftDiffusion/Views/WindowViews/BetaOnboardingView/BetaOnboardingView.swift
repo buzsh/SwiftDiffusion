@@ -83,16 +83,11 @@ struct BetaOnboardingView: View {
       }
       
       HStack {
-        Button(action: {
+        BlueButton(title: "Back") {
           withAnimation {
-            if currentStep > 1 {
-              currentStep -= 1
-            }
+            if currentStep > 1 { currentStep -= 1 }
           }
-        }) {
-          Text("Back")
         }
-        .buttonStyle(BlueBackgroundButtonStyle())
         .disabled(currentStep == 1)
         
         Spacer()
@@ -109,26 +104,17 @@ struct BetaOnboardingView: View {
         
         Spacer()
         
-        Button(action: {
+        BlueButton(title: currentStep == 3 ? "Done" : "Next") {
           withAnimation {
-            if currentStep < 4 {
-              currentStep += 1
-            }
-            if currentStep > 3 {
-              presentationMode.wrappedValue.dismiss()
-            }
+            if currentStep < 4 { currentStep += 1 }
+            if currentStep > 3 { presentationMode.wrappedValue.dismiss() }
           }
-        }) {
-          Text(currentStep == 3 ? "Done" : "Next")
         }
-        .buttonStyle(BlueBackgroundButtonStyle())
-        
       }
       .padding(.vertical, 12)
       .padding(.horizontal, 12)
     }
     .frame(width: 500, height: 400)
-    //.frame(minWidth: 400, idealWidth: 500, minHeight: 300, idealHeight: 400)
   }
 }
 
