@@ -55,6 +55,7 @@ struct Sidebar: View {
       ensureNecessaryFoldersExist()
       sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
       sidebarModel.updateStorableSidebarItemsInWorkspace()
+      cleanUpEmptyWorkspaceItemsIfNecessary()
       sidebarModel.createNewWorkspaceItem(in: modelContext)
     }
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
@@ -122,9 +123,6 @@ struct Sidebar: View {
     } else {
       Debug.log("[Sidebar] No newlySelectedFolder")
     }
-    
-    cleanUpEmptyWorkspaceItemsIfNecessary()
-    
   }
   
   func handleNewlySelected(sidebarItem: SidebarItem, withID newItemID: UUID?) {
