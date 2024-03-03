@@ -50,6 +50,7 @@ struct RequiredInputPathsView: View {
             ){
               await FilePickerService.browseForShellFile()
             }
+            .padding(.horizontal, 20)
             .opacity(showBrowseShellRow ? 1 : 0)
             .offset(y: showBrowseShellRow ? 0 : -50)
             .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
@@ -134,7 +135,7 @@ struct BrowseRequiredFileRow: View {
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
-        if requiresEntry || !textValue.isEmpty {
+        if requiresEntry {
           Image(systemName: indicatorType.imageName)
             .foregroundColor(indicatorType.imageColor)
             .padding(.bottom, 2)
@@ -149,6 +150,7 @@ struct BrowseRequiredFileRow: View {
       
       HStack {
         TextField(placeholderText, text: $textValue)
+          .truncationMode(.middle)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(size: 11, design: .monospaced))
           .disabled(true)
@@ -172,9 +174,13 @@ struct BrowseRequiredFileRow: View {
   
   private func updateIndicator(for value: String) {
     if requiresEntry {
-      indicatorType = value.isEmpty ? .xmark : .checkmark
-    } else {
-      indicatorType = .checkmark
-    }
+        if FileManager.default.fileExists(atPath: value) {
+          indicatorType = .checkmark
+        } else {
+          indicatorType = .xmark
+        }
+      } else {
+        indicatorType = .none
+      }
   }
 }

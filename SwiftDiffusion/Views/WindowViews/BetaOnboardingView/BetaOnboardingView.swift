@@ -114,7 +114,8 @@ struct BetaOnboardingView: View {
       .padding(.vertical, 12)
       .padding(.horizontal, 12)
     }
-    .frame(width: 500, height: 400)
+    .frame(width: 500)
+    .frame(minHeight: 400, idealHeight: 425, maxHeight: 500)
   }
 }
 
@@ -166,7 +167,7 @@ struct SetupStepView: View {
         .font(.system(size: 14, weight: .medium))
       }
       .pickerStyle(RadioGroupPickerStyle())
-      .padding(.horizontal, 10)
+      .padding(.horizontal, 50)
     }
   }
 }
@@ -205,10 +206,10 @@ struct SetupTypeStepView: View {
 
 struct ConfigPathStepView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  
   let title: String
   let subTitle: String
   @Binding var selectedInterface: PyTorchInterface
+  @State private var showBrowseShellRow = false
   
   var body: some View {
     VStack(alignment: .leading) {
@@ -219,42 +220,40 @@ struct ConfigPathStepView: View {
       Text(subTitle)
         .padding(.bottom, 10)
       
-      BrowseFileRow(labelText: "",
-                    placeholderText: "../stable-diffusion-webui/",
-                    textValue: $userSettings.automaticDirectoryPath) {
+      BrowseRequiredFileRow(labelText: "Automatic path directory",
+                            placeholderText: "../stable-diffusion-webui/",
+                            textValue: $userSettings.automaticDirectoryPath,
+                            requiresEntry: true
+      ){
         await FilePickerService.browseForDirectory()
       }
-                    .frame(width: 350)
-                    .onChange(of: userSettings.automaticDirectoryPath) {
-                      userSettings.setDefaultPathsForEmptySettings()
-                    }
+      .frame(width: 350)
+      .onChange(of: userSettings.automaticDirectoryPath) {
+        userSettings.setDefaultPathsForEmptySettings()
+        checkForShellFileAndAnimate()
+      }
+      
+      if showBrowseShellRow {
+        BrowseRequiredFileRow(labelText: "webui.sh file",
+                              placeholderText: "../stable-diffusion-webui/webui.sh",
+                              textValue: $userSettings.webuiShellPath,
+                              requiresEntry: true
+        ){
+          await FilePickerService.browseForShellFile()
+        }
+        .frame(width: 350)
+        .opacity(showBrowseShellRow ? 1 : 0)
+        .offset(y: showBrowseShellRow ? 0 : -50)
+        .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
+      }
     }
   }
-}
-
-
-import SwiftUI
-
-struct SetupBrowseFileRow: View {
-  var labelText: String?
-  var placeholderText: String
-  @Binding var textValue: String
-  var browseAction: () async -> String?
   
-  var body: some View {
-    VStack(alignment: .leading) {
-      HStack {
-        TextField(placeholderText, text: $textValue)
-          .truncationMode(.middle)
-          .textFieldStyle(RoundedBorderTextFieldStyle())
-          .font(.system(size: 11, design: .monospaced))
-          .disabled(true)
-        Button("Browse...") {
-          Task {
-            if let path = await browseAction() {
-              textValue = path
-            }
-          }
+  func checkForShellFileAndAnimate() {
+    if !userSettings.automaticDirectoryPath.isEmpty {
+      if !FileManager.default.fileExists(atPath: userSettings.webuiShellPath) {
+        withAnimation {
+          showBrowseShellRow = true
         }
       }
     }

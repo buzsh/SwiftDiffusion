@@ -41,7 +41,7 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
-  @AppStorage("hasLaunchedBeforeTest1") var hasLaunchedBefore: Bool = false
+  @AppStorage("hasLaunchedBeforeTest4") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
   
   // RequiredInputPaths
@@ -157,7 +157,6 @@ struct ContentView: View {
             }
             .disabled(scriptManager.scriptState == .terminated)
           }
-          
         }
       }
       
