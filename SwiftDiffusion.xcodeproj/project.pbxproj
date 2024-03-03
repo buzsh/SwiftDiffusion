@@ -484,7 +484,7 @@
 			isa = PBXGroup;
 			children = (
 				29C06C292B93DCEF00F950C4 /* BetaOnboardingView */,
-				29C0F37B2B7AB37E0017DD6B /* UpdatesView */,
+				29C0F37B2B7AB37E0017DD6B /* UpdateView */,
 				29D3623A2B72ED3B006C57B3 /* CheckpointManagerView */,
 				2916F3322B7278D4001D14B9 /* SettingsView */,
 			);
@@ -918,7 +918,7 @@
 			path = ContentView;
 			sourceTree = "<group>";
 		};
-		29C0F37B2B7AB37E0017DD6B /* UpdatesView */ = {
+		29C0F37B2B7AB37E0017DD6B /* UpdateView */ = {
 			isa = PBXGroup;
 			children = (
 				29C06C322B95196200F950C4 /* UpdateViewState.swift */,
@@ -926,7 +926,7 @@
 				29C06C2E2B94C55900F950C4 /* UpdateManager.swift */,
 				29C06C302B95003600F950C4 /* GitHubReleaseFetcher.swift */,
 			);
-			path = UpdatesView;
+			path = UpdateView;
 			sourceTree = "<group>";
 		};
 		29C0F37E2B7ABED50017DD6B /* SettingsSections */ = {
