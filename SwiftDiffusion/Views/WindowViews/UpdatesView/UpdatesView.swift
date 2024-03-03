@@ -22,6 +22,50 @@ struct AppInfo {
   }
 }
 
+enum UpdateViewState {
+  case defaultState
+  case latestVersion
+  case checkingForUpdate
+  case newVersionAvailable
+  
+  var updateStatusText: String {
+    switch self {
+    case .defaultState: ""
+    case .latestVersion: "You are on the latest version."
+    case .checkingForUpdate: "Checking for new update..."
+    case .newVersionAvailable: "There's a new version available!"
+    }
+  }
+  
+  var updateSymbol: String {
+    switch self {
+    case .defaultState: "icloud.slash.fill"
+    case .latestVersion: "checkmark.circle.fill"
+    case .checkingForUpdate: "arrow.triangle.2.circlepath.icloud.fill"
+    case .newVersionAvailable: "icloud.and.arrow.down.fill"
+    }
+  }
+  
+  var updateSymbolColor: Color {
+    switch self {
+    case .defaultState: Color.secondary
+    case .latestVersion: Color.green
+    case .checkingForUpdate: Color.yellow
+    case .newVersionAvailable: Color.blue
+    }
+  }
+  
+  var mainButtonText: String {
+    switch self {
+    case .defaultState: "Check for Updates"
+    case .latestVersion: "Check for Updates"
+    case .checkingForUpdate: "Checking for Updates..."
+    case .newVersionAvailable: "Download Now"
+    }
+  }
+  
+}
+
 struct UpdatesView: View {
   @EnvironmentObject var updateManager: UpdateManager
   @State private var showUpdateFrequencySection: Bool = false
@@ -31,10 +75,12 @@ struct UpdatesView: View {
     initialFrameHeight + updateFrequencySectionHeight
   }
   
+  @State var updateViewState: UpdateViewState = .defaultState
+  
   var body: some View {
     VStack {
       
-      ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
+      ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for new updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
         .padding(.top, 10)
       
       if showUpdateFrequencySection {
@@ -73,13 +119,33 @@ struct UpdatesView: View {
       
       Spacer()
       
-      Button("Check for Updates") {
-        Task {
-          await updateManager.checkForUpdatesIfNeeded(force: true)
+      Button(updateViewState.mainButtonText) {
+        if updateViewState == .newVersionAvailable {
+          if let latestRelease = updateManager.latestRelease, let releaseUrl = latestRelease.releaseDownloadUrlString, let url = URL(string: releaseUrl) {
+            NSWorkspace.shared.open(url)
+          }
+        } else {
+          Task {
+            await updateManager.checkForUpdatesIfNeeded(force: true)
+          }
         }
       }
       .padding(.bottom, 10)
       .disabled(updateManager.isCheckingForUpdate)
+      .onChange(of: updateManager.isCheckingForUpdate) {
+        updateViewState = .checkingForUpdate
+      }
+      .onChange(of: updateManager.latestRelease) {
+        if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
+          if currentBuildIsLatestVersion == false {
+            updateViewState = .newVersionAvailable
+          } else {
+            updateViewState = .latestVersion
+          }
+        } else {
+          //updateViewState = .defaultState
+        }
+      }
       
       if let lastChecked = updateManager.lastCheckedTimestamp {
         Text("Last checked: \(lastChecked, formatter: itemFormatter)")

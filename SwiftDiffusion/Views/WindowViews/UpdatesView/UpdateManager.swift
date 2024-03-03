@@ -25,6 +25,18 @@ class UpdateManager: ObservableObject {
   @Published var githubReleases: [GitHubRelease] = []
   @Published var latestRelease: GitHubRelease? = nil
   
+  var currentBuildIsLatestVersion: Bool? {
+    guard let latestBuildNumber = latestRelease?.releaseBuildNumber else {
+      return nil
+    }
+    if latestBuildNumber > AppInfo.buildInt {
+      return false
+    } else if latestBuildNumber <= AppInfo.buildInt {
+      return true
+    }
+    return nil
+  }
+  
   init() {
     loadSettings()
   }
@@ -103,7 +115,6 @@ class UpdateManager: ObservableObject {
       for release in githubReleases {
         Debug.log("GitReleases\n > Title: \(String(describing: release.releaseTitle))\n > Build Number: \(String(describing: release.releaseBuildNumber))\n > Release Date: \(String(describing: release.releaseDate))\n > Release Tag: \(String(describing: release.releaseTag))\n > Download URL: \(String(describing: release.releaseDownloadUrlString))")
       }
-      
       return compareCurrentAppBuildToGitHubReleases()
     } else {
       return false
@@ -112,7 +123,7 @@ class UpdateManager: ObservableObject {
   
   func compareCurrentAppBuildToGitHubReleases() -> Bool {
     guard let highestBuildRelease = githubReleases
-      .filter({ $0.releaseBuildNumber ?? 0 > AppInfo.buildInt })
+      .filter({ $0.releaseBuildNumber ?? 0 >= AppInfo.buildInt })
       .max(by: { ($0.releaseBuildNumber ?? 0) < ($1.releaseBuildNumber ?? 0) }) else {
       return false
     }
