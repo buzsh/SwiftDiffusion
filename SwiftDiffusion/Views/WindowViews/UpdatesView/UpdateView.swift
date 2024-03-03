@@ -1,5 +1,5 @@
 //
-//  UpdatesView.swift
+//  UpdateView.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/12/24.
@@ -22,7 +22,7 @@ struct AppInfo {
   }
 }
 
-struct UpdatesView: View {
+struct UpdateView: View {
   @EnvironmentObject var updateManager: UpdateManager
   @State private var showUpdateFrequencySection: Bool = false
   private let updateFrequencySectionHeight: CGFloat = 28
@@ -173,7 +173,7 @@ struct UpdatesView: View {
   let updateManager = UpdateManager()
   updateManager.loadSettings()
   
-  return UpdatesView()
+  return UpdateView()
     .frame(idealWidth: 400, idealHeight: 250)
     .environmentObject(updateManager)
 }

@@ -116,7 +116,7 @@
 		29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */; };
 		29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36A2B79D2CA0017DD6B /* FileNode.swift */; };
 		29C0F36D2B79D2F80017DD6B /* FileHierarchy+Control.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */; };
-		29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */; };
+		29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */; };
 		29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3702B7A62180017DD6B /* WindowManager.swift */; };
 		29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */; };
 		29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3762B7AA6310017DD6B /* AppDelegate.swift */; };
@@ -259,7 +259,7 @@
 		29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowManager.swift; sourceTree = "<group>"; };
 		29C0F36A2B79D2CA0017DD6B /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
 		29C0F36C2B79D2F80017DD6B /* FileHierarchy+Control.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHierarchy+Control.swift"; sourceTree = "<group>"; };
-		29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesView.swift; sourceTree = "<group>"; };
+		29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateView.swift; sourceTree = "<group>"; };
 		29C0F3702B7A62180017DD6B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyPasteUtility.swift; sourceTree = "<group>"; };
 		29C0F3762B7AA6310017DD6B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -922,7 +922,7 @@
 			isa = PBXGroup;
 			children = (
 				29C06C322B95196200F950C4 /* UpdateViewState.swift */,
-				29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */,
+				29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */,
 				29C06C2E2B94C55900F950C4 /* UpdateManager.swift */,
 				29C06C302B95003600F950C4 /* GitHubReleaseFetcher.swift */,
 			);
@@ -1072,7 +1072,7 @@
 				29169D0E2B8EAD740099A9C5 /* ImageInfo.swift in Sources */,
 				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
-				29C0F36F2B7A5C3D0017DD6B /* UpdatesView.swift in Sources */,
+				29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
 				29F91D332B8D42390047B3C9 /* NSImage+Extensions.swift in Sources */,

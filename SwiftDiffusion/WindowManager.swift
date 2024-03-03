@@ -43,7 +43,7 @@ class WindowManager: NSObject, ObservableObject {
     betaOnboardingWindow?.makeKeyAndOrderFront(nil)
   }
   
-  /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
+  /// Shows the updates window containing UpdateView. If the window does not exist, it creates and configures a new window before displaying it.
   func showUpdatesWindow(updateManager: UpdateManager) {
     if updatesWindow == nil {
       updatesWindow = NSWindow(
@@ -51,7 +51,7 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       updatesWindow?.center()
-      updatesWindow?.contentView = NSHostingView(rootView: UpdatesView().environmentObject(updateManager))
+      updatesWindow?.contentView = NSHostingView(rootView: UpdateView().environmentObject(updateManager))
       updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
       updatesWindow?.standardWindowButton(.zoomButton)?.isHidden = true
