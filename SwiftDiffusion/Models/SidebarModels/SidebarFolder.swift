@@ -32,7 +32,7 @@ class SidebarFolder: Identifiable {
 
 extension SidebarFolder: Equatable {
   static func == (lhs: SidebarFolder, rhs: SidebarFolder) -> Bool {
-    lhs.name == rhs.name
+    lhs.id == rhs.id
   }
 }
 
