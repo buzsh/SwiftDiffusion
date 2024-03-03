@@ -26,9 +26,26 @@ struct BetaOnboardingView: View {
   
   @State private var selectedInterface: PyTorchInterface = .automatic1111
   @State private var currentStep: Int = 1
+  @State private var isMovingForward = true
   
   var body: some View {
     VStack {
+      HStack {
+        Button(action: {
+          presentationMode.wrappedValue.dismiss()
+        }) {
+          Image(systemName: "xmark.circle.fill")
+            .font(.system(size: 20))
+            .foregroundStyle(.secondary)
+            .opacity(0.6)
+        }
+        .buttonStyle(.plain)
+        .padding(.leading, 10)
+        .padding(.top, 10)
+        
+        Spacer()
+      }
+      
       ScrollView {
         VStack(alignment: .leading, spacing: 6) {
           VStack(alignment: .center) {
@@ -44,17 +61,21 @@ struct BetaOnboardingView: View {
               .padding(.top, 8)
               .opacity(0.8)
           }
-          .padding(.vertical, 30)
+          .padding(.top, 10)
+          .padding(.bottom, 30)
           
           HStack {
             Spacer()
-            if currentStep == 1 {
-              SetupStepView(title: "Getting Started", subTitle: "Select the PyTorch interface that you'd like to use", selectedInterface: $selectedInterface)
-            } else if currentStep == 2 {
-              SetupTypeStepView(title: "Setup Automatic", subTitle: "Would you like to use an existing Automatic setup,\nor start a new one?", selectedInterface: $selectedInterface)
-            } else if currentStep == 3 {
-              ConfigPathStepView(title: "Locate Automatic Folder", subTitle: "Browse for the stable-diffusion-webui folder", selectedInterface: $selectedInterface)
+            Group {
+              if currentStep == 1 {
+                SetupStepView(title: "Getting Started", subTitle: "Select the PyTorch interface that you'd like to use", selectedInterface: $selectedInterface)
+              } else if currentStep == 2 {
+                SetupTypeStepView(title: "Setup Automatic", subTitle: "Would you like to use an existing Automatic setup,\nor start a new one?", selectedInterface: $selectedInterface)
+              } else if currentStep == 3 {
+                ConfigPathStepView(title: "Locate Automatic Folder", subTitle: "Browse for the stable-diffusion-webui folder", selectedInterface: $selectedInterface)
+              }
             }
+            .transition(.opacity)
             Spacer()
           }
         }
@@ -63,8 +84,10 @@ struct BetaOnboardingView: View {
       
       HStack {
         Button(action: {
-          if currentStep > 1 {
-            currentStep -= 1
+          withAnimation {
+            if currentStep > 1 {
+              currentStep -= 1
+            }
           }
         }) {
           Text("Back")
@@ -87,11 +110,13 @@ struct BetaOnboardingView: View {
         Spacer()
         
         Button(action: {
-          if currentStep < 4 {
-            currentStep += 1
-          }
-          if currentStep > 3 {
-            presentationMode.wrappedValue.dismiss()
+          withAnimation {
+            if currentStep < 4 {
+              currentStep += 1
+            }
+            if currentStep > 3 {
+              presentationMode.wrappedValue.dismiss()
+            }
           }
         }) {
           Text(currentStep == 3 ? "Done" : "Next")
@@ -102,7 +127,7 @@ struct BetaOnboardingView: View {
       .padding(.vertical, 12)
       .padding(.horizontal, 12)
     }
-    .frame(width: 500, height: 350)
+    .frame(width: 500, height: 400)
     //.frame(minWidth: 400, idealWidth: 500, minHeight: 300, idealHeight: 400)
   }
 }
