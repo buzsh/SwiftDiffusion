@@ -90,6 +90,16 @@ struct UpdatesView: View {
           .font(.footnote)
           .foregroundStyle(Color.secondary)
       }
+      
+      if let checkForUpdateError = updateManager.checkForUpdatesErrorMessage {
+        Text(checkForUpdateError)
+          .padding(.vertical, 4)
+          .font(.footnote)
+          .foregroundStyle(Color.red)
+          .onAppear {
+            Delay.by(7) { updateManager.checkForUpdatesErrorMessage = nil }
+          }
+      }
     }
     .padding()
     .frame(width: 400, height: showUpdateFrequencySection ? expandedFrameHeight : initialFrameHeight)
