@@ -49,18 +49,6 @@ struct UpdatesView: View {
           } label: {
             Label(updateManager.updateCheckFrequency.rawValue, systemImage: "calendar")
           }
-          
-          /*
-          Menu {
-            Picker("Update Frequency", selection: $updateManager.updateCheckFrequency) {
-              ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
-                Text(frequency.rawValue).tag(frequency)
-              }
-            }
-          } label: {
-            Label("Update Frequency", systemImage: "calendar")
-          }
-          */
         }
         .frame(width: 250, height: updateFrequencySectionHeight)
         .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
