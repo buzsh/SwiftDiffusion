@@ -24,7 +24,7 @@ enum UpdateViewState {
   
   var symbol: String {
     switch self {
-    case .defaultState: "icloud.slash.fill"
+    case .defaultState: "exclamationmark.arrow.triangle.2.circlepath" //"icloud.slash.fill"
     case .latestVersion: "checkmark.circle.fill"
     case .checkingForUpdate: "arrow.triangle.2.circlepath.icloud.fill"
     case .newVersionAvailable: "exclamationmark.circle.fill"

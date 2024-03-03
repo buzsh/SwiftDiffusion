@@ -18,7 +18,7 @@ enum UpdateFrequency: String, CaseIterable {
 }
 
 extension Constants {
-  static let releasesUrl: String = "https://github.com/revblaze/ReleaseParsingTest/releases"
+  static let releasesUrl: String = "https://github.com/buzsh/SwiftDiffusion/releases" // "https://github.com/revblaze/ReleaseParsingTest/releases"
 }
 
 class UpdateManager: ObservableObject {

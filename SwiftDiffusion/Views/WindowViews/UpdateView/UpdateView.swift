@@ -26,7 +26,7 @@ struct UpdateView: View {
   @EnvironmentObject var updateManager: UpdateManager
   @State private var showUpdateFrequencySection: Bool = false
   private let updateFrequencySectionHeight: CGFloat = 28
-  private let initialFrameHeight: CGFloat = 250
+  private let initialFrameHeight: CGFloat = 280
   var expandedFrameHeight: CGFloat {
     initialFrameHeight + updateFrequencySectionHeight
   }
@@ -49,7 +49,7 @@ struct UpdateView: View {
               }
             }
           } label: {
-            Label(updateManager.updateCheckFrequency.rawValue, systemImage: "calendar")
+            Label("Check " + updateManager.updateCheckFrequency.rawValue, systemImage: "calendar")
           }
         }
         .frame(width: 250, height: updateFrequencySectionHeight)
@@ -59,10 +59,23 @@ struct UpdateView: View {
       
       Spacer()
       
-      HStack(alignment: .top) {
-        Image(systemName: updateViewState.symbol)
-          .foregroundStyle(updateViewState.symbolColor)
-          .padding(.trailing, 2)
+      HStack(alignment: .center) {
+        VStack {
+          if updateViewState == .checkingForUpdate {
+            ProgressView()
+              .progressViewStyle(CircularProgressViewStyle())
+              .scaleEffect(0.5)
+              .opacity(updateViewState == .checkingForUpdate ? 1 : 0)
+          } else {
+            Image(systemName: updateViewState.symbol)
+              .foregroundStyle(updateViewState.symbolColor)
+              .font(.system(size: 18))
+          }
+        }
+        .frame(width: 24, height: 24)
+        .padding(.trailing, 2)
+          
+        
         VStack(alignment: .leading) {
           Text(updateViewState.statusText)
             .bold()
@@ -111,16 +124,18 @@ struct UpdateView: View {
         updateViewStateBasedOnManager()
       }
       
-      
-      if let lastChecked = updateManager.lastCheckedTimestamp {
-        Text("Last checked: \(lastChecked, formatter: itemFormatter)")
-          .font(.footnote)
-          .foregroundStyle(Color.secondary)
-      } else {
-        Text("Last checked: Never")
-          .font(.footnote)
-          .foregroundStyle(Color.secondary)
+      HStack {
+        if let lastChecked = updateManager.lastCheckedTimestamp {
+          Text("Last checked: \(lastChecked, formatter: itemFormatter)")
+            .font(.footnote)
+            .foregroundStyle(Color.secondary)
+        } else {
+          Text("Last checked: Never")
+            .font(.footnote)
+            .foregroundStyle(Color.secondary)
+        }
       }
+      .padding(.bottom,  2)
       
       if let checkForUpdateError = updateManager.checkForUpdatesErrorMessage {
         Text(checkForUpdateError)
@@ -139,16 +154,10 @@ struct UpdateView: View {
       updateViewStateBasedOnManager()
     }
     
-    .navigationTitle("Updates")
+    .navigationTitle("Check for Updates")
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
-          
-          ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(0.5)
-            .opacity(updateManager.isCheckingForUpdate ? 1 : 0)
-          
           Button(action: {
             withAnimation {
               showUpdateFrequencySection.toggle()
@@ -173,7 +182,7 @@ struct UpdateView: View {
           updateViewState = .latestVersion
         }
       } else {
-        updateViewState = .defaultState
+        updateViewState = .latestVersion // .defaultState
       }
     }
   }
