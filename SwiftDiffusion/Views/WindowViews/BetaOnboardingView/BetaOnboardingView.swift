@@ -62,7 +62,7 @@ struct BetaOnboardingView: View {
               .opacity(0.8)
           }
           .padding(.top, 10)
-          .padding(.bottom, 30)
+          .padding(.bottom, 40)
           
           HStack {
             Spacer()
@@ -231,7 +231,7 @@ struct ConfigPathStepView: View {
         .padding(.bottom, 4)
       
       Text(subTitle)
-        .padding(.bottom, 20)
+        .padding(.bottom, 10)
       
       BrowseFileRow(labelText: "",
                     placeholderText: "../stable-diffusion-webui/",
