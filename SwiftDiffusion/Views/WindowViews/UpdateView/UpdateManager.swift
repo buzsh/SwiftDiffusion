@@ -18,7 +18,8 @@ enum UpdateFrequency: String, CaseIterable {
 }
 
 extension Constants {
-  static let releasesUrl: String = "https://github.com/buzsh/SwiftDiffusion/releases" // "https://github.com/revblaze/ReleaseParsingTest/releases"
+  //static let releasesUrl: String = "https://github.com/revblaze/ReleaseParsingTest/releases"
+  static let releasesUrl: String = "https://github.com/buzsh/SwiftDiffusion/releases"
 }
 
 class UpdateManager: ObservableObject {
@@ -60,8 +61,6 @@ class UpdateManager: ObservableObject {
   
   func checkForUpdatesIfNeeded(force: Bool = false) async {
     guard force || shouldCheckForUpdates() else { return }
-    
-    await MainActor.run { self.isCheckingForUpdate = true }
     
     do {
       let updateAvailable = try await checkForUpdates()

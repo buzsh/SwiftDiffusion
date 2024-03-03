@@ -42,7 +42,7 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
-  @AppStorage("hasLaunchedBeforeTest4") var hasLaunchedBefore: Bool = false
+  @AppStorage("hasLaunchedBeforeTest") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
   
   // RequiredInputPaths
@@ -59,11 +59,9 @@ struct ContentView: View {
   @State var selectedImage: NSImage? = nil
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   @State var lastSavedImageUrls: [URL] = []
-  
   @State var imageCountToGenerate: Int = 0
   
   @State private var columnVisibility = NavigationSplitViewVisibility.all // .doubleColumn (hide by default)
-  
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
