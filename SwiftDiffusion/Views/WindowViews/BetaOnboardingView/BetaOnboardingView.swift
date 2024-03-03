@@ -68,11 +68,11 @@ struct BetaOnboardingView: View {
             Spacer()
             Group {
               if currentStep == 1 {
-                SetupStepView(title: "Getting Started", subTitle: "Select the PyTorch interface that you'd like to use", selectedInterface: $selectedInterface)
+                SetupStepView(title: "Getting Started", subTitle: "Select the PyTorch interface that you would like to use.", selectedInterface: $selectedInterface)
               } else if currentStep == 2 {
                 SetupTypeStepView(title: "Setup Automatic", subTitle: "Would you like to use an existing Automatic setup,\nor start a new one?", selectedInterface: $selectedInterface)
               } else if currentStep == 3 {
-                ConfigPathStepView(title: "Locate Automatic Folder", subTitle: "Browse for the stable-diffusion-webui folder", selectedInterface: $selectedInterface)
+                ConfigPathStepView(title: "Locate Automatic Folder", subTitle: "Browse for the folder in which stable-diffusion-webui has been installed to.", selectedInterface: $selectedInterface)
               }
             }
             .transition(.opacity)
@@ -146,13 +146,13 @@ struct SetupStepView: View {
   @Binding var selectedInterface: PyTorchInterface
   
   var body: some View {
-    VStack(alignment: .leading) {
+    VStack(alignment: .center) {
       Text(title)
         .font(.system(size: 20, weight: .semibold, design: .rounded))
         .padding(.bottom, 4)
       
       Text(subTitle)
-        .padding(.bottom, 20)
+        .padding(.bottom, 30)
       
       Picker("", selection: $selectedInterface) {
         ForEach(PyTorchInterface.allCases) { option in
@@ -167,7 +167,6 @@ struct SetupStepView: View {
         .font(.system(size: 14, weight: .medium))
       }
       .pickerStyle(RadioGroupPickerStyle())
-      .padding(.horizontal, 50)
     }
   }
 }
@@ -178,7 +177,7 @@ struct SetupTypeStepView: View {
   @Binding var selectedInterface: PyTorchInterface
   
   var body: some View {
-    VStack(alignment: .leading) {
+    VStack(alignment: .center) {
       Text(title)
         .font(.system(size: 20, weight: .semibold, design: .rounded))
         .padding(.bottom, 4)
@@ -212,41 +211,42 @@ struct ConfigPathStepView: View {
   @State private var showBrowseShellRow = false
   
   var body: some View {
-    VStack(alignment: .leading) {
+    VStack(alignment: .center) {
       Text(title)
         .font(.system(size: 20, weight: .semibold, design: .rounded))
         .padding(.bottom, 4)
       
-      Text(subTitle)
-        .padding(.bottom, 10)
+      Text(subTitle).padding(.bottom, 30)
       
-      BrowseRequiredFileRow(labelText: "Automatic path directory",
-                            placeholderText: "../stable-diffusion-webui/",
-                            textValue: $userSettings.automaticDirectoryPath,
-                            requiresEntry: true
-      ){
-        await FilePickerService.browseForDirectory()
-      }
-      .frame(width: 350)
-      .onChange(of: userSettings.automaticDirectoryPath) {
-        userSettings.setDefaultPathsForEmptySettings()
-        checkForShellFileAndAnimate()
-      }
       
-      if showBrowseShellRow {
-        BrowseRequiredFileRow(labelText: "webui.sh file",
-                              placeholderText: "../stable-diffusion-webui/webui.sh",
-                              textValue: $userSettings.webuiShellPath,
+      VStack {
+        BrowseRequiredFileRow(labelText: "Automatic path directory",
+                              placeholderText: "../stable-diffusion-webui/",
+                              textValue: $userSettings.automaticDirectoryPath,
                               requiresEntry: true
         ){
-          await FilePickerService.browseForShellFile()
+          await FilePickerService.browseForDirectory()
         }
-        .frame(width: 350)
-        .opacity(showBrowseShellRow ? 1 : 0)
-        .offset(y: showBrowseShellRow ? 0 : -50)
-        .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
+        .onChange(of: userSettings.automaticDirectoryPath) {
+          userSettings.setDefaultPathsForEmptySettings()
+          checkForShellFileAndAnimate()
+        }
+        
+        if showBrowseShellRow {
+          BrowseRequiredFileRow(labelText: "webui.sh file",
+                                placeholderText: "../stable-diffusion-webui/webui.sh",
+                                textValue: $userSettings.webuiShellPath,
+                                requiresEntry: true
+          ){
+            await FilePickerService.browseForShellFile()
+          }
+          .opacity(showBrowseShellRow ? 1 : 0)
+          .offset(y: showBrowseShellRow ? 0 : -50)
+          .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
+        }
       }
     }
+    .padding(.horizontal, 30)
   }
   
   func checkForShellFileAndAnimate() {
