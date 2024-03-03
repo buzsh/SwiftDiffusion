@@ -11,10 +11,7 @@ struct RequiredInputPathsView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @Environment(\.presentationMode) var presentationMode
-  
-  private var buttonTitle: String {
-    (userSettings.webuiShellPath.isEmpty || userSettings.automaticDirectoryPath.isEmpty) ? "Later" : "Done"
-  }
+  @State private var showBrowseShellRow = false
   
   var body: some View {
     VStack {
@@ -22,13 +19,13 @@ struct RequiredInputPathsView: View {
         VStack(alignment: .leading) {
           HStack {
             Text("Locate Automatic Folder")
-              .font(.largeTitle)
+              .font(.system(size: 20, weight: .semibold, design: .rounded))
               .padding(.vertical, 20)
               .padding(.horizontal, 14)
             Spacer()
           }
           
-          Text("To enable Automatic1111, please locate the stable-diffusion-webui folder")
+          Text("To enable interfacing with PyTorch through Automatic, please locate the stable-diffusion-webui folder.")
             .padding(.horizontal, 14)
             .padding(.bottom, 30)
           
@@ -41,14 +38,22 @@ struct RequiredInputPathsView: View {
           }
           .onChange(of: userSettings.automaticDirectoryPath) {
             userSettings.setDefaultPathsForEmptySettings()
+            checkForShellFileAndAnimate()
           }
+          .padding(.horizontal, 20)
           
-          BrowseRequiredFileRow(labelText: "webui.sh file",
-                                placeholderText: "../stable-diffusion-webui/webui.sh",
-                                textValue: $userSettings.webuiShellPath,
-                                requiresEntry: true
-          ){
-            await FilePickerService.browseForShellFile()
+          if showBrowseShellRow {
+            BrowseRequiredFileRow(labelText: "webui.sh file",
+                                  placeholderText: "../stable-diffusion-webui/webui.sh",
+                                  textValue: $userSettings.webuiShellPath,
+                                  requiresEntry: true
+            ){
+              await FilePickerService.browseForShellFile()
+            }
+            .padding(.horizontal, 20)
+            .opacity(showBrowseShellRow ? 1 : 0)
+            .offset(y: showBrowseShellRow ? 0 : -50)
+            .animation(.easeOut(duration: 0.5), value: showBrowseShellRow)
           }
         }
         .padding(.vertical, 20)
@@ -56,21 +61,33 @@ struct RequiredInputPathsView: View {
       }
       VStack {
         HStack {
-          Spacer()
-          
-          Button(action: {
-            presentationMode.wrappedValue.dismiss()
-          }) {
-            Text(buttonTitle)
+          if userSettings.automaticDirectoryPath.isEmpty {
+            OutlineButton(title: "Later") {
+              presentationMode.wrappedValue.dismiss()
+            }
           }
+          Spacer()
+          BlueButton(title: "Done") {
+            presentationMode.wrappedValue.dismiss()
+          }
+          .disabled(userSettings.automaticDirectoryPath.isEmpty)
+          
         }
-        
         .padding(10)
       }
-      .background(Color(NSColor.windowBackgroundColor))
     }
     .padding(2)
-    .frame(minWidth: 500, idealWidth: 500, minHeight: 350, idealHeight: 400)
+    .frame(width: 500, height: 320)
+  }
+  
+  func checkForShellFileAndAnimate() {
+    if !userSettings.automaticDirectoryPath.isEmpty {
+      if !FileManager.default.fileExists(atPath: userSettings.webuiShellPath) {
+        withAnimation {
+          showBrowseShellRow = true
+        }
+      }
+    }
   }
 }
 
@@ -118,21 +135,22 @@ struct BrowseRequiredFileRow: View {
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
-        if requiresEntry || !textValue.isEmpty {
+        if requiresEntry {
           Image(systemName: indicatorType.imageName)
             .foregroundColor(indicatorType.imageColor)
+            .padding(.bottom, 2)
         }
         
         if let label = labelText {
           Text(label)
-            .font(.system(size: 14, weight: .semibold, design: .default))
-            .underline()
+            .font(.system(size: 14, weight: .semibold, design: .rounded))
             .padding(.bottom, 5)
         }
       }
       
       HStack {
         TextField(placeholderText, text: $textValue)
+          .truncationMode(.middle)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(size: 11, design: .monospaced))
           .disabled(true)
@@ -156,9 +174,13 @@ struct BrowseRequiredFileRow: View {
   
   private func updateIndicator(for value: String) {
     if requiresEntry {
-      indicatorType = value.isEmpty ? .xmark : .checkmark
-    } else {
-      indicatorType = .checkmark
-    }
+        if FileManager.default.fileExists(atPath: value) {
+          indicatorType = .checkmark
+        } else {
+          indicatorType = .xmark
+        }
+      } else {
+        indicatorType = .none
+      }
   }
 }

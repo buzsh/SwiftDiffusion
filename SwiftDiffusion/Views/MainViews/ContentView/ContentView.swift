@@ -41,6 +41,9 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
+  @AppStorage("hasLaunchedBeforeTest4") var hasLaunchedBefore: Bool = false
+  @State private var showingBetaOnboardingSheetView: Bool = false
+  
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
@@ -154,17 +157,13 @@ struct ContentView: View {
             }
             .disabled(scriptManager.scriptState == .terminated)
           }
-          
         }
       }
       
       ToolbarItemGroup(placement: .principal) {
-        Button(action: {
+        BlueButton(title: "Generate") {
           fetchAndSaveGeneratedImages()
-        }) {
-          Text("Generate")
         }
-        .buttonStyle(BlueBackgroundButtonStyle())
         // TODO: queue generation instead
         .disabled(
           scriptManager.scriptState != .active ||
@@ -200,7 +199,7 @@ struct ContentView: View {
           ContentProgressBar(scriptManager: scriptManager)
         }
         
-        if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+        if !userHasEnteredBothRequiredFields && hasLaunchedBefore {
           RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
         }
         
@@ -227,11 +226,23 @@ struct ContentView: View {
       
     }
     .onAppear {
-      if !CanvasPreview && !userHasEnteredBothRequiredFields {
-        showingRequiredInputPathsView = true
+      if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {
+        //showingRequiredInputPathsView = true
       } else {
         handleScriptOnLaunch()
       }
+      
+      if hasLaunchedBefore == false {
+        Delay.by(0.5) {
+          showingBetaOnboardingSheetView = true
+        }
+      }
+    }
+    .sheet(isPresented: $showingBetaOnboardingSheetView, onDismiss: {
+      showingBetaOnboardingSheetView = false
+      hasLaunchedBefore = true
+    }) {
+      BetaOnboardingView()
     }
     .sheet(isPresented: $showingRequiredInputPathsView, onDismiss: {
       hasDismissedRequiredInputPathsView = true

@@ -54,11 +54,11 @@ struct SettingsView: View {
       
       VStack {
         HStack {
-          Button("Restore Defaults") {
+          OutlineButton(title: "Restore Defaults") {
             userSettings.restoreDefaults()
           }
           Spacer()
-          Button("Done") {
+          BlueButton(title: "Done") {
             presentationMode.wrappedValue.dismiss()
           }
         }

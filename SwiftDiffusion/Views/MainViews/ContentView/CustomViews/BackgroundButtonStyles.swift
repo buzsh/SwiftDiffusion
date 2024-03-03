@@ -118,6 +118,7 @@ struct BorderBackgroundButtonStyle: ButtonStyle {
     }
   }
 }
+
 #Preview {
   CommonPreviews.contentView
 }
