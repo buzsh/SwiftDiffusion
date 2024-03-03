@@ -15,7 +15,7 @@ struct SettingsSectionHeader: View {
     
       HStack {
         Text(selectedTab.sectionHeaderText)
-          .font(.title)
+          .font(.system(size: 20, weight: .semibold, design: .rounded))
           .padding(.leading, 12)
           .padding(.bottom, 10)
           .padding(.top, 20)

@@ -22,7 +22,7 @@ struct RequiredInputPathsView: View {
         VStack(alignment: .leading) {
           HStack {
             Text("Locate Automatic Folder")
-              .font(.largeTitle)
+              .font(.system(size: 20, weight: .semibold, design: .rounded))
               .padding(.vertical, 20)
               .padding(.horizontal, 14)
             Spacer()
@@ -43,6 +43,7 @@ struct RequiredInputPathsView: View {
             userSettings.setDefaultPathsForEmptySettings()
           }
           
+          /*
           BrowseRequiredFileRow(labelText: "webui.sh file",
                                 placeholderText: "../stable-diffusion-webui/webui.sh",
                                 textValue: $userSettings.webuiShellPath,
@@ -50,21 +51,33 @@ struct RequiredInputPathsView: View {
           ){
             await FilePickerService.browseForShellFile()
           }
+          */
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 16)
       }
       VStack {
         HStack {
+          if userSettings.automaticDirectoryPath.isEmpty {
+            Button(action: {
+              presentationMode.wrappedValue.dismiss()
+            }) {
+              Text("Later")
+            }
+            .buttonStyle(BorderBackgroundButtonStyle())
+          }
+          
           Spacer()
           
           Button(action: {
             presentationMode.wrappedValue.dismiss()
           }) {
-            Text(buttonTitle)
+            Text("Done")
           }
+          .buttonStyle(BlueBackgroundButtonStyle())
+          .disabled(userSettings.automaticDirectoryPath.isEmpty)
+          
         }
-        
         .padding(10)
       }
       .background(Color(NSColor.windowBackgroundColor))
@@ -125,8 +138,8 @@ struct BrowseRequiredFileRow: View {
         
         if let label = labelText {
           Text(label)
-            .font(.system(size: 14, weight: .semibold, design: .default))
-            .underline()
+          //.font(.system(size: 20, weight: .semibold, design: .rounded))
+            .font(.system(size: 14, weight: .semibold, design: .rounded))
             .padding(.bottom, 5)
         }
       }

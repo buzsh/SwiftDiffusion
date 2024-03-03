@@ -17,8 +17,7 @@ struct BrowseFileRow: View {
     VStack(alignment: .leading) {
       if let label = labelText {
         Text(label)
-          .font(.system(size: 14, weight: .semibold, design: .default))
-          .underline()
+          .font(.system(size: 14, weight: .semibold, design: .rounded))
           .padding(.vertical, 2)
           .padding(.horizontal, 14)
       }

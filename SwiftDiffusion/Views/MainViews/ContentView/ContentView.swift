@@ -41,7 +41,7 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
-  @AppStorage("hasLaunchedBefore") var hasLaunchedBefore: Bool = false
+  @AppStorage("hasLaunchedBeforeTest1") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
   
   // RequiredInputPaths
@@ -203,7 +203,7 @@ struct ContentView: View {
           ContentProgressBar(scriptManager: scriptManager)
         }
         
-        if !userHasEnteredBothRequiredFields && (!showingRequiredInputPathsView || hasDismissedRequiredInputPathsView) {
+        if !userHasEnteredBothRequiredFields && hasLaunchedBefore {
           RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
         }
         
@@ -230,13 +230,16 @@ struct ContentView: View {
       
     }
     .onAppear {
-      Delay.by(0.5) {
-        showingBetaOnboardingSheetView = true
-      }
-      if !CanvasPreview && !userHasEnteredBothRequiredFields {
-        showingRequiredInputPathsView = true
+      if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {
+        //showingRequiredInputPathsView = true
       } else {
         handleScriptOnLaunch()
+      }
+      
+      if hasLaunchedBefore == false {
+        Delay.by(0.5) {
+          showingBetaOnboardingSheetView = true
+        }
       }
     }
     .sheet(isPresented: $showingBetaOnboardingSheetView, onDismiss: {

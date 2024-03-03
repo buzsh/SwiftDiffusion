@@ -54,6 +54,7 @@ struct SettingsView: View {
       
       VStack {
         HStack {
+          // TODO: BUTTONS
           Button("Restore Defaults") {
             userSettings.restoreDefaults()
           }
