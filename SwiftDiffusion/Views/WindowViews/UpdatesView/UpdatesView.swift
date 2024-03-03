@@ -133,20 +133,10 @@ struct UpdatesView: View {
       .padding(.bottom, 10)
       .disabled(updateManager.isCheckingForUpdate)
       .onChange(of: updateManager.isCheckingForUpdate) {
-        if updateManager.isCheckingForUpdate {
-          updateViewState = .checkingForUpdate
-        }
+        updateViewStateBasedOnManager()
       }
       .onChange(of: updateManager.currentBuildIsLatestVersion) {
-        Debug.log(".onChange(of: updateManager.currentBuildIsLatestVersion): \(String(describing: updateManager.currentBuildIsLatestVersion))")
-        
-        if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
-          if currentBuildIsLatestVersion == false {
-            updateViewState = .newVersionAvailable
-          } else {
-            updateViewState = .latestVersion
-          }
-        }
+        updateViewStateBasedOnManager()
       }
       
       if let lastChecked = updateManager.lastCheckedTimestamp {
@@ -173,7 +163,7 @@ struct UpdatesView: View {
     .frame(width: 400, height: showUpdateFrequencySection ? expandedFrameHeight : initialFrameHeight)
     .animation(.easeInOut, value: showUpdateFrequencySection)
     .onAppear {
-      
+      updateViewStateBasedOnManager()
     }
     
     .navigationTitle("Updates")
@@ -199,7 +189,7 @@ struct UpdatesView: View {
       }
     }
   }
-  func updateStateBasedOnManager() {
+  func updateViewStateBasedOnManager() {
     if updateManager.isCheckingForUpdate {
       updateViewState = .checkingForUpdate
     } else if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
