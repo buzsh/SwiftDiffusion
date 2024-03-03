@@ -39,13 +39,15 @@ struct UpdatesView: View {
       
       if showUpdateFrequencySection {
         VStack {
-          Menu(updateManager.updateCheckFrequency.rawValue) {
+          Menu {
             ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
               Button(frequency.rawValue) {
                 updateManager.updateCheckFrequency = frequency
                 updateManager.saveSettings()
               }
             }
+          } label: {
+            Label(updateManager.updateCheckFrequency.rawValue, systemImage: "calendar")
           }
           
           /*
