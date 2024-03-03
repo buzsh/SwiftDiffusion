@@ -39,6 +39,16 @@ struct UpdatesView: View {
       
       if showUpdateFrequencySection {
         VStack {
+          Menu(updateManager.updateCheckFrequency.rawValue) {
+            ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
+              Button(frequency.rawValue) {
+                updateManager.updateCheckFrequency = frequency
+                updateManager.saveSettings()
+              }
+            }
+          }
+          
+          /*
           Menu {
             Picker("Update Frequency", selection: $updateManager.updateCheckFrequency) {
               ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
@@ -48,6 +58,7 @@ struct UpdatesView: View {
           } label: {
             Label("Update Frequency", systemImage: "calendar")
           }
+          */
         }
         .frame(width: 250, height: updateFrequencySectionHeight)
         .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),

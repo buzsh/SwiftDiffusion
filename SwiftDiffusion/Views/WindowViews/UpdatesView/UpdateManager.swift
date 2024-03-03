@@ -20,7 +20,7 @@ enum UpdateFrequency: String, CaseIterable {
 class UpdateManager: ObservableObject {
   @Published var lastCheckedTimestamp: Date?
   @Published var isCheckingForUpdate: Bool = false
-  var updateCheckFrequency: UpdateFrequency = .everyAppLaunch
+  @Published var updateCheckFrequency: UpdateFrequency = .everyAppLaunch
   
   init() {
     loadSettings()
