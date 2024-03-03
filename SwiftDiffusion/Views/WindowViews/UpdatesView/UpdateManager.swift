@@ -20,16 +20,13 @@ enum UpdateFrequency: String, CaseIterable {
 class UpdateManager: ObservableObject {
   @Published var lastCheckedTimestamp: Date?
   @Published var isCheckingForUpdate: Bool = false
-  private var updateCheckFrequency: UpdateFrequency = .everyAppLaunch // Default value, load this from user preferences
+  var updateCheckFrequency: UpdateFrequency = .everyAppLaunch
   
   init() {
-    // Initialize from saved settings, if available
     loadSettings()
   }
   
   func loadSettings() {
-    // Load your saved frequency and last checked timestamp here
-    // For demonstration, using UserDefaults (not recommended for production)
     if let frequencyRawValue = UserDefaults.standard.string(forKey: "updateCheckFrequency"),
        let frequency = UpdateFrequency(rawValue: frequencyRawValue) {
       updateCheckFrequency = frequency
@@ -38,7 +35,6 @@ class UpdateManager: ObservableObject {
   }
   
   func saveSettings() {
-    // Save your frequency and last checked timestamp here
     UserDefaults.standard.set(updateCheckFrequency.rawValue, forKey: "updateCheckFrequency")
     UserDefaults.standard.set(lastCheckedTimestamp, forKey: "lastCheckedTimestamp")
   }
@@ -46,9 +42,9 @@ class UpdateManager: ObservableObject {
   func checkForUpdatesIfNeeded() async {
     guard shouldCheckForUpdates() else { return }
     
-    isCheckingForUpdate = true // Indicate that checking for updates has started
+    isCheckingForUpdate = true
     let updateAvailable = await checkForUpdates()
-    isCheckingForUpdate = false // Reset the flag after checking
+    isCheckingForUpdate = false
     
     if updateAvailable {
       // If true, there is an update available. Open the UpdatesView with download button.
@@ -56,7 +52,6 @@ class UpdateManager: ObservableObject {
       // You might post a notification, use a state manager, etc., to switch the view.
     }
     
-    // Update the last checked timestamp regardless of update availability
     lastCheckedTimestamp = Date()
     saveSettings()
   }
@@ -88,5 +83,18 @@ class UpdateManager: ObservableObject {
     // Here, you would check for updates. This is a placeholder for your update logic.
     // Return true if an update is available, false otherwise.
     return false // Placeholder return value
+  }
+}
+
+extension UpdateManager {
+  var lastCheckedTimestampFormatted: String {
+    if let lastChecked = lastCheckedTimestamp {
+      let formatter = DateFormatter()
+      formatter.dateStyle = .medium
+      formatter.timeStyle = .short
+      return formatter.string(from: lastChecked)
+    } else {
+      return "Never"
+    }
   }
 }

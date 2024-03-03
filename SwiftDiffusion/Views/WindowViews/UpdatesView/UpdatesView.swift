@@ -25,10 +25,33 @@ struct AppInfo {
 struct UpdatesView: View {
   @EnvironmentObject var updateManager: UpdateManager
   @State private var showUpdateFrequencySection: Bool = false
+  private let updateFrequencySectionHeight: CGFloat = 28
+  private let initialFrameHeight: CGFloat = 250
+  var expandedFrameHeight: CGFloat {
+    initialFrameHeight + updateFrequencySectionHeight
+  }
   
   var body: some View {
     VStack {
+      
       ToggleWithLabel(isToggled: .constant(true), header: "Automatically check for updates", description: "Checks for new releases on GitHub", showAllDescriptions: true)
+        .padding(.top, 10)
+      
+      if showUpdateFrequencySection {
+        VStack {
+          Menu {
+            Picker("Update Frequency", selection: $updateManager.updateCheckFrequency) {
+              ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
+                Text(frequency.rawValue).tag(frequency)
+              }
+            }
+          } label: {
+            Label("Update Frequency", systemImage: "calendar")
+          }
+        }
+        .frame(width: 250, height: updateFrequencySectionHeight)
+        .transition(.opacity.combined(with: .slide))
+      }
       
       Spacer()
       
@@ -46,27 +69,28 @@ struct UpdatesView: View {
         }
       }
       
-      if showUpdateFrequencySection {
-        Spacer()
-        
-        // MenuFrequency
-      }
-      
       Spacer()
       
-      Button(action: {
-        Debug.log("Button")
-      }) {
-        Text("Check for Updates")
+      Button("Check for Updates") {
+        Task {
+          await updateManager.checkForUpdatesIfNeeded()
+        }
       }
       .padding(.bottom, 10)
       
-      Text("Last checked: Today, 2:34 PM")
-        .font(.footnote)
-        .foregroundStyle(Color.secondary)
+      if let lastChecked = updateManager.lastCheckedTimestamp {
+        Text("Last checked: \(lastChecked, formatter: itemFormatter)")
+          .font(.footnote)
+          .foregroundStyle(Color.secondary)
+      } else {
+        Text("Last checked: Never")
+          .font(.footnote)
+          .foregroundStyle(Color.secondary)
+      }
     }
     .padding()
-    .frame(width: 400, height: 250)
+    .frame(width: 400, height: showUpdateFrequencySection ? expandedFrameHeight : initialFrameHeight)
+    .animation(.easeInOut, value: showUpdateFrequencySection)
     
     .navigationTitle("Updates")
     .toolbar {
@@ -76,6 +100,7 @@ struct UpdatesView: View {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
             .scaleEffect(0.5)
+            .opacity(updateManager.isCheckingForUpdate ? 1 : 0)
           
           Button(action: {
             withAnimation {
@@ -83,18 +108,29 @@ struct UpdatesView: View {
             }
           }) {
             Image(systemName: "clock")
+              .foregroundStyle(showUpdateFrequencySection ? .blue : .secondary)
           }
           
         }
       }
     }
   }
+  private var itemFormatter: DateFormatter {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .medium
+    formatter.timeStyle = .short
+    return formatter
+  }
   
 }
 
 #Preview {
-  UpdatesView()
-    .frame(width: 400, height: 250)
+  let updateManager = UpdateManager()
+  updateManager.loadSettings()
+  
+  return UpdatesView()
+    .frame(idealWidth: 400, idealHeight: 250)
+    .environmentObject(updateManager)
 }
 
 // MARK: ToggleWithLabel
