@@ -50,7 +50,8 @@ struct UpdatesView: View {
           }
         }
         .frame(width: 250, height: updateFrequencySectionHeight)
-        .transition(.opacity.combined(with: .slide))
+        .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
+                                removal: .move(edge: .top).combined(with: .opacity)))
       }
       
       Spacer()
