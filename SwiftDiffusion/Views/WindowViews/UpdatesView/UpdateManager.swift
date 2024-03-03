@@ -21,6 +21,7 @@ class UpdateManager: ObservableObject {
   @Published var lastCheckedTimestamp: Date?
   @Published var isCheckingForUpdate: Bool = false
   @Published var updateCheckFrequency: UpdateFrequency = .everyAppLaunch
+  @Published var checkForUpdatesErrorMessage: String? = nil
   
   init() {
     loadSettings()
@@ -42,19 +43,24 @@ class UpdateManager: ObservableObject {
   func checkForUpdatesIfNeeded(force: Bool = false) async {
     guard force || shouldCheckForUpdates() else { return }
     
-    isCheckingForUpdate = true
-    let updateAvailable = await checkForUpdates()
-    isCheckingForUpdate = false
+    await MainActor.run { self.isCheckingForUpdate = true }
     
-    if updateAvailable {
-      Debug.log("updateAvailable!")
-      // If true, there is an update available. Open the UpdatesView with download button.
-      // This part will depend on your app's architecture.
-      // You might post a notification, use a state manager, etc., to switch the view.
+    do {
+      let updateAvailable = try await checkForUpdates()
+      await MainActor.run {
+        self.isCheckingForUpdate = false
+        if updateAvailable {
+          Debug.log("updateAvailable!")
+        }
+        self.lastCheckedTimestamp = Date()
+        self.saveSettings()
+      }
+    } catch {
+      await MainActor.run {
+        self.checkForUpdatesErrorMessage = error.localizedDescription
+        self.isCheckingForUpdate = false
+      }
     }
-    
-    lastCheckedTimestamp = Date()
-    saveSettings()
   }
   
   private func shouldCheckForUpdates() -> Bool {
@@ -80,7 +86,7 @@ class UpdateManager: ObservableObject {
     }
   }
   
-  func checkForUpdates() async -> Bool {
+  func checkForUpdates() async throws -> Bool {
     guard let url = URL(string: "https://github.com/revblaze/ReleaseParsingTest/releases") else {
       Debug.log("Invalid URL")
       return false

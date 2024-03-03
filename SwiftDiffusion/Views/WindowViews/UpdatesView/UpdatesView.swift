@@ -79,6 +79,7 @@ struct UpdatesView: View {
         }
       }
       .padding(.bottom, 10)
+      .disabled(updateManager.isCheckingForUpdate)
       
       if let lastChecked = updateManager.lastCheckedTimestamp {
         Text("Last checked: \(lastChecked, formatter: itemFormatter)")
