@@ -69,11 +69,12 @@ extension PromptView {
     }
   }
   /// Asynchronously checks the system pasteboard for generation data and updates a flag accordingly. Intended to be used on the main actor to ensure UI updates are handled correctly.
-  @MainActor
   func checkPasteboardAndUpdateFlag() async {
     if let pasteboardContent = getPasteboardString() {
       let hasData = userHasGenerationDataInPasteboard(from: pasteboardContent)
-      generationDataInPasteboard = hasData
+      await MainActor.run {
+        generationDataInPasteboard = hasData
+      }
     }
   }
   /// Determines if the pasteboard content contains generation data by looking for specific keywords.

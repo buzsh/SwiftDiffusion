@@ -37,6 +37,11 @@ struct ApiCheckpointRow: View {
                   }
                 }
               Spacer()
+              Button("Load") {
+                Task {
+                  await checkpointsManager.getLoadedCheckpointModelFromApi()
+                }
+              }
             }
             
             TextEditor(text: $selectedSidebarItemApiPayload)

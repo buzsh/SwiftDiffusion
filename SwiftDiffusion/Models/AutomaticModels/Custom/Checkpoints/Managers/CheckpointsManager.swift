@@ -54,7 +54,6 @@ class CheckpointsManager: ObservableObject {
   
   func stopObservingDirectory() {
     directoryObserver?.stopObserving()
-    
     updateFlagForHasLoadedInitialCheckpointDataFromApi(to: false)
   }
 }
