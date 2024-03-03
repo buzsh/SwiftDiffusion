@@ -99,7 +99,7 @@ class UpdateManager: ObservableObject {
       let releases = parseReleases(from: html)
       if !releases.isEmpty {
         for release in releases {
-          Debug.log("GitReleases\n > Title: \(release.releaseTitle)\n > Build Number: \(release.releaseBuildNumber)")
+          Debug.log("GitReleases\n > Title: \(release.releaseTitle)\n > Build Number: \(release.releaseBuildNumber)\n > Release Date: \(release.releaseDate)\n Release Tag: \(release.releaseTag)")
         }
         return true
       } else {
@@ -132,7 +132,6 @@ struct GitRelease {
   var releaseDate: String
   var releaseTag: String
   var releaseBuildNumber: Int
-  var releaseAssets: [String: String]
 }
 
 
@@ -147,15 +146,23 @@ extension UpdateManager {
     var releases: [GitRelease] = []
     
     for section in sections {
-      if let title = extractTitle(from: section),
-         let buildNumber = extractBuildNumber(from: section) {
-        let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
+      let title = extractTitle(from: section)
+      let buildNumber = extractBuildNumber(from: section)
+      let releaseDate = extractReleaseDate(from: section)
+      let releaseTag = extractReleaseTag(from: section)
+      
+      if let title = title, let buildNumber = buildNumber {
+        let release = GitRelease(releaseTitle: title,
+                                 releaseDate: releaseDate ?? "Unknown Date",
+                                 releaseTag: releaseTag ?? "Unknown Tag",
+                                 releaseBuildNumber: buildNumber)
         releases.append(release)
       }
     }
     
     return releases
   }
+  
   
   
   func extractTitle(from section: String) -> String? {
@@ -175,5 +182,51 @@ extension UpdateManager {
     }
     return Int(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound].filter("0123456789".contains))
   }
+  
+  func extractReleaseDate(from section: String) -> String? {
+    Debug.log("Attempting to extract release date from section: \(section.prefix(500))")
+    
+    guard let dateStartRange = section.range(of: "<relative-time class=\"no-wrap\" prefix=\"\" datetime=\"") else {
+      Debug.log("No <relative-time> tag found in section.")
+      return nil
+    }
+    
+    let dateStartIndex = section.index(dateStartRange.upperBound, offsetBy: 0)
+    if let dateEndIndex = section[dateStartIndex...].firstIndex(of: "\"") {
+      let date = section[dateStartIndex..<dateEndIndex]
+      Debug.log("Extracted release date: \(date)")
+      return String(date)
+    } else {
+      Debug.log("No closing quote for datetime attribute found.")
+    }
+    
+    return nil
+  }
+  
+  
+  func extractReleaseTag(from section: String) -> String? {
+    Debug.log("Attempting to extract release tag from section: \(section.prefix(2000))")
+    
+    if let tagUrlStartRange = section.range(of: "href=\"/revblaze/ReleaseParsingTest/tree/") {
+      let tagUrlEndIndex = section[tagUrlStartRange.upperBound...].firstIndex(of: "\"") ?? section.endIndex
+      let tagUrl = section[tagUrlStartRange.upperBound..<tagUrlEndIndex]
+      
+      if let tagStartIndex = tagUrl.lastIndex(of: "/") {
+        let tag = tagUrl[tagUrl.index(after: tagStartIndex)...]
+        Debug.log("Extracted release tag from URL: \(tag)")
+        return String(tag)
+      } else {
+        Debug.log("No '/' found in tag URL.")
+      }
+    } else {
+      Debug.log("No <a href> tag with release tag found in section.")
+    }
+    
+    return nil
+  }
+  
+  
+  
+  
   
 }
