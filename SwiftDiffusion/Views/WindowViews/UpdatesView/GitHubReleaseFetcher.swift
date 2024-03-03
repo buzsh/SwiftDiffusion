@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GitRelease {
+struct GitHubRelease {
   var releaseTitle: String?
   var releaseDate: String?
   var releaseTag: String?
@@ -31,7 +31,7 @@ class GitHubReleaseFetcher {
     return String(decoding: data, as: UTF8.self)
   }
   
-  func checkForUpdates() async throws -> [GitRelease] {
+  func checkForUpdates() async throws -> [GitHubRelease] {
     let html = try await fetchReleasesPage()
     return parseReleases(from: html)
   }
@@ -41,9 +41,9 @@ class GitHubReleaseFetcher {
     return String(decoding: data, as: UTF8.self)
   }
   
-  func parseReleases(from html: String) -> [GitRelease] {
+  func parseReleases(from html: String) -> [GitHubRelease] {
     let sections = html.components(separatedBy: "<section aria-labelledby=").dropFirst()
-    var releases: [GitRelease] = []
+    var releases: [GitHubRelease] = []
     
     for section in sections {
       let title = extractTitle(from: section)
@@ -53,19 +53,17 @@ class GitHubReleaseFetcher {
       let releaseDownloadUrlString = extractReleaseDownloadUrl(from: section)
       
       if let title = title, let buildNumber = buildNumber {
-        let release = GitRelease(releaseTitle: title,
-                                 releaseDate: releaseDate,
-                                 releaseTag: releaseTag,
-                                 releaseBuildNumber: buildNumber,
-                                 releaseDownloadUrlString: releaseDownloadUrlString)
+        let release = GitHubRelease(releaseTitle: title,
+                                    releaseDate: releaseDate,
+                                    releaseTag: releaseTag,
+                                    releaseBuildNumber: buildNumber,
+                                    releaseDownloadUrlString: releaseDownloadUrlString)
         releases.append(release)
       }
     }
     
     return releases
   }
-  
-  
   
   func extractTitle(from section: String) -> String? {
     guard let titleStartRange = section.range(of: "<h2"),

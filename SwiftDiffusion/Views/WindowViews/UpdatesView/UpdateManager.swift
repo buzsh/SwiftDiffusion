@@ -22,6 +22,8 @@ class UpdateManager: ObservableObject {
   @Published var isCheckingForUpdate: Bool = false
   @Published var updateCheckFrequency: UpdateFrequency = .everyAppLaunch
   @Published var checkForUpdatesErrorMessage: String? = nil
+  @Published var githubReleases: [GitHubRelease] = []
+  @Published var latestRelease: GitHubRelease? = nil
   
   init() {
     loadSettings()
@@ -50,7 +52,12 @@ class UpdateManager: ObservableObject {
       await MainActor.run {
         self.isCheckingForUpdate = false
         if updateAvailable {
-          Debug.log("updateAvailable!")
+          Debug.log("Update Available!")
+          if let release = latestRelease {
+            Debug.log("latestRelease: GitRelease =\n > Title: \(String(describing: release.releaseTitle))\n > Build Number: \(String(describing: release.releaseBuildNumber))\n > Release Date: \(String(describing: release.releaseDate))\n > Release Tag: \(String(describing: release.releaseTag))\n > Download URL: \(String(describing: release.releaseDownloadUrlString))")
+          } else {
+            Debug.log("latestRelease: GitRelease = nil")
+          }
         }
         self.lastCheckedTimestamp = Date()
         self.saveSettings()
@@ -91,15 +98,27 @@ class UpdateManager: ObservableObject {
     let releases = try await fetcher.checkForUpdates()
     
     if !releases.isEmpty {
+      githubReleases = releases
       
-      for release in releases {
+      for release in githubReleases {
         Debug.log("GitReleases\n > Title: \(String(describing: release.releaseTitle))\n > Build Number: \(String(describing: release.releaseBuildNumber))\n > Release Date: \(String(describing: release.releaseDate))\n > Release Tag: \(String(describing: release.releaseTag))\n > Download URL: \(String(describing: release.releaseDownloadUrlString))")
       }
       
-      return true
+      return compareCurrentAppBuildToGitHubReleases()
     } else {
       return false
     }
+  }
+  
+  func compareCurrentAppBuildToGitHubReleases() -> Bool {
+    guard let highestBuildRelease = githubReleases
+      .filter({ $0.releaseBuildNumber ?? 0 > AppInfo.buildInt })
+      .max(by: { ($0.releaseBuildNumber ?? 0) < ($1.releaseBuildNumber ?? 0) }) else {
+      return false
+    }
+    
+    latestRelease = highestBuildRelease
+    return true
   }
   
 }
