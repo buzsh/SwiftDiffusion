@@ -13,6 +13,7 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
   var scriptManager = ScriptManager.shared
+  let updateManager = UpdateManager()
   let sidebarModel = SidebarModel()
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
@@ -48,6 +49,7 @@ struct SwiftDiffusionApp: App {
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(scriptManager)
+        .environmentObject(updateManager)
         .environmentObject(sidebarModel)
         .environmentObject(checkpointsManager)
         .environmentObject(currentPrompt)

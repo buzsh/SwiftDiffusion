@@ -11,21 +11,20 @@ struct AppInfo {
   static var version: String {
     Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
   }
-  
   static var buildString: String {
     Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
   }
-  
   static var buildInt: Int {
     Int(buildString) ?? 0
   }
-  
   static var versionAndBuild: String {
     "v\(version) (\(buildString))"
   }
 }
 
 struct UpdatesView: View {
+  @EnvironmentObject var updateManager: UpdateManager
+  @State private var showUpdateFrequencySection: Bool = false
   
   var body: some View {
     VStack {
@@ -38,13 +37,19 @@ struct UpdatesView: View {
           .foregroundStyle(Color.green)
           .padding(.trailing, 2)
         VStack(alignment: .leading) {
-          Text("You are running the latest version.")
+          Text("You are on the latest version.")
             .bold()
             .padding(.bottom, 1)
           Text("SwiftDiffusion \(AppInfo.versionAndBuild)")
             .font(.system(size: 12, weight: .medium))
             .foregroundStyle(.secondary)
         }
+      }
+      
+      if showUpdateFrequencySection {
+        Spacer()
+        
+        // MenuFrequency
       }
       
       Spacer()
@@ -73,9 +78,11 @@ struct UpdatesView: View {
             .scaleEffect(0.5)
           
           Button(action: {
-            Debug.log("Button")
+            withAnimation {
+              showUpdateFrequencySection.toggle()
+            }
           }) {
-            Image(systemName: "info.circle")
+            Image(systemName: "clock")
           }
           
         }

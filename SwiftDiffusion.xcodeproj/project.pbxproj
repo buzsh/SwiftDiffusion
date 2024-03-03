@@ -108,6 +108,7 @@
 		29C06C282B93CC8F00F950C4 /* URLParserUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */; };
 		29C06C2B2B93DD0F00F950C4 /* BetaOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2A2B93DD0F00F950C4 /* BetaOnboardingView.swift */; };
 		29C06C2D2B940D8200F950C4 /* BlueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2C2B940D8200F950C4 /* BlueButton.swift */; };
+		29C06C2F2B94C55900F950C4 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2E2B94C55900F950C4 /* UpdateManager.swift */; };
 		29C0F35F2B79BDA80017DD6B /* NotificationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */; };
 		29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */; };
 		29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */; };
@@ -248,6 +249,7 @@
 		29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLParserUtility.swift; sourceTree = "<group>"; };
 		29C06C2A2B93DD0F00F950C4 /* BetaOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaOnboardingView.swift; sourceTree = "<group>"; };
 		29C06C2C2B940D8200F950C4 /* BlueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButton.swift; sourceTree = "<group>"; };
+		29C06C2E2B94C55900F950C4 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		29C0F35E2B79BDA80017DD6B /* NotificationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUtility.swift; sourceTree = "<group>"; };
 		29C0F3622B79C8020017DD6B /* FullscreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenImageView.swift; sourceTree = "<group>"; };
 		29C0F3642B79C81F0017DD6B /* ImageWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowManager.swift; sourceTree = "<group>"; };
@@ -916,6 +918,7 @@
 			isa = PBXGroup;
 			children = (
 				29C0F36E2B7A5C3D0017DD6B /* UpdatesView.swift */,
+				29C06C2E2B94C55900F950C4 /* UpdateManager.swift */,
 			);
 			path = UpdatesView;
 			sourceTree = "<group>";
@@ -1117,6 +1120,7 @@
 				29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */,
 				29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */,
 				2916F3372B72859D001D14B9 /* DetailView.swift in Sources */,
+				29C06C2F2B94C55900F950C4 /* UpdateManager.swift in Sources */,
 				29C0F3822B7ABF210017DD6B /* FilesSection.swift in Sources */,
 				29169D102B8EADDF0099A9C5 /* SidebarFolder.swift in Sources */,
 				29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */,

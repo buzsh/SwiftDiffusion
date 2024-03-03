@@ -30,6 +30,7 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @Environment(\.modelContext) var modelContext
+  @EnvironmentObject var updateManager: UpdateManager
   @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
