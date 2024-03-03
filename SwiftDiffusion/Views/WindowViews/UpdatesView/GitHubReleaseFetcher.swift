@@ -15,6 +15,12 @@ struct GitHubRelease {
   var releaseDownloadUrlString: String?
 }
 
+extension GitHubRelease: Equatable {
+  static func == (lhs: GitHubRelease, rhs: GitHubRelease) -> Bool {
+    lhs.releaseBuildNumber == rhs.releaseBuildNumber
+  }
+}
+
 class GitHubReleaseFetcher {
   let urlString: String
   
