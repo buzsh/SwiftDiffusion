@@ -58,6 +58,9 @@ struct SidebarFolderView: View {
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
         VStack(spacing: 0) {
           SidebarFolderItem(folder: folder)
+            .onDrag {
+              return NSItemProvider(object: String(folder.id.uuidString) as NSString)
+            }
             .onTapGesture {
               withAnimation {
                 sidebarModel.setCurrentFolder(to: folder)
@@ -109,7 +112,6 @@ struct SidebarFolderView: View {
         .frame(width: 20)
       Text("New Folder")
       Spacer()
-      
     }
     .foregroundStyle(.secondary)
     .padding(.vertical, 8).padding(.horizontal, 4)

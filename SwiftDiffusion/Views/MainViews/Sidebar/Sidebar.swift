@@ -61,7 +61,7 @@ struct Sidebar: View {
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
     }
     .onChange(of: sidebarModel.beginMovableSidebarItemQueue) {
-      moveItemInItemQueue()
+      moveItemInQueue() //moveItemInItemQueue()
     }
     .onChange(of: sidebarModel.currentFolder) {
       if let currentFolder = sidebarModel.currentFolder {
@@ -107,8 +107,8 @@ struct Sidebar: View {
     Debug.log("[Sidebar] From ID: \(String(describing: currentItemID)), To ID: \(String(describing: newItemID))")
 
     
-    let currentlySelectedItem = sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
-    let newlySelectedSidebarItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
+    let currentlySelectedItem = sidebarModel.findSidebarItemById(currentItemID, in: sidebarFolders)//sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
+    let newlySelectedSidebarItem = sidebarModel.findSidebarItemById(newItemID, in: sidebarFolders)//sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
     if let currentlySelectedItem = currentlySelectedItem {
       sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
@@ -151,7 +151,6 @@ struct Sidebar: View {
 }
 
 extension Sidebar {
-  
   // Utility function to find a SidebarFolder by ID
   func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {
     Debug.log("[Sidebar] findSidebarFolder - Searching for ID: \(String(describing: id))")
@@ -198,9 +197,23 @@ extension Sidebar {
     }
     return nil
   }
-  
 }
 
+extension Sidebar {
+  func findParentFolderForFolder(_ folderId: UUID) -> SidebarFolder? {
+    func search(in folders: [SidebarFolder]) -> SidebarFolder? {
+      for folder in folders {
+        if folder.folders.contains(where: { $0.id == folderId }) {
+          return folder
+        } else if let found = search(in: folder.folders) {
+          return found
+        }
+      }
+      return nil
+    }
+    return search(in: sidebarFolders)
+  }
+}
 
 extension Sidebar {
   func cleanUpEmptyWorkspaceItemsIfNecessary() {

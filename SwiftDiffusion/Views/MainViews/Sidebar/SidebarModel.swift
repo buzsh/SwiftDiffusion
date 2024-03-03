@@ -35,6 +35,8 @@ class SidebarModel: ObservableObject {
   @Published var queueMovableSidebarItemID: UUID? = nil
   @Published var queueDestinationFolderID: UUID? = nil
   @Published var beginMovableSidebarItemQueue: Bool = false
+  @Published var queueMovableFolderID: UUID? = nil
+  @Published var beginMovableFolderQueue: Bool = false
   
   @Published var workspaceItemHasJustBeenRemoved: Bool = false
   @Published var sidebarItemHasJustBeenDeleted: Bool = false
@@ -65,6 +67,12 @@ class SidebarModel: ObservableObject {
     queueDestinationFolderID = folderId
     beginMovableSidebarItemQueue = true
   }
+  
+  func moveSidebarFolder(withId folderId: UUID, toFolderWithId targetFolderId: UUID) {
+      queueMovableFolderID = folderId
+      queueDestinationFolderID = targetFolderId
+      beginMovableFolderQueue = true
+    }
   
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
@@ -132,8 +140,6 @@ class SidebarModel: ObservableObject {
     }
     
     guard let currentItem = selectedSidebarItem, let currentIndex = sortedItems.firstIndex(of: currentItem) else {
-      // If no current selection or the current item is not found,
-      // select the first or last item based on the sorting order.
       setSelectedSidebarItem(to: sortingOrder == .leastRecent ? sortedItems.first : sortedItems.last)
       return
     }
@@ -202,7 +208,6 @@ extension SidebarModel {
   }
   
   @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
     if workspaceFolderContains(sidebarItem: sidebarItem) {
       let mapModelData = MapModelData()
       let updatedPrompt = mapModelData.toStored(promptModel: prompt)
@@ -214,18 +219,34 @@ extension SidebarModel {
       }
       
       selectedSidebarItem?.prompt = updatedPrompt
-      //selectedSidebarItem?.timestamp = Date()
       saveData(in: modelContext)
     }
   }
 }
 
+/*
 extension SidebarModel {
   func findSidebarItem(by id: UUID?, in sidebarFolders: [SidebarFolder]) -> SidebarItem? {
     guard let id = id else { return nil }
     for folder in sidebarFolders {
       if let foundItem = folder.items.first(where: { $0.id == id }) {
         return foundItem
+      }
+    }
+    return nil
+  }
+}
+ */
+
+extension SidebarModel {
+  func findSidebarItemById(_ id: UUID?, in sidebarFolders: [SidebarFolder]) -> SidebarItem? {
+    guard let id = id else { return nil }
+    for folder in sidebarFolders {
+      if let foundItem = folder.items.first(where: { $0.id == id }) {
+        return foundItem
+      }
+      if let foundItemInNestedFolder = findSidebarItemById(id, in: folder.folders) {
+        return foundItemInNestedFolder
       }
     }
     return nil
