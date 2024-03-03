@@ -75,16 +75,32 @@ struct UpdateView: View {
       
       Spacer()
       
-      Button(updateViewState.mainButtonText) {
+      HStack {
         if updateViewState == .newVersionAvailable {
-          if let latestRelease = updateManager.latestRelease, let releaseUrl = latestRelease.releaseDownloadUrlString, let url = URL(string: releaseUrl) {
-            NSWorkspace.shared.open(url)
+          OutlineButton(title: "Open Releases") {
+            if let releasesUrl = URL(string: Constants.releasesUrl) {
+              NSWorkspace.shared.open(releasesUrl)
+            }
+          }
+          BlueButton(title: "Download Now") {
+            if let latestRelease = updateManager.latestRelease, let releaseUrl = latestRelease.releaseDownloadUrlString, let url = URL(string: releaseUrl) {
+              NSWorkspace.shared.open(url)
+            }
           }
         } else {
-          Task {
-            await updateManager.checkForUpdatesIfNeeded(force: true)
+          OutlineButton(title: updateViewState.mainButtonText) {
+            if updateViewState == .newVersionAvailable {
+              if let latestRelease = updateManager.latestRelease, let releaseUrl = latestRelease.releaseDownloadUrlString, let url = URL(string: releaseUrl) {
+                NSWorkspace.shared.open(url)
+              }
+            } else {
+              Task {
+                await updateManager.checkForUpdatesIfNeeded(force: true)
+              }
+            }
           }
         }
+        
       }
       .padding(.bottom, 10)
       .disabled(updateManager.isCheckingForUpdate)
@@ -94,6 +110,7 @@ struct UpdateView: View {
       .onChange(of: updateManager.currentBuildIsLatestVersion) {
         updateViewStateBasedOnManager()
       }
+      
       
       if let lastChecked = updateManager.lastCheckedTimestamp {
         Text("Last checked: \(lastChecked, formatter: itemFormatter)")

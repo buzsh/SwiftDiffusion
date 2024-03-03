@@ -17,6 +17,9 @@ enum UpdateFrequency: String, CaseIterable {
   case monthly = "Monthly"
 }
 
+extension Constants {
+  static let releasesUrl: String = "https://github.com/revblaze/ReleaseParsingTest/releases"
+}
 
 class UpdateManager: ObservableObject {
   @Published var lastCheckedTimestamp: Date?
@@ -110,7 +113,7 @@ class UpdateManager: ObservableObject {
   }
   
   func checkForUpdates() async throws -> Bool {
-    let fetcher = GitHubReleaseFetcher(urlString: "https://github.com/revblaze/ReleaseParsingTest/releases")
+    let fetcher = GitHubReleaseFetcher(urlString: Constants.releasesUrl)
     let releases = try await fetcher.checkForUpdates()
     
     if !releases.isEmpty {
