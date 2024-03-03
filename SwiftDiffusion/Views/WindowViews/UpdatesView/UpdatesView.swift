@@ -184,22 +184,24 @@ struct UpdatesView: View {
             Image(systemName: "clock")
               .foregroundStyle(showUpdateFrequencySection ? .blue : .secondary)
           }
-          
         }
       }
     }
   }
+  
   func updateViewStateBasedOnManager() {
-    if updateManager.isCheckingForUpdate {
-      updateViewState = .checkingForUpdate
-    } else if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
-      if currentBuildIsLatestVersion == false {
-        updateViewState = .newVersionAvailable
+    withAnimation {
+      if updateManager.isCheckingForUpdate {
+        updateViewState = .checkingForUpdate
+      } else if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion {
+        if currentBuildIsLatestVersion == false {
+          updateViewState = .newVersionAvailable
+        } else {
+          updateViewState = .latestVersion
+        }
       } else {
-        updateViewState = .latestVersion
+        updateViewState = .defaultState
       }
-    } else {
-      updateViewState = .defaultState
     }
   }
   
@@ -209,7 +211,6 @@ struct UpdatesView: View {
     formatter.timeStyle = .short
     return formatter
   }
-  
 }
 
 #Preview {

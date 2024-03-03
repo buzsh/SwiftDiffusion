@@ -90,6 +90,10 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
+      if hasLaunchedBefore {
+        checkForUpdatesIfAutomaticUpdatesAreEnabled()
+      }
+      
       scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
@@ -298,6 +302,16 @@ struct ContentView: View {
     }
   }
   
+  func checkForUpdatesIfAutomaticUpdatesAreEnabled() {
+    Task {
+      await updateManager.checkForUpdatesIfNeeded()
+      if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion,
+      currentBuildIsLatestVersion == false {
+        WindowManager.shared.showUpdatesWindow(updateManager: updateManager)
+      }
+    }
+  }
+
 }
 
 #Preview {

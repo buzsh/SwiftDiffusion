@@ -9,7 +9,8 @@ import Foundation
 import SwiftUI
 
 enum UpdateFrequency: String, CaseIterable {
-  case everyAppLaunch = "Every App Launch"
+  case everyAppLaunch = "On Launch"
+  case hourly = "Hourly"
   case daily = "Daily"
   case weekly = "Weekly"
   case everyOtherWeek = "Every Other Week"
@@ -91,8 +92,11 @@ class UpdateManager: ObservableObject {
     switch updateCheckFrequency {
     case .everyAppLaunch:
       return true
+    case .hourly:
+      let hourAgo = calendar.date(byAdding: .hour, value: -1, to: now)!
+      return lastChecked < hourAgo
     case .daily:
-      return calendar.isDate(lastChecked, inSameDayAs: now) == false
+      return !calendar.isDate(lastChecked, inSameDayAs: now)
     case .weekly:
       return !calendar.isDate(lastChecked, equalTo: now, toGranularity: .weekOfYear)
     case .everyOtherWeek:
@@ -131,7 +135,6 @@ class UpdateManager: ObservableObject {
     latestRelease = highestBuildRelease
     return true
   }
-  
 }
 
 extension UpdateManager {
