@@ -63,7 +63,7 @@ struct SwiftDiffusionApp: App {
         Divider()
         
         Button("Check for Updates...") {
-          WindowManager.shared.showUpdatesWindow()
+          WindowManager.shared.showUpdatesWindow(updateManager: updateManager)
         }
         .keyboardShortcut("U", modifiers: [.command])
         
