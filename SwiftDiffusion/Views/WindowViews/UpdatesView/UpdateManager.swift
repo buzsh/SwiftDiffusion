@@ -147,21 +147,33 @@ extension UpdateManager {
     var releases: [GitRelease] = []
     
     for section in sections {
-      if let titleStartRange = section.range(of: "<h2"),
-         let titleCloseTagRange = section.range(of: ">", range: titleStartRange.upperBound..<section.endIndex),
-         let titleEndRange = section.range(of: "</h2>", range: titleCloseTagRange.upperBound..<section.endIndex) {
-        let title = String(section[titleCloseTagRange.upperBound..<titleEndRange.lowerBound])
-          .trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if let buildNumberStartRange = section.range(of: "<sup><code>b"),
-           let buildNumberEndRange = section.range(of: "</code></sup>", range: buildNumberStartRange.upperBound..<section.endIndex),
-           let buildNumber = Int(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound].filter("0123456789".contains)) {
-          let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
-          releases.append(release)
-        }
+      if let title = extractTitle(from: section),
+         let buildNumber = extractBuildNumber(from: section) {
+        let release = GitRelease(releaseTitle: title, releaseDate: "", releaseTag: "", releaseBuildNumber: buildNumber, releaseAssets: [:])
+        releases.append(release)
       }
     }
     
     return releases
   }
+  
+  
+  func extractTitle(from section: String) -> String? {
+    guard let titleStartRange = section.range(of: "<h2"),
+          let titleCloseTagRange = section.range(of: ">", range: titleStartRange.upperBound..<section.endIndex),
+          let titleEndRange = section.range(of: "</h2>", range: titleCloseTagRange.upperBound..<section.endIndex) else {
+      return nil
+    }
+    return String(section[titleCloseTagRange.upperBound..<titleEndRange.lowerBound])
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+  
+  func extractBuildNumber(from section: String) -> Int? {
+    guard let buildNumberStartRange = section.range(of: "<sup><code>b"),
+          let buildNumberEndRange = section.range(of: "</code></sup>", range: buildNumberStartRange.upperBound..<section.endIndex) else {
+      return nil
+    }
+    return Int(section[buildNumberStartRange.upperBound..<buildNumberEndRange.lowerBound].filter("0123456789".contains))
+  }
+  
 }
