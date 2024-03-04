@@ -29,9 +29,11 @@ class SidebarModel: ObservableObject {
   @Published var widthOffset: CGFloat = 32 // 50
   
   @Published var applyCustomLeadingInsets = false
-  
+  // TODO: Do we need?
   @Published var updateControlBarView: Bool = false
-  @Published var promptUserToConfirmDeletion: Bool = false
+  
+  @Published var queueWorkspaceItemForDeletion: SidebarItem? = nil
+  @Published var queueStoredSidebarItemForDeletion: SidebarItem? = nil
   
   @Published var queueMovableSidebarItemID: UUID? = nil
   @Published var queueDestinationFolderID: UUID? = nil

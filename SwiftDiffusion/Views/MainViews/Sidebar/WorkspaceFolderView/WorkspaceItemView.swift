@@ -25,9 +25,9 @@ struct WorkspaceItemView: View {
   var progressBarColor: Color {
     switch colorScheme {
     case .light:
-      return Color(0x2984F2)
+      return Color(0x2984F2).opacity(0.5)
     default:
-      return Color(0x1C5EC8)
+      return Color(0x1C5EC8).opacity(0.6)
     }
   }
   
@@ -65,12 +65,16 @@ struct WorkspaceItemView: View {
         .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
       }
     )
-    
-    
     .onChange(of: currentPrompt.positivePrompt) {
       if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {
         let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
         sidebarModel.setSelectedWorkspaceItemTitle(trimmedPrompt, in: modelContext)
+      }
+    }
+    .onChange(of: sidebarModel.queueWorkspaceItemForDeletion) {
+      if let workspaceItem = sidebarModel.queueWorkspaceItemForDeletion {
+        sidebarModel.workspaceFolder?.remove(item: workspaceItem)
+        sidebarModel.saveData(in: modelContext)
       }
     }
     
