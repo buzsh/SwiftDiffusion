@@ -108,26 +108,73 @@ extension PromptModel {
   }
 }
 
-/*
-extension PromptModel {
-  @Published var selectedModel: CheckpointModel? {
-    didSet {
-      updatePromptPreferences()
+extension StoredPromptModel {
+  
+  func updateProperties(from model: StoredPromptModel) {
+    Debug.log("updateProperties from\n        selectedModel: \(String(describing: selectedModel?.name))")
+    //Debug.log("        checkpointMetadata.title: \(String(describing: selectedModel?.checkpointApiModel?.title))")
+    self.selectedModel = model.selectedModel
+    self.samplingMethod = model.samplingMethod
+    self.positivePrompt = model.positivePrompt
+    self.negativePrompt = model.negativePrompt
+    self.width = model.width
+    self.height = model.height
+    self.cfgScale = model.cfgScale
+    self.samplingSteps = model.samplingSteps
+    self.seed = model.seed
+    self.batchCount = model.batchCount
+    self.batchSize = model.batchSize
+    self.clipSkip = model.clipSkip
+    // Additional Settings
+    self.vaeModel = model.vaeModel
+  }
+  
+  
+  func updateSamplingMethod(with name: String) {
+    if Constants.coreMLSamplingMethods.contains(name) || Constants.pythonSamplingMethods.contains(name) {
+      self.samplingMethod = name
+    } else {
+      Debug.log("No sampling method found with the name \(name)")
     }
   }
   
-  private func updatePromptPreferences() {
-    guard let model = selectedModel else { return }
-    samplingMethod = model.preferences.samplingMethod
-    if width == 512 && height == 512 {
-      width = model.preferences.width
-      height = model.preferences.height
+  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
+    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
+      let mapModelData = MapModelData()
+      self.vaeModel = mapModelData.toStoredVaeModel(from: matchingModel) 
+    } else {
+      Debug.log("No VAE Model found with the name \(name)")
     }
-    cfgScale = model.preferences.cfgScale
-    samplingSteps = model.preferences.samplingSteps
-    batchCount = model.preferences.batchCount
-    batchSize = model.preferences.batchSize
-    clipSkip = model.preferences.clipSkip
+  }
+  
+  
+  
+  func copyMetadataToClipboard() {
+    CopyPasteUtility.copyToClipboard(getSharablePromptMetadata())
+  }
+  
+  private func getSharablePromptMetadata() -> String {
+    var modelName = ""
+    if let name = selectedModel?.name { modelName = name }
+    var samplerName = ""
+    if let samplingMethod = samplingMethod { samplerName = samplingMethod }
+    
+    var promptMetadata = "\(positivePrompt)\n"
+    promptMetadata += "Negative prompt: \(negativePrompt)\n"
+    promptMetadata += "Model: \(modelName)\n"
+    promptMetadata += "Sampler: \(samplerName)\n"
+    promptMetadata += "Size: \(width)x\(height)\n"
+    promptMetadata += "CFG scale: \(cfgScale)\n"
+    promptMetadata += "Steps: \(samplingSteps)\n"
+    promptMetadata += "Clip skip: \(clipSkip)\n"
+    promptMetadata += "Seed: \(seed)\n"
+    promptMetadata += "Batch count: \(batchCount)\n"
+    promptMetadata += "Batch size: \(batchSize)\n"
+    
+    if let vaeModel = vaeModel {
+      promptMetadata += "VAE: \(vaeModel.name)\n"
+    }
+    
+    return promptMetadata
   }
 }
-*/

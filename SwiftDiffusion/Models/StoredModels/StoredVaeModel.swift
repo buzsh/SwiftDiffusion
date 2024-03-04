@@ -21,7 +21,6 @@ class StoredVaeModel {
 
 extension MapModelData {
   
-  @MainActor
   func toStoredVaeModel(from vaeModel: VaeModel?) -> StoredVaeModel? {
     guard let vaeModel = vaeModel else { return nil }
     return StoredVaeModel(name: vaeModel.name,
@@ -29,7 +28,6 @@ extension MapModelData {
     )
   }
 
-  @MainActor
   func toVaeModel(from storedVaeModel: StoredVaeModel?) -> VaeModel? {
     guard let storedVaeModel = storedVaeModel else { return nil }
     

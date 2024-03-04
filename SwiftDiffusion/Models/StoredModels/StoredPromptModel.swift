@@ -10,7 +10,9 @@ import SwiftData
 
 @Model
 class StoredPromptModel {
-  @Attribute var isWorkspaceItem: Bool
+  @Relationship var parent: SidebarItem
+  //@Relationship(deleteRule: .cascade, inverse: \StoredPromptModel.parent) var selectedModel: StoredCheckpointModel
+  @Relationship var selectedModel: StoredCheckpointModel?
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
@@ -22,11 +24,12 @@ class StoredPromptModel {
   @Attribute var batchCount: Double = 1
   @Attribute var batchSize: Double = 1
   @Attribute var clipSkip: Double = 1
-  @Relationship var selectedModel: StoredCheckpointModel?
   @Relationship var vaeModel: StoredVaeModel?
 
-  init(isWorkspaceItem: Bool, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil, vaeModel: StoredVaeModel? = nil) {
-    self.isWorkspaceItem = isWorkspaceItem
+  init(parent: SidebarItem, selectedModel: StoredCheckpointModel? = nil, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, vaeModel: StoredVaeModel? = nil) {
+    self.parent = parent
+    // TODO: Rename "modelCheckpoint"
+    self.selectedModel = selectedModel
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
@@ -38,53 +41,6 @@ class StoredPromptModel {
     self.batchCount = batchCount
     self.batchSize = batchSize
     self.clipSkip = clipSkip
-    self.selectedModel = selectedModel
     self.vaeModel = vaeModel
   }
-}
-
-extension MapModelData {
-  
-  @MainActor 
-  func toStoredPromptModel(from promptModel: PromptModel) -> StoredPromptModel? {
-    let storedCheckpointModel = toStoredCheckpointModel(from: promptModel.selectedModel)
-    let storedVaeModel = toStoredVaeModel(from: promptModel.vaeModel)
-    return StoredPromptModel(
-                          isWorkspaceItem: promptModel.isWorkspaceItem,
-                          samplingMethod: promptModel.samplingMethod,
-                          positivePrompt: promptModel.positivePrompt,
-                          negativePrompt: promptModel.negativePrompt,
-                          width: promptModel.width,
-                          height: promptModel.height,
-                          cfgScale: promptModel.cfgScale,
-                          samplingSteps: promptModel.samplingSteps,
-                          seed: promptModel.seed,
-                          batchCount: promptModel.batchCount,
-                          batchSize: promptModel.batchSize,
-                          clipSkip: promptModel.clipSkip,
-                          selectedModel: storedCheckpointModel,
-                          vaeModel: storedVaeModel
-    )
-  }
-  
-  @MainActor 
-  func toPromptModel(from storedPromptModel: StoredPromptModel) -> PromptModel {
-    let promptModel = PromptModel()
-    promptModel.isWorkspaceItem = storedPromptModel.isWorkspaceItem
-    promptModel.samplingMethod = storedPromptModel.samplingMethod
-    promptModel.positivePrompt = storedPromptModel.positivePrompt
-    promptModel.negativePrompt = storedPromptModel.negativePrompt
-    promptModel.width = storedPromptModel.width
-    promptModel.height = storedPromptModel.height
-    promptModel.cfgScale = storedPromptModel.cfgScale
-    promptModel.samplingSteps = storedPromptModel.samplingSteps
-    promptModel.seed = storedPromptModel.seed
-    promptModel.batchCount = storedPromptModel.batchCount
-    promptModel.batchSize = storedPromptModel.batchSize
-    promptModel.clipSkip = storedPromptModel.clipSkip
-    promptModel.selectedModel = toCheckpointModel(from: storedPromptModel.selectedModel)
-    promptModel.vaeModel = toVaeModel(from: storedPromptModel.vaeModel)
-    return promptModel
-  }
-  
 }
