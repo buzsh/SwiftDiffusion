@@ -18,6 +18,7 @@ struct Sidebar: View {
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
   
+  /*
   @Query(filter: #Predicate<SidebarFolder> { folder in
     folder.isRoot == true
   }) private var queryRootFolders: [SidebarFolder]
@@ -25,7 +26,8 @@ struct Sidebar: View {
   @Query(filter: #Predicate<SidebarFolder> { folder in
     folder.isWorkspace == true
   }) private var queryWorkspaceFolders: [SidebarFolder]
-  
+  */
+   
   var body: some View {
     GeometryReader { geometry in
       VStack {
@@ -57,6 +59,11 @@ struct Sidebar: View {
       sidebarModel.cleanUpEmptyWorkspaceItemsIfNecessary()
       sidebarModel.createNewWorkspaceItem()
     }
+    .onChange(of: sidebarModel.currentFolder) { lastFolder, newFolder in
+      Debug.log("[SidebarModel] lastFolder: \(String(describing: lastFolder?.name))")
+      Debug.log("[SidebarModel]  newFolder: \(String(describing: newFolder?.name))")
+    }
+    
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
     }
