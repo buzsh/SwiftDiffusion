@@ -1,5 +1,3 @@
-<h3><p align="center"><a href="https://github.com/buzsh/SwiftDiffusion/releases">Pre-Release Available Now</a></p></h3>
-
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1400" alt="cover - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/97ad70fa-ff9c-4a3d-a033-9b974496f478">
