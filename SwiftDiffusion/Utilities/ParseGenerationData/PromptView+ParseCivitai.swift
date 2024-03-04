@@ -100,9 +100,9 @@ extension PromptView {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     parseLog(lines)
     
-    currentPrompt?.positivePrompt = buildPositivePrompt(from: lines)
+    currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
     
-    parseLog("positivePrompt: \(String(describing: currentPrompt?.positivePrompt))")
+    parseLog("positivePrompt: \(String(describing: currentPrompt.positivePrompt))")
     // Loop through each line of the pasteboard content
     var matchedCheckpointModel: CheckpointModel?
     for line in lines {
@@ -112,7 +112,7 @@ extension PromptView {
 
       if line.starts(with: "Negative prompt:") {
         let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
-        currentPrompt?.negativePrompt = negativePrompt
+        currentPrompt.negativePrompt = negativePrompt
       } else {
         let parameters = line.split(separator: ",").map(String.init)
         // Continue parsing for model
@@ -130,7 +130,7 @@ extension PromptView {
     
     if let checkpointModelToSelect = matchedCheckpointModel {
       let mapModelData = MapModelData()
-      currentPrompt?.selectedModel = mapModelData.toStoredCheckpointModel(from: checkpointModelToSelect)
+      currentPrompt.selectedModel = mapModelData.toStoredCheckpointModel(from: checkpointModelToSelect)
     }
     
   }
@@ -238,44 +238,44 @@ extension PromptView {
     case "Steps":
       parseLog("Steps: \(value)")
       if let stepsValue = Double(value) {
-        currentPrompt?.samplingSteps = stepsValue
+        currentPrompt.samplingSteps = stepsValue
       }
     case "Size":
       let sizeComponents = value.split(separator: "x").map(String.init)
       if sizeComponents.count == 2, let width = Double(sizeComponents[0]), let height = Double(sizeComponents[1]) {
-        currentPrompt?.width = width
-        currentPrompt?.height = height
+        currentPrompt.width = width
+        currentPrompt.height = height
       }
     case "Width":
       if let width = Double(value) {
-        currentPrompt?.width = width
+        currentPrompt.width = width
       }
     case "Height":
       if let height = Double(value) {
-        currentPrompt?.height = height
+        currentPrompt.height = height
       }
     case "Seed":
-      currentPrompt?.seed = value
+      currentPrompt.seed = value
     case "Sampler":
-      currentPrompt?.updateSamplingMethod(with: value)
+      currentPrompt.updateSamplingMethod(with: value)
     case "CFG scale":
       if let cfgScaleValue = Double(value) {
-        currentPrompt?.cfgScale = cfgScaleValue
+        currentPrompt.cfgScale = cfgScaleValue
       }
     case "Clip skip":
       if let clipSkipValue = Double(value) {
-        currentPrompt?.clipSkip = clipSkipValue
+        currentPrompt.clipSkip = clipSkipValue
       }
     case "Batch count":
       if let batchCount = Double(value) {
-        currentPrompt?.batchCount = batchCount
+        currentPrompt.batchCount = batchCount
       }
     case "Batch size":
       if let batchSize = Double(value) {
-        currentPrompt?.batchSize = batchSize
+        currentPrompt.batchSize = batchSize
       }
     case "VAE":
-      currentPrompt?.updateVaeModel(with: value, in: vaeModelsManager)
+      currentPrompt.updateVaeModel(with: value, in: vaeModelsManager)
     default:
       break
     }
@@ -285,18 +285,18 @@ extension PromptView {
   func logAllVariables() {
     var debugOutput = ""
     debugOutput += "currentPrompt.\n"
-    debugOutput += " selectedModel: \(String(describing: currentPrompt?.selectedModel?.name))\n"
-    debugOutput += "samplingMethod: \(String(describing: currentPrompt?.samplingMethod))\n"
-    debugOutput += "positivePrompt: \(String(describing: currentPrompt?.positivePrompt))\n"
-    debugOutput += "negativePrompt: \(String(describing: currentPrompt?.negativePrompt))\n"
-    debugOutput += "         width: \(String(describing: currentPrompt?.width))\n"
-    debugOutput += "        height: \(String(describing: currentPrompt?.height))\n"
-    debugOutput += "      cfgScale: \(String(describing: currentPrompt?.cfgScale))\n"
-    debugOutput += " samplingSteps: \(String(describing: currentPrompt?.samplingSteps))\n"
-    debugOutput += "          seed: \(String(describing: currentPrompt?.seed))\n"
-    debugOutput += "    batchCount: \(String(describing: currentPrompt?.batchCount))\n"
-    debugOutput += "     batchSize: \(String(describing: currentPrompt?.batchSize))\n"
-    debugOutput += "      clipSkip: \(String(describing: currentPrompt?.clipSkip))\n"
+    debugOutput += " selectedModel: \(String(describing: currentPrompt.selectedModel?.name))\n"
+    debugOutput += "samplingMethod: \(String(describing: currentPrompt.samplingMethod))\n"
+    debugOutput += "positivePrompt: \(String(describing: currentPrompt.positivePrompt))\n"
+    debugOutput += "negativePrompt: \(String(describing: currentPrompt.negativePrompt))\n"
+    debugOutput += "         width: \(String(describing: currentPrompt.width))\n"
+    debugOutput += "        height: \(String(describing: currentPrompt.height))\n"
+    debugOutput += "      cfgScale: \(String(describing: currentPrompt.cfgScale))\n"
+    debugOutput += " samplingSteps: \(String(describing: currentPrompt.samplingSteps))\n"
+    debugOutput += "          seed: \(String(describing: currentPrompt.seed))\n"
+    debugOutput += "    batchCount: \(String(describing: currentPrompt.batchCount))\n"
+    debugOutput += "     batchSize: \(String(describing: currentPrompt.batchSize))\n"
+    debugOutput += "      clipSkip: \(String(describing: currentPrompt.clipSkip))\n"
     Debug.log(debugOutput)
   }
   

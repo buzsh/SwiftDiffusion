@@ -28,6 +28,32 @@ extension ViewManager: Hashable, Identifiable {
   var id: Self { self }
 }
 
+struct ViewContainer: View {
+  @Environment(\.modelContext) var modelContext
+  @EnvironmentObject var sidebarModel: SidebarModel
+  var currentPrompt: StoredPromptModel?
+  var selectedView: ViewManager
+  
+  init(currentPrompt: StoredPromptModel?, selectedView: ViewManager) {
+    self.currentPrompt = currentPrompt
+    self.selectedView = selectedView
+  }
+  
+  var body: some View {
+    if let fallbackPrompt = sidebarModel.newWorkspaceItem(in: modelContext)?.prompt {
+      switch selectedView {
+      case .prompt:   PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackPrompt)
+      case .console:  ConsoleView()
+      case .split:    PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackPrompt)
+      }
+    }
+    
+    VStack {}
+  }
+  
+  
+}
+
 struct ContentView: View {
   @Environment(\.modelContext) var modelContext
   @EnvironmentObject var updateManager: UpdateManager
@@ -69,14 +95,7 @@ struct ContentView: View {
       
     } content: {
       
-      if let fallbackWorkspaceItem = sidebarModel.newWorkspaceItem(in: ModelContext) {
-        
-        switch selectedView {
-        case .prompt:   PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackWorkspaceItem.prompt)
-        case .console:  ConsoleView()
-        case .split:    PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackWorkspaceItem.prompt, isRightPaneVisible: true)
-        }
-      }
+      ViewContainer(currentPrompt: sidebarModel.selectedSidebarItem?.prompt, selectedView: selectedView)
       
     } detail: {
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
@@ -111,7 +130,8 @@ struct ContentView: View {
         await fileHierarchy.refresh()
       }
     }
-    .toolbar {
+    /*
+    toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
           
@@ -228,6 +248,7 @@ struct ContentView: View {
       }
       
     }
+     */
     .onAppear {
       if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {
         //showingRequiredInputPathsView = true
@@ -263,9 +284,10 @@ struct ContentView: View {
         sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
       }
       
-      else if scriptManager.genStatus == .generating, let sidebarItem = sidebarModel.selectedSidebarItem {
-        imageCountToGenerate = Int(sidebarItem.prompt.batchSize * sidebarItem.prompt.batchCount)
-      } 
+      else if scriptManager.genStatus == .generating, let prompt = sidebarModel.selectedSidebarItem?.prompt {
+        
+        imageCountToGenerate = Int(prompt.batchSize * prompt.batchCount)
+      }
       
       else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -309,12 +331,12 @@ struct ContentView: View {
     Task {
       await updateManager.checkForUpdatesIfNeeded()
       if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion,
-      currentBuildIsLatestVersion == false {
+         currentBuildIsLatestVersion == false {
         WindowManager.shared.showUpdatesWindow(updateManager: updateManager)
       }
     }
   }
-
+  
 }
 
 #Preview {

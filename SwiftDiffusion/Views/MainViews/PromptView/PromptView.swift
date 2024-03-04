@@ -30,7 +30,9 @@ struct PromptView: View {
   var currentPrompt: StoredPromptModel
   
   init(currentPrompt: StoredPromptModel) {
+    
     self.currentPrompt = currentPrompt
+    
     _checkpoint = Binding<StoredCheckpointModel?>(
       get: { currentPrompt.selectedModel },
       set: { currentPrompt.selectedModel = $0 }
