@@ -53,13 +53,13 @@ class ScriptManager: ObservableObject {
   var shouldTrimOutput: Bool = false
   
   @Published var genStatus: GenerationStatus = .idle
-  @Published var genProgress: Double = 0
+  @Published var genProgress: Double = 0.0
   
   @Published var genIterationPerSecond: String = ""
   @Published var genCurrentStepOutOfTotalSteps: String = ""
   
   @Published var modelLoadState: ModelLoadState = .idle
-  @Published var modelLoadTime: Double = 0
+  @Published var modelLoadTime: Double = 0.0
   @Published var modelLoadStateShouldExpire: Bool = false
   @Published var modelLoadTypeErrorThrown: Bool = false
   

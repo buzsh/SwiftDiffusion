@@ -17,37 +17,45 @@ struct WorkspaceItemView: View {
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var scriptManager: ScriptManager
+  @State private var animatedWidth: CGFloat = 0.0
   
   let sidebarItem: SidebarItem
   
   var body: some View {
+    
     HStack {
       if sidebarItem.title.isEmpty {
         formattedTitleView("Untitled")
+          .padding(.leading, 4)
       } else {
         formattedTitleView(sidebarItem.title)
+          .padding(.leading, 4)
       }
       Spacer()
     }
+    .frame(height: 28)
     
-    .frame(height: 30)
-    .padding(.horizontal, 4)
     .contentShape(Rectangle())
     .cornerRadius(4)
-    // if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem  || sidebarItem == sidebarModel.selectedSidebarItem {
     .background(
-      GeometryReader { geometry in
+      GeometryReader { outerGeometry in
         ZStack(alignment: .leading) {
           if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem {
-            let progressWidth = geometry.size.width * (CGFloat(scriptManager.genProgress))
             RoundedRectangle(cornerRadius: 4)
-              .fill(Color.blue.opacity(0.9))
-              .frame(width: progressWidth)
+              .fill(Color(/*0x195AC2*/0x1C5EC8))//.fill(Color.blue.opacity(0.9))
+              .frame(width: animatedWidth)
+              .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
+              .onChange(of: scriptManager.genProgress) {
+                withAnimation(.linear(duration: 0.5)) {
+                  animatedWidth = outerGeometry.size.width * CGFloat(scriptManager.genProgress)
+                }
+              }
           }
         }
+        .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
       }
     )
-    .animation(.linear(duration: 0.5), value: scriptManager.genProgress)
+    
     
     .onChange(of: currentPrompt.positivePrompt) {
       if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {
@@ -82,5 +90,34 @@ extension SidebarModel {
       return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
     }
     return false
+  }
+}
+
+struct WidthAnimatableModifier: AnimatableModifier {
+  var width: CGFloat
+  var color: Color = Color.blue.opacity(0.9)
+  
+  // AnimatableData must be a single, animatable value. SwiftUI will interpolate this value.
+  var animatableData: CGFloat {
+    get { width }
+    set { width = newValue }
+  }
+  
+  func body(content: Content) -> some View {
+    content
+      .frame(width: width)
+      .background(RoundedRectangle(cornerRadius: 4).fill(color))
+  }
+}
+
+extension Color {
+  init(_ hex: UInt, alpha: Double = 1) {
+    self.init(
+      .sRGB,
+      red: Double((hex >> 16) & 0xFF) / 255,
+      green: Double((hex >> 8) & 0xFF) / 255,
+      blue: Double(hex & 0xFF) / 255,
+      opacity: alpha
+    )
   }
 }

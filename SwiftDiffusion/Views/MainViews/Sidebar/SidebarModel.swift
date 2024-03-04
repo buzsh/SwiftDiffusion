@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftData
 
 
@@ -80,6 +81,7 @@ class SidebarModel: ObservableObject {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
     let mapModelData = MapModelData()
     sidebarItem.prompt = mapModelData.toStored(promptModel: prompt)
+    sidebarItem.timestamp = Date()
     currentFolder?.add(item: sidebarItem)
     workspaceFolder?.remove(item: sidebarItem)
     PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
@@ -88,7 +90,9 @@ class SidebarModel: ObservableObject {
   
   func deleteFromWorkspace(sidebarItem: SidebarItem, in modelContext: ModelContext) {
     selectNextClosestSidebarItemIfApplicable(sortedItems: sortedWorkspaceFolderItems, sortingOrder: .mostRecent)
-    workspaceFolder?.remove(item: sidebarItem)
+    withAnimation {
+      workspaceFolder?.remove(item: sidebarItem)
+    }
     saveData(in: modelContext)
   }
   

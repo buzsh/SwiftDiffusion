@@ -205,14 +205,18 @@ extension Sidebar {
     if let workspaceFolder = sidebarModel.workspaceFolder {
       let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
       
-      let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
+      //let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
       
       for item in emptyPromptItems {
+        workspaceFolder.remove(item: item)
+        
+        /*
         if let latestItem = latestEmptyPromptItem, item != latestItem {
           withAnimation {
             workspaceFolder.remove(item: item)
           }
         }
+         */
       }
     }
   }
