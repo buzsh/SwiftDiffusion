@@ -80,6 +80,13 @@ struct SwiftDiffusionApp: App {
         Button("Copy Generation Data") {
           currentPrompt.copyMetadataToClipboard()
         }
+        .keyboardShortcut("C", modifiers: [.command, .shift])
+        /*
+        Button("Paste Generation Data") {
+          currentPrompt.pasteGenerationData()
+        }
+        .keyboardShortcut("V", modifiers: [.command, .shift])
+         */
       }
     }
   }
