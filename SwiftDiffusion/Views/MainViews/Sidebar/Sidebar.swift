@@ -33,6 +33,7 @@ struct Sidebar: View {
           List(selection: $sidebarModel.selectedItemID) {
             WorkspaceFolderView()
             SidebarFolderView()
+            VStack{}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
           .listStyle(SidebarListStyle())
           .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
@@ -40,8 +41,7 @@ struct Sidebar: View {
             return false
           }
           
-          EmptyView()
-            .frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+          
           
           DisplayOptionsBar()
         }
