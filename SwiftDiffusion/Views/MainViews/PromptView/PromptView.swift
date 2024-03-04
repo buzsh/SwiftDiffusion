@@ -75,7 +75,8 @@ struct PromptView: View {
             await checkPasteboardAndUpdateFlag()
           }
         }
-        .disabled(!sidebarModel.workspaceFolderContainsSelectedSidebarItem())
+        //.disabled(!sidebarModel.workspaceFolderContainsSelectedSidebarItem())
+        .disabled(sidebarModel.disablePromptView)
       }
       
       PasteGenerationDataStatusBar(

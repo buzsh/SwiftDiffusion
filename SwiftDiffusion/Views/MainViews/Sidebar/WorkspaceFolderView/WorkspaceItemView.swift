@@ -16,6 +16,7 @@ struct WorkspaceItemView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
+  @EnvironmentObject var scriptManager: ScriptManager
   
   let sidebarItem: SidebarItem
   
@@ -26,7 +27,27 @@ struct WorkspaceItemView: View {
       } else {
         formattedTitleView(sidebarItem.title)
       }
+      Spacer()
     }
+    
+    .frame(height: 30)
+    .padding(.horizontal, 4)
+    .contentShape(Rectangle())
+    .cornerRadius(4)
+    // if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem  || sidebarItem == sidebarModel.selectedSidebarItem {
+    .background(
+      GeometryReader { geometry in
+        ZStack(alignment: .leading) {
+          if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem {
+            let progressWidth = geometry.size.width * (CGFloat(scriptManager.genProgress))
+            RoundedRectangle(cornerRadius: 4)
+              .fill(Color.blue.opacity(0.9))
+              .frame(width: progressWidth)
+          }
+        }
+      }
+    )
+    .animation(.linear(duration: 0.5), value: scriptManager.genProgress)
     
     .onChange(of: currentPrompt.positivePrompt) {
       if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {

@@ -42,6 +42,10 @@ class SidebarModel: ObservableObject {
   
   @Published var sidebarIsVisible: Bool = true
   
+  var disablePromptView: Bool {
+    selectedSidebarItemIsCurrentlyGenerating() || (workspaceFolderContainsSelectedSidebarItem() == false)
+  }
+  
   enum SortingOrder: String {
     case mostRecent = "Most Recent"
     case leastRecent = "Least Recent"
@@ -132,15 +136,12 @@ class SidebarModel: ObservableObject {
     }
     
     guard let currentItem = selectedSidebarItem, let currentIndex = sortedItems.firstIndex(of: currentItem) else {
-      // If no current selection or the current item is not found,
-      // select the first or last item based on the sorting order.
       setSelectedSidebarItem(to: sortingOrder == .leastRecent ? sortedItems.first : sortedItems.last)
       return
     }
     
     switch sortingOrder {
     case .leastRecent:
-      // Priority for least recent: try to select the next item "down" first, then "up".
       if currentIndex + 1 < sortedItems.count {
         setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
       } else if currentIndex > 0 {
@@ -149,7 +150,6 @@ class SidebarModel: ObservableObject {
         setSelectedSidebarItem(to: nil)
       }
     case .mostRecent:
-      // Priority for most recent: try to select an earlier item "up" first, then "down".
       if currentIndex > 0 {
         setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
       } else if currentIndex + 1 < sortedItems.count {
@@ -165,6 +165,10 @@ class SidebarModel: ObservableObject {
 
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)
+  }
+  
+  func selectedSidebarItemIsCurrentlyGenerating() -> Bool {
+    selectedSidebarItem == currentlyGeneratingSidebarItem
   }
   
   func workspaceFolderContains(sidebarItem: SidebarItem?) -> Bool {
