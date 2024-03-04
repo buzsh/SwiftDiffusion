@@ -75,6 +75,8 @@
 		2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF102B8BE7C30031690E /* CheckpointMenu.swift */; };
 		2975DF142B8C08800031690E /* VaeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF132B8C08800031690E /* VaeModel.swift */; };
 		2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */; };
+		29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */; };
+		29949F272B965E49004F8D60 /* SidebarModel+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F262B965E49004F8D60 /* SidebarModel+Create.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
 		2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0952B6ED5B000B487D5 /* ContentView.swift */; };
 		2996D0982B6ED5B100B487D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2996D0972B6ED5B100B487D5 /* Assets.xcassets */; };
@@ -215,6 +217,8 @@
 		2975DF102B8BE7C30031690E /* CheckpointMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMenu.swift; sourceTree = "<group>"; };
 		2975DF132B8C08800031690E /* VaeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModel.swift; sourceTree = "<group>"; };
 		2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModelMenu.swift; sourceTree = "<group>"; };
+		29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Delete.swift"; sourceTree = "<group>"; };
+		29949F262B965E49004F8D60 /* SidebarModel+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Create.swift"; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionApp.swift; sourceTree = "<group>"; };
 		2996D0952B6ED5B000B487D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -768,6 +772,8 @@
 			isa = PBXGroup;
 			children = (
 				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
+				29949F262B965E49004F8D60 /* SidebarModel+Create.swift */,
+				29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */,
 				29169D242B8FCB780099A9C5 /* Sidebar.swift */,
 				29A1A38E2B91A80700CC3D1B /* SidebarExtensions */,
 				29A1A38D2B91A7F300CC3D1B /* WorkspaceFolderView */,
@@ -1135,6 +1141,7 @@
 				292CE80E2B81943300116D60 /* ImageSaver+Composite.swift in Sources */,
 				29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */,
 				29620FEA2B82A23F008EA5EB /* CheckpointsManager.swift in Sources */,
+				29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */,
 				29C06C282B93CC8F00F950C4 /* URLParserUtility.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
 				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
@@ -1169,6 +1176,7 @@
 				29C0F3862B7ABF3A0017DD6B /* EngineSection.swift in Sources */,
 				293336462B72A3E0007237AA /* NSImageExtensions.swift in Sources */,
 				296AA9F02B769B2A00CF0658 /* UserSettings.swift in Sources */,
+				29949F272B965E49004F8D60 /* SidebarModel+Create.swift in Sources */,
 				29620FE62B8291E8008EA5EB /* CheckpointsApiManager.swift in Sources */,
 				297196492B7150B5000F7960 /* ConsoleView.swift in Sources */,
 				29C0F3842B7ABF2E0017DD6B /* PromptSection.swift in Sources */,

@@ -37,6 +37,7 @@ extension SidebarFolder: Equatable {
 
 extension SidebarFolder {
   func add(item: SidebarItem) {
+    //item.parent = self
     self.items.append(item)
   }
   func add(folder: SidebarFolder) {
@@ -48,5 +49,12 @@ extension SidebarFolder {
   }
   func remove(folder: SidebarFolder) {
     self.folders.removeAll(where: { $0.id == folder.id })
+  }
+}
+
+extension SidebarFolder {
+  /// The folder is deletable if it's neither a root nor a workspace folder
+  func isDeletable() -> Bool {
+    return !isRoot && !isWorkspace
   }
 }
