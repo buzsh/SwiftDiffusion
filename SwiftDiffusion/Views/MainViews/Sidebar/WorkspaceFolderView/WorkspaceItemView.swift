@@ -73,7 +73,7 @@ struct WorkspaceItemView: View {
     }
     .onChange(of: sidebarModel.queueWorkspaceItemForDeletion) {
       if let workspaceItem = sidebarModel.queueWorkspaceItemForDeletion {
-        sidebarModel.workspaceFolder?.remove(item: workspaceItem)
+        sidebarModel.workspaceFolder.remove(item: workspaceItem)
         sidebarModel.saveData(in: modelContext)
       }
     }

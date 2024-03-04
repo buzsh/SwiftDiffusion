@@ -26,7 +26,6 @@ struct PromptView: View {
   
   @State var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
-  @State var disablePromptView: Bool = false
   
   private var leftPane: some View {
     VStack(spacing: 0) {
@@ -57,8 +56,8 @@ struct PromptView: View {
           .padding(.vertical, 12)
           
           VStack {
-            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
-            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt, isDisabled: $disablePromptView)
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
           }
           .padding(.bottom, 6)
           

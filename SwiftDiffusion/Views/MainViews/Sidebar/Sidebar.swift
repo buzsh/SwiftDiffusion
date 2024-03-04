@@ -52,11 +52,10 @@ struct Sidebar: View {
       }
     }
     .onAppear {
-      ensureNecessaryFoldersExist()
       sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
       sidebarModel.updateStorableSidebarItemsInWorkspace()
-      cleanUpEmptyWorkspaceItemsIfNecessary()
-      sidebarModel.createNewWorkspaceItem(in: modelContext)
+      sidebarModel.cleanUpEmptyWorkspaceItemsIfNecessary()
+      sidebarModel.createNewWorkspaceItem()
     }
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
@@ -82,7 +81,7 @@ struct Sidebar: View {
           
           Button(action: {
             withAnimation {
-              sidebarModel.createNewWorkspaceItem(in: modelContext)
+              sidebarModel.createNewWorkspaceItem()
             }
           }) {
             Image(systemName: "plus.bubble")
@@ -92,16 +91,9 @@ struct Sidebar: View {
     }
   }
   
-  
-  
-  
-  private func ensureNecessaryFoldersExist() {
-    sidebarModel.ensureRootFolderExists(for: queryRootFolders, in: modelContext)
-    sidebarModel.ensureWorkspaceFolderExists(for: queryWorkspaceFolders, in: modelContext)
-  }
-  
-  
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
+    guard newItemID != currentItemID else { return }
+    
     Debug.log("[Sidebar] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
     
     Debug.log("[Sidebar] selectedSidebarItemChanged - Entry")
@@ -200,24 +192,11 @@ extension Sidebar {
 }
 
 
-extension Sidebar {
+extension SidebarModel {
   func cleanUpEmptyWorkspaceItemsIfNecessary() {
-    if let workspaceFolder = sidebarModel.workspaceFolder {
-      let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
-      
-      //let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
-      
-      for item in emptyPromptItems {
-        workspaceFolder.remove(item: item)
-        
-        /*
-        if let latestItem = latestEmptyPromptItem, item != latestItem {
-          withAnimation {
-            workspaceFolder.remove(item: item)
-          }
-        }
-         */
-      }
+    let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
+    for item in emptyPromptItems {
+      workspaceFolder.remove(item: item)
     }
   }
 }
@@ -244,10 +223,10 @@ extension StoredPromptModel {
 
 
 extension SidebarModel {
-  func createNewWorkspaceItem(in modelContext: ModelContext) {
+  func createNewWorkspaceItem() {
     let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
     newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    workspaceFolder?.add(item: newPromptSidebarItem)
+    workspaceFolder.add(item: newPromptSidebarItem)
     saveData(in: modelContext)
     setSelectedSidebarItem(to: newPromptSidebarItem)
   }

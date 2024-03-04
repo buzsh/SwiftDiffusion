@@ -8,14 +8,13 @@
 import Foundation
 import SwiftData
 
-@Model
-class SidebarItem: Identifiable {
+@Model class SidebarItem: Identifiable {
   @Attribute(.unique) var id: UUID = UUID()
   @Attribute var title: String
   @Attribute var timestamp: Date
   @Attribute var imageUrls: [URL]
-  @Relationship var imageThumbnails: [ImageInfo]
-  @Relationship var imagePreviews: [ImageInfo]
+  @Relationship(deleteRule: .cascade) var imageThumbnails: [ImageInfo]
+  @Relationship(deleteRule: .cascade) var imagePreviews: [ImageInfo]
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
   

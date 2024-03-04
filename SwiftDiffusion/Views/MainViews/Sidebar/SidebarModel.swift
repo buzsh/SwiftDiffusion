@@ -9,10 +9,43 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+extension Constants.Sidebar {
+  static let rootFolderName = "Documents"
+  static let workspaceFolderName = "Workspace"
+}
 
 class SidebarModel: ObservableObject {
-  @Published var rootFolder: SidebarFolder? = nil
-  @Published var workspaceFolder: SidebarFolder? = nil
+  var rootFolder: SidebarFolder
+  var workspaceFolder: SidebarFolder
+  var modelContext: ModelContext
+  
+  init(modelContext: ModelContext) {
+    self.modelContext = modelContext
+    rootFolder = SidebarModel.ensureFolderExists(named: Constants.Sidebar.rootFolderName, isRoot: true, in: modelContext)
+    workspaceFolder = SidebarModel.ensureFolderExists(named: Constants.Sidebar.workspaceFolderName, isWorkspace: true, in: modelContext)
+  }
+  
+  static func ensureFolderExists(named name: String, isRoot: Bool = false, isWorkspace: Bool = false, in modelContext: ModelContext) -> SidebarFolder {
+    let predicate = #Predicate<SidebarFolder> { $0.name == name && $0.isRoot == isRoot && $0.isWorkspace == isWorkspace }
+    let descriptor = FetchDescriptor<SidebarFolder>(predicate: predicate)
+    
+    let folders: [SidebarFolder]
+    do {
+      folders = try modelContext.fetch(descriptor)
+    } catch {
+      Debug.log("Failed to fetch folders: \(error)")
+      folders = []
+    }
+    if let folder = folders.first {
+      return folder
+    } else {
+      let newFolder = SidebarFolder(name: name, timestamp: Date(), isRoot: isRoot, isWorkspace: isWorkspace)
+      modelContext.insert(newFolder)
+      try? modelContext.save()
+      return newFolder
+    }
+  }
+  
   @Published var selectedItemID: UUID? = nil
   @Published var selectedSidebarItem: SidebarItem? = nil
   @Published var currentFolder: SidebarFolder? = nil
@@ -79,13 +112,13 @@ class SidebarModel: ObservableObject {
   }
   
   @MainActor
-  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel, in modelContext: ModelContext) {
+  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel) {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
     let mapModelData = MapModelData()
     sidebarItem.prompt = mapModelData.toStored(promptModel: prompt)
     sidebarItem.timestamp = Date()
     currentFolder?.add(item: sidebarItem)
-    workspaceFolder?.remove(item: sidebarItem)
+    workspaceFolder.remove(item: sidebarItem)
     PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
     saveData(in: modelContext)
   }
@@ -93,7 +126,7 @@ class SidebarModel: ObservableObject {
   func deleteFromWorkspace(sidebarItem: SidebarItem, in modelContext: ModelContext) {
     selectNextClosestSidebarItemIfApplicable(sortedItems: sortedWorkspaceFolderItems, sortingOrder: .mostRecent)
     withAnimation {
-      workspaceFolder?.remove(item: sidebarItem)
+      workspaceFolder.remove(item: sidebarItem)
     }
     saveData(in: modelContext)
   }
@@ -178,7 +211,7 @@ class SidebarModel: ObservableObject {
   }
   
   func workspaceFolderContains(sidebarItem: SidebarItem?) -> Bool {
-    if let workspaceFolder = workspaceFolder, workspaceFolder.items.contains(where: { $0.id == sidebarItem?.id }) {
+    if workspaceFolder.items.contains(where: { $0.id == sidebarItem?.id }) {
       return true
     }
     return false
@@ -193,11 +226,9 @@ class SidebarModel: ObservableObject {
   
   /// Iterates through workspace items and populates savableSidebarItems with prompts that have previously generated media URLs associated with them.
   func updateStorableSidebarItemsInWorkspace() {
-    if let workspaceItems = workspaceFolder?.items {
-      for sidebarItem in workspaceItems {
-        if sidebarItem.imageUrls.isEmpty == false {
-          storableSidebarItems.append(sidebarItem)
-        }
+    for sidebarItem in workspaceFolder.items {
+      if sidebarItem.imageUrls.isEmpty == false {
+        storableSidebarItems.append(sidebarItem)
       }
     }
   }
@@ -249,41 +280,6 @@ extension SidebarModel {
       Debug.log("[DD] Data successfully saved")
     } catch {
       Debug.log("[DD] Error saving context: \(error)")
-    }
-  }
-}
-
-extension Constants.Sidebar {
-  static let rootFolderName = "Documents"
-  static let workspaceFolderName = "Workspace"
-}
-
-extension SidebarModel {
-  func ensureRootFolderExists(for folderQuery: [SidebarFolder], in modelContext: ModelContext) {
-    if folderQuery.isEmpty {
-      let newRootFolder = SidebarFolder(name: Constants.Sidebar.rootFolderName, isRoot: true)
-      modelContext.insert(newRootFolder)
-      try? modelContext.save()
-      Debug.log("[SidebarModel] Root folder created.")
-      rootFolder = newRootFolder
-    } else {
-      Debug.log("[SidebarModel] Root folder exists.")
-      rootFolder = folderQuery.first
-      rootFolder?.name = "Documents"
-      saveData(in: modelContext)
-    }
-  }
-  
-  func ensureWorkspaceFolderExists(for folderQuery: [SidebarFolder], in modelContext: ModelContext) {
-    if folderQuery.isEmpty {
-      let newWorkspaceFolder = SidebarFolder(name: Constants.Sidebar.workspaceFolderName, isWorkspace: true)
-      modelContext.insert(newWorkspaceFolder)
-      try? modelContext.save()
-      Debug.log("[SidebarModel] Workspace folder created.")
-      workspaceFolder = newWorkspaceFolder
-    } else {
-      Debug.log("[SidebarModel] Workspace folder exists.")
-      workspaceFolder = folderQuery.first
     }
   }
 }

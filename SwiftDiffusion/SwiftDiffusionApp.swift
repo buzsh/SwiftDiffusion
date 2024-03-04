@@ -12,9 +12,11 @@ import SwiftData
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
+  var sidebarModel: SidebarModel
+  
   var scriptManager = ScriptManager.shared
   let updateManager = UpdateManager()
-  let sidebarModel = SidebarModel()
+  
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
   let loraModelsManager = ModelManager<LoraModel>()
@@ -36,10 +38,14 @@ struct SwiftDiffusionApp: App {
     }
     
     do {
-      modelContainer = try ModelContainer(for: SidebarItem.self, SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
+      modelContainer = try ModelContainer(for: SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
     } catch {
       fatalError("Failed to configure SwiftData container: \(error)")
     }
+    
+    let context = ModelContext(modelContainer)
+    sidebarModel = SidebarModel(modelContext: context)
+    
     setupAppFileStructure()
   }
   

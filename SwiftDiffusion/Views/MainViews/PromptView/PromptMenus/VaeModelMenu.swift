@@ -52,15 +52,6 @@ struct VaeModelMenu: View {
       
     }
     .padding(.vertical, 10)
-    /*
-    .onChange(of: currentPrompt.vaeModel) {
-      if (currentPrompt.vaeModel != nil) && isExpanded == false {
-        isExpanded = true
-      }
-      // always minimize:
-      // isExpanded = (currentPrompt.vaeModel != nil)
-    }
-     */
   }
 }
 

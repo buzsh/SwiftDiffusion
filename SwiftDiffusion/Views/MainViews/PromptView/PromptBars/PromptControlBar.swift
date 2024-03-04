@@ -53,8 +53,9 @@ struct PromptControlBar: View {
       Button(action: {
 
         if let sidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.deleteFromWorkspace(sidebarItem: sidebarItem, in: modelContext)
+          sidebarModel.deleteWorkspaceItem(sidebarItem)
         }
+        
       }) {
         Image(systemName: "xmark")
         Text("Close")
@@ -65,7 +66,7 @@ struct PromptControlBar: View {
       if isStorableSidebarItem {
         Button(action: {
           if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt, in: modelContext)
+            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt)
           }
         }) {
           Text("Save Generated Prompt")
@@ -96,7 +97,7 @@ struct PromptControlBar: View {
           let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
           clonedItem.prompt = clonedPrompt
           withAnimation {
-            sidebarModel.workspaceFolder?.add(item: clonedItem)
+            sidebarModel.workspaceFolder.add(item: clonedItem)
             sidebarModel.saveData(in: modelContext)
             sidebarModel.setSelectedSidebarItem(to: clonedItem)
           }
