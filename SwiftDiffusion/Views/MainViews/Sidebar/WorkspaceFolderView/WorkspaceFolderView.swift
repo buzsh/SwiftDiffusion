@@ -28,10 +28,6 @@ struct WorkspaceFolderView: View {
             sidebarModel.setSelectedSidebarItem(to: sidebarItem)
           }
       }
-      
-      if showWorkspaceItemsPlaceholderButton {
-        newWorkspaceItemPlaceholderButton
-      }
     }
     .onChange(of: sidebarModel.workspaceFolder?.items) {
       if let workspaceItems = sidebarModel.workspaceFolder?.items {
@@ -42,6 +38,7 @@ struct WorkspaceFolderView: View {
         }
       }
     }
+    newWorkspaceItemPlaceholderButton
   }
   
   private var newWorkspaceItemPlaceholderButton: some View {

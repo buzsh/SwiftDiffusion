@@ -36,28 +36,24 @@ class WindowManager: NSObject, ObservableObject {
         backing: .buffered, defer: false)
       betaOnboardingWindow?.center()
       betaOnboardingWindow?.contentView = NSHostingView(rootView: BetaOnboardingView())
-      
       betaOnboardingWindow?.isReleasedWhenClosed = false
       betaOnboardingWindow?.delegate = self
-      
       betaOnboardingWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     betaOnboardingWindow?.makeKeyAndOrderFront(nil)
   }
   
-  /// Shows the updates window containing UpdatesView. If the window does not exist, it creates and configures a new window before displaying it.
-  func showUpdatesWindow() {
+  /// Shows the updates window containing UpdateView. If the window does not exist, it creates and configures a new window before displaying it.
+  func showUpdatesWindow(updateManager: UpdateManager) {
     if updatesWindow == nil {
       updatesWindow = NSWindow(
-        contentRect: NSRect(x: 20, y: 20, width: 480, height: 300),
+        contentRect: NSRect(x: 20, y: 20, width: 400, height: 250),
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       updatesWindow?.center()
-      updatesWindow?.contentView = NSHostingView(rootView: UpdatesView())
-      
+      updatesWindow?.contentView = NSHostingView(rootView: UpdateView().environmentObject(updateManager))
       updatesWindow?.isReleasedWhenClosed = false
       updatesWindow?.delegate = self
-      
       updatesWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     updatesWindow?.makeKeyAndOrderFront(nil)
@@ -74,10 +70,8 @@ class WindowManager: NSObject, ObservableObject {
       settingsWindow?.center()
       settingsWindow?.setFrameAutosaveName("Settings")
       settingsWindow?.contentView = NSHostingView(rootView: SettingsView(openWithTab: tab))
-      
       settingsWindow?.isReleasedWhenClosed = false
       settingsWindow?.delegate = self
-      
       settingsWindow?.standardWindowButton(.zoomButton)?.isHidden = true
       
       if withPreferenceStyle {
@@ -100,14 +94,9 @@ class WindowManager: NSObject, ObservableObject {
         styleMask: [.titled, .closable, .resizable, .miniaturizable],
         backing: .buffered, defer: false)
       checkpointManagerWindow?.center()
-      
-      //let rootView = CheckpointManagerView()
-      
       checkpointManagerWindow?.contentView = NSHostingView(rootView: CheckpointManagerView(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager))
-      
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self
-      
       checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     checkpointManagerWindow?.makeKeyAndOrderFront(nil)
@@ -122,16 +111,13 @@ class WindowManager: NSObject, ObservableObject {
       checkpointManagerWindow?.center()
       
       let rootView = DebugApiView()
-                  .environmentObject(scriptManager)
-                  .environmentObject(checkpointsManager)
-                  .environmentObject(currentPrompt)
-                  .environmentObject(loraModelsManager)
-              
-     checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
-      
+        .environmentObject(scriptManager)
+        .environmentObject(checkpointsManager)
+        .environmentObject(currentPrompt)
+        .environmentObject(loraModelsManager)
+      checkpointManagerWindow?.contentView = NSHostingView(rootView: rootView)
       checkpointManagerWindow?.isReleasedWhenClosed = false
       checkpointManagerWindow?.delegate = self
-      
       checkpointManagerWindow?.standardWindowButton(.zoomButton)?.isHidden = true
     }
     checkpointManagerWindow?.makeKeyAndOrderFront(nil)
@@ -144,12 +130,10 @@ extension WindowManager: NSWindowDelegate {
   func windowWillClose(_ notification: Notification) {
     if let window = notification.object as? NSWindow {
       switch window {
-      case updatesWindow:
-        updatesWindow = nil
-      case settingsWindow:
-        settingsWindow = nil
-      case checkpointManagerWindow:
-        checkpointManagerWindow = nil
+      case updatesWindow:           updatesWindow = nil
+      case settingsWindow:          settingsWindow = nil
+      case checkpointManagerWindow: checkpointManagerWindow = nil
+      case debugApiView:            debugApiView = nil
       default:
         break
       }

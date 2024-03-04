@@ -89,16 +89,25 @@ struct SidebarFolderView: View {
         sidebarModel.applyCustomLeadingInsets = true
       }
     }
-    .onChange(of: sidebarModel.promptUserToConfirmDeletion) {
-      showingDeleteSelectedSidebarItemConfirmationAlert = sidebarModel.promptUserToConfirmDeletion
+    .onChange(of: sidebarModel.queueStoredSidebarItemForDeletion) {
+      if sidebarModel.queueStoredSidebarItemForDeletion != nil {
+        showingDeleteSelectedSidebarItemConfirmationAlert = true
+      }
     }
     .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
       Alert(
         title: Text("Are you sure you want to delete this item?"),
         primaryButton: .destructive(Text("Delete")) {
-          sidebarModel.deleteSelectedSidebarItemFromStorage(in: modelContext)
+          if let sidebarItem = sidebarModel.queueStoredSidebarItemForDeletion {
+            sidebarModel.selectNextClosestSidebarItemIfApplicable(sortedItems: sidebarModel.sortedCurrentFolderItems, sortingOrder: .mostRecent)
+            sidebarModel.currentFolder?.remove(item: sidebarItem)
+            sidebarModel.saveData(in: modelContext)
+          }
+          sidebarModel.queueStoredSidebarItemForDeletion = nil
         },
-        secondaryButton: .cancel()
+        secondaryButton: .cancel() {
+          sidebarModel.queueStoredSidebarItemForDeletion = nil
+        }
       )
     }
   }

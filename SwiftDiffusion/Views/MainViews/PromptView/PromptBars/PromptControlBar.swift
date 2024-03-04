@@ -51,6 +51,7 @@ struct PromptControlBar: View {
   private var workspaceItemBar: some View {
     HStack {
       Button(action: {
+
         if let sidebarItem = sidebarModel.selectedSidebarItem {
           sidebarModel.deleteFromWorkspace(sidebarItem: sidebarItem, in: modelContext)
         }
@@ -79,7 +80,9 @@ struct PromptControlBar: View {
   private var storedItemBar: some View {
     HStack {
       Button(action: {
-        sidebarModel.promptUserToConfirmDeletion = true
+        if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+          sidebarModel.queueStoredSidebarItemForDeletion = selectedSidebarItem
+        }
       }) {
         Image(systemName: "trash")
         Text("Delete")

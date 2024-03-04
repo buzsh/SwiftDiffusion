@@ -30,6 +30,7 @@ extension ViewManager: Hashable, Identifiable {
 
 struct ContentView: View {
   @Environment(\.modelContext) var modelContext
+  @EnvironmentObject var updateManager: UpdateManager
   @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var currentPrompt: PromptModel
@@ -41,7 +42,7 @@ struct ContentView: View {
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
   
-  @AppStorage("hasLaunchedBeforeTest4") var hasLaunchedBefore: Bool = false
+  @AppStorage("hasLaunchedBeforeTest") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
   
   // RequiredInputPaths
@@ -58,11 +59,9 @@ struct ContentView: View {
   @State var selectedImage: NSImage? = nil
   @AppStorage("lastSelectedImagePath") var lastSelectedImagePath: String = ""
   @State var lastSavedImageUrls: [URL] = []
-  
   @State var imageCountToGenerate: Int = 0
   
   @State private var columnVisibility = NavigationSplitViewVisibility.all // .doubleColumn (hide by default)
-  
   
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -89,6 +88,10 @@ struct ContentView: View {
     .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
     .onAppear {
+      if hasLaunchedBefore {
+        checkForUpdatesIfAutomaticUpdatesAreEnabled()
+      }
+      
       scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
       
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
@@ -256,9 +259,13 @@ struct ContentView: View {
       handleScriptOnLaunch()
     }
     .onChange(of: scriptManager.genStatus) {
+      if scriptManager.genStatus == .preparingToGenerate {
+        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+      }
+      
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+        //sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -278,6 +285,7 @@ struct ContentView: View {
     
     if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
       sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
+      sidebarModel.currentlyGeneratingSidebarItem = nil
     }
     
     Task {
@@ -297,6 +305,16 @@ struct ContentView: View {
     }
   }
   
+  func checkForUpdatesIfAutomaticUpdatesAreEnabled() {
+    Task {
+      await updateManager.checkForUpdatesIfNeeded()
+      if let currentBuildIsLatestVersion = updateManager.currentBuildIsLatestVersion,
+      currentBuildIsLatestVersion == false {
+        WindowManager.shared.showUpdatesWindow(updateManager: updateManager)
+      }
+    }
+  }
+
 }
 
 #Preview {

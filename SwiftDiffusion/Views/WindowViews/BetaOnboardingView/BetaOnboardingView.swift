@@ -162,7 +162,13 @@ struct SetupStepView: View {
             CapsuleTextView(text: "Coming Soon")
               .opacity(0.6)
           }
-          .padding(.vertical, 6)
+          .padding(.top, 6)
+          HStack {
+            Text("Forge")
+            CapsuleTextView(text: "Coming Soon")
+              .opacity(0.6)
+          }
+          .padding(.top, 6)
         }
         .font(.system(size: 14, weight: .medium))
       }

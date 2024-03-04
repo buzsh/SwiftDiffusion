@@ -128,10 +128,6 @@ struct DebugApiView: View {
   }
 }
 
-
-
-
-
 #Preview {
   let scriptManagerPreview: ScriptManager = .preview(withState: .active)
   let promptModelPreview = PromptModel()

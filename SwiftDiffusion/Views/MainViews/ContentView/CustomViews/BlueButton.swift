@@ -19,6 +19,22 @@ struct BlueButton: View {
   }
 }
 
+struct BlueSymbolButton: View {
+  let title: String
+  let symbol: String
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: action) {
+      HStack {
+        Text(title)
+        Image(systemName: symbol)
+      }
+    }
+    .buttonStyle(BlueBackgroundSmallButtonStyle())
+  }
+}
+
 struct OutlineButton: View {
   let title: String
   let action: () -> Void

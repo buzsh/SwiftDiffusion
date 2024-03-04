@@ -32,6 +32,7 @@ extension Constants {
 enum PayloadKey: String {
   case prompt
   case negativePrompt = "negative_prompt"
+  case samplingMethod = "sampler_index"
   case width
   case height
   case cfgScale = "cfg_scale"
@@ -49,9 +50,17 @@ enum PayloadKey: String {
 
 extension ContentView {
   func prepareImageGenerationPayloadFromPrompt() -> [String: Any] {
+    let sanitizedPositivePrompt = currentPrompt.positivePrompt
+      .replacingOccurrences(of: "\n", with: " ")
+      .replacingOccurrences(of: "\"", with: "'")
+    let sanitizedNegativePrompt = currentPrompt.negativePrompt
+      .replacingOccurrences(of: "\n", with: " ")
+      .replacingOccurrences(of: "\"", with: "'")
+    
     var payload: [String: Any] = [
-      PayloadKey.prompt.rawValue: currentPrompt.positivePrompt,
-      PayloadKey.negativePrompt.rawValue: currentPrompt.negativePrompt,
+      PayloadKey.prompt.rawValue: sanitizedPositivePrompt,
+      PayloadKey.negativePrompt.rawValue: sanitizedNegativePrompt,
+      PayloadKey.samplingMethod.rawValue: currentPrompt.samplingMethod ?? "DPM++ SDE Karras",
       PayloadKey.width.rawValue: Int(currentPrompt.width),
       PayloadKey.height.rawValue: Int(currentPrompt.height),
       PayloadKey.cfgScale.rawValue: Int(currentPrompt.cfgScale),

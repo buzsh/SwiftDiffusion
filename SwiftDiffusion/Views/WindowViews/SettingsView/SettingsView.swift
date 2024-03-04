@@ -16,7 +16,6 @@ extension Constants.WindowSize {
 
 struct SettingsView: View {
   @ObservedObject var userSettings = UserSettings.shared
-  @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @Environment(\.presentationMode) var presentationMode
   
