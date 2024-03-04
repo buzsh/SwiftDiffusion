@@ -10,7 +10,6 @@ import SwiftUI
 struct ApiCheckpointRow: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var scriptManager = ScriptManager.shared
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @State var loadedCheckpointName: String = "nil"

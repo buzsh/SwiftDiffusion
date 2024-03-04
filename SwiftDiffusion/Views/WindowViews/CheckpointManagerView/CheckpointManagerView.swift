@@ -10,7 +10,6 @@ import SwiftUI
 struct CheckpointManagerView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   @ObservedObject var userSettings = UserSettings.shared
-  var currentPrompt: PromptModel
   var checkpointsManager: CheckpointsManager
   
   @State private var selectedFilter: CheckpointModelType? = nil
@@ -74,20 +73,15 @@ struct CheckpointManagerView: View {
             Image(systemName: "pencil")
           }
           .buttonStyle(BorderlessButtonStyle())
-          
-          // if item is not default or if item is not currently selected model
-          if item != currentPrompt.selectedModel {
-            Button(action: {
-              Task {
-                await checkpointsManager.moveToTrash(item: item)
-              }
-            }) {
-              Image(systemName: "trash")
+
+          Button(action: {
+            Task {
+              await checkpointsManager.moveToTrash(item: item)
             }
-            .buttonStyle(BorderlessButtonStyle())
-          } else {
-            Image(systemName: "lock").opacity(0.3)
+          }) {
+            Image(systemName: "trash")
           }
+          .buttonStyle(BorderlessButtonStyle())
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 4)

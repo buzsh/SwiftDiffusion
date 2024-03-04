@@ -8,6 +8,7 @@
 import Foundation
 
 struct MapModelData {
+  /*
   @MainActor
   func toStored(promptModel: PromptModel) -> StoredPromptModel? {
     return toStoredPromptModel(from: promptModel)
@@ -17,5 +18,5 @@ struct MapModelData {
   func fromStored(storedPromptModel: StoredPromptModel) -> PromptModel {
     return toPromptModel(from: storedPromptModel)
   }
-  
+  */
 }

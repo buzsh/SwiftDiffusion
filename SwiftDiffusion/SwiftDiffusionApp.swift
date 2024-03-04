@@ -16,7 +16,6 @@ struct SwiftDiffusionApp: App {
   let updateManager = UpdateManager()
   let sidebarModel = SidebarModel()
   let checkpointsManager = CheckpointsManager()
-  let currentPrompt = PromptModel()
   let loraModelsManager = ModelManager<LoraModel>()
   let vaeModelsManager = ModelManager<VaeModel>()
   
@@ -52,7 +51,6 @@ struct SwiftDiffusionApp: App {
         .environmentObject(updateManager)
         .environmentObject(sidebarModel)
         .environmentObject(checkpointsManager)
-        .environmentObject(currentPrompt)
         .environmentObject(loraModelsManager)
         .environmentObject(vaeModelsManager)
     }
@@ -78,12 +76,15 @@ struct SwiftDiffusionApp: App {
     .commands {
       CommandMenu("Prompt") {
         Button("Copy Generation Data") {
-          currentPrompt.copyMetadataToClipboard()
+          guard let prompt = sidebarModel.selectedSidebarItem?.prompt else { return }
+          prompt.copyMetadataToClipboard()
         }
         .keyboardShortcut("C", modifiers: [.command, .shift])
         /*
         Button("Paste Generation Data") {
-          currentPrompt.pasteGenerationData()
+          if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
+            selectedSidebarItem.prompt.pasteMetadataFromClipboard()
+          }
         }
         .keyboardShortcut("V", modifiers: [.command, .shift])
          */

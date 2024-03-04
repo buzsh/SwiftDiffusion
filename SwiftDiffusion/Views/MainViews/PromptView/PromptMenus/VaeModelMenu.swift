@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct VaeModelMenu: View {
-  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
+  @Binding var vaeModel: StoredVaeModel?
   
   @State private var isExpanded: Bool = false
   
@@ -21,7 +22,7 @@ struct VaeModelMenu: View {
         Spacer()
         
         if !isExpanded {
-          Text(currentPrompt.vaeModel?.name ?? "None")
+          Text(vaeModel?.name ?? "None")
             .foregroundStyle(.secondary)
             .opacity(0.8)
             .lineLimit(1)
@@ -34,17 +35,18 @@ struct VaeModelMenu: View {
           HStack {
             Menu {
               Button("None") {
-                currentPrompt.vaeModel = nil
+                vaeModel = nil
               }
               Divider()
               
               ForEach(vaeModelsManager.models.sorted(by: { $0.name.lowercased() < $1.name.lowercased() }), id: \.id) { vae in
                 Button(vae.name) {
-                  currentPrompt.vaeModel = vae
+                  let mapModelData = MapModelData()
+                  vaeModel = mapModelData.toStoredVaeModel(from: vae)
                 }
               }
             } label: {
-              Label(currentPrompt.vaeModel?.name ?? "None", systemImage: "line.3.crossed.swirl.circle")
+              Label(vaeModel?.name ?? "None", systemImage: "line.3.crossed.swirl.circle")
             }
           }
         }
@@ -52,15 +54,6 @@ struct VaeModelMenu: View {
       
     }
     .padding(.vertical, 10)
-    /*
-    .onChange(of: currentPrompt.vaeModel) {
-      if (currentPrompt.vaeModel != nil) && isExpanded == false {
-        isExpanded = true
-      }
-      // always minimize:
-      // isExpanded = (currentPrompt.vaeModel != nil)
-    }
-     */
   }
 }
 

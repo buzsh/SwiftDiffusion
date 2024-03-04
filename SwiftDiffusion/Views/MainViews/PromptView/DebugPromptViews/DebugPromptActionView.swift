@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DebugPromptActionView: View {
-  @EnvironmentObject var currentPrompt: PromptModel
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
@@ -87,6 +87,11 @@ struct DebugPromptActionView: View {
 
 extension DebugPromptActionView {
   func logPromptProperties() {
+    guard let currentPrompt = sidebarModel.selectedSidebarItem?.prompt else {
+      Debug.log("[DebugPromptActionView] sidebarModel.selectedSidebarItem = nil")
+      return
+    }
+    
     var debugOutput = ""
     debugOutput += "selectedModel: \(currentPrompt.selectedModel?.name ?? "nil")\n"
     debugOutput += "samplingMethod: \(currentPrompt.samplingMethod ?? "nil")\n"

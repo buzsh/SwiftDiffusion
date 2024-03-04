@@ -16,9 +16,7 @@ extension Constants.WindowSize {
 
 struct DebugApiView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
-  
   @EnvironmentObject var checkpointsManager: CheckpointsManager
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
@@ -61,7 +59,7 @@ struct DebugApiView: View {
       VStack(alignment: .leading, spacing: 0) {
         
         HStack(alignment: .bottom) {
-          CheckpointMenu()
+          //CheckpointMenu(currentPrompt: <#StoredPromptModel#>)
           
           Button("local titles") {
             consoleLog("local title")
@@ -128,9 +126,9 @@ struct DebugApiView: View {
   }
 }
 
+/*
 #Preview {
   let scriptManagerPreview: ScriptManager = .preview(withState: .active)
-  let promptModelPreview = PromptModel()
   promptModelPreview.positivePrompt = "sample, positive, prompt"
   promptModelPreview.negativePrompt = "sample, negative, prompt"
   promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
@@ -139,6 +137,6 @@ struct DebugApiView: View {
   return DebugApiView()
     .environmentObject(scriptManagerPreview)
     .environmentObject(checkpointsManagerPreview)
-    .environmentObject(promptModelPreview)
     .environmentObject(loraModelsManagerPreview)
 }
+*/

@@ -41,7 +41,6 @@ struct PromptControlBarView: View {
 
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var userSettings = UserSettings.shared
   
@@ -65,7 +64,7 @@ struct PromptControlBar: View {
       if isStorableSidebarItem {
         Button(action: {
           if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt, in: modelContext)
+            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, in: modelContext)
           }
         }) {
           Text("Save Generated Prompt")
@@ -91,17 +90,18 @@ struct PromptControlBar: View {
       Spacer()
       
       Button(action: {
-        if let selectedSidebarItem = sidebarModel.selectedSidebarItem, let clonedPrompt = selectedSidebarItem.prompt {
-          let clonedTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
-          let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
-          clonedItem.prompt = clonedPrompt
-          withAnimation {
-            sidebarModel.workspaceFolder?.add(item: clonedItem)
-            sidebarModel.saveData(in: modelContext)
-            sidebarModel.setSelectedSidebarItem(to: clonedItem)
-          }
-          sidebarModel.addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: selectedSidebarItem.imageUrls)
+        guard let workspaceFolder = sidebarModel.workspaceFolder else { Debug.log("workspaceFolder = nil"); return }
+        guard let selectedSidebarItem = sidebarModel.selectedSidebarItem else { return }
+        
+        let clonedItem = SidebarItem(parent: workspaceFolder, title: selectedSidebarItem.title, imageUrls: selectedSidebarItem.imageUrls)
+        
+        withAnimation {
+          sidebarModel.workspaceFolder?.add(item: clonedItem)
+          sidebarModel.saveData(in: modelContext)
+          sidebarModel.setSelectedSidebarItem(to: clonedItem)
         }
+        
+        sidebarModel.addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: selectedSidebarItem.imageUrls)
       }) {
         Text("Copy to Workspace")
         Image(systemName: "tray.and.arrow.up")

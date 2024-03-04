@@ -11,13 +11,11 @@ struct CommonPreviews {
   
   @MainActor
   static var previewEnvironment: some View {
-    let promptModelPreview = PromptModel()
     let checkpointsManagerPreview = CheckpointsManager()
     let loraModelsManagerPreview = ModelManager<LoraModel>()
     let vaeModelsManagerPreview = ModelManager<VaeModel>()
     let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
     return AnyView(EmptyView())
-      .environmentObject(promptModelPreview)
       .environmentObject(checkpointsManagerPreview)
       .environmentObject(scriptManagerPreview)
       .environmentObject(loraModelsManagerPreview)
@@ -26,7 +24,10 @@ struct CommonPreviews {
   
   @MainActor
   static var promptView: some View {
-    let promptModelPreview = PromptModel()
+    /*
+    let sidebarModel = SidebarModel()
+    guard let rootFolder = sidebarModel.rootFolder else { return }
+    let promptModelPreview = StoredPromptModel(parent: <#SidebarItem#>)
     promptModelPreview.positivePrompt = "sample, positive, prompt"
     promptModelPreview.negativePrompt = "sample, negative, prompt"
     promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
@@ -36,13 +37,14 @@ struct CommonPreviews {
     let vaeModelsManagerPreview = ModelManager<VaeModel>()
     
     return PromptView(
-      scriptManager: ScriptManager.preview(withState: .readyToStart)
+      scriptManager: ScriptManager.preview(withState: .readyToStart), currentPrompt: <#StoredPromptModel#>
     )
-    .environmentObject(promptModelPreview)
     .environmentObject(checkpointsManagerPreview)
     .environmentObject(loraModelsManagerPreview)
     .environmentObject(vaeModelsManagerPreview)
     .frame(width: 400, height: 600)
+   */
+  return EmptyView()
   }
   
   @MainActor

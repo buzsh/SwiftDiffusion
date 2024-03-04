@@ -8,24 +8,26 @@
 import SwiftUI
 
 struct SamplingMethodMenu: View {
-  @EnvironmentObject var currentPrompt: PromptModel
+  
+  var forCheckpoint: StoredCheckpointModel?
+  @Binding var samplingMethod: String?
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
       PromptRowHeading(title: "Sampling")
         .padding(.bottom, 6)
       Menu {
-        let samplingMethods = currentPrompt.selectedModel?.type == .coreMl
+        let samplingMethods = forCheckpoint?.type == .coreMl
         ? Constants.coreMLSamplingMethods
         : Constants.pythonSamplingMethods
         ForEach(samplingMethods, id: \.self) { method in
           Button(method) {
-            currentPrompt.samplingMethod = method
+            samplingMethod = method
             Debug.log("Selected Sampling Method: \(method)")
           }
         }
       } label: {
-        Label(currentPrompt.samplingMethod ?? "Choose Sampler", systemImage: "square.stack.3d.forward.dottedline")
+        Label(samplingMethod ?? "Choose Sampler", systemImage: "square.stack.3d.forward.dottedline")
       }
     }
   }

@@ -8,10 +8,10 @@
 import SwiftUI
 import SwiftData
 
+/*
 struct PasteGenerationDataStatusBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var sidebarModel: SidebarModel
-  @EnvironmentObject var currentPrompt: PromptModel
   @ObservedObject var userSettings = UserSettings.shared
   
   var generationDataInPasteboard: Bool
@@ -30,7 +30,7 @@ struct PasteGenerationDataStatusBar: View {
             if let pasteboardContent = getPasteboardString() {
               onPaste(pasteboardContent)
             }
-            sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
+            sidebarModel.storeChangesOfSelectedSidebarItem(with: sidebarModel.selectedSidebarItem.prompt, in: modelContext)
           }) {
             Text("Paste Generation Data")
             Image(systemName: "arrow.up.doc.on.clipboard")
@@ -51,3 +51,4 @@ struct PasteGenerationDataStatusBar: View {
     return NSPasteboard.general.string(forType: .string)
   }
 }
+*/

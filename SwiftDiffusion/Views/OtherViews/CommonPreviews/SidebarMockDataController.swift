@@ -10,8 +10,10 @@ import SwiftUI
 
 @MainActor
 class MockDataController {
-  static let shared = MockDataController()
+  //@EnvironmentObject var sidebarModel: SidebarModel
+  //static let shared = MockDataController()
   
+  var sidebarModel: SidebarModel
   let container: ModelContainer
   
   var mockImageUrls: [URL] = [
@@ -26,7 +28,8 @@ class MockDataController {
     return NSImage(contentsOf: lastUrl)
   }
   
-  init() {
+  init(sidebarModel: SidebarModel) {
+    self.sidebarModel = sidebarModel
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     do {
       container = try ModelContainer(for: SidebarItem.self, StoredPromptModel.self, StoredCheckpointModel.self, SidebarFolder.self, configurations: config)
@@ -39,14 +42,24 @@ class MockDataController {
   func insertMockData() {
     let context = container.mainContext
     
+    guard let workspaceFolder = sidebarModel.workspaceFolder else { Debug.log("[MockDataController] workspaceFolder = nil"); return }
+    guard let rootFolder = sidebarModel.rootFolder else { Debug.log("[MockDataController] rootFolder = nil"); return }
+    
+    
+    
+    let sidebarItem1 = SidebarItem(parent: workspaceFolder, title: "Gloomy Days", imageUrls: mockImageUrls)
+    let sidebarItem2 = SidebarItem(parent: rootFolder, title: "Sunshine Overlook", imageUrls: mockImageUrls)
+    
+    
     let storedCheckpointModel1 = StoredCheckpointModel(name: "DreamShaperXL_v2.0", path: "/path/to/checkpoint", type: .python)
-    let storedPromptModel1 = StoredPromptModel(isWorkspaceItem: true, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel1)
+    let storedPromptModel1 = StoredPromptModel(parent: sidebarItem1, selectedModel: storedCheckpointModel1, positivePrompt: "A sunny day", negativePrompt: "A rainy day")
     
     let storedCheckpointModel2 = StoredCheckpointModel(name: "Animerge 1.6.2", path: "/path/to/checkpoint", type: .python)
-    let storedPromptModel2 = StoredPromptModel(isWorkspaceItem: false, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel2)
+    let storedPromptModel2 = StoredPromptModel(parent: sidebarItem2, selectedModel: storedCheckpointModel2, positivePrompt: "A sunny day", negativePrompt: "A rainy day")
     
-    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)
-    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel2)
+    
+    sidebarItem1.prompt = storedPromptModel1
+    sidebarItem2.prompt = storedPromptModel2
     
     let sidebarFolder1 = SidebarFolder(name: "Personal", items: [sidebarItem1, sidebarItem2], folders: [])
     let sidebarFolder3 = SidebarFolder(name: "Embedded", items: [sidebarItem1, sidebarItem2], folders: [])

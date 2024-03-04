@@ -11,7 +11,6 @@ import UniformTypeIdentifiers
 
 struct Sidebar: View {
   @Environment(\.modelContext) var modelContext
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
   @Query var sidebarFolders: [SidebarFolder]
   
@@ -112,7 +111,7 @@ struct Sidebar: View {
     let newlySelectedSidebarItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
     if let currentlySelectedItem = currentlySelectedItem {
-      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
+      sidebarModel.storeChanges(of: currentlySelectedItem, in: modelContext)
     }
     
     if let newlySelectedSidebarItem = newlySelectedSidebarItem {
@@ -127,19 +126,12 @@ struct Sidebar: View {
   
   func handleNewlySelected(sidebarItem: SidebarItem, withID newItemID: UUID?) {
     sidebarModel.setCurrentFolder(to: findFolderForItem(newItemID))
-    
-    if let storedPromptModel = sidebarItem.prompt {
-      let mapModelData = MapModelData()
-      let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
-      updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: sidebarItem.imageUrls)
-    }
-    
+    updateSelectedImage(imageUrls: sidebarItem.imageUrls)
     sidebarModel.selectedSidebarItem = sidebarItem
   }
   
-  func updatePromptAndSelectedImage(newPrompt: PromptModel, imageUrls: [URL]) {
+  func updateSelectedImage(imageUrls: [URL]) {
     Debug.log("updatePromptAndSelectedImage")
-    currentPrompt.updateProperties(from: newPrompt)
     if let lastImageUrl = imageUrls.last, let image = NSImage(contentsOf: lastImageUrl) {
       selectedImage = image
     } else {
@@ -202,31 +194,22 @@ extension Sidebar {
 
 extension Sidebar {
   func cleanUpEmptyWorkspaceItemsIfNecessary() {
-    if let workspaceFolder = sidebarModel.workspaceFolder {
-      let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
-      
-      //let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
-      
-      for item in emptyPromptItems {
-        workspaceFolder.remove(item: item)
-        
-        /*
-        if let latestItem = latestEmptyPromptItem, item != latestItem {
-          withAnimation {
-            workspaceFolder.remove(item: item)
-          }
-        }
-         */
-      }
+    guard let workspaceFolder = sidebarModel.workspaceFolder else { return }
+    
+    // Filter out items where `prompt` is nil or `isEmptyPrompt` is true
+    let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
+    
+    for item in emptyPromptItems {
+      workspaceFolder.remove(item: item)
     }
   }
 }
 
 
+
 extension StoredPromptModel {
   var isEmptyPrompt: Bool {
-    return isWorkspaceItem == true &&
-    selectedModel == nil &&
+    return selectedModel == nil &&
     samplingMethod == nil &&
     positivePrompt.isEmpty &&
     negativePrompt.isEmpty &&
@@ -245,10 +228,26 @@ extension StoredPromptModel {
 
 extension SidebarModel {
   func createNewWorkspaceItem(in modelContext: ModelContext) {
-    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
-    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    workspaceFolder?.add(item: newPromptSidebarItem)
+    guard let workspaceFolder = workspaceFolder else {
+      Debug.log("[SidebarModel] workspaceFolder = nil")
+      return
+    }
+    
+    let newSidebarItem = SidebarItem.createNew(parent: workspaceFolder, title: "")
+    workspaceFolder.add(item: newSidebarItem)
     saveData(in: modelContext)
-    setSelectedSidebarItem(to: newPromptSidebarItem)
+    setSelectedSidebarItem(to: newSidebarItem)
+  }
+  
+  func newWorkspaceItem(in modelContext: ModelContext) -> SidebarItem? {
+    guard let workspaceFolder = workspaceFolder else {
+      Debug.log("[SidebarModel] workspaceFolder = nil")
+      return nil
+    }
+    let newSidebarItem = SidebarItem.createNew(parent: workspaceFolder, title: "")
+    workspaceFolder.add(item: newSidebarItem)
+    saveData(in: modelContext)
+    setSelectedSidebarItem(to: newSidebarItem)
+    return newSidebarItem
   }
 }

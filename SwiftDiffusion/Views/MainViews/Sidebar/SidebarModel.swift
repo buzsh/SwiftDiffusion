@@ -14,6 +14,7 @@ class SidebarModel: ObservableObject {
   @Published var rootFolder: SidebarFolder? = nil
   @Published var workspaceFolder: SidebarFolder? = nil
   @Published var selectedItemID: UUID? = nil
+  // TODO: rename "selectedItem"
   @Published var selectedSidebarItem: SidebarItem? = nil
   @Published var currentFolder: SidebarFolder? = nil
   @Published var currentlyGeneratingSidebarItem: SidebarItem? = nil
@@ -79,10 +80,8 @@ class SidebarModel: ObservableObject {
   }
   
   @MainActor
-  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel, in modelContext: ModelContext) {
+  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, in modelContext: ModelContext) {
     storableSidebarItems.removeAll(where: { $0 == sidebarItem })
-    let mapModelData = MapModelData()
-    sidebarItem.prompt = mapModelData.toStored(promptModel: prompt)
     sidebarItem.timestamp = Date()
     currentFolder?.add(item: sidebarItem)
     workspaceFolder?.remove(item: sidebarItem)
@@ -205,26 +204,24 @@ class SidebarModel: ObservableObject {
 
 
 extension SidebarModel {
-  @MainActor func storeChangesOfSelectedSidebarItem(with prompt: PromptModel, in modelContext: ModelContext) {
+  @MainActor func storeChangesOfSelectedSidebarItem(in modelContext: ModelContext) {
     if let selectedSidebarItem = selectedSidebarItem {
-      storeChanges(of: selectedSidebarItem, with: prompt, in: modelContext)
+      storeChanges(of: selectedSidebarItem, in: modelContext)
     }
   }
   
-  @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
+  @MainActor func storeChanges(of sidebarItem: SidebarItem, in modelContext: ModelContext) {
+    guard let updatedPrompt = sidebarItem.prompt else {
+      Debug.log("[SidebarModel] storeChange: updatedPrompt = nil")
+      return
+    }
+    
     if workspaceFolderContains(sidebarItem: sidebarItem) {
-      let mapModelData = MapModelData()
-      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
-      
-      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
-        if let newTitle = updatedPrompt?.positivePrompt {
-          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
-        }
+      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !updatedPrompt.positivePrompt.isEmpty {
+        let newTitle = updatedPrompt.positivePrompt
+        selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
       }
-      
       selectedSidebarItem?.prompt = updatedPrompt
-      //selectedSidebarItem?.timestamp = Date()
       saveData(in: modelContext)
     }
   }

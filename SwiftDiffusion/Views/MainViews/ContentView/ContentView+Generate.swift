@@ -50,6 +50,16 @@ enum PayloadKey: String {
 
 extension ContentView {
   func prepareImageGenerationPayloadFromPrompt() -> [String: Any] {
+    guard let sidebarItem = sidebarModel.selectedSidebarItem else {
+      Debug.log("prepareImageGenerationPayloadFromPrompt: selectedSidebarItem = nil")
+      return [:]
+    }
+    
+    guard let currentPrompt = sidebarItem.prompt else {
+      Debug.log("prepareImageGenerationPayloadFromPrompt: currentPrompt = nil")
+      return [:]
+    }
+    
     let sanitizedPositivePrompt = currentPrompt.positivePrompt
       .replacingOccurrences(of: "\n", with: " ")
       .replacingOccurrences(of: "\"", with: "'")
@@ -72,13 +82,13 @@ extension ContentView {
       PayloadKey.doNotSaveSamples.rawValue : false
     ]
     
-    sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
+    sidebarModel.storeChangesOfSelectedSidebarItem(in: modelContext)
     
     var overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
     ]
     
-    if let selectedModel = currentPrompt.selectedModel, let apiModel = selectedModel.checkpointApiModel {
+    if let selectedModel = currentPrompt.selectedModel, let apiModel = selectedModel.storedCheckpointApiModel {
       overrideSettings["sd_model_checkpoint"] = apiModel.title
     }
     

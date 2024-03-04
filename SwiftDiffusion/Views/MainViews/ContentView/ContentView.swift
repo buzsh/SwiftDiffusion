@@ -33,7 +33,6 @@ struct ContentView: View {
   @EnvironmentObject var updateManager: UpdateManager
   @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
   
@@ -69,13 +68,14 @@ struct ContentView: View {
         .navigationSplitViewColumnWidth(min: 220, ideal: 240, max: 340)
       
     } content: {
-      switch selectedView {
-      case .prompt:
-        PromptView()
-      case .console:
-        ConsoleView()
-      case .split:
-        PromptView(isRightPaneVisible: true)
+      
+      if let fallbackWorkspaceItem = sidebarModel.newWorkspaceItem(in: ModelContext) {
+        
+        switch selectedView {
+        case .prompt:   PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackWorkspaceItem.prompt)
+        case .console:  ConsoleView()
+        case .split:    PromptView(currentPrompt: sidebarModel.selectedSidebarItem?.prompt ?? fallbackWorkspaceItem.prompt, isRightPaneVisible: true)
+        }
       }
       
     } detail: {
@@ -171,7 +171,7 @@ struct ContentView: View {
         .disabled(
           scriptManager.scriptState != .active ||
           (scriptManager.genStatus != .idle && scriptManager.genStatus != .done) ||
-          currentPrompt.selectedModel == nil
+          sidebarModel.selectedSidebarItem.selectedModel == nil
         )
       }
       
@@ -208,14 +208,14 @@ struct ContentView: View {
         
         if userSettings.showDeveloperInterface {
           Button(action: {
-            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
+            WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
           }) {
             Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
           }
         }
         
         Button(action: {
-          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
+          WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, checkpointsManager: checkpointsManager)
         }) {
           Image(systemName: "arkit")
         }
@@ -263,11 +263,11 @@ struct ContentView: View {
         sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
       }
       
-      if scriptManager.genStatus == .generating {
-        imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-        //sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
-        
-      } else if scriptManager.genStatus == .done {
+      else if scriptManager.genStatus == .generating, let sidebarItem = sidebarModel.selectedSidebarItem {
+        imageCountToGenerate = Int(sidebarItem.prompt.batchSize * sidebarItem.prompt.batchCount)
+      } 
+      
+      else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
         
       }

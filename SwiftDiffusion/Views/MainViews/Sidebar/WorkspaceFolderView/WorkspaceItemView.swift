@@ -15,7 +15,6 @@ extension Constants.Sidebar {
 struct WorkspaceItemView: View {
   @Environment(\.colorScheme) var colorScheme
   @Environment(\.modelContext) private var modelContext
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var scriptManager: ScriptManager
   @State private var animatedWidth: CGFloat = 0.0
@@ -65,8 +64,10 @@ struct WorkspaceItemView: View {
         .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
       }
     )
-    .onChange(of: currentPrompt.positivePrompt) {
-      if sidebarItem.id == sidebarModel.selectedSidebarItem?.id {
+    .onChange(of: sidebarModel.selectedSidebarItem?.prompt?.positivePrompt) {
+      guard let currentPrompt = sidebarModel.selectedSidebarItem?.prompt else { return }
+      
+      if sidebarItem == sidebarModel.selectedSidebarItem {
         let trimmedPrompt = currentPrompt.positivePrompt.trimmingCharacters(in: .whitespaces)
         sidebarModel.setSelectedWorkspaceItemTitle(trimmedPrompt, in: modelContext)
       }
@@ -92,7 +93,6 @@ struct WorkspaceItemView: View {
 
 extension SidebarModel {
   func setSelectedWorkspaceItemTitle(_ title: String, in model: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
     if workspaceFolderContainsSelectedSidebarItem() {
       selectedSidebarItem?.title = title.count > Constants.Sidebar.titleLength ? String(title.prefix(Constants.Sidebar.titleLength)).appending("…") : title
       saveData(in: model)

@@ -9,11 +9,12 @@ import SwiftUI
 
 struct CheckpointMenu: View {
   @ObservedObject var scriptManager = ScriptManager.shared
-  @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var checkpointsManager: CheckpointsManager
   
   @State var showSelectedCheckpointModelWasRemovedAlert: Bool = false
   @State var showModelLoadTypeErrorThrownAlert: Bool = false
+  
+  @Binding var modelCheckpoint: StoredCheckpointModel?
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
@@ -25,7 +26,8 @@ struct CheckpointMenu: View {
             ForEach(checkpointsManager.models.filter { $0.type == .coreMl }
               .sorted(by: { $0.name.lowercased() < $1.name.lowercased() })) { model in
                 Button(model.name) {
-                  currentPrompt.selectedModel = model
+                  let mapModelData = MapModelData()
+                  modelCheckpoint = mapModelData.toStoredCheckpointModel(from: model)
                 }
               }
           }
@@ -33,12 +35,13 @@ struct CheckpointMenu: View {
             ForEach(checkpointsManager.models.filter { $0.type == .python }
               .sorted(by: { $0.name.lowercased() < $1.name.lowercased() })) { model in
                 Button(model.name) {
-                  currentPrompt.selectedModel = model
+                  let mapModelData = MapModelData()
+                  modelCheckpoint = mapModelData.toStoredCheckpointModel(from: model) ?? nil
                 }
               }
           }
         } label: {
-          Label(currentPrompt.selectedModel?.name ?? "Choose Model", systemImage: "arkit")
+          Label(modelCheckpoint?.name ?? "Choose Model", systemImage: "arkit")
         }
       }
     }
@@ -50,13 +53,13 @@ struct CheckpointMenu: View {
     }
     .alert(isPresented: $showSelectedCheckpointModelWasRemovedAlert) {
       var message: String = ""
-      if let model = currentPrompt.selectedModel { message = model.name }
+      if let model = modelCheckpoint { message = model.name }
       
       return Alert(
         title: Text("Warning: Model checkpoint was either moved or deleted"),
         message: Text(message),
         dismissButton: .cancel(Text("OK")) {
-          currentPrompt.selectedModel = nil
+          modelCheckpoint = nil
         }
       )
     }
@@ -85,7 +88,7 @@ struct CheckpointMenu: View {
   }
   
   func handleRecentlyRemovedCheckpointIfSelectedMenuItem() {
-    if !checkpointsManager.recentlyRemovedCheckpointModels.isEmpty, let selectedModel = currentPrompt.selectedModel {
+    if !checkpointsManager.recentlyRemovedCheckpointModels.isEmpty, let selectedModel = modelCheckpoint {
       for removedModel in checkpointsManager.recentlyRemovedCheckpointModels {
         if selectedModel.path == removedModel.path {
           showSelectedCheckpointModelWasRemovedAlert = true

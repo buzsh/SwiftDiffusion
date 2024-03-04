@@ -15,9 +15,6 @@ class SidebarFolder: Identifiable {
   @Attribute var timestamp: Date
   @Attribute var isRoot: Bool = false
   @Attribute var isWorkspace: Bool = false
-  //@Relationship var items: [SidebarItem]
-  //@Relationship var folders: [SidebarFolder]
-  
   @Relationship(deleteRule: .cascade, inverse: \SidebarFolder.parent) var items: [SidebarItem]
   @Relationship(deleteRule: .cascade, inverse: \SidebarFolder.parent) var folders: [SidebarFolder]
   @Relationship var parent: SidebarFolder?
