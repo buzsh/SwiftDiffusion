@@ -34,7 +34,7 @@ struct WorkspaceItemView: View {
       Spacer()
     }
     .frame(height: 28)
-    
+    .padding(.leading, 4)
     .contentShape(Rectangle())
     .cornerRadius(4)
     .background(
@@ -42,7 +42,7 @@ struct WorkspaceItemView: View {
         ZStack(alignment: .leading) {
           if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem {
             RoundedRectangle(cornerRadius: 4)
-              .fill(Color(/*0x195AC2*/0x1C5EC8))//.fill(Color.blue.opacity(0.9))
+              .fill(Color(0x1C5EC8))
               .frame(width: animatedWidth)
               .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
               .onChange(of: scriptManager.genProgress) {
@@ -90,23 +90,6 @@ extension SidebarModel {
       return promptTitle.prefix(Constants.Sidebar.titleLength) == sidebarItemTitle.prefix(Constants.Sidebar.titleLength)
     }
     return false
-  }
-}
-
-struct WidthAnimatableModifier: AnimatableModifier {
-  var width: CGFloat
-  var color: Color = Color.blue.opacity(0.9)
-  
-  // AnimatableData must be a single, animatable value. SwiftUI will interpolate this value.
-  var animatableData: CGFloat {
-    get { width }
-    set { width = newValue }
-  }
-  
-  func body(content: Content) -> some View {
-    content
-      .frame(width: width)
-      .background(RoundedRectangle(cornerRadius: 4).fill(color))
   }
 }
 
