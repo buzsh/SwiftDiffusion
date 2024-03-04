@@ -13,6 +13,7 @@ extension Constants.Sidebar {
 }
 
 struct WorkspaceItemView: View {
+  @Environment(\.colorScheme) var colorScheme
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
@@ -20,6 +21,15 @@ struct WorkspaceItemView: View {
   @State private var animatedWidth: CGFloat = 0.0
   
   let sidebarItem: SidebarItem
+  
+  var progressBarColor: Color {
+    switch colorScheme {
+    case .light:
+      return Color(0x2984F2)
+    default:
+      return Color(0x1C5EC8)
+    }
+  }
   
   var body: some View {
     
@@ -42,7 +52,7 @@ struct WorkspaceItemView: View {
         ZStack(alignment: .leading) {
           if sidebarItem == sidebarModel.currentlyGeneratingSidebarItem {
             RoundedRectangle(cornerRadius: 4)
-              .fill(Color(0x1C5EC8))
+              .fill(progressBarColor)
               .frame(width: animatedWidth)
               .listRowInsets(EdgeInsets(top: -8, leading: -20, bottom: -8, trailing: -20))
               .onChange(of: scriptManager.genProgress) {
