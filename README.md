@@ -1,3 +1,5 @@
+<h3><p align="center"><a href="https://github.com/buzsh/SwiftDiffusion/releases">Pre-Release Available Now</a></p></h3>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1400" alt="cover - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/97ad70fa-ff9c-4a3d-a033-9b974496f478">
@@ -16,6 +18,7 @@
   <p>&nbsp;</p>
   <p>&nbsp;</p>
 </p>
+
 
 
 <p align="center">
@@ -64,13 +67,6 @@
   <p>&nbsp;</p>
 </p>
 
-
-
-# Download the Pre-Release
-
-Coming very soon! 
-
-Still tightening some screws. Keep checking back!
 
 
 <p>&nbsp;</p>
