@@ -259,9 +259,13 @@ struct ContentView: View {
       handleScriptOnLaunch()
     }
     .onChange(of: scriptManager.genStatus) {
+      if scriptManager.genStatus == .preparingToGenerate {
+        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+      }
+      
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-        sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
+        //sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -281,6 +285,7 @@ struct ContentView: View {
     
     if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
       sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
+      sidebarModel.currentlyGeneratingSidebarItem = nil
     }
     
     Task {

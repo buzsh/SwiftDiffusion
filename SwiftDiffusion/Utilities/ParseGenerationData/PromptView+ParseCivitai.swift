@@ -73,7 +73,9 @@ extension PromptView {
     if let pasteboardContent = getPasteboardString() {
       let hasData = userHasGenerationDataInPasteboard(from: pasteboardContent)
       await MainActor.run {
-        generationDataInPasteboard = hasData
+        withAnimation {
+          generationDataInPasteboard = hasData
+        }
       }
     }
   }

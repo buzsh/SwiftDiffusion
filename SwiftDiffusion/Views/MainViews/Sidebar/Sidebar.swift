@@ -33,6 +33,7 @@ struct Sidebar: View {
           List(selection: $sidebarModel.selectedItemID) {
             WorkspaceFolderView()
             SidebarFolderView()
+            VStack{}.frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
           }
           .listStyle(SidebarListStyle())
           .onDrop(of: [UTType.plainText], isTargeted: nil) { providers in
@@ -40,8 +41,7 @@ struct Sidebar: View {
             return false
           }
           
-          EmptyView()
-            .frame(height: Constants.Layout.SidebarToolbar.bottomBarHeight)
+          
           
           DisplayOptionsBar()
         }
@@ -205,14 +205,18 @@ extension Sidebar {
     if let workspaceFolder = sidebarModel.workspaceFolder {
       let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
       
-      let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
+      //let latestEmptyPromptItem = emptyPromptItems.max(by: { $0.timestamp < $1.timestamp })
       
       for item in emptyPromptItems {
+        workspaceFolder.remove(item: item)
+        
+        /*
         if let latestItem = latestEmptyPromptItem, item != latestItem {
           withAnimation {
             workspaceFolder.remove(item: item)
           }
         }
+         */
       }
     }
   }

@@ -41,7 +41,7 @@ struct BlueBackgroundButtonStyle: ButtonStyle {
       .overlay(
         RoundedRectangle(cornerRadius: 6)
           .stroke(self.borderColor(for: configuration.isPressed), lineWidth: 1)
-          .opacity(self.borderOpacity(for: configuration.isPressed)) // Adjust border opacity
+          .opacity(self.borderOpacity(for: configuration.isPressed))
       )
   }
   
@@ -121,4 +121,51 @@ struct BorderBackgroundButtonStyle: ButtonStyle {
 
 #Preview {
   CommonPreviews.contentView
+}
+
+
+struct BlueBackgroundSmallButtonStyle: ButtonStyle {
+  @Environment(\.isEnabled) var isEnabled: Bool
+  
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .padding(.vertical, 4).padding(.horizontal, 8)
+      .background(self.backgroundColor(for: configuration.isPressed))
+      .foregroundColor(.white)
+      .opacity(self.textOpacity(for: configuration.isPressed))
+      .clipShape(RoundedRectangle(cornerRadius: 6))
+      .overlay(
+        RoundedRectangle(cornerRadius: 6)
+          .stroke(self.borderColor(for: configuration.isPressed), lineWidth: 1)
+          .opacity(self.borderOpacity(for: configuration.isPressed))
+      )
+  }
+  
+  private func backgroundColor(for isPressed: Bool) -> Color {
+    if !isEnabled {
+      return StateColors.disabledGray
+    } else {
+      return isPressed ? StateColors.pressedBlue : StateColors.normalBlue
+    }
+  }
+  
+  private func borderColor(for isPressed: Bool) -> Color {
+    return isEnabled ? StateColors.normalBlue : StateColors.disabledGray
+  }
+  
+  private func textOpacity(for isPressed: Bool) -> Double {
+    if !isEnabled {
+      return StateColors.disabledTextOpacity
+    } else {
+      return isPressed ? StateColors.pressedTextOpacity : StateColors.normalTextOpacity
+    }
+  }
+  
+  private func borderOpacity(for isPressed: Bool) -> Double {
+    if !isEnabled {
+      return StateColors.disabledBorderOpacity
+    } else {
+      return isPressed ? StateColors.pressedBorderOpacity : StateColors.normalBorderOpacity
+    }
+  }
 }

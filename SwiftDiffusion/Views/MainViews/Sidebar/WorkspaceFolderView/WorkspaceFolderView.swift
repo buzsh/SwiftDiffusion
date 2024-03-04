@@ -27,7 +27,6 @@ struct WorkspaceFolderView: View {
           .onTapGesture {
             sidebarModel.setSelectedSidebarItem(to: sidebarItem)
           }
-          //.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
       }
     }
     .onChange(of: sidebarModel.workspaceFolder?.items) {
