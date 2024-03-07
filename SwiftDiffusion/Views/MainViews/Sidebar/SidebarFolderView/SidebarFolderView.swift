@@ -50,10 +50,6 @@ struct SidebarFolderView: View {
           }
       }
       
-      if let subFolders = sidebarModel.currentFolder?.folders, subFolders.isEmpty {
-        newFolderButtonItem
-      }
-      
       ForEach(sidebarModel.sortedFoldersAlphabetically) { folder in
         VStack(spacing: 0) {
           SidebarFolderItem(folder: folder)
@@ -64,6 +60,7 @@ struct SidebarFolderView: View {
             }
         }
       }
+      newFolderButtonItem
     }
     
     Section(header: Text(sidebarModel.currentFolder?.name ?? "Files")) {
