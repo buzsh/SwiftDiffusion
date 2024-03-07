@@ -552,6 +552,16 @@
 			path = DebugViews;
 			sourceTree = "<group>";
 		};
+		293BC4E02B9A69DE00C9DEBF /* SidebarModel */ = {
+			isa = PBXGroup;
+			children = (
+				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
+				29949F262B965E49004F8D60 /* SidebarModel+Create.swift */,
+				29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */,
+			);
+			path = SidebarModel;
+			sourceTree = "<group>";
+		};
 		2942B0742B7B2BBA00D1E0DE /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -771,9 +781,7 @@
 		299BCB8B2B8FEA9600AB839F /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
-				299BCB892B8FDDF100AB839F /* SidebarModel.swift */,
-				29949F262B965E49004F8D60 /* SidebarModel+Create.swift */,
-				29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */,
+				293BC4E02B9A69DE00C9DEBF /* SidebarModel */,
 				29169D242B8FCB780099A9C5 /* Sidebar.swift */,
 				29A1A38E2B91A80700CC3D1B /* SidebarExtensions */,
 				29A1A38D2B91A7F300CC3D1B /* WorkspaceFolderView */,

@@ -225,14 +225,3 @@ extension StoredPromptModel {
     vaeModel == nil
   }
 }
-
-
-extension SidebarModel {
-  func createNewWorkspaceItem() {
-    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [])
-    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    workspaceFolder.add(item: newPromptSidebarItem)
-    saveData(in: modelContext)
-    setSelectedSidebarItem(to: newPromptSidebarItem)
-  }
-}
