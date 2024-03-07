@@ -166,41 +166,6 @@ class SidebarModel: ObservableObject {
       sidebarItemHasJustBeenDeleted = true
     }
   }
-  
-  
-  func selectNextClosestSidebarItemIfApplicable(sortedItems: [SidebarItem], sortingOrder: SortingOrder) {
-    guard !sortedItems.isEmpty else {
-      setSelectedSidebarItem(to: nil)
-      return
-    }
-    
-    guard let currentItem = selectedSidebarItem, let currentIndex = sortedItems.firstIndex(of: currentItem) else {
-      setSelectedSidebarItem(to: sortingOrder == .leastRecent ? sortedItems.first : sortedItems.last)
-      return
-    }
-    
-    switch sortingOrder {
-    case .leastRecent:
-      if currentIndex + 1 < sortedItems.count {
-        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
-      } else if currentIndex > 0 {
-        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
-      } else {
-        setSelectedSidebarItem(to: nil)
-      }
-    case .mostRecent:
-      if currentIndex > 0 {
-        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
-      } else if currentIndex + 1 < sortedItems.count {
-        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
-      } else {
-        setSelectedSidebarItem(to: nil)
-      }
-    }
-  }
-
-  
-  
 
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)
