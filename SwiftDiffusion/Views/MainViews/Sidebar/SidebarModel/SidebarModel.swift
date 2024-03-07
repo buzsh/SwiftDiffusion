@@ -97,12 +97,6 @@ class SidebarModel: ObservableObject {
     selectedItemID = sidebarItem?.id
   }
   
-  func moveSidebarItem(withId sidebarItemId: UUID, toFolderWithId folderId: UUID) {
-    queueMovableSidebarItemID = sidebarItemId
-    queueDestinationFolderID = folderId
-    beginMovableSidebarItemQueue = true
-  }
-  
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
     storableSidebarItems.append(sidebarItem)

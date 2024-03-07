@@ -7,6 +7,16 @@
 
 import Foundation
 
+// MARK: User Gesture Move
+extension SidebarModel {
+  func moveSidebarItem(withId sidebarItemId: UUID, toFolderWithId folderId: UUID) {
+    queueMovableSidebarItemID = sidebarItemId
+    queueDestinationFolderID = folderId
+    beginMovableSidebarItemQueue = true
+  }
+}
+
+// MARK: Move on Action
 extension SidebarModel {
   func moveWorkspaceItemToCurrentFolder() {
     guard let selectedSidebarItem = selectedSidebarItem,
