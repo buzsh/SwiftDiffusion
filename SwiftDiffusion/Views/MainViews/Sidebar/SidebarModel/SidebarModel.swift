@@ -101,19 +101,6 @@ class SidebarModel: ObservableObject {
     sidebarItem.imageUrls = imageUrls
     storableSidebarItems.append(sidebarItem)
   }
-  
-  func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
-    if let selectedSidebarItem = selectedSidebarItem {
-      selectNextClosestSidebarItemIfApplicable(sortedItems: sortedCurrentFolderItems, sortingOrder: .leastRecent)
-      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: selectedSidebarItem, in: modelContext, withSoundEffect: true)
-      if let currentFolder = currentFolder {
-        Debug.log("[Delete] item: \(selectedSidebarItem.title), from currentFolder: \(currentFolder.name)")
-      }
-      currentFolder?.remove(item: selectedSidebarItem)
-      saveData(in: modelContext)
-      sidebarItemHasJustBeenDeleted = true
-    }
-  }
 
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)
@@ -143,33 +130,6 @@ class SidebarModel: ObservableObject {
       if sidebarItem.imageUrls.isEmpty == false {
         storableSidebarItems.append(sidebarItem)
       }
-    }
-  }
-}
-
-
-extension SidebarModel {
-  @MainActor func storeChangesOfSelectedSidebarItem(with prompt: PromptModel, in modelContext: ModelContext) {
-    if let selectedSidebarItem = selectedSidebarItem {
-      storeChanges(of: selectedSidebarItem, with: prompt, in: modelContext)
-    }
-  }
-  
-  @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
-    if workspaceFolderContains(sidebarItem: sidebarItem) {
-      let mapModelData = MapModelData()
-      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
-      
-      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
-        if let newTitle = updatedPrompt?.positivePrompt {
-          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
-        }
-      }
-      
-      selectedSidebarItem?.prompt = updatedPrompt
-      //selectedSidebarItem?.timestamp = Date()
-      saveData(in: modelContext)
     }
   }
 }

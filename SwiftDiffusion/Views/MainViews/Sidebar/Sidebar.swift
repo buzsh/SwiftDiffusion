@@ -32,8 +32,6 @@ struct Sidebar: View {
             return false
           }
           
-          
-          
           DisplayOptionsBar()
         }
       }
@@ -102,7 +100,7 @@ struct Sidebar: View {
     let newlySelectedSidebarItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
     if let currentlySelectedItem = currentlySelectedItem {
-      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
+      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt)
     }
     
     if let newlySelectedSidebarItem = newlySelectedSidebarItem {

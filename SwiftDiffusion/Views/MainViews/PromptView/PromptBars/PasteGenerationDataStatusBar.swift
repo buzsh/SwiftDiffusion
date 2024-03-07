@@ -30,7 +30,7 @@ struct PasteGenerationDataStatusBar: View {
             if let pasteboardContent = getPasteboardString() {
               onPaste(pasteboardContent)
             }
-            sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
+            sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt)
           }) {
             Text("Paste Generation Data")
             Image(systemName: "arrow.up.doc.on.clipboard")

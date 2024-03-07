@@ -72,7 +72,7 @@ extension ContentView {
       PayloadKey.doNotSaveSamples.rawValue : false
     ]
     
-    sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt, in: modelContext)
+    sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt)
     
     var overrideSettings: [String: Any] = [
       "CLIP_stop_at_last_layers": Int(currentPrompt.clipSkip)
