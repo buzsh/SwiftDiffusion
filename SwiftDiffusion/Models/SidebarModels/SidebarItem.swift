@@ -15,17 +15,15 @@ import SwiftData
   @Attribute var imageUrls: [URL]
   @Relationship(deleteRule: .cascade) var imageThumbnails: [ImageInfo]
   @Relationship(deleteRule: .cascade) var imagePreviews: [ImageInfo]
-  @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
-  @Relationship var parent: SidebarFolder
+  @Relationship var parent: SidebarFolder?
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil, parent: SidebarFolder) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], prompt: StoredPromptModel? = nil, parent: SidebarFolder? = nil) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
     self.imageThumbnails = []
     self.imagePreviews = []
-    self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
     self.parent = parent
   }

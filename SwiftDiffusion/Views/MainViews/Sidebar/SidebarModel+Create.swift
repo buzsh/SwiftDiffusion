@@ -17,7 +17,7 @@ extension SidebarModel {
   private func copyItemToWorkspace(_ sidebarItem: SidebarItem) {
     if let clonedPrompt = sidebarItem.prompt {
       let clonedTitle = String(sidebarItem.title.prefix(Constants.Sidebar.titleLength))
-      let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
+      let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [])
       clonedItem.prompt = clonedPrompt
       workspaceFolder.add(item: clonedItem)
       saveData(in: modelContext)

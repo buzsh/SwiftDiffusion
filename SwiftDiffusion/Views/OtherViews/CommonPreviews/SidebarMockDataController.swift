@@ -45,8 +45,8 @@ class MockDataController {
     let storedCheckpointModel2 = StoredCheckpointModel(name: "Animerge 1.6.2", path: "/path/to/checkpoint", type: .python)
     let storedPromptModel2 = StoredPromptModel(isWorkspaceItem: false, positivePrompt: "A sunny day", negativePrompt: "A rainy day", selectedModel: storedCheckpointModel2)
     
-    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel1)
-    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, isWorkspaceItem: true, prompt: storedPromptModel2)
+    let sidebarItem1 = SidebarItem(title: "Gloomy Days", imageUrls: mockImageUrls, prompt: storedPromptModel1)
+    let sidebarItem2 = SidebarItem(title: "Sunshine Overlook", imageUrls: mockImageUrls, prompt: storedPromptModel2)
     
     let sidebarFolder1 = SidebarFolder(name: "Personal", items: [sidebarItem1, sidebarItem2], folders: [])
     let sidebarFolder3 = SidebarFolder(name: "Embedded", items: [sidebarItem1, sidebarItem2], folders: [])
