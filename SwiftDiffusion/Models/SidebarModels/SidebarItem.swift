@@ -17,8 +17,9 @@ import SwiftData
   @Relationship(deleteRule: .cascade) var imagePreviews: [ImageInfo]
   @Attribute var isWorkspaceItem: Bool = true
   @Relationship var prompt: StoredPromptModel?
+  @Relationship var parent: SidebarFolder
   
-  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil) {
+  init(title: String, timestamp: Date = Date(), imageUrls: [URL], isWorkspaceItem: Bool, prompt: StoredPromptModel? = nil, parent: SidebarFolder) {
     self.title = title
     self.timestamp = timestamp
     self.imageUrls = imageUrls
@@ -26,6 +27,7 @@ import SwiftData
     self.imagePreviews = []
     self.isWorkspaceItem = isWorkspaceItem
     self.prompt = prompt
+    self.parent = parent
   }
 }
 
