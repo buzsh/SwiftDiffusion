@@ -53,10 +53,12 @@ struct PromptControlBar: View {
   private var workspaceItemBar: some View {
     HStack {
       Button(action: {
-
+        sidebarModel.deleteSelectedWorkspaceItem()
+        /*
         if let sidebarItem = sidebarModel.selectedSidebarItem {
           sidebarModel.deleteWorkspaceItem(sidebarItem)
         }
+         */
         
       }) {
         Image(systemName: "xmark")
@@ -67,9 +69,8 @@ struct PromptControlBar: View {
       
       if isStorableSidebarItem {
         Button(action: {
-          if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt)
-          }
+          sidebarModel.saveWorkspaceItem(withPrompt: currentPrompt)
+          sidebarModel.moveWorkspaceItemToCurrentFolder()
         }) {
           Text("Save Generated Prompt")
           Image(systemName: "square.and.arrow.down")

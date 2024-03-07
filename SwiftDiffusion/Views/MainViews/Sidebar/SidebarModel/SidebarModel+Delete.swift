@@ -21,6 +21,14 @@ class SwiftDataHelper {
 }
 
 extension SidebarModel {
+  func deleteSelectedWorkspaceItem() {
+    guard let selectedSidebarItem = selectedSidebarItem,
+          selectedSidebarItem.parent == workspaceFolder
+    else { return }
+    
+    deleteWorkspaceItem(selectedSidebarItem)
+  }
+  
   /// Delete a workspace item and save changes to the data model.
   ///
   /// - Parameter sidebarItem: The sidebar item to delete.
