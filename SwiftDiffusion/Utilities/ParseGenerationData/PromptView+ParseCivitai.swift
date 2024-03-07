@@ -178,20 +178,9 @@ extension PromptView {
     for modelHash in modelHashes {
       Debug.log("modelHash: \(modelHash)")
       
-      var potentialHashMatch: String?
       for model in checkpointsManager.models {
-        if let checkpointMetadataTitle = model.checkpointApiModel?.title {
-          if let startIndex = checkpointMetadataTitle.firstIndex(of: "["),
-             let endIndex = checkpointMetadataTitle.firstIndex(of: "]") {
-            let range = checkpointMetadataTitle.index(after: startIndex)..<endIndex
-            let extractedHash = String(checkpointMetadataTitle[range])
-            potentialHashMatch = extractedHash
-          }
-        } else if let checkpointApiModelHash = model.checkpointApiModel?.modelHash {
-          potentialHashMatch = checkpointApiModelHash
-        }
-        
-        if potentialHashMatch?.lowercased() == modelHash.lowercased() {
+        if let apiHash = model.checkpointApiModel?.modelHash,
+           modelHash == apiHash {
           return model
         }
       }

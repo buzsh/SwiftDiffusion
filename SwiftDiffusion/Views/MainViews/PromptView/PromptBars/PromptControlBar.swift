@@ -45,16 +45,20 @@ struct PromptControlBar: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var userSettings = UserSettings.shared
   
+  @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
+  
   @State private var isWorkspaceItem: Bool = false
   @State private var isStorableSidebarItem: Bool = false
   
   private var workspaceItemBar: some View {
     HStack {
       Button(action: {
-
+        sidebarModel.deleteSelectedWorkspaceItem()
+        /*
         if let sidebarItem = sidebarModel.selectedSidebarItem {
           sidebarModel.deleteWorkspaceItem(sidebarItem)
         }
+         */
         
       }) {
         Image(systemName: "xmark")
@@ -65,9 +69,8 @@ struct PromptControlBar: View {
       
       if isStorableSidebarItem {
         Button(action: {
-          if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt)
-          }
+          sidebarModel.saveWorkspaceItem(withPrompt: currentPrompt)
+          sidebarModel.moveWorkspaceItemToCurrentFolder()
         }) {
           Text("Save Generated Prompt")
           Image(systemName: "square.and.arrow.down")
@@ -81,12 +84,19 @@ struct PromptControlBar: View {
   private var storedItemBar: some View {
     HStack {
       Button(action: {
-        if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.queueStoredSidebarItemForDeletion = selectedSidebarItem
-        }
+        showingDeleteSelectedSidebarItemConfirmationAlert = true
       }) {
         Image(systemName: "trash")
         Text("Delete")
+      }
+      .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
+        Alert(
+          title: Text("Are you sure you want to delete this item?"),
+          primaryButton: .destructive(Text("Delete")) {
+            sidebarModel.deleteSelectedStoredItemFromCurrentFolder()
+          },
+          secondaryButton: .cancel()
+        )
       }
       
       Spacer()

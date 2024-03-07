@@ -42,7 +42,7 @@ struct SwiftDiffusionApp: App {
     } catch {
       fatalError("Failed to configure SwiftData container: \(error)")
     }
-    
+    modelContainer.mainContext.autosaveEnabled = true
     sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
     
     setupAppFileStructure()

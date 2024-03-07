@@ -65,9 +65,6 @@ class SidebarModel: ObservableObject {
   // TODO: Do we need?
   @Published var updateControlBarView: Bool = false
   
-  @Published var queueWorkspaceItemForDeletion: SidebarItem? = nil
-  @Published var queueStoredSidebarItemForDeletion: SidebarItem? = nil
-  
   @Published var queueMovableSidebarItemID: UUID? = nil
   @Published var queueDestinationFolderID: UUID? = nil
   @Published var beginMovableSidebarItemQueue: Bool = false
@@ -100,107 +97,10 @@ class SidebarModel: ObservableObject {
     selectedItemID = sidebarItem?.id
   }
   
-  func moveSidebarItem(withId sidebarItemId: UUID, toFolderWithId folderId: UUID) {
-    queueMovableSidebarItemID = sidebarItemId
-    queueDestinationFolderID = folderId
-    beginMovableSidebarItemQueue = true
-  }
-  
   func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
     sidebarItem.imageUrls = imageUrls
     storableSidebarItems.append(sidebarItem)
   }
-  
-  @MainActor
-  func moveStorableSidebarItemToFolder(sidebarItem: SidebarItem, withPrompt prompt: PromptModel) {
-    storableSidebarItems.removeAll(where: { $0 == sidebarItem })
-    let mapModelData = MapModelData()
-    sidebarItem.prompt = mapModelData.toStored(promptModel: prompt)
-    sidebarItem.timestamp = Date()
-    currentFolder?.add(item: sidebarItem)
-    workspaceFolder.remove(item: sidebarItem)
-    PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: sidebarItem, in: modelContext)
-    saveData(in: modelContext)
-  }
-  
-  func deleteFromWorkspace(sidebarItem: SidebarItem, in modelContext: ModelContext) {
-    selectNextClosestSidebarItemIfApplicable(sortedItems: sortedWorkspaceFolderItems, sortingOrder: .mostRecent)
-    withAnimation {
-      workspaceFolder.remove(item: sidebarItem)
-    }
-    saveData(in: modelContext)
-  }
-  
-  func selectNewWorkspaceItemIfApplicable() {
-    let sortedItems = sortedWorkspaceFolderItems
-    guard !sortedItems.isEmpty else {
-      setSelectedSidebarItem(to: nil)
-      return
-    }
-    if let currentItem = selectedSidebarItem,
-       let currentIndex = sortedItems.firstIndex(of: currentItem) {
-      if currentIndex > 0 {
-        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
-      }
-      else if sortedItems.count > 1 {
-        setSelectedSidebarItem(to: sortedItems[min(currentIndex + 1, sortedItems.count - 1)])
-      }
-      else {
-        setSelectedSidebarItem(to: nil)
-      }
-    } else {
-      setSelectedSidebarItem(to: sortedItems.first)
-    }
-  }
-  
-  
-  func deleteSelectedSidebarItemFromStorage(in modelContext: ModelContext) {
-    if let selectedSidebarItem = selectedSidebarItem {
-      selectNextClosestSidebarItemIfApplicable(sortedItems: sortedCurrentFolderItems, sortingOrder: .leastRecent)
-      PreviewImageProcessingManager.shared.trashPreviewAndThumbnailAssets(for: selectedSidebarItem, in: modelContext, withSoundEffect: true)
-      if let currentFolder = currentFolder {
-        Debug.log("[Delete] item: \(selectedSidebarItem.title), from currentFolder: \(currentFolder.name)")
-      }
-      currentFolder?.remove(item: selectedSidebarItem)
-      saveData(in: modelContext)
-      sidebarItemHasJustBeenDeleted = true
-    }
-  }
-  
-  
-  func selectNextClosestSidebarItemIfApplicable(sortedItems: [SidebarItem], sortingOrder: SortingOrder) {
-    guard !sortedItems.isEmpty else {
-      setSelectedSidebarItem(to: nil)
-      return
-    }
-    
-    guard let currentItem = selectedSidebarItem, let currentIndex = sortedItems.firstIndex(of: currentItem) else {
-      setSelectedSidebarItem(to: sortingOrder == .leastRecent ? sortedItems.first : sortedItems.last)
-      return
-    }
-    
-    switch sortingOrder {
-    case .leastRecent:
-      if currentIndex + 1 < sortedItems.count {
-        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
-      } else if currentIndex > 0 {
-        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
-      } else {
-        setSelectedSidebarItem(to: nil)
-      }
-    case .mostRecent:
-      if currentIndex > 0 {
-        setSelectedSidebarItem(to: sortedItems[currentIndex - 1])
-      } else if currentIndex + 1 < sortedItems.count {
-        setSelectedSidebarItem(to: sortedItems[currentIndex + 1])
-      } else {
-        setSelectedSidebarItem(to: nil)
-      }
-    }
-  }
-
-  
-  
 
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)
@@ -230,33 +130,6 @@ class SidebarModel: ObservableObject {
       if sidebarItem.imageUrls.isEmpty == false {
         storableSidebarItems.append(sidebarItem)
       }
-    }
-  }
-}
-
-
-extension SidebarModel {
-  @MainActor func storeChangesOfSelectedSidebarItem(with prompt: PromptModel, in modelContext: ModelContext) {
-    if let selectedSidebarItem = selectedSidebarItem {
-      storeChanges(of: selectedSidebarItem, with: prompt, in: modelContext)
-    }
-  }
-  
-  @MainActor func storeChanges(of sidebarItem: SidebarItem, with prompt: PromptModel, in modelContext: ModelContext) {
-    //shouldCheckForNewSidebarItemToCreate = true
-    if workspaceFolderContains(sidebarItem: sidebarItem) {
-      let mapModelData = MapModelData()
-      let updatedPrompt = mapModelData.toStored(promptModel: prompt)
-      
-      if !selectedSidebarItemTitle(hasEqualTitleTo: updatedPrompt) && !prompt.positivePrompt.isEmpty {
-        if let newTitle = updatedPrompt?.positivePrompt {
-          selectedSidebarItem?.title = newTitle.count > Constants.Sidebar.titleLength ? String(newTitle.prefix(Constants.Sidebar.titleLength)).appending("…") : newTitle
-        }
-      }
-      
-      selectedSidebarItem?.prompt = updatedPrompt
-      //selectedSidebarItem?.timestamp = Date()
-      saveData(in: modelContext)
     }
   }
 }

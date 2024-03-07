@@ -13,21 +13,10 @@ struct Sidebar: View {
   @Environment(\.modelContext) var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
-  @Query var sidebarFolders: [SidebarFolder]
-  
+  @Query var sidebarFolders: [SidebarFolder]  
   @Binding var selectedImage: NSImage?
   @Binding var lastSavedImageUrls: [URL]
-  
-  /*
-  @Query(filter: #Predicate<SidebarFolder> { folder in
-    folder.isRoot == true
-  }) private var queryRootFolders: [SidebarFolder]
-  
-  @Query(filter: #Predicate<SidebarFolder> { folder in
-    folder.isWorkspace == true
-  }) private var queryWorkspaceFolders: [SidebarFolder]
-  */
-   
+
   var body: some View {
     GeometryReader { geometry in
       VStack {
@@ -43,8 +32,6 @@ struct Sidebar: View {
             return false
           }
           
-          
-          
           DisplayOptionsBar()
         }
       }
@@ -54,10 +41,7 @@ struct Sidebar: View {
       }
     }
     .onAppear {
-      sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
-      sidebarModel.updateStorableSidebarItemsInWorkspace()
-      sidebarModel.cleanUpEmptyWorkspaceItems()
-      sidebarModel.createNewWorkspaceItem()
+      onAppearSetup()
     }
     .onChange(of: sidebarModel.currentFolder) { lastFolder, newFolder in
       Debug.log("[SidebarModel] lastFolder: \(String(describing: lastFolder?.name))")
@@ -98,20 +82,25 @@ struct Sidebar: View {
     }
   }
   
+  private func onAppearSetup() {
+    sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
+    sidebarModel.updateStorableSidebarItemsInWorkspace()
+    sidebarModel.cleanUpEmptyWorkspaceItems()
+    sidebarModel.createNewWorkspaceItem()
+  }
+  
   private func selectedSidebarItemChanged(from currentItemID: UUID?, to newItemID: UUID?) {
     guard newItemID != currentItemID else { return }
     
     Debug.log("[Sidebar] selectedSidebarItemChanged\n  from: \(String(describing: currentItemID))\n    to: \(String(describing: newItemID))")
-    
     Debug.log("[Sidebar] selectedSidebarItemChanged - Entry")
     Debug.log("[Sidebar] From ID: \(String(describing: currentItemID)), To ID: \(String(describing: newItemID))")
-
     
     let currentlySelectedItem = sidebarModel.findSidebarItem(by: currentItemID, in: sidebarFolders)
     let newlySelectedSidebarItem = sidebarModel.findSidebarItem(by: newItemID, in: sidebarFolders)
     
     if let currentlySelectedItem = currentlySelectedItem {
-      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt, in: modelContext)
+      sidebarModel.storeChanges(of: currentlySelectedItem, with: currentPrompt)
     }
     
     if let newlySelectedSidebarItem = newlySelectedSidebarItem {
@@ -148,7 +137,6 @@ struct Sidebar: View {
 }
 
 extension Sidebar {
-  
   // Utility function to find a SidebarFolder by ID
   func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {
     Debug.log("[Sidebar] findSidebarFolder - Searching for ID: \(String(describing: id))")
@@ -196,43 +184,4 @@ extension Sidebar {
     return nil
   }
   
-}
-
-extension SidebarModel {
-  func cleanUpEmptyWorkspaceItems() {
-    let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
-    for item in emptyPromptItems {
-      workspaceFolder.remove(item: item)
-    }
-  }
-}
-
-extension StoredPromptModel {
-  var isEmptyPrompt: Bool {
-    return isWorkspaceItem == true &&
-    selectedModel == nil &&
-    samplingMethod == nil &&
-    positivePrompt.isEmpty &&
-    negativePrompt.isEmpty &&
-    width == 512 &&
-    height == 512 &&
-    cfgScale == 7 &&
-    samplingSteps == 20 &&
-    seed == "-1" &&
-    batchCount == 1 &&
-    batchSize == 1 &&
-    clipSkip == 1 &&
-    vaeModel == nil
-  }
-}
-
-
-extension SidebarModel {
-  func createNewWorkspaceItem() {
-    let newPromptSidebarItem = SidebarItem(title: "", imageUrls: [], isWorkspaceItem: true)
-    newPromptSidebarItem.prompt = StoredPromptModel(isWorkspaceItem: true)
-    workspaceFolder.add(item: newPromptSidebarItem)
-    saveData(in: modelContext)
-    setSelectedSidebarItem(to: newPromptSidebarItem)
-  }
 }
