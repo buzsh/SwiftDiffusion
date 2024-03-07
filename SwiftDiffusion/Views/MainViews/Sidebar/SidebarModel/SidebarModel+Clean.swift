@@ -9,17 +9,16 @@ import Foundation
 
 extension SidebarModel {
   func cleanUpEmptyWorkspaceItems() {
-    let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
-    for item in emptyPromptItems {
-      workspaceFolder.remove(item: item)
+    let emptyWorkspaceItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
+    for item in emptyWorkspaceItems {
+      deleteWorkspaceItem(item)
     }
   }
 }
 
 extension StoredPromptModel {
   var isEmptyPrompt: Bool {
-    return isWorkspaceItem == true &&
-    selectedModel == nil &&
+    return selectedModel == nil &&
     samplingMethod == nil &&
     positivePrompt.isEmpty &&
     negativePrompt.isEmpty &&
