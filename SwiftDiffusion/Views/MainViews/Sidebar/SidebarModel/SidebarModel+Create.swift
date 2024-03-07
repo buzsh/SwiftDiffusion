@@ -10,7 +10,7 @@ import Foundation
 extension SidebarModel {
   func createNewWorkspaceItem() {
     let newWorkspaceItem = SidebarItem(title: "", imageUrls: [])
-    newWorkspaceItem.prompt = StoredPromptModel(isWorkspaceItem: true)
+    newWorkspaceItem.prompt = StoredPromptModel()
     create(sidebarItem: newWorkspaceItem, in: workspaceFolder)
   }
   
