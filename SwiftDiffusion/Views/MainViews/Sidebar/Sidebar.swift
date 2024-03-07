@@ -56,7 +56,7 @@ struct Sidebar: View {
     .onAppear {
       sidebarModel.setCurrentFolder(to: sidebarModel.rootFolder)
       sidebarModel.updateStorableSidebarItemsInWorkspace()
-      sidebarModel.cleanUpEmptyWorkspaceItemsIfNecessary()
+      sidebarModel.cleanUpEmptyWorkspaceItems()
       sidebarModel.createNewWorkspaceItem()
     }
     .onChange(of: sidebarModel.currentFolder) { lastFolder, newFolder in
@@ -198,16 +198,14 @@ extension Sidebar {
   
 }
 
-
 extension SidebarModel {
-  func cleanUpEmptyWorkspaceItemsIfNecessary() {
+  func cleanUpEmptyWorkspaceItems() {
     let emptyPromptItems = workspaceFolder.items.filter { $0.prompt?.isEmptyPrompt ?? false }
     for item in emptyPromptItems {
       workspaceFolder.remove(item: item)
     }
   }
 }
-
 
 extension StoredPromptModel {
   var isEmptyPrompt: Bool {

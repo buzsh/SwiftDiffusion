@@ -43,9 +43,6 @@ struct SwiftDiffusionApp: App {
       fatalError("Failed to configure SwiftData container: \(error)")
     }
     
-    //let context = ModelContext(modelContainer)
-    //sidebarModel = SidebarModel(modelContext: context)
-    
     sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
     
     setupAppFileStructure()
