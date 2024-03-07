@@ -45,6 +45,8 @@ struct PromptControlBar: View {
   @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var userSettings = UserSettings.shared
   
+  @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
+  
   @State private var isWorkspaceItem: Bool = false
   @State private var isStorableSidebarItem: Bool = false
   
@@ -81,12 +83,19 @@ struct PromptControlBar: View {
   private var storedItemBar: some View {
     HStack {
       Button(action: {
-        if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.queueStoredSidebarItemForDeletion = selectedSidebarItem
-        }
+        showingDeleteSelectedSidebarItemConfirmationAlert = true
       }) {
         Image(systemName: "trash")
         Text("Delete")
+      }
+      .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
+        Alert(
+          title: Text("Are you sure you want to delete this item?"),
+          primaryButton: .destructive(Text("Delete")) {
+            sidebarModel.deleteSelectedStoredItemFromCurrentFolder()
+          },
+          secondaryButton: .cancel()
+        )
       }
       
       Spacer()

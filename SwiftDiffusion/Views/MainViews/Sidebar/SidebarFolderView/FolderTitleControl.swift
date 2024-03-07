@@ -110,12 +110,9 @@ struct TrashFolderButton: View {
   }
   
   func deleteFolder() {
-    if let parentFolder = sidebarModel.currentFolder?.parent, let folder = folder {
+    if let folder = folder, let parentFolder = sidebarModel.currentFolder?.parent  {
       withAnimation {
-        sidebarModel.setCurrentFolder(to: parentFolder)
-        parentFolder.remove(folder: folder)
-        sidebarModel.saveData(in: modelContext)
-        sidebarModel.sidebarFolderHasJustBeenDeleted = true
+        sidebarModel.deleteFolder(folder, from: parentFolder)
       }
     }
   }

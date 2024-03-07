@@ -65,9 +65,6 @@ class SidebarModel: ObservableObject {
   // TODO: Do we need?
   @Published var updateControlBarView: Bool = false
   
-  @Published var queueWorkspaceItemForDeletion: SidebarItem? = nil
-  @Published var queueStoredSidebarItemForDeletion: SidebarItem? = nil
-  
   @Published var queueMovableSidebarItemID: UUID? = nil
   @Published var queueDestinationFolderID: UUID? = nil
   @Published var beginMovableSidebarItemQueue: Bool = false

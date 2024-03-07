@@ -23,7 +23,6 @@ extension SidebarModel {
       saveData(in: modelContext)
       cleanUpEmptyWorkspaceItems()
       setSelectedSidebarItem(to: clonedItem)
-      addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: sidebarItem.imageUrls)
     }
   }
   

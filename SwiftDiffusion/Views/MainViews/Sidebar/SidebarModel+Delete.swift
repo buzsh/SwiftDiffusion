@@ -21,19 +21,23 @@ class SwiftDataHelper {
 }
 
 extension SidebarModel {
-  // TODO: refactor selectNextItem to be getNextItemToSelect() -> SidebarItem
-  // then, for example: deleteWorkspaceItem() {
-  //                      let nextItemToSelect = getNextItemToSelect()
-  //                      delete(sidebarItem: item)
-  //                      selectedSidebarItem = nextItemToSelect
-  
   /// Delete a workspace item and save changes to the data model.
   ///
   /// - Parameter sidebarItem: The sidebar item to delete.
   func deleteWorkspaceItem(_ sidebarItem: SidebarItem) {
     delete(sidebarItem: sidebarItem, from: workspaceFolder)
     SwiftDataHelper.saveContext(modelContext)
+    selectNextClosestSidebarItemIfApplicable(sortedItems: workspaceFolder.items, sortingOrder: .leastRecent)
   }
+  
+  func deleteSelectedStoredItemFromCurrentFolder() {
+    guard let sidebarItem = selectedSidebarItem,
+          let folder = currentFolder
+    else { return }
+    
+    deleteStoredItem(sidebarItem, from: folder)
+  }
+  
   /// Delete a stored item from a specified folder, save changes to the data model, and play a sound effect.
   ///
   /// - Parameters:
@@ -43,6 +47,7 @@ extension SidebarModel {
     delete(sidebarItem: sidebarItem, from: folder)
     SwiftDataHelper.saveContext(modelContext)
     SoundUtility.play(systemSound: .trash)
+    selectNextClosestSidebarItemIfApplicable(sortedItems: folder.items, sortingOrder: .leastRecent)
   }
   /// Delete a folder from its parent folder, save changes to the data model, and play a sound effect.
   ///
@@ -53,6 +58,7 @@ extension SidebarModel {
     delete(folder: folder, from: parentFolder)
     SwiftDataHelper.saveContext(modelContext)
     SoundUtility.play(systemSound: .trash)
+    currentFolder = parentFolder
   }
   /// Delete logic for a sidebar item within a folder, and optionally perform additional cleanup actions.
   ///
