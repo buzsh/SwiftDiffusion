@@ -56,7 +56,6 @@ class ParseCivitai {
             matchedCheckpointModel = processModelParameter(modelParameter)
           }
         }
-        // Continue parsing for other parameters (excluding those starting with Model)
         for parameter in parameters where !parameter.trimmingCharacters(in: .whitespaces).starts(with: "Model:") {
           processParameter(parameter, currentPrompt: prompt)
         }
@@ -108,10 +107,8 @@ class ParseCivitai {
   /// Parses the pasteboard content to extract prompt data, including positive and negative prompts, and other parameters like model hash.
   func parseAndSetPromptData(from pasteboardContent: String, currentPrompt: StoredPromptModel) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
-    parseLog(lines)
-    
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
-    parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
+    parseLog("[ParseCivitai] positivePrompt: \(currentPrompt.positivePrompt)")
     
     var matchedCheckpointModel: CheckpointModel?
     for line in lines {
@@ -152,7 +149,7 @@ class ParseCivitai {
   /// - Parameter lines: An array of `String.SubSequence` representing the lines of text to be processed into a positive prompt.
   /// - Returns: A `String` containing the constructed positive prompt, which may be empty if no applicable lines are found or if an excluded keyword is encountered in the first line.
   func buildPositivePrompt(from lines: [String.SubSequence]) -> String {
-    let excludedSubstrings = ["Negative prompt:", "Steps:", "VAE:", "Size:", "Seed:", "Model:", "Sampler:", "CFG scale:", "Clip skip:"]
+    let excludedSubstrings = Constants.Parsing.civitaiTags
     
     var positivePrompt = ""
     for line in lines {
@@ -180,20 +177,20 @@ class ParseCivitai {
     let matches = regex.matches(in: line, options: [], range: NSRange(location: 0, length: nsLine.length))
     
     guard let match = matches.first else {
-      parseLog("No model hash found in the line.")
+      parseLog("[ParseCivitai] No model hash found in the line.")
       return nil
     }
     
     let modelHashesString = nsLine.substring(with: match.range(at: 1))
     let modelHashes = modelHashesString.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
     for modelHash in modelHashes {
-      Debug.log("modelHash: \(modelHash)")
+      Debug.log("[ParseCivitai] modelHash: \(modelHash)")
       
       for checkpoint in checkpoints {
         if let apiHash = checkpoint.checkpointApiModel?.modelHash,
            modelHash == apiHash {
           
-          return checkpoint //mapModelData.toStoredCheckpointModel(from: checkpoint)
+          return checkpoint
         }
       }
       
@@ -206,22 +203,20 @@ class ParseCivitai {
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
     guard keyValue.count == 2 else { return nil }
     let value = keyValue[1].trimmingCharacters(in: .whitespaces)
-    
-    parseLog(value)
     let parsedModelName = value
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
-    parseLog("Parsed model substrings: \(parsedModelSubstrings)")
+    parseLog("[ParseCivitai] Parsed model substrings: \(parsedModelSubstrings)")
     
     for checkpoint in checkpoints {
       let itemSubstrings = splitAndFilterModelName(checkpoint.name)
-      parseLog("Model item substrings: \(itemSubstrings) for model: \(checkpoint.name)")
+      parseLog("[ParseCivitai] Model item substrings: \(itemSubstrings) for model: \(checkpoint.name)")
       if parsedModelSubstrings.contains(where: itemSubstrings.contains) {
-        parseLog("Match \(parsedModelSubstrings) with \(itemSubstrings)")
+        parseLog("[ParseCivitai] Match \(parsedModelSubstrings) with \(itemSubstrings)")
         return checkpoint
       }
     }
     
-    parseLog("No matching model found for \(parsedModelSubstrings)")
+    parseLog("[ParseCivitai] No matching model found for \(parsedModelSubstrings)")
     let allTitles = checkpoints.compactMap { $0.checkpointApiModel?.title }.joined(separator: ", ")
     Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
     return nil
@@ -285,7 +280,8 @@ class ParseCivitai {
   
   /// Logs all current prompt variables to the debug console. This includes selected model, sampling method, prompts, dimensions, cfg scale, sampling steps, seed, batch count, batch size, and clip skip.
   func logAllVariables(currentPrompt: StoredPromptModel) {
-    var debugOutput = ""
+    var debugOutput = "[ParseCivitai]\n"
+    debugOutput += "-----"
     debugOutput += "currentPrompt.\n"
     debugOutput += " selectedModel: \(currentPrompt.selectedModel?.name ?? "nil")\n"
     debugOutput += "samplingMethod: \(currentPrompt.samplingMethod ?? "nil")\n"
@@ -299,18 +295,19 @@ class ParseCivitai {
     debugOutput += "    batchCount: \(currentPrompt.batchCount)\n"
     debugOutput += "     batchSize: \(currentPrompt.batchSize)\n"
     debugOutput += "      clipSkip: \(currentPrompt.clipSkip)\n"
+    debugOutput += "      vaeModel: \(currentPrompt.vaeModel?.name ?? "nil")"
+    debugOutput += "-----"
     Debug.log(debugOutput)
   }
   
 }
-
 
 extension ParseCivitai {
   func updateSamplingMethod(with name: String) -> String? {
     if Constants.coreMLSamplingMethods.contains(name) || Constants.pythonSamplingMethods.contains(name) {
       return name
     } else {
-      Debug.log("No sampling method found with the name \(name)")
+      Debug.log("[ParseCivitai] No sampling method found with the name \(name)")
       return nil
     }
   }
@@ -319,7 +316,7 @@ extension ParseCivitai {
     if let matchingModel = vaeModels.first(where: { $0.name == name }) {
       return matchingModel
     } else {
-      Debug.log("No VAE Model found with the name \(name)")
+      Debug.log("[ParseCivitai] No VAE Model found with the name \(name)")
       return nil
     }
   }

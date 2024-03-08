@@ -8,6 +8,10 @@
 import Foundation
 import AppKit
 
+extension Constants.Parsing {
+  static let civitaiTags = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:", "Model hash:", "VAE:"]
+}
+
 class PastableService: ObservableObject {
   static let shared = PastableService()
   
@@ -66,7 +70,7 @@ class PastableService: ObservableObject {
   /// Asynchronously determines if the pasteboard content contains generation data by looking for specific keywords.
   func didFindGenerationDataTags(from pasteboardContent: String) async -> Bool {
     await withTaskGroup(of: Bool.self, returning: Bool.self) { group in
-      let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:", "Model hash:", "VAE:"]
+      let keywords = Constants.Parsing.civitaiTags
       
       for keyword in keywords {
         group.addTask {
