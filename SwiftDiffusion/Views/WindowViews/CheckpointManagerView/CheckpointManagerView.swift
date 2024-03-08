@@ -36,26 +36,15 @@ struct CheckpointManagerView: View {
     VStack(alignment: .leading) {
       HStack {
         Menu("Reveal in Finder") {
-          
-          Button(action: openCoreMlCheckpointModelsFolder) {
-            HStack {
-              Image(systemName: "rotate.3d")
-              Text("CoreML Model Checkpoints")
-            }
-          }
-          Button(action: openPythonCheckpointModelsFolder) {
-            HStack {
-              Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
-              Text("PyTorch Model Checkpoints")
-            }
-          }
+          MenuButton(title: "CoreML Model Checkpoints", symbol: .coreMl, action: openCoreMlCheckpointModelsFolder)
+          MenuButton(title: "PyTorch Model Checkpoints", symbol: .python, action: openPythonCheckpointModelsFolder)
         }
         .menuStyle(.borderlessButton)
         
         Menu(filterTitle) {
-          Button("Show All Models", action: { selectedFilter = nil })
-          Button("􀢇 CoreML", action: { selectedFilter = .coreMl })
-          Button("􁻴 Python", action: { selectedFilter = .python })
+          MenuButton(title: "Show All Models", symbol: .none, action: { selectedFilter = nil })
+          MenuButton(title: "CoreML", symbol: .coreMl, action: { selectedFilter = .coreMl })
+          MenuButton(title: "PyTorch", symbol: .python, action: { selectedFilter = .python })
         }
         Button("Add Model") {
           Debug.log("Adding model")
@@ -68,56 +57,33 @@ struct CheckpointManagerView: View {
         HStack {
           VStack {
             switch item.type {
-            case .coreMl:
-              Image(systemName: "rotate.3d")
-            case .python:
-              Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
+            case .coreMl: SFSymbol.coreMl.image
+            case .python: SFSymbol.python.image
             }
           }.padding(.trailing, 2)
           
           Text(item.name)
           Spacer()
           
-          /*
-          Button(action: {
-            Debug.log(item)
-            self.selectedCheckpointModel = item
-          }) {
-            Image(systemName: "pencil")
-          }
-          .buttonStyle(BorderlessButtonStyle())
-          */
-          
-          // if item is not default or if item is not currently selected model
           if item != currentPrompt.selectedModel {
-            Button(action: {
+            SymbolButton(symbol: .trash, action: {
               Task {
                 await checkpointsManager.moveToTrash(item: item)
               }
-            }) {
-              Image(systemName: "trash")
-            }
-            .buttonStyle(BorderlessButtonStyle())
+            })
           } else {
-            Image(systemName: "lock").opacity(0.3)
+            SFSymbol.lock.image.opacity(0.3)
           }
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 4)
       }
     }
-    .sheet(item: $selectedCheckpointModel) { checkpointModel in
-      //CheckpointPreferencesView(checkpointModel: Binding<CheckpointModel>(get: { checkpointModel }, set: { _ in }), modelPreferences: checkpointModel.preferences)
-    }
     .navigationTitle("Checkpoint Manager")
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         HStack {
-          /*
-          ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(0.5)
-          */
+          
         }
       }
     }
@@ -125,7 +91,6 @@ struct CheckpointManagerView: View {
   }
   
   private func openCoreMlCheckpointModelsFolder() {
-    //guard let modelsDirUrl = userSettings.stableDiffusionModelsDirectoryUrl else {
     guard let modelsDirUrl = AppDirectory.coreMl.url else {
       Debug.log("coreML dir URL is nil")
       return
@@ -191,5 +156,53 @@ extension CheckpointsManager {
     } catch {
       Debug.log("Failed to move to trash: \(item.name), error: \(error)")
     }
+  }
+}
+
+enum SFSymbol: String {
+  case coreMl = "rotate.3d"
+  case python = "point.bottomleft.forward.to.point.topright.scurvepath"
+  case trash
+  case lock
+  
+  case none
+  
+  var name: String {
+    return self.rawValue
+  }
+  
+  var image: some View {
+    Image(systemName: self.name)
+  }
+}
+
+struct MenuButton: View {
+  let title: String
+  var symbol: SFSymbol = .none
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: action) {
+      HStack {
+        if symbol != .none {
+          symbol.image
+        }
+        Text(title)
+      }
+    }
+  }
+}
+
+struct SymbolButton: View {
+  let symbol: SFSymbol
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: {
+      action()
+    }) {
+      symbol.image
+    }
+    .buttonStyle(BorderlessButtonStyle())
   }
 }
