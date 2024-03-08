@@ -117,7 +117,7 @@ struct PromptControlBar: View {
     HStack(alignment: .center) {
       if isWorkspaceItem {
         workspaceItemBar
-      } else if isStorableSidebarItem {
+      } else {
         storedItemBar
       }
     }

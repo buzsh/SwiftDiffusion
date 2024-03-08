@@ -49,6 +49,11 @@ struct PromptEditorView: View {
             showMenu = isFocused && !loraModelsManager.models.isEmpty
           }
         }
+        .onChange(of: loraModelsManager.models.isEmpty) {
+          withAnimation(.easeInOut(duration: 0.25)) {
+            showMenu = isFocused && !loraModelsManager.models.isEmpty
+          }
+        }
         .disabled(sidebarModel.disablePromptView)
         .onChange(of: sidebarModel.disablePromptView) {
           if sidebarModel.disablePromptView { isFocused = false }
