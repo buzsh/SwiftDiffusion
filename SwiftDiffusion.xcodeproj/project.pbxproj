@@ -125,7 +125,7 @@
 		29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */; };
 		29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3702B7A62180017DD6B /* WindowManager.swift */; };
 		29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */; };
-		29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3762B7AA6310017DD6B /* AppDelegate.swift */; };
+		29C0F3772B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */; };
 		29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3782B7AA6F40017DD6B /* App+Setup.swift */; };
 		29C0F37D2B7AB3D50017DD6B /* UserSettings+URLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F37C2B7AB3D50017DD6B /* UserSettings+URLs.swift */; };
 		29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F37F2B7ABF050017DD6B /* GeneralSection.swift */; };
@@ -276,7 +276,7 @@
 		29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateView.swift; sourceTree = "<group>"; };
 		29C0F3702B7A62180017DD6B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyPasteUtility.swift; sourceTree = "<group>"; };
-		29C0F3762B7AA6310017DD6B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionAppDelegate.swift; sourceTree = "<group>"; };
 		29C0F3782B7AA6F40017DD6B /* App+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "App+Setup.swift"; sourceTree = "<group>"; };
 		29C0F37C2B7AB3D50017DD6B /* UserSettings+URLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSettings+URLs.swift"; sourceTree = "<group>"; };
 		29C0F37F2B7ABF050017DD6B /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
@@ -749,7 +749,7 @@
 			children = (
 				29A1A38F2B93BDFB00CC3D1B /* Info.plist */,
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
-				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
+				29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
 				29169D112B8EAE1A0099A9C5 /* Models */,
@@ -1174,7 +1174,7 @@
 				29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */,
 				29C06C282B93CC8F00F950C4 /* URLParserUtility.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
-				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
+				29C0F3772B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift in Sources */,
 				29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */,
 				295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
