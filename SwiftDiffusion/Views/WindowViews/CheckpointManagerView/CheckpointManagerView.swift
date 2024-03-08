@@ -36,8 +36,19 @@ struct CheckpointManagerView: View {
     VStack(alignment: .leading) {
       HStack {
         Menu("Reveal in Finder") {
-          Button("CoreML Model Checkpoints", action: openCoreMlCheckpointModelsFolder)
-          Button("Python Model Checkpoints", action: openPythonCheckpointModelsFolder)
+          
+          Button(action: openCoreMlCheckpointModelsFolder) {
+            HStack {
+              Image(systemName: "rotate.3d")
+              Text("CoreML Model Checkpoints")
+            }
+          }
+          Button(action: openPythonCheckpointModelsFolder) {
+            HStack {
+              Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
+              Text("PyTorch Model Checkpoints")
+            }
+          }
         }
         .menuStyle(.borderlessButton)
         
