@@ -52,6 +52,7 @@
 		2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */; };
 		2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */; };
 		2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */; };
+		295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */; };
 		295A600F2B8D805000B822A9 /* CachedThumbnailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */; };
 		295A60112B8D81CF00B822A9 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60102B8D81CF00B822A9 /* ImageCache.swift */; };
 		295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60122B8D924100B822A9 /* KeyCodes.swift */; };
@@ -199,6 +200,7 @@
 		2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlurView.swift; sourceTree = "<group>"; };
 		2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointApiModel.swift; sourceTree = "<group>"; };
 		2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelauncherUtility.swift; sourceTree = "<group>"; };
+		295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteGenerationDataButton.swift; sourceTree = "<group>"; };
 		295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedThumbnailImageView.swift; sourceTree = "<group>"; };
 		295A60102B8D81CF00B822A9 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		295A60122B8D924100B822A9 /* KeyCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCodes.swift; sourceTree = "<group>"; };
@@ -464,6 +466,7 @@
 			children = (
 				29C828002B9A89CF0067C0E9 /* PastableService.swift */,
 				29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */,
+				295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */,
 			);
 			path = PastableService;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 		297196512B715380000F7960 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8172B81B49300116D60 /* PastableService */,
 				292CE8112B8195A800116D60 /* AutomaticServices */,
 				297196522B71538C000F7960 /* FilePickerService.swift */,
 			);
@@ -710,7 +714,6 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				292CE8172B81B49300116D60 /* PastableService */,
 				29A1A3902B93CC5700CC3D1B /* Parsers */,
 				292CE80A2B8193C200116D60 /* ImageSaver */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
@@ -1221,6 +1224,7 @@
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
+				295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */,
 				292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */,
