@@ -14,6 +14,18 @@ class PastableService: ObservableObject {
   @Published var canPasteData: Bool = false
   @Published var pastablePromptData: StoredPromptModel? = nil
   
+  func newWorkspaceItemFromParsedPasteboard(sidebarModel: SidebarModel?, checkpoints: [CheckpointModel], vaeModels: [VaeModel]) {
+    guard let sidebarModel = sidebarModel else {
+      Debug.log("[PastableService] newWorkspaceItemFromPasteboard")
+      return
+    }
+    
+    if let pastablePromptData = parsePasteboard(checkpoints: checkpoints, vaeModels: vaeModels) {
+      sidebarModel.createNewWorkspaceItem(withPrompt: pastablePromptData)
+    }
+    clearPasteboard()
+    canPasteData = false
+  }
   
   func parsePasteboard(checkpoints: [CheckpointModel], vaeModels: [VaeModel]) -> StoredPromptModel? {
     guard let pasteboardContent = getPasteboardString() else { return nil }

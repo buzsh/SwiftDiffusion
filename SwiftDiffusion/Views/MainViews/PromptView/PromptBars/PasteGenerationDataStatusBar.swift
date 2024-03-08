@@ -33,7 +33,7 @@ struct PasteGenerationDataStatusBar: View {
             sidebarModel.storeChangesOfSelectedSidebarItem(with: currentPrompt)
           }) {
             Text("Paste Generation Data")
-            Image(systemName: "arrow.up.doc.on.clipboard")
+            Image(systemName: SFSymbol.paste.name)
           }
           .buttonStyle(.accessoryBar)
           

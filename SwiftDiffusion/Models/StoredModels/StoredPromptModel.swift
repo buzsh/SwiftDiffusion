@@ -41,6 +41,37 @@ class StoredPromptModel {
   }
 }
 
+extension StoredPromptModel {
+  func copyMetadataToClipboard() {
+    CopyPasteUtility.copyToClipboard(getSharablePromptMetadata())
+  }
+  
+  private func getSharablePromptMetadata() -> String {
+    var modelName = ""
+    if let name = selectedModel?.name { modelName = name }
+    var samplerName = ""
+    if let samplingMethod = samplingMethod { samplerName = samplingMethod }
+    
+    var promptMetadata = "\(positivePrompt)\n"
+    promptMetadata += "Negative prompt: \(negativePrompt)\n"
+    promptMetadata += "Model: \(modelName)\n"
+    promptMetadata += "Sampler: \(samplerName)\n"
+    promptMetadata += "Size: \(width)x\(height)\n"
+    promptMetadata += "CFG scale: \(cfgScale)\n"
+    promptMetadata += "Steps: \(samplingSteps)\n"
+    promptMetadata += "Clip skip: \(clipSkip)\n"
+    promptMetadata += "Seed: \(seed)\n"
+    promptMetadata += "Batch count: \(batchCount)\n"
+    promptMetadata += "Batch size: \(batchSize)\n"
+    
+    if let vaeModel = vaeModel {
+      promptMetadata += "VAE: \(vaeModel.name)\n"
+    }
+    
+    return promptMetadata
+  }
+}
+
 extension MapModelData {
   
   @MainActor 

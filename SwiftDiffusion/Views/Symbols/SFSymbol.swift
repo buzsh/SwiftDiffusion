@@ -16,11 +16,12 @@ enum SFSymbol: String {
   
   case play = "play.fill"
   case stop = "stop.fill"
-  
   case bonjour
-  
   case trash
   case lock
+  
+  case copy = "clipboard"
+  case paste = "arrow.up.doc.on.clipboard"
   
   case none
 }

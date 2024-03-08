@@ -18,7 +18,7 @@ struct PasteGenerationDataButton: View {
   var body: some View {
     HStack {
       if showButtonWithAnimation {
-        BlueSymbolButton(title: "Paste", symbol: "arrow.up.doc.on.clipboard") {
+        BlueSymbolButton(title: "Paste", symbol: .paste) {
           if let pastablePromptData = pastableService.parsePasteboard(checkpoints: checkpointsManager.models, vaeModels: vaeModelsManager.models) {
             sidebarModel.createNewWorkspaceItem(withPrompt: pastablePromptData)
           }

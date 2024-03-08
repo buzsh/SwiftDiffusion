@@ -14,6 +14,7 @@ struct SwiftDiffusionApp: App {
   var modelContainer: ModelContainer
   var sidebarModel: SidebarModel
   var scriptManager = ScriptManager.shared
+  let pastableService = PastableService.shared
   let updateManager = UpdateManager()
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
@@ -26,6 +27,7 @@ struct SwiftDiffusionApp: App {
         .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
                minHeight: 500, idealHeight: 800, maxHeight: .infinity)
         .environmentObject(scriptManager)
+        .environmentObject(pastableService)
         .environmentObject(updateManager)
         .environmentObject(sidebarModel)
         .environmentObject(checkpointsManager)
@@ -54,9 +56,12 @@ struct SwiftDiffusionApp: App {
     }
     .commands {
       CommandMenu("Prompt") {
-        Button("Copy Generation Data") {
-          currentPrompt.copyMetadataToClipboard()
-        }
+        MenuButton(title: "Copy Generation Data", symbol: .copy, action: {
+          sidebarModel.selectedSidebarItem?.prompt?.copyMetadataToClipboard()
+        })
+        MenuButton(title: "Paste Generation Data", symbol: .paste, action: {
+          pastableService.newWorkspaceItemFromParsedPasteboard(sidebarModel: sidebarModel, checkpoints: checkpointsManager.models, vaeModels: vaeModelsManager.models)
+        })
       }
     }
   }
