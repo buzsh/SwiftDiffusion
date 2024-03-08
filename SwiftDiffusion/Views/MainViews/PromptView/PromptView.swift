@@ -63,6 +63,7 @@ struct PromptView: View {
         .padding(.leading, 8).padding(.trailing, 16)
         .disabled(sidebarModel.disablePromptView)
       }
+      .scrollBounceBehavior(.basedOnSize)
       
       DebugPromptActionView(scriptManager: scriptManager)
       
