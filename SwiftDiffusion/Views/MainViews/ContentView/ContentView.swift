@@ -16,32 +16,28 @@ struct ContentView: View {
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
-  
   @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var scriptManager = ScriptManager.shared
-  
-  @State private var scriptManagerObserver: ScriptManagerObserver?
   @ObservedObject var pastableService = PastableService.shared
-  
+  @ObservedObject var scriptManager = ScriptManager.shared
+  // App States
+  @State private var scriptManagerObserver: ScriptManagerObserver?
   @AppStorage("hasLaunchedBeforeTest") var hasLaunchedBefore: Bool = false
+  // OnboardingBetaView
   @State private var showingBetaOnboardingSheetView: Bool = false
-  
   // RequiredInputPaths
   @State private var showingRequiredInputPathsView = false
   @State private var hasDismissedRequiredInputPathsView = false
   @State private var isPulsating = false
-  
-  // TabView
+  // Dev TabView
   @State private var selectedView: ViewManager = .prompt
   @State private var hasLaunchedPythonEnvironmentOnFirstAppearance = false
-  
-  // Detail
+  // DetailView
   @StateObject var fileHierarchy = FileHierarchy(rootPath: "")
   @State var selectedImage: NSImage? = nil
   @State var lastSelectedImagePath: String = ""
   @State var lastSavedImageUrls: [URL] = []
   @State var imageCountToGenerate: Int = 0
-  
+  // NavigationSplitView
   @State private var columnVisibility = NavigationSplitViewVisibility.all
   
   var body: some View {
