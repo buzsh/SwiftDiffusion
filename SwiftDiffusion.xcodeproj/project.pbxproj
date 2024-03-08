@@ -158,6 +158,7 @@
 		29FA4EB02B9B669A007205C8 /* WindowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EAF2B9B669A007205C8 /* WindowHeader.swift */; };
 		29FA4EB22B9B6A2A007205C8 /* DeveloperToolbarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB12B9B6A2A007205C8 /* DeveloperToolbarItems.swift */; };
 		29FA4EB42B9B6A44007205C8 /* SegmentedViewPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB32B9B6A44007205C8 /* SegmentedViewPicker.swift */; };
+		29FA4EB82B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */; };
 		29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB923E2B8DAA660023C7C5 /* ShareButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -315,6 +316,7 @@
 		29FA4EAF2B9B669A007205C8 /* WindowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowHeader.swift; sourceTree = "<group>"; };
 		29FA4EB12B9B6A2A007205C8 /* DeveloperToolbarItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolbarItems.swift; sourceTree = "<group>"; };
 		29FA4EB32B9B6A44007205C8 /* SegmentedViewPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedViewPicker.swift; sourceTree = "<group>"; };
+		29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToolbarSymbolButton.swift; sourceTree = "<group>"; };
 		29FB923E2B8DAA660023C7C5 /* ShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -425,6 +427,7 @@
 		2916F3352B728586001D14B9 /* DetailView */ = {
 			isa = PBXGroup;
 			children = (
+				29FA4EB62B9B8C2B007205C8 /* Views */,
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
 				29FB923E2B8DAA660023C7C5 /* ShareButton.swift */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
@@ -1043,6 +1046,14 @@
 			path = DeveloperItems;
 			sourceTree = "<group>";
 		};
+		29FA4EB62B9B8C2B007205C8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1119,6 +1130,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29FA4EB82B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift in Sources */,
 				29A1A3832B911E9300CC3D1B /* DropHandlerModifier.swift in Sources */,
 				29C06C2B2B93DD0F00F950C4 /* BetaOnboardingView.swift in Sources */,
 				29B571822B75AE410057DD50 /* PromptRows.swift in Sources */,

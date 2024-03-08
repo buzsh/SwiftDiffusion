@@ -66,7 +66,6 @@ struct PromptView: View {
       .scrollBounceBehavior(.basedOnSize)
       
       DebugPromptActionView(scriptManager: scriptManager)
-      
     }
     .background(Color(NSColor.windowBackgroundColor))
   }
