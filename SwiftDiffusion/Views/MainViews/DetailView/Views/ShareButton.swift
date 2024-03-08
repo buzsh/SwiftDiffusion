@@ -11,18 +11,18 @@ struct ShareButton: View {
   @Binding var selectedImage: NSImage?
   
   var body: some View {
-    Button(action: {
+    DetailToolbarSymbolButton(hint: "Share Image", symbol: .share, action: {
       if let image = selectedImage {
         SharePickerCoordinator.shared.showSharePicker(for: image)
       }
-    }) {
-      Image(systemName: "square.and.arrow.up")
-    }
-    .buttonStyle(BorderlessButtonStyle())
+    })
     .disabled(selectedImage == nil)
   }
 }
 
+#Preview {
+  CommonPreviews.detailView
+}
 
 class SharePickerCoordinator: NSObject, NSSharingServicePickerDelegate {
   static let shared = SharePickerCoordinator()

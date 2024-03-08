@@ -8,33 +8,6 @@
 import SwiftUI
 import AppKit
 
-struct DetailImageView: View {
-  @Binding var image: NSImage?
-  
-  var body: some View {
-    VStack {
-      if let image = image {
-        Image(nsImage: image)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(maxWidth: .infinity, maxHeight: .infinity)
-          .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
-      } else {
-        Spacer()
-        HStack {
-          Spacer()
-          SFSymbol.photo.image
-            .font(.system(size: 30, weight: .light))
-            .foregroundColor(Color.secondary)
-            .opacity(0.5)
-          Spacer()
-        }
-        Spacer()
-      }
-    }
-  }
-}
-
 struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
@@ -159,43 +132,5 @@ extension CommonPreviews {
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
     .frame(width: 300, height: 600)
-  }
-}
-
-struct HorizontalDivider: View {
-  var lightColor: Color = .gray.opacity(0.25)
-  var darkColor: Color = .black
-  var thickness: CGFloat = 1
-  
-  @Environment(\.colorScheme) var colorScheme
-  
-  var body: some View {
-    Rectangle()
-      .fill(currentColor)
-      .frame(height: thickness)
-      .edgesIgnoringSafeArea(.all)
-  }
-  
-  private var currentColor: Color {
-    colorScheme == .dark ? darkColor : lightColor
-  }
-}
-
-struct VerticalDivider: View {
-  var lightColor: Color = .gray.opacity(0.25)
-  var darkColor: Color = .black
-  var thickness: CGFloat = 1
-  
-  @Environment(\.colorScheme) var colorScheme
-  
-  var body: some View {
-    Rectangle()
-      .fill(currentColor)
-      .frame(width: thickness)
-      .edgesIgnoringSafeArea(.all)
-  }
-  
-  private var currentColor: Color {
-    colorScheme == .dark ? darkColor : lightColor
   }
 }

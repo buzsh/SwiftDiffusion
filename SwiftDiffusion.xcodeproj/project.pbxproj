@@ -159,6 +159,8 @@
 		29FA4EB22B9B6A2A007205C8 /* DeveloperToolbarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB12B9B6A2A007205C8 /* DeveloperToolbarItems.swift */; };
 		29FA4EB42B9B6A44007205C8 /* SegmentedViewPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB32B9B6A44007205C8 /* SegmentedViewPicker.swift */; };
 		29FA4EB82B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */; };
+		29FA4EBA2B9B8F17007205C8 /* DetailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB92B9B8F17007205C8 /* DetailImageView.swift */; };
+		29FA4EBC2B9B8F43007205C8 /* Dividers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EBB2B9B8F43007205C8 /* Dividers.swift */; };
 		29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB923E2B8DAA660023C7C5 /* ShareButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -317,6 +319,8 @@
 		29FA4EB12B9B6A2A007205C8 /* DeveloperToolbarItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolbarItems.swift; sourceTree = "<group>"; };
 		29FA4EB32B9B6A44007205C8 /* SegmentedViewPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedViewPicker.swift; sourceTree = "<group>"; };
 		29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToolbarSymbolButton.swift; sourceTree = "<group>"; };
+		29FA4EB92B9B8F17007205C8 /* DetailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageView.swift; sourceTree = "<group>"; };
+		29FA4EBB2B9B8F43007205C8 /* Dividers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dividers.swift; sourceTree = "<group>"; };
 		29FB923E2B8DAA660023C7C5 /* ShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -429,7 +433,6 @@
 			children = (
 				29FA4EB62B9B8C2B007205C8 /* Views */,
 				2916F3362B72859D001D14B9 /* DetailView.swift */,
-				29FB923E2B8DAA660023C7C5 /* ShareButton.swift */,
 				2916F33A2B728633001D14B9 /* FileOutlineView.swift */,
 				292CE8252B81C0B300116D60 /* FileRow */,
 				29C0F3692B79D2BA0017DD6B /* FileHierarchy */,
@@ -1050,6 +1053,9 @@
 			isa = PBXGroup;
 			children = (
 				29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */,
+				29FA4EB92B9B8F17007205C8 /* DetailImageView.swift */,
+				29FA4EBB2B9B8F43007205C8 /* Dividers.swift */,
+				29FB923E2B8DAA660023C7C5 /* ShareButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1149,6 +1155,7 @@
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
 				29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
+				29FA4EBC2B9B8F43007205C8 /* Dividers.swift in Sources */,
 				290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */,
 				29F91D332B8D42390047B3C9 /* NSImage+Extensions.swift in Sources */,
 				29B1D9D82B755965009B6F03 /* AppDirectory.swift in Sources */,
@@ -1267,6 +1274,7 @@
 				29C5118D2B90C50B0050F171 /* SidebarItemView.swift in Sources */,
 				29A1A3882B912FD500CC3D1B /* FolderTitleControl.swift in Sources */,
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
+				29FA4EBA2B9B8F17007205C8 /* DetailImageView.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
 				29FA4EAC2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift in Sources */,
