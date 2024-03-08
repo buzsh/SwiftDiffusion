@@ -29,6 +29,12 @@ import SwiftData
   }
 }
 
+extension SidebarItem {
+  func set(prompt: StoredPromptModel) {
+    self.prompt = prompt
+  }
+}
+
 extension SidebarItem: Equatable {
   static func == (lhs: SidebarItem, rhs: SidebarItem) -> Bool {
     lhs.id == rhs.id

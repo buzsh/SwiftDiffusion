@@ -8,68 +8,26 @@
 import SwiftUI
 
 struct CommonPreviews {
-  
-  @MainActor
-  static var previewEnvironment: some View {
-    let promptModelPreview = PromptModel()
-    let checkpointsManagerPreview = CheckpointsManager()
-    let loraModelsManagerPreview = ModelManager<LoraModel>()
-    let vaeModelsManagerPreview = ModelManager<VaeModel>()
-    let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
-    return AnyView(EmptyView())
-      .environmentObject(promptModelPreview)
-      .environmentObject(checkpointsManagerPreview)
-      .environmentObject(scriptManagerPreview)
-      .environmentObject(loraModelsManagerPreview)
-      .environmentObject(vaeModelsManagerPreview)
-  }
-  
-  @MainActor
-  static var promptView: some View {
-    let promptModelPreview = PromptModel()
-    promptModelPreview.positivePrompt = "sample, positive, prompt"
-    promptModelPreview.negativePrompt = "sample, negative, prompt"
-    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
-    
-    let checkpointsManagerPreview = CheckpointsManager()
-    let loraModelsManagerPreview = ModelManager<LoraModel>()
-    let vaeModelsManagerPreview = ModelManager<VaeModel>()
-    
-    return PromptView(
-      scriptManager: ScriptManager.preview(withState: .readyToStart)
-    )
-    .environmentObject(promptModelPreview)
-    .environmentObject(checkpointsManagerPreview)
-    .environmentObject(loraModelsManagerPreview)
-    .environmentObject(vaeModelsManagerPreview)
-    .frame(width: 400, height: 600)
-  }
-  
-  @MainActor
-  static var contentView: some View {
-    let promptModelPreview = PromptModel()
-    promptModelPreview.positivePrompt = "sample, positive, prompt"
-    promptModelPreview.negativePrompt = "sample, negative, prompt"
-    promptModelPreview.selectedModel = CheckpointModel(name: "some_model.safetensor", path: "/path/to/checkpoint", type: .python)
-    let checkpointsManagerPreview = CheckpointsManager()
-    let loraModelsManagerPreview = ModelManager<LoraModel>()
-    let vaeModelsManagerPreview = ModelManager<VaeModel>()
-    
+  @MainActor static var contentView: some View {
     return ContentView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .environmentObject(promptModelPreview)
-    .environmentObject(checkpointsManagerPreview)
-    .environmentObject(loraModelsManagerPreview)
-    .environmentObject(vaeModelsManagerPreview)
-    //.frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity, minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+    .configuredPreview()
+    .navigationTitle("")
   }
-  
+}
+
+extension CommonPreviews {
+  @MainActor static var promptView: some View {
+    return PromptView(
+      scriptManager: ScriptManager.preview(withState: .readyToStart)
+    )
+    .configuredPreview()
+  }
 }
 
 extension CommonPreviews {
   static var detailView: some View {
-    print(UserSettings.shared.outputDirectoryPath)
     let mockFileHierarchy = FileHierarchy(rootPath: UserSettings.shared.outputDirectoryPath)
     let progressViewModel = ProgressViewModel()
     progressViewModel.progress = 20.0
@@ -80,31 +38,38 @@ extension CommonPreviews {
       lastSelectedImagePath: .constant(""),
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .frame(width: 300, height: 600)
   }
 }
 
-#Preview("PromptView") {
-  CommonPreviews.promptView
+extension CommonPreviews {
+  @MainActor static var sidebar: some View {
+    return Sidebar(
+      selectedImage: .constant(nil),
+      lastSavedImageUrls: .constant([])
+    )
+    .configuredPreview()
+    .navigationTitle("")
+  }
 }
 
 #Preview("ContentView") {
   CommonPreviews.contentView
+    .frame(width: 900, height: 800)
 }
 
-/*
-#Preview {
-  PromptView()
-    .previewEnvironment
+#Preview("PromptView") {
+  CommonPreviews.promptView
+    .frame(width: 600, height: 800)
 }
-*/
 
-extension View {
-  func withCommonEnvironment() -> some View {
-    let scriptManagerPreview = ScriptManager.preview(withState: .readyToStart)
-    return self
-      .environmentObject(scriptManagerPreview)
-  }
+#Preview("DetailView") {
+  CommonPreviews.detailView
+    .frame(width: 300, height: 600)
+}
+
+#Preview("Sidebar") {
+  CommonPreviews.sidebar
+    .frame(width: 300, height: 600)
 }
 
 extension ScriptManager {

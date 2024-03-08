@@ -130,6 +130,12 @@ struct Sidebar: View {
   }
 }
 
+#Preview {
+  CommonPreviews.sidebar
+    .frame(width: 300, height: 600)
+}
+
+
 extension Sidebar {
   // Utility function to find a SidebarFolder by ID
   func findSidebarFolder(by id: UUID?, in folders: [SidebarFolder]) -> SidebarFolder? {

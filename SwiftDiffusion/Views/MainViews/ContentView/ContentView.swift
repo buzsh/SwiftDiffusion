@@ -199,8 +199,7 @@ struct ContentView: View {
 
 #Preview {
   CommonPreviews.contentView
-    .navigationTitle("")
-    .frame(width: 900)
+    .frame(width: 900, height: 800)
 }
 
 extension ContentView {
