@@ -27,7 +27,7 @@ struct ToggleWithHeader: View {
             .font(.system(size: 14, weight: .semibold, design: .default))
             .underline()
             .padding(.vertical, 2)
-          Image(systemName: "questionmark.circle")
+          SFSymbol.help.image
             .onHover { isHovering in
               self.isHovering = isHovering
             }

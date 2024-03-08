@@ -34,7 +34,7 @@ struct BetaOnboardingView: View {
         Button(action: {
           presentationMode.wrappedValue.dismiss()
         }) {
-          Image(systemName: "xmark.circle.fill")
+          SFSymbol.closeFullscreen.image
             .font(.system(size: 20))
             .foregroundStyle(.secondary)
             .opacity(0.6)

@@ -33,6 +33,9 @@ enum SFSymbol: String {
   case copy = "clipboard"
   case paste = "arrow.up.doc.on.clipboard"
   
+  case closeFullscreen = "xmark.circle.fill"
+  case clock
+  
   case close = "xmark"
   case save = "square.and.arrow.down"
   case copyToWorkspace = "tray.and.arrow.up"
@@ -48,6 +51,10 @@ enum SFSymbol: String {
   case mostRecent = "clock.arrow.circlepath"
   case fullscreen = "arrow.up.left.and.arrow.down.right"
   case share = "square.and.arrow.up"
+  
+  case help = "questionmark.circle"
+  case warning = "exclamationmark.triangle"
+  case forceStop = "xmark.octagon"
   
   case none
 }

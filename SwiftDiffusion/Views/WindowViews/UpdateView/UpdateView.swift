@@ -163,7 +163,7 @@ struct UpdateView: View {
               showUpdateFrequencySection.toggle()
             }
           }) {
-            Image(systemName: "clock")
+            SFSymbol.clock.image
               .foregroundStyle(showUpdateFrequencySection ? .blue : .secondary)
           }
         }
@@ -224,7 +224,7 @@ struct ToggleWithLabel: View {
             .font(.system(size: 14, weight: .regular, design: .default))
             .padding(.vertical, 2)
           if !showAllDescriptions {
-            Image(systemName: "questionmark.circle")
+            SFSymbol.help.image
               .onHover { isHovering in
                 self.isHovering = isHovering
               }

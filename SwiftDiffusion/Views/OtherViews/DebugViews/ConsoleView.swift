@@ -47,14 +47,12 @@ struct ConsoleView: View {
         
         Spacer()
         
-        Button(action: {
+        SymbolButton(symbol: .forceStop, action: {
           scriptManager.terminateAllPythonProcesses {
             Debug.log("All Python processes terminated.")
           }
-        }) {
-          Image(systemName: "xmark.octagon")
-        }
-        .buttonStyle(.plain)
+        })
+        .foregroundStyle(.white)
         .padding(.leading, 2)
         
         Button("Terminate") {

@@ -89,12 +89,10 @@ struct CheckpointPreferencesView: View {
         TextField("", text: $temporaryPreferences.seed)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .font(.system(.body, design: .monospaced))
-        Button(action: {
+        
+        SymbolButton(symbol: .shuffle, action: {
           temporaryPreferences.seed = "-1"
-        }) {
-          Image(systemName: "shuffle")
-        }
-        .buttonStyle(BorderlessButtonStyle())
+        })
       }
     }
     .padding(.bottom, Constants.Layout.promptRowPadding)

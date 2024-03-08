@@ -18,7 +18,7 @@ struct RequiredInputPathsPulsatingButton: View {
       showingRequiredInputPathsView = true
       hasDismissedRequiredInputPathsView = false // reset dismissal tracking
     }) {
-      Image(systemName: "exclamationmark.triangle")
+      SFSymbol.warning.image
         .scaleEffect(isPulsating ? 1.1 : 1.0)
         .foregroundColor(isPulsating ? .orange : .secondary)
     }
