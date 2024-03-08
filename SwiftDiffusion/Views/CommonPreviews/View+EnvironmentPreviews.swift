@@ -16,7 +16,7 @@ extension View {
     } catch {
       fatalError("Failed to initialize model container for previews: \(error)")
     }
-    modelContainer.mainContext.autosaveEnabled = true
+    modelContainer.mainContext.autosaveEnabled = false
     let sidebarModelPreview = SidebarModel(modelContext: modelContainer.mainContext)
     let updateManagerPreview = UpdateManager()
     let promptModelPreview = PromptModel()
@@ -40,7 +40,7 @@ extension View {
     } catch {
       fatalError("Failed to initialize model container for previews: \(error)")
     }
-    modelContainer.mainContext.autosaveEnabled = true
+    modelContainer.mainContext.autosaveEnabled = false
     let sidebarModelPreview = SidebarModel(modelContext: modelContainer.mainContext)
     let updateManagerPreview = UpdateManager()
     let promptModelPreview = PromptModel()
