@@ -67,7 +67,22 @@ struct CommonPreviews {
   
 }
 
-
+extension CommonPreviews {
+  static var detailView: some View {
+    print(UserSettings.shared.outputDirectoryPath)
+    let mockFileHierarchy = FileHierarchy(rootPath: UserSettings.shared.outputDirectoryPath)
+    let progressViewModel = ProgressViewModel()
+    progressViewModel.progress = 20.0
+    
+    return DetailView(
+      fileHierarchyObject: mockFileHierarchy,
+      selectedImage: .constant(nil),
+      lastSelectedImagePath: .constant(""),
+      scriptManager: ScriptManager.preview(withState: .readyToStart)
+    )
+    .frame(width: 300, height: 600)
+  }
+}
 
 #Preview("PromptView") {
   CommonPreviews.promptView
