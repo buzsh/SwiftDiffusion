@@ -67,12 +67,6 @@ struct ContentView: View {
     .onChange(of: columnVisibility) {
       sidebarModel.sidebarIsVisible = (columnVisibility != .doubleColumn)
     }
-    .onChange(of: userSettings.outputDirectoryPath) {
-      if let directoryPath = userSettings.outputDirectoryUrl?.path {
-        fileHierarchy.rootPath = directoryPath
-        Task { await fileHierarchy.refresh() }
-      }
-    }
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
@@ -133,6 +127,12 @@ struct ContentView: View {
     }) {
       RequiredInputPathsView()
     }
+    .onChange(of: userSettings.outputDirectoryPath) {
+      if let directoryPath = userSettings.outputDirectoryUrl?.path {
+        fileHierarchy.rootPath = directoryPath
+        Task { await fileHierarchy.refresh() }
+      }
+    }
     .onChange(of: userSettings.automaticDirectoryPath) {
       handleScriptOnLaunch()
     }
@@ -148,7 +148,7 @@ struct ContentView: View {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
         
       } else if scriptManager.genStatus == .done {
-        imagesDidGenerateSuccessfully()
+        imagesGeneratedSuccessfully()
         
       }
     }
@@ -160,14 +160,9 @@ struct ContentView: View {
     
   }
   
-  func imagesDidGenerateSuccessfully() {
+  func imagesGeneratedSuccessfully() {
     NotificationUtility.showCompletionNotification(imageCount: imageCountToGenerate)
-    
-    if let storableSidebarItem = sidebarModel.currentlyGeneratingSidebarItem {
-      sidebarModel.addToStorableSidebarItems(sidebarItem: storableSidebarItem, withImageUrls: lastSavedImageUrls)
-      sidebarModel.currentlyGeneratingSidebarItem = nil
-    }
-    
+    sidebarModel.generatingSidebarItemFinished(withImageUrls: lastSavedImageUrls)
     Task {
       await fileHierarchy.refresh()
     }
@@ -175,14 +170,6 @@ struct ContentView: View {
   
   private var userHasEnteredBothRequiredFields: Bool {
     return !userSettings.automaticDirectoryPath.isEmpty && !userSettings.webuiShellPath.isEmpty
-  }
-  
-  private func loadLastSelectedImage() async {
-    if !lastSelectedImagePath.isEmpty, let image = NSImage(contentsOfFile: lastSelectedImagePath) {
-      await MainActor.run {
-        self.selectedImage = image
-      }
-    }
   }
   
   func checkForUpdatesIfAutomaticUpdatesAreEnabled() {
@@ -194,7 +181,6 @@ struct ContentView: View {
       }
     }
   }
-
 }
 
 #Preview {
@@ -239,7 +225,6 @@ extension ContentView {
     }
     Task {
       await fileHierarchy.refresh()
-      await loadLastSelectedImage()
     }
     
     if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {

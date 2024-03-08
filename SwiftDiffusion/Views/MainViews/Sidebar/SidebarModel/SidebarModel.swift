@@ -96,11 +96,6 @@ class SidebarModel: ObservableObject {
   func setSelectedSidebarItem(to sidebarItem: SidebarItem?) {
     selectedItemID = sidebarItem?.id
   }
-  
-  func addToStorableSidebarItems(sidebarItem: SidebarItem, withImageUrls imageUrls: [URL]) {
-    sidebarItem.imageUrls = imageUrls
-    storableSidebarItems.append(sidebarItem)
-  }
 
   func workspaceFolderContainsSelectedSidebarItem() -> Bool {
     workspaceFolderContains(sidebarItem: selectedSidebarItem)

@@ -80,6 +80,7 @@
 		2975DF142B8C08800031690E /* VaeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF132B8C08800031690E /* VaeModel.swift */; };
 		2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */; };
 		2991FDD92B9BC38800D553F6 /* PromptBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2991FDD82B9BC38800D553F6 /* PromptBarButton.swift */; };
+		2991FDDC2B9BC5EC00D553F6 /* SidebarModel+Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2991FDDB2B9BC5EC00D553F6 /* SidebarModel+Queue.swift */; };
 		29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */; };
 		29949F272B965E49004F8D60 /* SidebarModel+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F262B965E49004F8D60 /* SidebarModel+Create.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
@@ -240,6 +241,7 @@
 		2975DF132B8C08800031690E /* VaeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModel.swift; sourceTree = "<group>"; };
 		2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModelMenu.swift; sourceTree = "<group>"; };
 		2991FDD82B9BC38800D553F6 /* PromptBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptBarButton.swift; sourceTree = "<group>"; };
+		2991FDDB2B9BC5EC00D553F6 /* SidebarModel+Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Queue.swift"; sourceTree = "<group>"; };
 		29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Delete.swift"; sourceTree = "<group>"; };
 		29949F262B965E49004F8D60 /* SidebarModel+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Create.swift"; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -607,6 +609,7 @@
 				29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */,
 				293BC4E32B9A6C1400C9DEBF /* SidebarModel+Move.swift */,
 				293BC4E72B9A71C200C9DEBF /* SidebarModel+Save.swift */,
+				2991FDDB2B9BC5EC00D553F6 /* SidebarModel+Queue.swift */,
 			);
 			path = SidebarModel;
 			sourceTree = "<group>";
@@ -1286,6 +1289,7 @@
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
 				29FA4EAC2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift in Sources */,
+				2991FDDC2B9BC5EC00D553F6 /* SidebarModel+Queue.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */,
