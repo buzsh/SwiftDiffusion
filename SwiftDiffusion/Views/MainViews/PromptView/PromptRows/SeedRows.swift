@@ -47,19 +47,12 @@ struct SeedControlButtonLayout: View {
   @Binding var seed: String
   
   var body: some View {
-    Button(action: {
-      Debug.log("Shuffle random seed")
+    SymbolButton(symbol: .shuffle, action: {
       seed = "-1"
-    }) {
-      Image(systemName: "shuffle") //dice
-    }
-    .buttonStyle(BorderlessButtonStyle())
-    Button(action: {
+    })
+    SymbolButton(symbol: .repeatLast, action: {
       Debug.log("Repeat last seed")
-    }) {
-      Image(systemName: "repeat")
-    }
-    .buttonStyle(BorderlessButtonStyle())
+    })
     .disabled(true)
   }
 }
@@ -76,19 +69,7 @@ struct SeedAndClipSkipRow: View {
             PromptRowHeading(title: "Seed")
               .padding(.leading, 8)
             Spacer()
-            Button(action: {
-              Debug.log("Shuffle random seed")
-              seed = "-1"
-            }) {
-              Image(systemName: "shuffle") // dice
-            }
-            .buttonStyle(BorderlessButtonStyle())
-            Button(action: {
-              Debug.log("Repeat last seed")
-            }) {
-              Image(systemName: "repeat")
-            }
-            .buttonStyle(BorderlessButtonStyle())
+            SeedControlButtonLayout(seed: $seed)
           }
           TextField("", text: $seed)
             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -129,19 +110,7 @@ struct SeedRowAndClipSkipHalfRow: View {
         PromptRowHeading(title: "Seed")
           .padding(.leading, 8)
         Spacer()
-        Button(action: {
-          Debug.log("Shuffle random seed")
-          seed = "-1"
-        }) {
-          Image(systemName: "shuffle") // dice
-        }
-        .buttonStyle(BorderlessButtonStyle())
-        Button(action: {
-          Debug.log("Repeat last seed")
-        }) {
-          Image(systemName: "repeat")
-        }
-        .buttonStyle(BorderlessButtonStyle())
+        SeedControlButtonLayout(seed: $seed)
       }
       TextField("", text: $seed)
         .textFieldStyle(RoundedBorderTextFieldStyle())

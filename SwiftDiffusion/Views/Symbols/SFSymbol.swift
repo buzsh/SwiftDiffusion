@@ -40,5 +40,14 @@ enum SFSymbol: String {
   case shuffle
   case repeatLast = "repeat"
   
+  // Detail
+  case photo
+  case back = "arrow.left"
+  case forward = "arrow.right"
+  case refresh = "arrow.clockwise"
+  case mostRecent = "clock.arrow.circlepath"
+  case fullscreen = "arrow.up.left.and.arrow.down.right"
+  case share = "square.and.arrow.up"
+  
   case none
 }
