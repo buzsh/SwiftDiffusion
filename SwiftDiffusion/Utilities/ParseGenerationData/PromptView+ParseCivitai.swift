@@ -81,16 +81,18 @@ extension PromptView {
   }
   /// Determines if the pasteboard content contains generation data by looking for specific keywords.
   func userHasGenerationDataInPasteboard(from pasteboardContent: String) -> Bool {
+    var searchStartIndex = pasteboardContent.startIndex
     var relevantKeywordCounter = 0
-    let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:", "Model hash:"]
+    let keywords = ["Negative prompt:", "Steps:", "Seed:", "Sampler:", "CFG scale:", "Clip skip:", "Model:", "Model hash:", "VAE:"]
     
     for keyword in keywords {
-      if pasteboardContent.contains(keyword) {
+      if let range = pasteboardContent.range(of: keyword, range: searchStartIndex..<pasteboardContent.endIndex) {
         relevantKeywordCounter += 1
-      }
-      
-      if relevantKeywordCounter >= 2 {
-        return true
+        searchStartIndex = range.upperBound
+        
+        if relevantKeywordCounter >= 2 {
+          return true
+        }
       }
     }
     return false

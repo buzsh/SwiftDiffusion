@@ -160,6 +160,8 @@ struct ContentView: View {
             }
             .disabled(scriptManager.scriptState == .terminated)
           }
+          
+          CanPaste()
         }
       }
       
@@ -265,7 +267,6 @@ struct ContentView: View {
       
       if scriptManager.genStatus == .generating {
         imageCountToGenerate = Int(currentPrompt.batchSize * currentPrompt.batchCount)
-        //sidebarModel.currentlyGeneratingSidebarItem = sidebarModel.selectedSidebarItem
         
       } else if scriptManager.genStatus == .done {
         imagesDidGenerateSuccessfully()
@@ -341,3 +342,26 @@ extension ContentView {
 }
 
 let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+
+struct CanPaste: View {
+  @ObservedObject var pastableService = PastableService.shared
+  
+  var body: some View {
+    HStack {
+      if pastableService.canPasteData {
+        BlueSymbolButton(title: "Paste", symbol: "arrow.up.doc.on.clipboard") {
+          //pastableService
+          
+          withAnimation {
+            pastableService.canPasteData = false
+          }
+        }
+      }
+    }
+    .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
+      Task {
+        await pastableService.checkForPastableData()
+      }
+    }
+  }
+}

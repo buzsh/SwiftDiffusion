@@ -8,14 +8,13 @@
 import Foundation
 import AppKit
 
-/*
 class ParseCivitai {
-  private let checkpointsManager: CheckpointsManager
-  private let vaeModelsManager: ModelManager<VaeModel>
-
-  init(checkpointsManager: CheckpointsManager, vaeModelsManager: ModelManager<VaeModel>) {
-    self.checkpointsManager = checkpointsManager
-    self.vaeModelsManager = vaeModelsManager
+  private var checkpoints: [CheckpointModel] = []
+  private var vaeModels: [VaeModel] = []
+  
+  init(checkpoints: [CheckpointModel], vaeModels: [VaeModel]) {
+    self.checkpoints = checkpoints
+    self.vaeModels = vaeModels
   }
   
   let mapModelData = MapModelData()
@@ -66,7 +65,7 @@ class ParseCivitai {
     
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
     // Loop through each line of the pasteboard content
-    var matchedCheckpointModel: StoredCheckpointModel?//CheckpointModel?
+    var matchedCheckpointModel: CheckpointModel?
     for line in lines {
       if line.contains("Model hash:") {
         matchedCheckpointModel = parseModelHash(from: String(line))
@@ -91,7 +90,10 @@ class ParseCivitai {
     }
     
     if let checkpointModelToSelect = matchedCheckpointModel {
-      currentPrompt.selectedModel = checkpointModelToSelect
+      Task {
+        currentPrompt.selectedModel = await mapModelData.toStoredCheckpointModel(from: checkpointModelToSelect)
+      }
+      //currentPrompt.selectedModel = checkpointModelToSelect
     }
     
   }
@@ -124,7 +126,7 @@ class ParseCivitai {
   /// // to
   /// ["4726d3bab1", "dreamshaperXL_v2TurboDpmppSDE"]
   /// ```
-  func parseModelHash(from line: String) -> StoredCheckpointModel? {
+  func parseModelHash(from line: String) -> CheckpointModel? {
     let regexPattern = "Model hash: ([^,]+(?:, [^,]+(?= Version:))*)"
     let regex = try! NSRegularExpression(pattern: regexPattern, options: [])
     let nsLine = line as NSString
@@ -140,11 +142,11 @@ class ParseCivitai {
     for modelHash in modelHashes {
       Debug.log("modelHash: \(modelHash)")
       
-      for model in checkpointsManager.models {
-        if let apiHash = model.checkpointApiModel?.modelHash,
+      for checkpoint in checkpoints {
+        if let apiHash = checkpoint.checkpointApiModel?.modelHash,
            modelHash == apiHash {
           
-          return mapModelData.toStoredCheckpointModel(from: model)
+          return checkpoint //mapModelData.toStoredCheckpointModel(from: checkpoint)
         }
       }
       
@@ -153,7 +155,7 @@ class ParseCivitai {
     return nil
   }
   /// Processes a model parameter by extracting the value from a key-value pair and attempting to match it with a model in the model manager.
-  func processModelParameter(_ parameter: String) -> StoredCheckpointModel? {
+  func processModelParameter(_ parameter: String) -> CheckpointModel? {
     let keyValue = parameter.split(separator: ":", maxSplits: 1).map(String.init)
     guard keyValue.count == 2 else { return nil }
     let value = keyValue[1].trimmingCharacters(in: .whitespaces)
@@ -163,17 +165,17 @@ class ParseCivitai {
     let parsedModelSubstrings = splitAndFilterModelName(parsedModelName)
     parseLog("Parsed model substrings: \(parsedModelSubstrings)")
     
-    for model in checkpointsManager.models {
-      let itemSubstrings = splitAndFilterModelName(model.name)
-      parseLog("Model item substrings: \(itemSubstrings) for model: \(model.name)")
+    for checkpoint in checkpoints {
+      let itemSubstrings = splitAndFilterModelName(checkpoint.name)
+      parseLog("Model item substrings: \(itemSubstrings) for model: \(checkpoint.name)")
       if parsedModelSubstrings.contains(where: itemSubstrings.contains) {
         parseLog("Match \(parsedModelSubstrings) with \(itemSubstrings)")
-        return mapModelData.toStoredCheckpointModel(from: model)
+        return checkpoint
       }
     }
     
     parseLog("No matching model found for \(parsedModelSubstrings)")
-    let allTitles = checkpointsManager.models.compactMap { $0.checkpointApiModel?.title }.joined(separator: ", ")
+    let allTitles = checkpoints.compactMap { $0.checkpointApiModel?.title }.joined(separator: ", ")
     Debug.log("[processModelParameter] Could not find match for \(value).\n > substrings parsed: \(parsedModelSubstrings)\n > \(allTitles)")
     return nil
   }
@@ -208,7 +210,7 @@ class ParseCivitai {
     case "Seed":
       currentPrompt.seed = value
     case "Sampler":
-      currentPrompt.updateSamplingMethod(with: value)
+      currentPrompt.samplingMethod = updateSamplingMethod(with: value)
     case "CFG scale":
       if let cfgScaleValue = Double(value) {
         currentPrompt.cfgScale = cfgScaleValue
@@ -226,7 +228,9 @@ class ParseCivitai {
         currentPrompt.batchSize = batchSize
       }
     case "VAE":
-      currentPrompt.updateVaeModel(with: value, in: vaeModelsManager)
+      Task {
+        currentPrompt.vaeModel = await mapModelData.toStoredVaeModel(from: updateVaeModel(with: value))
+      }
     default:
       break
     }
@@ -254,24 +258,23 @@ class ParseCivitai {
 }
 
 
-extension StoredPromptModel {
-  func updateSamplingMethod(with name: String) {
+extension ParseCivitai {
+  func updateSamplingMethod(with name: String) -> String? {
     if Constants.coreMLSamplingMethods.contains(name) || Constants.pythonSamplingMethods.contains(name) {
-      self.samplingMethod = name
+      return name
     } else {
       Debug.log("No sampling method found with the name \(name)")
+      return nil
     }
   }
   
-  func updateVaeModel(with name: String, in vaeModelsManager: ModelManager<VaeModel>) {
-    if let matchingModel = vaeModelsManager.models.first(where: { $0.name == name }) {
+  func updateVaeModel(with name: String) -> VaeModel? {
+    if let matchingModel = vaeModels.first(where: { $0.name == name }) {
       let mapModelData = MapModelData()
-      Task {
-        self.vaeModel = await mapModelData.toStoredVaeModel(from: matchingModel)
-      }
+      return matchingModel
     } else {
       Debug.log("No VAE Model found with the name \(name)")
+      return nil
     }
   }
 }
-*/

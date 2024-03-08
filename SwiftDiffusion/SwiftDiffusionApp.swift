@@ -45,8 +45,6 @@ struct SwiftDiffusionApp: App {
     modelContainer.mainContext.autosaveEnabled = true
     sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
     
-    PastableDataManager.setup(withCheckpointsManager: checkpointsManager, vaeModelsManager: vaeModelsManager)
-    
     setupAppFileStructure()
   }
   

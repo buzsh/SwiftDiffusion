@@ -140,7 +140,7 @@
 		29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */; };
 		29C5118D2B90C50B0050F171 /* SidebarItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C5118C2B90C50B0050F171 /* SidebarItemView.swift */; };
 		29C827FF2B9A89110067C0E9 /* ParseCivitai.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */; };
-		29C828012B9A89CF0067C0E9 /* PastableDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C828002B9A89CF0067C0E9 /* PastableDataManager.swift */; };
+		29C828012B9A89CF0067C0E9 /* PastableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C828002B9A89CF0067C0E9 /* PastableService.swift */; };
 		29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D362382B72E59F006C57B3 /* FileUtility.swift */; };
 		29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */; };
 		29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */; };
@@ -291,7 +291,7 @@
 		29C0F3922B7AC3F40017DD6B /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		29C5118C2B90C50B0050F171 /* SidebarItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemView.swift; sourceTree = "<group>"; };
 		29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseCivitai.swift; sourceTree = "<group>"; };
-		29C828002B9A89CF0067C0E9 /* PastableDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastableDataManager.swift; sourceTree = "<group>"; };
+		29C828002B9A89CF0067C0E9 /* PastableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastableService.swift; sourceTree = "<group>"; };
 		29D362382B72E59F006C57B3 /* FileUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtility.swift; sourceTree = "<group>"; };
 		29D3623B2B72ED4D006C57B3 /* CheckpointManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointManagerView.swift; sourceTree = "<group>"; };
 		29D3623D2B730F05006C57B3 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
@@ -466,7 +466,7 @@
 			children = (
 				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
 				29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */,
-				29C828002B9A89CF0067C0E9 /* PastableDataManager.swift */,
+				29C828002B9A89CF0067C0E9 /* PastableService.swift */,
 			);
 			path = ParseGenerationData;
 			sourceTree = "<group>";
@@ -1148,7 +1148,7 @@
 				29145E732B77D99400BFA64B /* PromptControlBar.swift in Sources */,
 				297196612B718BB1000F7960 /* PythonProcess.swift in Sources */,
 				29623E372B797B5900EC719F /* RequiredInputPathsView.swift in Sources */,
-				29C828012B9A89CF0067C0E9 /* PastableDataManager.swift in Sources */,
+				29C828012B9A89CF0067C0E9 /* PastableService.swift in Sources */,
 				290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */,
 				291635A62B7EAEE200D47EEF /* SegmentedDisplayOptions.swift in Sources */,
 				29145E7A2B77DCEB00BFA64B /* DebugPromptActionView.swift in Sources */,
