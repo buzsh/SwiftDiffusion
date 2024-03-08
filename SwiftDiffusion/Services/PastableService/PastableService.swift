@@ -14,28 +14,39 @@ class PastableService: ObservableObject {
   @Published var canPasteData: Bool = false
   @Published var pastablePromptData: StoredPromptModel? = nil
   
-  /*
-  func parsePasteboard(checkpoints: [CheckpointModel], vaeModels: [VaeModel]) -> StoredPromptModel {
+  
+  func parsePasteboard(checkpoints: [CheckpointModel], vaeModels: [VaeModel]) -> StoredPromptModel? {
+    guard let pasteboardContent = getPasteboardString() else { return nil }
+    
     if canPasteData {
       let parseCivitai = ParseCivitai(checkpoints: checkpoints, vaeModels: vaeModels)
-      //parseCivitai.
+      let storedPromptModel = parseCivitai.parsePastablePromptModel(pasteboardContent)
+      return storedPromptModel
     }
+    return nil
   }
-   */
   
+  
+  private init() {}
   
   /// Checks the pasteboard asynchronously for pastable data
   func checkForPastableData() async {
     guard let pasteboardContent = getPasteboardString() else { return }
-    canPasteData = await didFindGenerationDataTags(from: pasteboardContent)
+    let dataFound = await didFindGenerationDataTags(from: pasteboardContent)
+    await updateCanPasteData(dataFound)
   }
   
+  /// Updates the `canPasteData` property on the main actor to ensure it's on the main thread.
+  @MainActor
+  func updateCanPasteData(_ newValue: Bool) {
+    canPasteData = newValue
+  }
   
-  
-  
+  func clearPasteboard() {
+    NSPasteboard.general.setString("", forType: .string)
+  }
   
   /// Returns the string currently stored in the system's pasteboard, if available.
-  /// This function is synchronous as it's a simple retrieval, but called within an async context.
   func getPasteboardString() -> String? {
     NSPasteboard.general.string(forType: .string)
   }

@@ -52,6 +52,7 @@
 		2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */; };
 		2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */; };
 		2952F50A2B86961A00CB8679 /* AppRelauncherUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */; };
+		295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */; };
 		295A600F2B8D805000B822A9 /* CachedThumbnailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */; };
 		295A60112B8D81CF00B822A9 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60102B8D81CF00B822A9 /* ImageCache.swift */; };
 		295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295A60122B8D924100B822A9 /* KeyCodes.swift */; };
@@ -109,7 +110,6 @@
 		29B571822B75AE410057DD50 /* PromptRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571812B75AE410057DD50 /* PromptRows.swift */; };
 		29B571842B75B2070057DD50 /* SeedRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571832B75B2070057DD50 /* SeedRows.swift */; };
 		29B571882B75C53C0057DD50 /* ContentView+Generate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571872B75C53C0057DD50 /* ContentView+Generate.swift */; };
-		29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */; };
 		29B64A482B8D480D00B0012D /* CachedPreviewImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B64A472B8D480D00B0012D /* CachedPreviewImageView.swift */; };
 		29C06C282B93CC8F00F950C4 /* URLParserUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */; };
 		29C06C2B2B93DD0F00F950C4 /* BetaOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C06C2A2B93DD0F00F950C4 /* BetaOnboardingView.swift */; };
@@ -125,7 +125,7 @@
 		29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */; };
 		29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3702B7A62180017DD6B /* WindowManager.swift */; };
 		29C0F3752B7A75960017DD6B /* CopyPasteUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */; };
-		29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3762B7AA6310017DD6B /* AppDelegate.swift */; };
+		29C0F3772B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */; };
 		29C0F3792B7AA6F40017DD6B /* App+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F3782B7AA6F40017DD6B /* App+Setup.swift */; };
 		29C0F37D2B7AB3D50017DD6B /* UserSettings+URLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F37C2B7AB3D50017DD6B /* UserSettings+URLs.swift */; };
 		29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0F37F2B7ABF050017DD6B /* GeneralSection.swift */; };
@@ -200,6 +200,7 @@
 		2952BADD2B71E723002FC885 /* VisualEffectBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlurView.swift; sourceTree = "<group>"; };
 		2952F5042B8639FD00CB8679 /* CheckpointApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointApiModel.swift; sourceTree = "<group>"; };
 		2952F5092B86961A00CB8679 /* AppRelauncherUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelauncherUtility.swift; sourceTree = "<group>"; };
+		295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteGenerationDataButton.swift; sourceTree = "<group>"; };
 		295A600E2B8D805000B822A9 /* CachedThumbnailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedThumbnailImageView.swift; sourceTree = "<group>"; };
 		295A60102B8D81CF00B822A9 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		295A60122B8D924100B822A9 /* KeyCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCodes.swift; sourceTree = "<group>"; };
@@ -260,7 +261,6 @@
 		29B571812B75AE410057DD50 /* PromptRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRows.swift; sourceTree = "<group>"; };
 		29B571832B75B2070057DD50 /* SeedRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedRows.swift; sourceTree = "<group>"; };
 		29B571872B75C53C0057DD50 /* ContentView+Generate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Generate.swift"; sourceTree = "<group>"; };
-		29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PromptView+ParseCivitai.swift"; sourceTree = "<group>"; };
 		29B64A472B8D480D00B0012D /* CachedPreviewImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedPreviewImageView.swift; sourceTree = "<group>"; };
 		29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLParserUtility.swift; sourceTree = "<group>"; };
 		29C06C2A2B93DD0F00F950C4 /* BetaOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaOnboardingView.swift; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 		29C0F36E2B7A5C3D0017DD6B /* UpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateView.swift; sourceTree = "<group>"; };
 		29C0F3702B7A62180017DD6B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		29C0F3742B7A75960017DD6B /* CopyPasteUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyPasteUtility.swift; sourceTree = "<group>"; };
-		29C0F3762B7AA6310017DD6B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffusionAppDelegate.swift; sourceTree = "<group>"; };
 		29C0F3782B7AA6F40017DD6B /* App+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "App+Setup.swift"; sourceTree = "<group>"; };
 		29C0F37C2B7AB3D50017DD6B /* UserSettings+URLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSettings+URLs.swift"; sourceTree = "<group>"; };
 		29C0F37F2B7ABF050017DD6B /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
@@ -461,14 +461,14 @@
 			path = PromptMenus;
 			sourceTree = "<group>";
 		};
-		292CE8172B81B49300116D60 /* ParseGenerationData */ = {
+		292CE8172B81B49300116D60 /* PastableService */ = {
 			isa = PBXGroup;
 			children = (
-				29B571892B75E4F10057DD50 /* PromptView+ParseCivitai.swift */,
-				29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */,
 				29C828002B9A89CF0067C0E9 /* PastableService.swift */,
+				29C827FE2B9A89110067C0E9 /* ParseCivitai.swift */,
+				295894322B9ACA250013B6BB /* PasteGenerationDataButton.swift */,
 			);
-			path = ParseGenerationData;
+			path = PastableService;
 			sourceTree = "<group>";
 		};
 		292CE81E2B81BCA000116D60 /* PromptView */ = {
@@ -686,6 +686,7 @@
 		297196512B715380000F7960 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				292CE8172B81B49300116D60 /* PastableService */,
 				292CE8112B8195A800116D60 /* AutomaticServices */,
 				297196522B71538C000F7960 /* FilePickerService.swift */,
 			);
@@ -713,8 +714,6 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				292CE8172B81B49300116D60 /* ParseGenerationData */,
-				29A1A3902B93CC5700CC3D1B /* Parsers */,
 				292CE80A2B8193C200116D60 /* ImageSaver */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */,
@@ -749,7 +748,7 @@
 			children = (
 				29A1A38F2B93BDFB00CC3D1B /* Info.plist */,
 				2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */,
-				29C0F3762B7AA6310017DD6B /* AppDelegate.swift */,
+				29C0F3762B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift */,
 				29C0F3702B7A62180017DD6B /* WindowManager.swift */,
 				29A1E0C02B810C8C00B18AC1 /* Observers */,
 				29169D112B8EAE1A0099A9C5 /* Models */,
@@ -840,13 +839,6 @@
 				29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */,
 			);
 			path = SidebarExtensions;
-			sourceTree = "<group>";
-		};
-		29A1A3902B93CC5700CC3D1B /* Parsers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Parsers;
 			sourceTree = "<group>";
 		};
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
@@ -1174,7 +1166,7 @@
 				29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */,
 				29C06C282B93CC8F00F950C4 /* URLParserUtility.swift in Sources */,
 				2952BAD92B71B79F002FC885 /* PromptModel.swift in Sources */,
-				29C0F3772B7AA6310017DD6B /* AppDelegate.swift in Sources */,
+				29C0F3772B7AA6310017DD6B /* SwiftDiffusionAppDelegate.swift in Sources */,
 				29A1A3812B910E9900CC3D1B /* Sidebar+Move.swift in Sources */,
 				295A60132B8D924100B822A9 /* KeyCodes.swift in Sources */,
 				29C0F38D2B7AC2C70017DD6B /* ToolbarTabButtonStyle.swift in Sources */,
@@ -1182,7 +1174,6 @@
 				29C0F3932B7AC3F40017DD6B /* SettingsTab.swift in Sources */,
 				2971964C2B715191000F7960 /* Constants.swift in Sources */,
 				292A30DB2B8FFF2700344DA8 /* SidebarFolderItem.swift in Sources */,
-				29B5718A2B75E4F10057DD50 /* PromptView+ParseCivitai.swift in Sources */,
 				29169D092B8EA8F10099A9C5 /* StoredCheckpointApiModel.swift in Sources */,
 				2916F33F2B7286A3001D14B9 /* ThumbnailLoader.swift in Sources */,
 				29A7BDE42B8A59C600F9144B /* ExpandableSectionHeader.swift in Sources */,
@@ -1225,6 +1216,7 @@
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
+				295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */,
 				292CE80C2B8193E400116D60 /* ImageSaver.swift in Sources */,
 				29C0F3632B79C8020017DD6B /* FullscreenImageView.swift in Sources */,
 				29D3623C2B72ED4D006C57B3 /* CheckpointManagerView.swift in Sources */,

@@ -41,6 +41,7 @@ struct ContentView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
+  @ObservedObject var pastableService = PastableService.shared
   
   @AppStorage("hasLaunchedBeforeTest") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
@@ -90,6 +91,10 @@ struct ContentView: View {
     .onAppear {
       if hasLaunchedBefore {
         checkForUpdatesIfAutomaticUpdatesAreEnabled()
+      } else {
+        Task {
+          await pastableService.checkForPastableData()
+        }
       }
       
       scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
@@ -141,7 +146,10 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
           } else {
-            Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
+            
+            if pastableService.canPasteData == false {
+              Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
+            }
           }
           
           if userSettings.showPythonEnvironmentControls {
@@ -161,7 +169,7 @@ struct ContentView: View {
             .disabled(scriptManager.scriptState == .terminated)
           }
           
-          CanPaste()
+          PasteGenerationDataButton()
         }
       }
       
@@ -342,26 +350,3 @@ extension ContentView {
 }
 
 let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-
-struct CanPaste: View {
-  @ObservedObject var pastableService = PastableService.shared
-  
-  var body: some View {
-    HStack {
-      if pastableService.canPasteData {
-        BlueSymbolButton(title: "Paste", symbol: "arrow.up.doc.on.clipboard") {
-          //pastableService
-          
-          withAnimation {
-            pastableService.canPasteData = false
-          }
-        }
-      }
-    }
-    .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-      Task {
-        await pastableService.checkForPastableData()
-      }
-    }
-  }
-}

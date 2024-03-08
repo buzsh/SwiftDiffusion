@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  SwiftDiffusionAppDelegate.swift
 //  SwiftDiffusion
 //
 //  Created by Justin Bush on 2/12/24.
