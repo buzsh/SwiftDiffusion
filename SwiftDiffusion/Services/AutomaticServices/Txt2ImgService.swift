@@ -14,7 +14,7 @@ class Txt2ImgService {
   
   func sendImageGenerationRequest(to endpoint: Constants.API.Endpoint, with payload: [String: Any], baseAPI: URL) async -> [String]? {
     guard let url = endpoint.url(relativeTo: baseAPI) else {
-      Debug.log("Invalid URL for endpoint: \(endpoint)")
+      Debug.log("[Txt2ImgService] Invalid URL for endpoint: \(endpoint)")
       return nil
     }
     
@@ -32,7 +32,7 @@ class Txt2ImgService {
         return images
       }
     } catch {
-      Debug.log("API request failed with error: \(error)")
+      Debug.log("[Txt2ImgService] API request failed with error: \(error)")
     }
     return nil
   }
