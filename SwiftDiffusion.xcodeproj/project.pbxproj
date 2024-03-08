@@ -151,6 +151,9 @@
 		29F91D2D2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */; };
 		29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */; };
 		29F91D332B8D42390047B3C9 /* NSImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F91D322B8D42390047B3C9 /* NSImage+Extensions.swift */; };
+		29FA4EA82B9B5CE4007205C8 /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EA72B9B5CE4007205C8 /* SFSymbol.swift */; };
+		29FA4EAA2B9B5D25007205C8 /* SymbolButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EA92B9B5D25007205C8 /* SymbolButtons.swift */; };
+		29FA4EAC2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EAB2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift */; };
 		29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB923E2B8DAA660023C7C5 /* ShareButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -301,6 +304,9 @@
 		29F91D2C2B8D1A300047B3C9 /* PreviewImageProcessingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewImageProcessingManager.swift; sourceTree = "<group>"; };
 		29F91D2E2B8D25160047B3C9 /* SidebarStoredItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarStoredItemView.swift; sourceTree = "<group>"; };
 		29F91D322B8D42390047B3C9 /* NSImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Extensions.swift"; sourceTree = "<group>"; };
+		29FA4EA72B9B5CE4007205C8 /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
+		29FA4EA92B9B5D25007205C8 /* SymbolButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolButtons.swift; sourceTree = "<group>"; };
+		29FA4EAB2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SFSymbol+SwiftUI.swift"; sourceTree = "<group>"; };
 		29FB923E2B8DAA660023C7C5 /* ShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -512,6 +518,7 @@
 		292CE8242B81BDB000116D60 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				29FA4EA62B9B5CD5007205C8 /* Symbols */,
 				292CE8222B81BD3C00116D60 /* MainViews */,
 				292CE8232B81BD6700116D60 /* WindowViews */,
 				297196472B715061000F7960 /* OtherViews */,
@@ -1006,6 +1013,16 @@
 			path = PreviewImageProcessing;
 			sourceTree = "<group>";
 		};
+		29FA4EA62B9B5CD5007205C8 /* Symbols */ = {
+			isa = PBXGroup;
+			children = (
+				29FA4EA72B9B5CE4007205C8 /* SFSymbol.swift */,
+				29FA4EAB2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift */,
+				29FA4EA92B9B5D25007205C8 /* SymbolButtons.swift */,
+			);
+			path = Symbols;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1087,6 +1104,7 @@
 				29B571822B75AE410057DD50 /* PromptRows.swift in Sources */,
 				2996D0962B6ED5B000B487D5 /* ContentView.swift in Sources */,
 				2952BADE2B71E723002FC885 /* VisualEffectBlurView.swift in Sources */,
+				29FA4EAA2B9B5D25007205C8 /* SymbolButtons.swift in Sources */,
 				29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
 				2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */,
@@ -1114,6 +1132,7 @@
 				29A1E0C92B81374500B18AC1 /* ModelManager.swift in Sources */,
 				29D3623E2B730F05006C57B3 /* DirectoryObserver.swift in Sources */,
 				2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */,
+				29FA4EA82B9B5CE4007205C8 /* SFSymbol.swift in Sources */,
 				29708F8D2B7EB2BE004A95AD /* HoverToggleButton.swift in Sources */,
 				29145E762B77DBDA00BFA64B /* CommonPreviews.swift in Sources */,
 				292CE8162B81B17200116D60 /* SamplingMethodMenu.swift in Sources */,
@@ -1214,6 +1233,7 @@
 				29C0F3652B79C81F0017DD6B /* ImageWindowManager.swift in Sources */,
 				29C0F3712B7A62180017DD6B /* WindowManager.swift in Sources */,
 				2952F5052B8639FD00CB8679 /* CheckpointApiModel.swift in Sources */,
+				29FA4EAC2B9B5DDD007205C8 /* SFSymbol+SwiftUI.swift in Sources */,
 				29C0F3802B7ABF050017DD6B /* GeneralSection.swift in Sources */,
 				29D362392B72E59F006C57B3 /* FileUtility.swift in Sources */,
 				295894332B9ACA250013B6BB /* PasteGenerationDataButton.swift in Sources */,
