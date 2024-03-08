@@ -532,6 +532,7 @@
 		292CE8242B81BDB000116D60 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				29145E742B77DBCE00BFA64B /* CommonPreviews */,
 				29FA4EA62B9B5CD5007205C8 /* Symbols */,
 				292CE8222B81BD3C00116D60 /* MainViews */,
 				292CE8232B81BD6700116D60 /* WindowViews */,
@@ -689,7 +690,6 @@
 		297196472B715061000F7960 /* OtherViews */ = {
 			isa = PBXGroup;
 			children = (
-				29145E742B77DBCE00BFA64B /* CommonPreviews */,
 				292CE81F2B81BCE100116D60 /* Custom */,
 				293336482B72A67C007237AA /* DebugViews */,
 			);
