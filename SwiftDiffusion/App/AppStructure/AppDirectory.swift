@@ -11,7 +11,7 @@ extension Constants.FileStructure {
   // Can custom set this variable if user wants custom application directory path
   static let AppSupportUrl: URL? = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
   static let AppSupportFolderName = "SwiftDiffusion"
-  static let AppSwiftDataFileName = "StoredUserData.store"
+  static let AppSwiftDataFileName = "LocalUserDatabase.store" // "StoredUserData.store"
 }
 
 /// App directories and their associated URLs
