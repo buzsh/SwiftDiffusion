@@ -38,26 +38,6 @@ struct PromptControlBarView: View {
   }
 }
 
-enum AlignSymbol {
-  case leading, trailing
-}
-
-struct PromptBarButton: View {
-  let title: String
-  let symbol: SFSymbol
-  var align: AlignSymbol = .leading
-  let action: () -> Void
-  
-  var body: some View {
-    Button(action: action) {
-      if align == .leading { symbol.image }
-      Text(title)
-      if align == .trailing { symbol.image }
-    }
-    .buttonStyle(.accessoryBar)
-  }
-}
-
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel

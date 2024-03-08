@@ -79,6 +79,7 @@
 		2975DF112B8BE7C30031690E /* CheckpointMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF102B8BE7C30031690E /* CheckpointMenu.swift */; };
 		2975DF142B8C08800031690E /* VaeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF132B8C08800031690E /* VaeModel.swift */; };
 		2975DF162B8C0BAB0031690E /* VaeModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */; };
+		2991FDD92B9BC38800D553F6 /* PromptBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2991FDD82B9BC38800D553F6 /* PromptBarButton.swift */; };
 		29949F252B9655F4004F8D60 /* SidebarModel+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */; };
 		29949F272B965E49004F8D60 /* SidebarModel+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29949F262B965E49004F8D60 /* SidebarModel+Create.swift */; };
 		2996D0942B6ED5B000B487D5 /* SwiftDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996D0932B6ED5B000B487D5 /* SwiftDiffusionApp.swift */; };
@@ -238,6 +239,7 @@
 		2975DF102B8BE7C30031690E /* CheckpointMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointMenu.swift; sourceTree = "<group>"; };
 		2975DF132B8C08800031690E /* VaeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModel.swift; sourceTree = "<group>"; };
 		2975DF152B8C0BAB0031690E /* VaeModelMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaeModelMenu.swift; sourceTree = "<group>"; };
+		2991FDD82B9BC38800D553F6 /* PromptBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptBarButton.swift; sourceTree = "<group>"; };
 		29949F242B9655F4004F8D60 /* SidebarModel+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Delete.swift"; sourceTree = "<group>"; };
 		29949F262B965E49004F8D60 /* SidebarModel+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarModel+Create.swift"; sourceTree = "<group>"; };
 		2996D0902B6ED5B000B487D5 /* SwiftDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -352,6 +354,7 @@
 		29145E702B77D94900BFA64B /* PromptBars */ = {
 			isa = PBXGroup;
 			children = (
+				2991FDD82B9BC38800D553F6 /* PromptBarButton.swift */,
 				29145E722B77D99400BFA64B /* PromptControlBar.swift */,
 				29708F932B803350004A95AD /* PasteGenerationDataStatusBar.swift */,
 			);
@@ -1253,6 +1256,7 @@
 				292A30DD2B9017F700344DA8 /* WorkspaceItemView.swift in Sources */,
 				29A7BDE12B8A40F200F9144B /* ApiCheckpointRow.swift in Sources */,
 				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
+				2991FDD92B9BC38800D553F6 /* PromptBarButton.swift in Sources */,
 				29A1E0BF2B81057300B18AC1 /* ScriptManagerObserver.swift in Sources */,
 				29F91D2F2B8D25160047B3C9 /* SidebarStoredItemView.swift in Sources */,
 				292CE8092B81771B00116D60 /* CheckpointModelPreferences.swift in Sources */,
