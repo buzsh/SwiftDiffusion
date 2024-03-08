@@ -36,19 +36,6 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          if generationDataInPasteboard, let pasteboard = getPasteboardString() {
-            HStack {
-              Spacer()
-              BlueSymbolButton(title: "Paste Generation Data", symbol: "arrow.up.doc.on.clipboard") {
-                parseAndSetPromptData(from: pasteboard)
-                withAnimation {
-                  generationDataInPasteboard = false
-                }
-              }
-            }
-            .padding(.top, 14)
-          }
-          
           HStack {
             CheckpointMenu()
             SamplingMethodMenu()
@@ -74,15 +61,6 @@ struct PromptView: View {
           VaeModelMenu()
         }
         .padding(.leading, 8).padding(.trailing, 16)
-        
-        .onAppear {
-          checkPasteboardAndUpdateFlag()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-          Task {
-            await checkPasteboardAndUpdateFlag()
-          }
-        }
         .disabled(sidebarModel.disablePromptView)
       }
       

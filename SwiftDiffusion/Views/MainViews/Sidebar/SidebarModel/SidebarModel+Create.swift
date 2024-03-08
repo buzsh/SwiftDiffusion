@@ -18,6 +18,7 @@ extension SidebarModel {
     let title = prompt.positivePrompt.truncatingToLength(Constants.Sidebar.titleLength)
     let newWorkspaceItem = SidebarItem(title: title, imageUrls: [])
     newWorkspaceItem.prompt = prompt
+    cleanUpEmptyWorkspaceItems()
     create(sidebarItem: newWorkspaceItem, in: workspaceFolder)
   }
   

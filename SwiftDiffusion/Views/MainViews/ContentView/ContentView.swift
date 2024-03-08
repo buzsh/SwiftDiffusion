@@ -91,6 +91,10 @@ struct ContentView: View {
     .onAppear {
       if hasLaunchedBefore {
         checkForUpdatesIfAutomaticUpdatesAreEnabled()
+      } else {
+        Task {
+          await pastableService.checkForPastableData()
+        }
       }
       
       scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)

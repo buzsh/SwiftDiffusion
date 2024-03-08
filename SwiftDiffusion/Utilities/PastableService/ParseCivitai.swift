@@ -8,6 +8,15 @@
 import Foundation
 import AppKit
 
+extension Constants.Debug {
+  static let enableParseLog = false
+}
+
+extension Constants.Parsing {
+  static let ignoreModelKeywords = ["turbo", "safetensors", "dpmppsde"]
+  static let separateModelKeywordsForParsingByCharacters = "_-."
+}
+
 class ParseCivitai {
   private var checkpoints: [CheckpointModel] = []
   private var vaeModels: [VaeModel] = []
@@ -27,7 +36,7 @@ class ParseCivitai {
   }
   
   func parsePastablePromptModel(_ pasteboard: String) -> StoredPromptModel {
-    var prompt = StoredPromptModel()
+    let prompt = StoredPromptModel()
     let lines = pasteboard.split(separator: "\n", omittingEmptySubsequences: true)
     prompt.positivePrompt = buildPositivePrompt(from: lines)
     
