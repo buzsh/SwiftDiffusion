@@ -10,6 +10,7 @@ import AppKit
 
 class MockSidebarItemCreator {
   let sidebarModel: SidebarModel
+  static var processedImageURLs: [String: URL] = [:]
   
   init(model: SidebarModel) {
     self.sidebarModel = model
@@ -78,6 +79,11 @@ class MockSidebarItemCreator {
   
   @MainActor
   private func saveAssetImageToFile(named imageName: String) -> URL? {
+    if let cachedURL = MockSidebarItemCreator.processedImageURLs[imageName] {
+      return cachedURL
+    }
+    
+    
     guard let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
       print("[MockSidebarItemCreator] Application Support directory not found.")
       return nil
@@ -88,7 +94,6 @@ class MockSidebarItemCreator {
       .appendingPathComponent("DevAssets")
       .appendingPathComponent("\(imageName).jpeg")
     
-    // Ensure the directory exists
     let directoryPath = destinationPath.deletingLastPathComponent()
     if !FileManager.default.fileExists(atPath: directoryPath.path) {
       do {
@@ -99,18 +104,16 @@ class MockSidebarItemCreator {
       }
     }
     
-    // Skip if the file already exists
     if FileManager.default.fileExists(atPath: destinationPath.path) {
+      MockSidebarItemCreator.processedImageURLs[imageName] = destinationPath
       return destinationPath
     }
     
-    // Load the image from the asset catalog
     guard let image = NSImage(named: imageName) else {
       print("[MockSidebarItemCreator] Image asset not found in asset catalog: \(imageName)")
       return nil
     }
     
-    // Convert the image to JPEG data
     guard let imageData = image.tiffRepresentation,
           let bitmapImage = NSBitmapImageRep(data: imageData),
           let jpegData = bitmapImage.representation(using: .jpeg, properties: [:]) else {
@@ -118,7 +121,6 @@ class MockSidebarItemCreator {
       return nil
     }
     
-    // Write the data to the file
     do {
       try jpegData.write(to: destinationPath)
       return destinationPath

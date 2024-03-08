@@ -54,6 +54,22 @@ extension View {
     
     let itemCreator = MockSidebarItemCreator(model: sidebarModel)
     
+    itemCreator.createAndAddSidebarItem(
+      title: "some, sample, workspace, prompt, data, positive, title, preview",
+      checkpointName: "DreamShaperXL_v2_Turbo.safetensors",
+      thumbnailPath: "/Users/jb/Documents/SwiftDiffusion/txt2img/2024-03-08/21.png",
+      thumbnailWidth: 576,
+      thumbnailHeight: 960
+    )
+    
+    itemCreator.createAndAddSidebarItem(
+      title: "some, sample, workspace, prompt, data, positive, title, preview",
+      checkpointName: "JuggernautXL_v9.safetensors",
+      thumbnailPath: "/Users/jb/Documents/SwiftDiffusion/txt2img/2024-03-08/18a.png",
+      thumbnailWidth: 576,
+      thumbnailHeight: 960
+    )
+    /*
     itemCreator.createCustomSidebarItem(
       title: "jelly, prompt, data, positive, title, preview",
       checkpointName: "juggernautXL_v9Rdphoto2Lightning.safetensors",
@@ -77,6 +93,7 @@ extension View {
       thumbnailWidth: 666,
       thumbnailHeight: 1000
     )
+     */
     
     do {
       try context.save()
