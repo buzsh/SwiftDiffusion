@@ -42,23 +42,16 @@ struct FolderTitleControl: View {
       
       Group {
         if isEditing {
-          Button(action: {
+          AccessorySymbolButton(symbol: .checkmark, action: {
             isEditing = false
             sidebarModel.currentFolder?.name = editableName
             sidebarModel.saveData(in: modelContext)
-          }) {
-            Image(systemName: "checkmark")
-          }
-          .buttonStyle(.accessoryBar)
-          
+          })
         } else {
-          Button(action: {
+          AccessorySymbolButton(symbol: .pencil, action: {
             isEditing = true
             editableName = sidebarModel.currentFolder?.name ?? ""
-          }) {
-            Image(systemName: "pencil")
-          }
-          .buttonStyle(.accessoryBar)
+          })
         }
         
         TrashFolderButton(folder: folder)
@@ -77,26 +70,13 @@ struct TrashFolderButton: View {
   
   let folder: SidebarFolder?
   var body: some View {
-    Button(action: {
-      if let folder = sidebarModel.currentFolder {
-        Debug.log("folder = folder")
-        for item in folder.folders {
-          Debug.log(" > folder.folders.name: \(item.name)")
-        }
-        for item in folder.items {
-          Debug.log(" > folder.items.name: \(item.title)")
-        }
-      }
-      
+    AccessorySymbolButton(symbol: .trash, action: {
       if let folder = folder, folder.folders.isEmpty && folder.items.isEmpty {
         deleteFolder()
       } else {
         showDeleteFolderConfirmationAlert = true
       }
-    }) {
-      Image(systemName: "trash")
-    }
-    .buttonStyle(.accessoryBar)
+    })
     .alert(isPresented: $showDeleteFolderConfirmationAlert) {
       Alert(
         title: Text("Are you sure you want to delete this folder?"),

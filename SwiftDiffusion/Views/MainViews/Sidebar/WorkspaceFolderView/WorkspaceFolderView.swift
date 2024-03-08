@@ -35,7 +35,7 @@ struct WorkspaceFolderView: View {
   
   private var newWorkspaceItemPlaceholderButton: some View {
     HStack {
-      Image(systemName: "plus.bubble")
+      SFSymbol.newPrompt.image
         .frame(width: 20)
       Text("New Workspace Item")
       Spacer()

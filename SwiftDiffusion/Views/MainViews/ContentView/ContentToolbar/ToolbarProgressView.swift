@@ -28,7 +28,7 @@ struct ToolbarProgressView: View {
         .progressViewStyle(CircularProgressViewStyle())
         .scaleEffect(0.5)
     } else if scriptManager.genStatus == .done {
-      Image(systemName: "checkmark")
+      Image(systemName: SFSymbol.checkmark.name)
     }
     
     if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {

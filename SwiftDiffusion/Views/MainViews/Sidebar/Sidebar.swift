@@ -62,21 +62,16 @@ struct Sidebar: View {
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         if sidebarModel.sidebarIsVisible {
-          Button(action: {
+          ToolbarSymbolButton(title: "New Folder", symbol: .newFolder, action: {
             withAnimation {
               sidebarModel.createNewUntitledFolderItemInCurrentFolder(in: modelContext)
             }
-          }) {
-            Image(systemName: "folder.badge.plus")
-          }
-          
-          Button(action: {
+          })
+          ToolbarSymbolButton(title: "New Workspace Item", symbol: .newPrompt, action: {
             withAnimation {
               sidebarModel.createNewWorkspaceItem()
             }
-          }) {
-            Image(systemName: "plus.bubble")
-          }
+          })
         }
       }
     }
@@ -121,7 +116,6 @@ struct Sidebar: View {
       let newPrompt = mapModelData.fromStored(storedPromptModel: storedPromptModel)
       updatePromptAndSelectedImage(newPrompt: newPrompt, imageUrls: sidebarItem.imageUrls)
     }
-    
     sidebarModel.selectedSidebarItem = sidebarItem
   }
   

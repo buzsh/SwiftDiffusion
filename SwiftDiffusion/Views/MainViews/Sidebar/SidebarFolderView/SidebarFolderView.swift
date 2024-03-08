@@ -89,7 +89,7 @@ struct SidebarFolderView: View {
   
   private var newFolderButtonItem: some View {
     HStack {
-      Image(systemName: "folder.badge.plus")
+      SFSymbol.newFolder.image
         .frame(width: 20)
       Text("New Folder")
       Spacer()

@@ -38,6 +38,25 @@ struct PromptControlBarView: View {
   }
 }
 
+enum AlignSymbol {
+  case leading, trailing
+}
+
+struct PromptBarButton: View {
+  let title: String
+  let symbol: SFSymbol
+  var align: AlignSymbol = .leading
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: action) {
+      if align == .leading { symbol.image }
+      Text(title)
+      if align == .trailing { symbol.image }
+    }
+    .buttonStyle(.accessoryBar)
+  }
+}
 
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
@@ -52,43 +71,27 @@ struct PromptControlBar: View {
   
   private var workspaceItemBar: some View {
     HStack {
-      Button(action: {
+      PromptBarButton(title: "Close", symbol: .close, align: .leading, action: {
         sidebarModel.deleteSelectedWorkspaceItem()
-        /*
-        if let sidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.deleteWorkspaceItem(sidebarItem)
-        }
-         */
-        
-      }) {
-        Image(systemName: "xmark")
-        Text("Close")
-      }
+      })
       
       Spacer()
       
       if isStorableSidebarItem {
-        Button(action: {
+        PromptBarButton(title: "Save Generated Prompt", symbol: .save, align: .trailing, action: {
           sidebarModel.saveWorkspaceItem(withPrompt: currentPrompt)
           sidebarModel.moveWorkspaceItemToCurrentFolder()
-        }) {
-          Text("Save Generated Prompt")
-          Image(systemName: "square.and.arrow.down")
-        }
+        })
       }
     }
-    .buttonStyle(.accessoryBar)
     .transition(.opacity)
   }
   
   private var storedItemBar: some View {
     HStack {
-      Button(action: {
+      PromptBarButton(title: "Delete", symbol: .trash, align: .leading, action: {
         showingDeleteSelectedSidebarItemConfirmationAlert = true
-      }) {
-        Image(systemName: "trash")
-        Text("Delete")
-      }
+      })
       .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
         Alert(
           title: Text("Are you sure you want to delete this item?"),
@@ -101,16 +104,12 @@ struct PromptControlBar: View {
       
       Spacer()
       
-      Button(action: {
+      PromptBarButton(title: "Copy to Workspace", symbol: .copyToWorkspace, align: .trailing, action: {
         withAnimation {
           sidebarModel.copySelectedSidebarItemToWorkspace()
         }
-      }) {
-        Text("Copy to Workspace")
-        Image(systemName: "tray.and.arrow.up")
-      }
+      })
     }
-    .buttonStyle(.accessoryBar)
     .transition(.opacity)
   }
   
@@ -118,7 +117,7 @@ struct PromptControlBar: View {
     HStack(alignment: .center) {
       if isWorkspaceItem {
         workspaceItemBar
-      } else {
+      } else if isStorableSidebarItem {
         storedItemBar
       }
     }

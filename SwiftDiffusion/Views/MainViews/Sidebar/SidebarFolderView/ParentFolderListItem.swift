@@ -14,7 +14,7 @@ struct ParentFolderListItem: View {
   
   var body: some View {
     HStack {
-      Image(systemName: "arrow.turn.left.up")
+      SFSymbol.upDirectory.image
         .foregroundStyle(isHovering ? .white : .secondary)
         .frame(width: 20)
       Text(parentFolder.name)

@@ -27,6 +27,10 @@ extension SidebarModel {
     else { return }
     
     deleteWorkspaceItem(selectedSidebarItem)
+    
+    if workspaceFolder.items.isEmpty {
+      createNewWorkspaceItem()
+    }
   }
   
   /// Delete a workspace item and save changes to the data model.

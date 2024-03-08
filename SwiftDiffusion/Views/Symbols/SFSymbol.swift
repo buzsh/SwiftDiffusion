@@ -20,8 +20,25 @@ enum SFSymbol: String {
   case trash
   case lock
   
+  case folder
+  
+  case checkmark
+  case pencil
+  
+  case newFolder = "folder.badge.plus"
+  case newPrompt = "plus.bubble"
+  
+  case upDirectory = "arrow.turn.left.up"
+  
   case copy = "clipboard"
   case paste = "arrow.up.doc.on.clipboard"
+  
+  case close = "xmark"
+  case save = "square.and.arrow.down"
+  case copyToWorkspace = "tray.and.arrow.up"
+  
+  case shuffle
+  case repeatLast = "repeat"
   
   case none
 }

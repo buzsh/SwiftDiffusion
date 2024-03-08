@@ -38,6 +38,20 @@ struct SymbolButton: View {
   }
 }
 
+struct AccessorySymbolButton: View {
+  let symbol: SFSymbol
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: {
+      action()
+    }) {
+      symbol.image
+    }
+    .buttonStyle(.accessoryBar)
+  }
+}
+
 struct ToolbarSymbolButton: View {
   let title: String
   let symbol: SFSymbol
