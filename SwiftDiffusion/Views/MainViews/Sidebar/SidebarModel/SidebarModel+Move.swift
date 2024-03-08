@@ -25,6 +25,7 @@ extension SidebarModel {
     
     storableSidebarItems.removeAll(where: { $0 == selectedSidebarItem })
     PreviewImageProcessingManager.shared.createImagePreviewsAndThumbnails(for: selectedSidebarItem, in: modelContext)
+    selectedSidebarItem.timestamp = Date()
     move(sidebarItem: selectedSidebarItem, from: workspaceFolder, to: currentFolder)
   }
   
