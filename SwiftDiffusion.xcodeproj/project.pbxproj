@@ -10,7 +10,6 @@
 		290A34AB2B7C149B00963C6E /* ContentProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */; };
 		290A34AD2B7C360100963C6E /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AC2B7C360100963C6E /* SidebarItem.swift */; };
 		290A34B02B7C616A00963C6E /* MapModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34AF2B7C616A00963C6E /* MapModelData.swift */; };
-		290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A34B32B7D283600963C6E /* SidebarMockDataController.swift */; };
 		29145E6C2B77CD1600BFA64B /* StateDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */; };
 		29145E6F2B77D82A00BFA64B /* DebugPromptStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */; };
 		29145E732B77D99400BFA64B /* PromptControlBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29145E722B77D99400BFA64B /* PromptControlBar.swift */; };
@@ -161,6 +160,8 @@
 		29FA4EB82B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */; };
 		29FA4EBA2B9B8F17007205C8 /* DetailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EB92B9B8F17007205C8 /* DetailImageView.swift */; };
 		29FA4EBC2B9B8F43007205C8 /* Dividers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EBB2B9B8F43007205C8 /* Dividers.swift */; };
+		29FA4EBE2B9B988E007205C8 /* View+EnvironmentPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EBD2B9B988E007205C8 /* View+EnvironmentPreviews.swift */; };
+		29FA4EC02B9BA57A007205C8 /* MockSidebarItemCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA4EBF2B9BA57A007205C8 /* MockSidebarItemCreator.swift */; };
 		29FB923F2B8DAA660023C7C5 /* ShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB923E2B8DAA660023C7C5 /* ShareButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -168,7 +169,6 @@
 		290A34AA2B7C149B00963C6E /* ContentProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProgressBar.swift; sourceTree = "<group>"; };
 		290A34AC2B7C360100963C6E /* SidebarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		290A34AF2B7C616A00963C6E /* MapModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModelData.swift; sourceTree = "<group>"; };
-		290A34B32B7D283600963C6E /* SidebarMockDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMockDataController.swift; sourceTree = "<group>"; };
 		29145E6B2B77CD1600BFA64B /* StateDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateDebugInfo.swift; sourceTree = "<group>"; };
 		29145E6E2B77D82A00BFA64B /* DebugPromptStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPromptStatusView.swift; sourceTree = "<group>"; };
 		29145E722B77D99400BFA64B /* PromptControlBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptControlBar.swift; sourceTree = "<group>"; };
@@ -321,6 +321,8 @@
 		29FA4EB72B9B8C8A007205C8 /* DetailToolbarSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToolbarSymbolButton.swift; sourceTree = "<group>"; };
 		29FA4EB92B9B8F17007205C8 /* DetailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageView.swift; sourceTree = "<group>"; };
 		29FA4EBB2B9B8F43007205C8 /* Dividers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dividers.swift; sourceTree = "<group>"; };
+		29FA4EBD2B9B988E007205C8 /* View+EnvironmentPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+EnvironmentPreviews.swift"; sourceTree = "<group>"; };
+		29FA4EBF2B9BA57A007205C8 /* MockSidebarItemCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSidebarItemCreator.swift; sourceTree = "<group>"; };
 		29FB923E2B8DAA660023C7C5 /* ShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -360,7 +362,8 @@
 			isa = PBXGroup;
 			children = (
 				29145E752B77DBDA00BFA64B /* CommonPreviews.swift */,
-				290A34B32B7D283600963C6E /* SidebarMockDataController.swift */,
+				29FA4EBD2B9B988E007205C8 /* View+EnvironmentPreviews.swift */,
+				29FA4EBF2B9BA57A007205C8 /* MockSidebarItemCreator.swift */,
 			);
 			path = CommonPreviews;
 			sourceTree = "<group>";
@@ -1146,6 +1149,7 @@
 				29708F922B7FBECB004A95AD /* VisualEffectView.swift in Sources */,
 				2952BADC2B71C4C6002FC885 /* PromptEditorView.swift in Sources */,
 				2942B0762B7B2BD300D1E0DE /* BackgroundButtonStyles.swift in Sources */,
+				29FA4EC02B9BA57A007205C8 /* MockSidebarItemCreator.swift in Sources */,
 				290A34AD2B7C360100963C6E /* SidebarItem.swift in Sources */,
 				29C0F37D2B7AB3D50017DD6B /* UserSettings+URLs.swift in Sources */,
 				299BCB8F2B8FEACF00AB839F /* SidebarFolderView.swift in Sources */,
@@ -1153,6 +1157,7 @@
 				29169D0E2B8EAD740099A9C5 /* ImageInfo.swift in Sources */,
 				29C0F36B2B79D2CA0017DD6B /* FileNode.swift in Sources */,
 				29145E7D2B78111200BFA64B /* ToolbarButton.swift in Sources */,
+				29FA4EBE2B9B988E007205C8 /* View+EnvironmentPreviews.swift in Sources */,
 				29C0F36F2B7A5C3D0017DD6B /* UpdateView.swift in Sources */,
 				29708F942B803350004A95AD /* PasteGenerationDataStatusBar.swift in Sources */,
 				29FA4EBC2B9B8F43007205C8 /* Dividers.swift in Sources */,
@@ -1245,7 +1250,6 @@
 				2952BAD72B71AEFA002FC885 /* PromptView.swift in Sources */,
 				29B64A482B8D480D00B0012D /* CachedPreviewImageView.swift in Sources */,
 				29C06C312B95003600F950C4 /* GitHubReleaseFetcher.swift in Sources */,
-				290A34B42B7D283600963C6E /* SidebarMockDataController.swift in Sources */,
 				292A30DD2B9017F700344DA8 /* WorkspaceItemView.swift in Sources */,
 				29A7BDE12B8A40F200F9144B /* ApiCheckpointRow.swift in Sources */,
 				2971966B2B71A5AC000F7960 /* Delay.swift in Sources */,
