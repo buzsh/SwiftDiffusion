@@ -367,6 +367,7 @@ struct PasteGenerationDataButton: View {
             sidebarModel.createNewWorkspaceItem(withPrompt: pastablePromptData)
           }
           withAnimation {
+            pastableService.clearPasteboard()
             pastableService.canPasteData = false
           }
         }
