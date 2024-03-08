@@ -66,6 +66,23 @@
 </p>
 
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+# Overview
+
+### SwiftUI Previews
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" width="1259" alt="previews - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/96c1ec3a-f984-4341-b172-48d3ff4947c0">
+    <source media="(prefers-color-scheme: light)" width="1259" alt="previews - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/26abe3ef-6bf0-4504-b545-6868775a5ebe">
+    <img width="1259" alt="previews - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/26abe3ef-6bf0-4504-b545-6868775a5ebe">
+  </picture>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</p>
+
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
