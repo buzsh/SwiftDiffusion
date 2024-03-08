@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct MenuButton: View {
   let title: String
   var symbol: SFSymbol = .none
@@ -36,6 +35,20 @@ struct SymbolButton: View {
       symbol.image
     }
     .buttonStyle(BorderlessButtonStyle())
+  }
+}
+
+struct ToolbarSymbolButton: View {
+  let title: String
+  let symbol: SFSymbol
+  let action: () -> Void
+  
+  var body: some View {
+    Button(action: {
+      action()
+    }) {
+      Label(title, systemImage: symbol.name)
+    }
   }
 }
 

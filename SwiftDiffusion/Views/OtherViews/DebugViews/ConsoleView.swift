@@ -7,10 +7,13 @@
 
 import SwiftUI
 
+extension Constants.Layout {
+  static let verticalPadding: CGFloat = 8
+}
+
 struct ConsoleView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager = ScriptManager.shared
-  
   @State private var outputImage: Image?
   
   var body: some View {

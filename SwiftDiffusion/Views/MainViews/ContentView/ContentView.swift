@@ -8,26 +8,6 @@
 import SwiftUI
 import SwiftData
 
-extension Constants.Layout {
-  static let verticalPadding: CGFloat = 8
-}
-
-enum ViewManager {
-  case prompt, console, split
-  
-  var title: String {
-    switch self {
-    case .prompt: return "Prompt"
-    case .console: return "Console"
-    case .split: return "Split"
-    }
-  }
-}
-
-extension ViewManager: Hashable, Identifiable {
-  var id: Self { self }
-}
-
 struct ContentView: View {
   @Environment(\.modelContext) var modelContext
   @EnvironmentObject var updateManager: UpdateManager
@@ -82,93 +62,22 @@ struct ContentView: View {
     } detail: {
       DetailView(fileHierarchyObject: fileHierarchy, selectedImage: $selectedImage, lastSelectedImagePath: $lastSelectedImagePath)
     }
-    .onChange(of: columnVisibility) {
-      Debug.log("columnVisibility: \(columnVisibility)")
-      sidebarModel.sidebarIsVisible = (columnVisibility != .doubleColumn)
-    }
-    .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
     .navigationSplitViewStyle(.automatic)
-    .onAppear {
-      if hasLaunchedBefore {
-        checkForUpdatesIfAutomaticUpdatesAreEnabled()
-      } else {
-        Task {
-          await pastableService.checkForPastableData()
-        }
-      }
-      
-      scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
-      
-      if let directoryPath = userSettings.outputDirectoryUrl?.path {
-        fileHierarchy.rootPath = directoryPath
-      }
-      Task {
-        await fileHierarchy.refresh()
-        await loadLastSelectedImage()
-      }
-      handleScriptOnLaunch()
+    .background(VisualEffectBlurView(material: .headerView, blendingMode: .behindWindow))
+    .onChange(of: columnVisibility) {
+      sidebarModel.sidebarIsVisible = (columnVisibility != .doubleColumn)
     }
     .onChange(of: userSettings.outputDirectoryPath) {
       if let directoryPath = userSettings.outputDirectoryUrl?.path {
         fileHierarchy.rootPath = directoryPath
-      }
-      Task {
-        await fileHierarchy.refresh()
+        Task { await fileHierarchy.refresh() }
       }
     }
     .toolbar {
       ToolbarItemGroup(placement: .navigation) {
         HStack {
-          
-          if userSettings.showPythonEnvironmentControls {
-            Circle()
-              .fill(scriptManager.scriptState.statusColor)
-              .frame(width: 10, height: 10)
-              .padding(.trailing, 2)
-          }
-          
-          if userSettings.showPythonEnvironmentControls && userSettings.launchWebUiAlongsideScriptLaunch {
-            if scriptManager.scriptState == .active, let url = scriptManager.serviceUrl {
-              Button(action: {
-                NSWorkspace.shared.open(url)
-              }) {
-                Image(systemName: "network")
-              }
-              .padding(.vertical, 3)
-            }
-          }
-          
-          if userSettings.showDeveloperInterface {
-            Picker("Options", selection: $selectedView) {
-              Text("Prompt").tag(ViewManager.prompt)
-              Text("Console").tag(ViewManager.console)
-              Text("Split").tag(ViewManager.split)
-            }
-            .pickerStyle(SegmentedPickerStyle())
-          } else {
-            
-            if pastableService.canPasteData == false {
-              Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
-            }
-          }
-          
-          if userSettings.showPythonEnvironmentControls {
-            Button(action: {
-              if scriptManager.scriptState == .readyToStart {
-                scriptManager.run()
-              } else {
-                scriptManager.terminate()
-              }
-            }) {
-              if scriptManager.scriptState == .readyToStart {
-                Image(systemName: "play.fill")
-              } else {
-                Image(systemName: "stop.fill")
-              }
-            }
-            .disabled(scriptManager.scriptState == .terminated)
-          }
-          
+          DeveloperToolbarItems(selectedView: $selectedView)
+          ContentViewToolbarTitle(text: Constants.App.name)
           PasteGenerationDataButton()
         }
       }
@@ -188,68 +97,30 @@ struct ContentView: View {
       ToolbarItemGroup(placement: .automatic) {
         Spacer()
         
-        if scriptManager.modelLoadState == .done && scriptManager.modelLoadTime > 0 {
-          Text("\(String(format: "%.1f", scriptManager.modelLoadTime))s")
-            .font(.system(size: 11, design: .monospaced))
-            .padding(.trailing, 6)
-        }
-        
-        if scriptManager.genStatus == .generating {
-          Text("\(Int(scriptManager.genProgress * 100))%")
-            .font(.system(.body, design: .monospaced))
-        } else if scriptManager.genStatus == .finishingUp {
-          Text("Saving")
-            .font(.system(.body, design: .monospaced))
-        } else if scriptManager.genStatus == .preparingToGenerate {
-          ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(0.5)
-        } else if scriptManager.genStatus == .done {
-          Image(systemName: "checkmark")
-        }
-        
-        if scriptManager.genStatus != .idle || scriptManager.scriptState == .launching {
-          ContentProgressBar(scriptManager: scriptManager)
-        }
+        ToolbarProgressView()
+          .padding(.trailing, 6)
         
         if !userHasEnteredBothRequiredFields && hasLaunchedBefore {
           RequiredInputPathsPulsatingButton(showingRequiredInputPathsView: $showingRequiredInputPathsView, hasDismissedRequiredInputPathsView: $hasDismissedRequiredInputPathsView)
         }
         
         if userSettings.showDeveloperInterface {
-          Button(action: {
+          ToolbarSymbolButton(title: "API Debugger", symbol: .bonjour, action: {
             WindowManager.shared.showDebugApiWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager)
-          }) {
-            Image(systemName: "bonjour") // key.icloud, bolt.horizontal.icloud
-          }
+          })
         }
         
-        Button(action: {
+        ToolbarSymbolButton(title: "Model Manager", symbol: .arkit, action: {
           WindowManager.shared.showCheckpointManagerWindow(scriptManager: scriptManager, currentPrompt: currentPrompt, checkpointsManager: checkpointsManager)
-        }) {
-          Image(systemName: "arkit")
-        }
-        
-        Button(action: {
+        })
+        ToolbarSymbolButton(title: "Settings", symbol: .gear, action: {
           WindowManager.shared.showSettingsWindow()
-        }) {
-          Image(systemName: "gear")
-        }
+        })
       }
       
     }
     .onAppear {
-      if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {
-        //showingRequiredInputPathsView = true
-      } else {
-        handleScriptOnLaunch()
-      }
-      
-      if hasLaunchedBefore == false {
-        Delay.by(0.5) {
-          showingBetaOnboardingSheetView = true
-        }
-      }
+      onAppearContentViewAction()
     }
     .sheet(isPresented: $showingBetaOnboardingSheetView, onDismiss: {
       showingBetaOnboardingSheetView = false
@@ -349,4 +220,33 @@ extension ContentView {
   }
 }
 
-let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+extension ContentView {
+  func onAppearContentViewAction() {
+    if hasLaunchedBefore {
+      checkForUpdatesIfAutomaticUpdatesAreEnabled()
+      Task {
+        await pastableService.checkForPastableData()
+      }
+    } else {
+      Delay.by(0.5) {
+        showingBetaOnboardingSheetView = true
+      }
+    }
+    
+    scriptManagerObserver = ScriptManagerObserver(scriptManager: scriptManager, userSettings: userSettings, checkpointsManager: checkpointsManager, loraModelsManager: loraModelsManager, vaeModelsManager: vaeModelsManager)
+    
+    if let directoryPath = userSettings.outputDirectoryUrl?.path {
+      fileHierarchy.rootPath = directoryPath
+    }
+    Task {
+      await fileHierarchy.refresh()
+      await loadLastSelectedImage()
+    }
+    
+    if !CanvasPreview && !userHasEnteredBothRequiredFields && hasLaunchedBefore {
+      //
+    } else {
+      handleScriptOnLaunch()
+    }
+  }
+}
