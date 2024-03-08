@@ -90,4 +90,5 @@ struct PromptView: View {
 
 #Preview {
   CommonPreviews.promptView
+    .frame(width: 600, height: 800)
 }

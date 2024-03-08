@@ -116,4 +116,5 @@ struct DetailView: View {
 
 #Preview {
   CommonPreviews.detailView
+    .frame(width: 300, height: 600)
 }
