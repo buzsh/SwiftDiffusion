@@ -15,6 +15,22 @@ extension Constants.Layout {
   }
 }
 
+struct DetailToolbarSymbolButton: View {
+  let symbol: SFSymbol
+  let action: () -> Void
+  
+  private let itemHeight: CGFloat = 30
+  private let itemWidth: CGFloat = 30
+  
+  var body: some View {
+    Button(action: action) {
+      symbol.image
+    }
+    .buttonStyle(BorderlessButtonStyle())
+    .frame(width: Constants.Layout.Toolbar.itemWidth, height: Constants.Layout.Toolbar.itemHeight)
+  }
+}
+
 struct DetailView: View {
   var fileHierarchyObject: FileHierarchy
   @Binding var selectedImage: NSImage?
