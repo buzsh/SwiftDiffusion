@@ -714,7 +714,6 @@
 		297196692B71A5A2000F7960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				29A1A3902B93CC5700CC3D1B /* Parsers */,
 				292CE80A2B8193C200116D60 /* ImageSaver */,
 				2971966A2B71A5AC000F7960 /* Delay.swift */,
 				29C06C272B93CC8F00F950C4 /* URLParserUtility.swift */,
@@ -840,13 +839,6 @@
 				29A1A3802B910E9900CC3D1B /* Sidebar+Move.swift */,
 			);
 			path = SidebarExtensions;
-			sourceTree = "<group>";
-		};
-		29A1A3902B93CC5700CC3D1B /* Parsers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Parsers;
 			sourceTree = "<group>";
 		};
 		29A1E0B62B80F43C00B18AC1 /* AutomaticModels */ = {
