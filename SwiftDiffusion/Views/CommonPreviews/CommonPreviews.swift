@@ -12,7 +12,7 @@ struct CommonPreviews {
     return ContentView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .configuredPreview()
+    .preview()
     .navigationTitle("")
   }
 }
@@ -22,7 +22,7 @@ extension CommonPreviews {
     return PromptView(
       scriptManager: ScriptManager.preview(withState: .readyToStart)
     )
-    .configuredPreview()
+    .preview()
   }
 }
 
@@ -47,7 +47,7 @@ extension CommonPreviews {
       selectedImage: .constant(nil),
       lastSavedImageUrls: .constant([])
     )
-    .configuredPreview()
+    .preview()
     .navigationTitle("")
   }
 }

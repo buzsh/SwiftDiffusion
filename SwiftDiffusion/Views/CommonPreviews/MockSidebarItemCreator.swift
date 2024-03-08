@@ -26,7 +26,7 @@ class MockSidebarItemCreator {
     thumbnailPath: String,
     thumbnailWidth: Int,
     thumbnailHeight: Int
-  ) {
+  ) async {
     let checkpoint = StoredCheckpointModel(name: checkpointName, path: checkpointPath, type: checkpointType)
     let prompt = StoredPromptModel()
     prompt.positivePrompt = positivePrompt
@@ -53,7 +53,7 @@ class MockSidebarItemCreator {
     baseAssetName: String,
     thumbnailWidth: Int,
     thumbnailHeight: Int
-  ) {
+  ) async {
     let checkpoint = StoredCheckpointModel(name: checkpointName, path: checkpointPath, type: checkpointType)
     let prompt = StoredPromptModel()
     prompt.positivePrompt = positivePrompt
@@ -62,9 +62,8 @@ class MockSidebarItemCreator {
     let item = SidebarItem(title: title, imageUrls: [])
     item.set(prompt: prompt)
     
-    
-    guard let thumbnailURL = saveAssetImageToFile(named: "\(baseAssetName)-thumbnail"),
-          let previewURL = saveAssetImageToFile(named: "\(baseAssetName)-preview") else {
+    guard let thumbnailURL = await saveAssetImageToFile(named: "\(baseAssetName)-thumbnail"),
+          let previewURL = await saveAssetImageToFile(named: "\(baseAssetName)-preview") else {
       print("[MockSidebarItemCreator] Failed to get URLs for image assets")
       return
     }
@@ -77,12 +76,10 @@ class MockSidebarItemCreator {
     self.sidebarModel.rootFolder.add(item: item)
   }
   
-  @MainActor
-  private func saveAssetImageToFile(named imageName: String) -> URL? {
+  func saveAssetImageToFile(named imageName: String) async -> URL? {
     if let cachedURL = MockSidebarItemCreator.processedImageURLs[imageName] {
       return cachedURL
     }
-    
     
     guard let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
       print("[MockSidebarItemCreator] Application Support directory not found.")
@@ -94,6 +91,7 @@ class MockSidebarItemCreator {
       .appendingPathComponent("DevAssets")
       .appendingPathComponent("\(imageName).jpeg")
     
+    // Ensure the directory exists
     let directoryPath = destinationPath.deletingLastPathComponent()
     if !FileManager.default.fileExists(atPath: directoryPath.path) {
       do {
@@ -109,24 +107,33 @@ class MockSidebarItemCreator {
       return destinationPath
     }
     
-    guard let image = NSImage(named: imageName) else {
-      print("[MockSidebarItemCreator] Image asset not found in asset catalog: \(imageName)")
-      return nil
-    }
-    
-    guard let imageData = image.tiffRepresentation,
-          let bitmapImage = NSBitmapImageRep(data: imageData),
-          let jpegData = bitmapImage.representation(using: .jpeg, properties: [:]) else {
-      print("[MockSidebarItemCreator] Failed to convert image to JPEG data")
-      return nil
-    }
-    
-    do {
-      try jpegData.write(to: destinationPath)
-      return destinationPath
-    } catch {
-      print("[MockSidebarItemCreator] Failed to write image data to file: \(error)")
-      return nil
+    // Perform the image processing and file writing asynchronously
+    return await withCheckedContinuation { continuation in
+      DispatchQueue.global(qos: .userInitiated).async {
+        guard let image = NSImage(named: imageName),
+              let imageData = image.tiffRepresentation,
+              let bitmapImage = NSBitmapImageRep(data: imageData),
+              let jpegData = bitmapImage.representation(using: .jpeg, properties: [:]) else {
+          print("[MockSidebarItemCreator] Failed to load or process image: \(imageName)")
+          DispatchQueue.main.async {
+            continuation.resume(returning: nil)
+          }
+          return
+        }
+        
+        do {
+          try jpegData.write(to: destinationPath)
+          DispatchQueue.main.async {
+            MockSidebarItemCreator.processedImageURLs[imageName] = destinationPath
+            continuation.resume(returning: destinationPath)
+          }
+        } catch {
+          print("[MockSidebarItemCreator] Failed to write image data to file: \(error)")
+          DispatchQueue.main.async {
+            continuation.resume(returning: nil)
+          }
+        }
+      }
     }
   }
   
