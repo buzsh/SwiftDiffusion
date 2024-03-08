@@ -28,8 +28,8 @@ struct CheckpointManagerView: View {
   }
   
   var filteredItems: [CheckpointModel] {
-    guard let selectedFilter = selectedFilter else { return checkpointsManager.models }
-    return checkpointsManager.models.filter { $0.type == selectedFilter }
+    let items = selectedFilter == nil ? checkpointsManager.models : checkpointsManager.models.filter { $0.type == selectedFilter }
+    return items.sorted { $0.name.lowercased() < $1.name.lowercased() }
   }
   
   var body: some View {
@@ -67,6 +67,7 @@ struct CheckpointManagerView: View {
           Text(item.name)
           Spacer()
           
+          /*
           Button(action: {
             Debug.log(item)
             self.selectedCheckpointModel = item
@@ -74,6 +75,7 @@ struct CheckpointManagerView: View {
             Image(systemName: "pencil")
           }
           .buttonStyle(BorderlessButtonStyle())
+          */
           
           // if item is not default or if item is not currently selected model
           if item != currentPrompt.selectedModel {
