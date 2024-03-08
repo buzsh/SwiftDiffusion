@@ -13,40 +13,12 @@ struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
   var sidebarModel: SidebarModel
-  
   var scriptManager = ScriptManager.shared
   let updateManager = UpdateManager()
-  
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
   let loraModelsManager = ModelManager<LoraModel>()
   let vaeModelsManager = ModelManager<VaeModel>()
-  
-  init() {
-    let fileManager = FileManager.default
-    guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-      fatalError("Application Support directory not found.")
-    }
-    let storeURL = appSupportURL
-      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
-      .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
-    
-    let subfolderURL = storeURL.deletingLastPathComponent()
-    if !fileManager.fileExists(atPath: subfolderURL.path) {
-      try! fileManager.createDirectory(at: subfolderURL, withIntermediateDirectories: true)
-    }
-    
-    do {
-      modelContainer = try ModelContainer(for: SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
-    } catch {
-      fatalError("Failed to configure SwiftData container: \(error)")
-    }
-    modelContainer.mainContext.autosaveEnabled = true
-    sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
-    
-    setupAppFileStructure()
-  }
   
   var body: some Scene {
     WindowGroup {
@@ -87,5 +59,30 @@ struct SwiftDiffusionApp: App {
         }
       }
     }
+  }
+  
+  init() {
+    let fileManager = FileManager.default
+    guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+      fatalError("Application Support directory not found.")
+    }
+    let storeURL = appSupportURL
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
+      .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
+      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
+    
+    let subfolderURL = storeURL.deletingLastPathComponent()
+    if !fileManager.fileExists(atPath: subfolderURL.path) {
+      try! fileManager.createDirectory(at: subfolderURL, withIntermediateDirectories: true)
+    }
+    
+    do {
+      modelContainer = try ModelContainer(for: SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
+    } catch {
+      fatalError("Failed to configure SwiftData container: \(error)")
+    }
+    modelContainer.mainContext.autosaveEnabled = true
+    sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
+    setupAppFileStructure()
   }
 }
