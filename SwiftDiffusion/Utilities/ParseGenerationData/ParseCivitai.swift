@@ -25,6 +25,43 @@ class ParseCivitai {
       Debug.log(value)
     }
   }
+  
+  func parsePastablePromptModel(_ pasteboard: String) -> StoredPromptModel {
+    var prompt = StoredPromptModel()
+    let lines = pasteboard.split(separator: "\n", omittingEmptySubsequences: true)
+    prompt.positivePrompt = buildPositivePrompt(from: lines)
+    
+    var matchedCheckpointModel: CheckpointModel?
+    for line in lines {
+      if line.contains("Model hash:") {
+        matchedCheckpointModel = parseModelHash(from: String(line))
+      }
+      
+      if line.starts(with: "Negative prompt:") {
+        let negativePrompt = line.replacingOccurrences(of: "Negative prompt: ", with: "")
+        prompt.negativePrompt = negativePrompt
+      } else {
+        let parameters = line.split(separator: ",").map(String.init)
+        if matchedCheckpointModel == nil {
+          if let modelParameter = parameters.first(where: { $0.trimmingCharacters(in: .whitespaces).starts(with: "Model:") }) {
+            matchedCheckpointModel = processModelParameter(modelParameter)
+          }
+        }
+        // Continue parsing for other parameters (excluding those starting with Model)
+        for parameter in parameters where !parameter.trimmingCharacters(in: .whitespaces).starts(with: "Model:") {
+          processParameter(parameter, currentPrompt: prompt)
+        }
+      }
+    }
+    
+    if let checkpointModelToSelect = matchedCheckpointModel {
+      prompt.selectedModel = mapModelData.toStoredCheckpoint(from: checkpointModelToSelect)
+    }
+    return prompt
+  }
+  
+  
+  
   /// Normalizes a model name by converting it to lowercase and removing all non-alphanumeric characters.
   func normalizeModelName(_ name: String) -> String {
     let lowercased = name.lowercased()
@@ -56,15 +93,17 @@ class ParseCivitai {
       return true
     }
   }
+  
+  
+  // MARK: Deprecated
   /// Parses the pasteboard content to extract prompt data, including positive and negative prompts, and other parameters like model hash.
   func parseAndSetPromptData(from pasteboardContent: String, currentPrompt: StoredPromptModel) {
     let lines = pasteboardContent.split(separator: "\n", omittingEmptySubsequences: true)
     parseLog(lines)
     
     currentPrompt.positivePrompt = buildPositivePrompt(from: lines)
-    
     parseLog("positivePrompt: \(currentPrompt.positivePrompt)")
-    // Loop through each line of the pasteboard content
+    
     var matchedCheckpointModel: CheckpointModel?
     for line in lines {
       if line.contains("Model hash:") {
@@ -93,7 +132,6 @@ class ParseCivitai {
       Task {
         currentPrompt.selectedModel = await mapModelData.toStoredCheckpointModel(from: checkpointModelToSelect)
       }
-      //currentPrompt.selectedModel = checkpointModelToSelect
     }
     
   }
@@ -270,7 +308,6 @@ extension ParseCivitai {
   
   func updateVaeModel(with name: String) -> VaeModel? {
     if let matchingModel = vaeModels.first(where: { $0.name == name }) {
-      let mapModelData = MapModelData()
       return matchingModel
     } else {
       Debug.log("No VAE Model found with the name \(name)")

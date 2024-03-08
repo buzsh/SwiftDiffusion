@@ -41,6 +41,7 @@ struct ContentView: View {
   @ObservedObject var scriptManager = ScriptManager.shared
   
   @State private var scriptManagerObserver: ScriptManagerObserver?
+  @ObservedObject var pastableService = PastableService.shared
   
   @AppStorage("hasLaunchedBeforeTest") var hasLaunchedBefore: Bool = false
   @State private var showingBetaOnboardingSheetView: Bool = false
@@ -141,7 +142,10 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
           } else {
-            Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
+            
+            if pastableService.canPasteData == false {
+              Text("SwiftDiffusion").font(.system(size: 15, weight: .semibold, design: .default))
+            }
           }
           
           if userSettings.showPythonEnvironmentControls {
@@ -161,7 +165,7 @@ struct ContentView: View {
             .disabled(scriptManager.scriptState == .terminated)
           }
           
-          CanPaste()
+          PasteGenerationDataButton()
         }
       }
       
@@ -343,19 +347,30 @@ extension ContentView {
 
 let CanvasPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
 
-struct CanPaste: View {
+struct PasteGenerationDataButton: View {
   @ObservedObject var pastableService = PastableService.shared
+  @EnvironmentObject var sidebarModel: SidebarModel
+  @EnvironmentObject var checkpointsManager: CheckpointsManager
+  @EnvironmentObject var vaeModelsManager: ModelManager<VaeModel>
+  
+  @State var showButtonWithAnimation: Bool = false
   
   var body: some View {
     HStack {
-      if pastableService.canPasteData {
+      if showButtonWithAnimation {
         BlueSymbolButton(title: "Paste", symbol: "arrow.up.doc.on.clipboard") {
-          //pastableService
-          
+          if let pastablePromptData = pastableService.parsePasteboard(checkpoints: checkpointsManager.models, vaeModels: vaeModelsManager.models) {
+            sidebarModel.createNewWorkspaceItem(withPrompt: pastablePromptData)
+          }
           withAnimation {
             pastableService.canPasteData = false
           }
         }
+      }
+    }
+    .onChange(of: pastableService.canPasteData) {
+      withAnimation {
+        showButtonWithAnimation = pastableService.canPasteData
       }
     }
     .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in

@@ -29,8 +29,19 @@ enum StoredCheckpointModelType: String, Codable {
 }
 
 extension MapModelData {
+  func toStoredCheckpoint(from checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
+    guard let checkpointModel = checkpointModel else { return nil }
+    let storedCheckpointModelType = toStoredCheckpointModelType(from: checkpointModel.type)
+    let storedCheckpointApiModel = toStoredCheckpointApiModel(from: checkpointModel.checkpointApiModel)
+    return StoredCheckpointModel(name: checkpointModel.name,
+                                 path: checkpointModel.path,
+                                 type: storedCheckpointModelType,
+                                 storedCheckpointApiModel: storedCheckpointApiModel
+    )
+  }
   
-  @MainActor 
+  
+  @MainActor
   func toStoredCheckpointModel(from checkpointModel: CheckpointModel?) -> StoredCheckpointModel? {
     guard let checkpointModel = checkpointModel else { return nil }
     let storedCheckpointModelType = toStoredCheckpointModelType(from: checkpointModel.type)
