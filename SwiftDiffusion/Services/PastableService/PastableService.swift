@@ -43,7 +43,7 @@ class PastableService: ObservableObject {
   }
   
   func clearPasteboard() {
-    NSPasteboard.general.setString("", forType: .string)
+    NSPasteboard.general.clearContents()
   }
   
   /// Returns the string currently stored in the system's pasteboard, if available.
