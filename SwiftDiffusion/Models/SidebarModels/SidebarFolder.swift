@@ -8,15 +8,14 @@
 import Foundation
 import SwiftData
 
-@Model
-class SidebarFolder: Identifiable {
+@Model class SidebarFolder: Identifiable {
   @Attribute(.unique) var id: UUID = UUID()
   @Attribute var name: String
   @Attribute var timestamp: Date
   @Attribute var isRoot: Bool = false
   @Attribute var isWorkspace: Bool = false
-  @Relationship var items: [SidebarItem]
-  @Relationship var folders: [SidebarFolder]
+  @Relationship(deleteRule: .cascade) var items: [SidebarItem]
+  @Relationship(deleteRule: .cascade) var folders: [SidebarFolder]
   @Relationship var parent: SidebarFolder?
   
   init(name: String, timestamp: Date = Date(), isRoot: Bool = false, isWorkspace: Bool = false, items: [SidebarItem] = [], folders: [SidebarFolder] = [], parent: SidebarFolder? = nil) {
@@ -38,6 +37,7 @@ extension SidebarFolder: Equatable {
 
 extension SidebarFolder {
   func add(item: SidebarItem) {
+    item.parent = self
     self.items.append(item)
   }
   func add(folder: SidebarFolder) {
@@ -49,5 +49,12 @@ extension SidebarFolder {
   }
   func remove(folder: SidebarFolder) {
     self.folders.removeAll(where: { $0.id == folder.id })
+  }
+}
+
+extension SidebarFolder {
+  /// The folder is deletable if it's neither a root nor a workspace folder
+  func isDeletable() -> Bool {
+    return !isRoot && !isWorkspace
   }
 }

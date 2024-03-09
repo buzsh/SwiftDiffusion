@@ -71,13 +71,6 @@ struct WorkspaceItemView: View {
         sidebarModel.setSelectedWorkspaceItemTitle(trimmedPrompt, in: modelContext)
       }
     }
-    .onChange(of: sidebarModel.queueWorkspaceItemForDeletion) {
-      if let workspaceItem = sidebarModel.queueWorkspaceItemForDeletion {
-        sidebarModel.workspaceFolder?.remove(item: workspaceItem)
-        sidebarModel.saveData(in: modelContext)
-      }
-    }
-    
   }
   
   /// Displays the title for a given sidebar item. Applies specific formatting based on the item's title,

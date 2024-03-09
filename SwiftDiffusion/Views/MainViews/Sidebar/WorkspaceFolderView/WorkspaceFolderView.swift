@@ -10,7 +10,7 @@ import SwiftData
 
 extension SidebarModel {
   var sortedWorkspaceFolderItems: [SidebarItem] {
-    workspaceFolder?.items.sorted(by: { $0.timestamp < $1.timestamp }) ?? []
+    workspaceFolder.items.sorted(by: { $0.timestamp < $1.timestamp })
   }
 }
 
@@ -29,21 +29,13 @@ struct WorkspaceFolderView: View {
           }
       }
     }
-    .onChange(of: sidebarModel.workspaceFolder?.items) {
-      if let workspaceItems = sidebarModel.workspaceFolder?.items {
-        if showWorkspaceItemsPlaceholderButton != workspaceItems.isEmpty {
-          withAnimation {
-            showWorkspaceItemsPlaceholderButton.toggle()
-          }
-        }
-      }
-    }
+    
     newWorkspaceItemPlaceholderButton
   }
   
   private var newWorkspaceItemPlaceholderButton: some View {
     HStack {
-      Image(systemName: "plus.bubble")
+      SFSymbol.newPrompt.image
         .frame(width: 20)
       Text("New Workspace Item")
       Spacer()
@@ -54,7 +46,7 @@ struct WorkspaceFolderView: View {
     .contentShape(Rectangle())
     .onTapGesture {
       withAnimation {
-        sidebarModel.createNewWorkspaceItem(in: modelContext)
+        sidebarModel.createNewWorkspaceItem()
       }
     }
   }

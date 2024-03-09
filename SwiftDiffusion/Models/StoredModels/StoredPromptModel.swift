@@ -10,7 +10,6 @@ import SwiftData
 
 @Model
 class StoredPromptModel {
-  @Attribute var isWorkspaceItem: Bool
   @Attribute var samplingMethod: String?
   @Attribute var positivePrompt: String = ""
   @Attribute var negativePrompt: String = ""
@@ -25,8 +24,7 @@ class StoredPromptModel {
   @Relationship var selectedModel: StoredCheckpointModel?
   @Relationship var vaeModel: StoredVaeModel?
 
-  init(isWorkspaceItem: Bool, samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil, vaeModel: StoredVaeModel? = nil) {
-    self.isWorkspaceItem = isWorkspaceItem
+  init(samplingMethod: String? = nil, positivePrompt: String = "", negativePrompt: String = "", width: Double = 512, height: Double = 512, cfgScale: Double = 7, samplingSteps: Double = 20, seed: String = "-1", batchCount: Double = 1, batchSize: Double = 1, clipSkip: Double = 1, selectedModel: StoredCheckpointModel? = nil, vaeModel: StoredVaeModel? = nil) {
     self.samplingMethod = samplingMethod
     self.positivePrompt = positivePrompt
     self.negativePrompt = negativePrompt
@@ -43,6 +41,37 @@ class StoredPromptModel {
   }
 }
 
+extension StoredPromptModel {
+  func copyMetadataToClipboard() {
+    CopyPasteUtility.copyToClipboard(getSharablePromptMetadata())
+  }
+  
+  private func getSharablePromptMetadata() -> String {
+    var modelName = ""
+    if let name = selectedModel?.name { modelName = name }
+    var samplerName = ""
+    if let samplingMethod = samplingMethod { samplerName = samplingMethod }
+    
+    var promptMetadata = "\(positivePrompt)\n"
+    promptMetadata += "Negative prompt: \(negativePrompt)\n"
+    promptMetadata += "Model: \(modelName)\n"
+    promptMetadata += "Sampler: \(samplerName)\n"
+    promptMetadata += "Size: \(width)x\(height)\n"
+    promptMetadata += "CFG scale: \(cfgScale)\n"
+    promptMetadata += "Steps: \(samplingSteps)\n"
+    promptMetadata += "Clip skip: \(clipSkip)\n"
+    promptMetadata += "Seed: \(seed)\n"
+    promptMetadata += "Batch count: \(batchCount)\n"
+    promptMetadata += "Batch size: \(batchSize)\n"
+    
+    if let vaeModel = vaeModel {
+      promptMetadata += "VAE: \(vaeModel.name)\n"
+    }
+    
+    return promptMetadata
+  }
+}
+
 extension MapModelData {
   
   @MainActor 
@@ -50,7 +79,6 @@ extension MapModelData {
     let storedCheckpointModel = toStoredCheckpointModel(from: promptModel.selectedModel)
     let storedVaeModel = toStoredVaeModel(from: promptModel.vaeModel)
     return StoredPromptModel(
-                          isWorkspaceItem: promptModel.isWorkspaceItem,
                           samplingMethod: promptModel.samplingMethod,
                           positivePrompt: promptModel.positivePrompt,
                           negativePrompt: promptModel.negativePrompt,
@@ -70,7 +98,6 @@ extension MapModelData {
   @MainActor 
   func toPromptModel(from storedPromptModel: StoredPromptModel) -> PromptModel {
     let promptModel = PromptModel()
-    promptModel.isWorkspaceItem = storedPromptModel.isWorkspaceItem
     promptModel.samplingMethod = storedPromptModel.samplingMethod
     promptModel.positivePrompt = storedPromptModel.positivePrompt
     promptModel.negativePrompt = storedPromptModel.negativePrompt

@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct PromptEditorView: View {
+  @EnvironmentObject var sidebarModel: SidebarModel
   @EnvironmentObject var loraModelsManager: ModelManager<LoraModel>
   
   var label: String
   @Binding var text: String
   @FocusState private var isFocused: Bool
   @State private var showMenu = false
-  
-  @Binding var isDisabled: Bool
   
   var body: some View {
     VStack(alignment: .leading) {
@@ -50,9 +49,14 @@ struct PromptEditorView: View {
             showMenu = isFocused && !loraModelsManager.models.isEmpty
           }
         }
-        .disabled(isDisabled)
-        .onChange(of: isDisabled) {
-          if isDisabled { isFocused = false }
+        .onChange(of: loraModelsManager.models.isEmpty) {
+          withAnimation(.easeInOut(duration: 0.25)) {
+            showMenu = isFocused && !loraModelsManager.models.isEmpty
+          }
+        }
+        .disabled(sidebarModel.disablePromptView)
+        .onChange(of: sidebarModel.disablePromptView) {
+          if sidebarModel.disablePromptView { isFocused = false }
         }
       
       if !loraModelsManager.models.isEmpty && isFocused {
@@ -96,7 +100,7 @@ struct PromptEditorView: View {
   ]
   
   @State var promptText: String = "some, positive, prompt, text"
-  return PromptEditorView(label: "Positive Prompt", text: $promptText, isDisabled: .constant(false))
+  return PromptEditorView(label: "Positive Prompt", text: $promptText)
     .frame(width: 400, height: 600)
     .environmentObject(loraModelsManagerPreview)
 }

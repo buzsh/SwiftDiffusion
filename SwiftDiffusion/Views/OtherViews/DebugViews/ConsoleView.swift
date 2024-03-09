@@ -7,10 +7,13 @@
 
 import SwiftUI
 
+extension Constants.Layout {
+  static let verticalPadding: CGFloat = 8
+}
+
 struct ConsoleView: View {
   @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var scriptManager = ScriptManager.shared
-  
   @State private var outputImage: Image?
   
   var body: some View {
@@ -44,14 +47,12 @@ struct ConsoleView: View {
         
         Spacer()
         
-        Button(action: {
+        SymbolButton(symbol: .forceStop, action: {
           scriptManager.terminateAllPythonProcesses {
             Debug.log("All Python processes terminated.")
           }
-        }) {
-          Image(systemName: "xmark.octagon")
-        }
-        .buttonStyle(.plain)
+        })
+        .foregroundStyle(.white)
         .padding(.leading, 2)
         
         Button("Terminate") {

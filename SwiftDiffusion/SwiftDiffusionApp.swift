@@ -12,43 +12,22 @@ import SwiftData
 struct SwiftDiffusionApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   var modelContainer: ModelContainer
+  var sidebarModel: SidebarModel
   var scriptManager = ScriptManager.shared
+  let pastableService = PastableService.shared
   let updateManager = UpdateManager()
-  let sidebarModel = SidebarModel()
   let checkpointsManager = CheckpointsManager()
   let currentPrompt = PromptModel()
   let loraModelsManager = ModelManager<LoraModel>()
   let vaeModelsManager = ModelManager<VaeModel>()
   
-  init() {
-    let fileManager = FileManager.default
-    guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-      fatalError("Application Support directory not found.")
-    }
-    let storeURL = appSupportURL
-      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
-      .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
-      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
-    
-    let subfolderURL = storeURL.deletingLastPathComponent()
-    if !fileManager.fileExists(atPath: subfolderURL.path) {
-      try! fileManager.createDirectory(at: subfolderURL, withIntermediateDirectories: true)
-    }
-    
-    do {
-      modelContainer = try ModelContainer(for: SidebarItem.self, SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
-    } catch {
-      fatalError("Failed to configure SwiftData container: \(error)")
-    }
-    setupAppFileStructure()
-  }
-  
   var body: some Scene {
     WindowGroup {
       ContentView()
-        .frame(minWidth: 720, idealWidth: 900, maxWidth: .infinity,
-               minHeight: 500, idealHeight: 800, maxHeight: .infinity)
+        .frame(minWidth: 720, idealWidth: 1200, maxWidth: .infinity,
+               minHeight: 500, idealHeight: 860, maxHeight: .infinity)
         .environmentObject(scriptManager)
+        .environmentObject(pastableService)
         .environmentObject(updateManager)
         .environmentObject(sidebarModel)
         .environmentObject(checkpointsManager)
@@ -77,10 +56,38 @@ struct SwiftDiffusionApp: App {
     }
     .commands {
       CommandMenu("Prompt") {
-        Button("Copy Generation Data") {
-          currentPrompt.copyMetadataToClipboard()
-        }
+        MenuButton(title: "Copy Generation Data", symbol: .copy, action: {
+          sidebarModel.selectedSidebarItem?.prompt?.copyMetadataToClipboard()
+        })
+        MenuButton(title: "Paste Generation Data", symbol: .paste, action: {
+          pastableService.newWorkspaceItemFromParsedPasteboard(sidebarModel: sidebarModel, checkpoints: checkpointsManager.models, vaeModels: vaeModelsManager.models)
+        })
       }
     }
+  }
+  
+  init() {
+    let fileManager = FileManager.default
+    guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+      fatalError("Application Support directory not found.")
+    }
+    let storeURL = appSupportURL
+      .appendingPathComponent(Constants.FileStructure.AppSupportFolderName)
+      .appendingPathComponent("UserData").appendingPathComponent("LocalDatabase")
+      .appendingPathComponent(Constants.FileStructure.AppSwiftDataFileName)
+    
+    let subfolderURL = storeURL.deletingLastPathComponent()
+    if !fileManager.fileExists(atPath: subfolderURL.path) {
+      try! fileManager.createDirectory(at: subfolderURL, withIntermediateDirectories: true)
+    }
+    
+    do {
+      modelContainer = try ModelContainer(for: SidebarFolder.self, configurations: ModelConfiguration(url: storeURL))
+    } catch {
+      fatalError("Failed to configure SwiftData container: \(error)")
+    }
+    modelContainer.mainContext.autosaveEnabled = true
+    sidebarModel = SidebarModel(modelContext: modelContainer.mainContext)
+    setupAppFileStructure()
   }
 }

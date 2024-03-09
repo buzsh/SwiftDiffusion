@@ -14,6 +14,7 @@ struct BlueButton: View {
   var body: some View {
     Button(action: action) {
       Text(title)
+        .font(.system(size: 13, weight: .semibold))
     }
     .buttonStyle(BlueBackgroundButtonStyle())
   }
@@ -21,15 +22,17 @@ struct BlueButton: View {
 
 struct BlueSymbolButton: View {
   let title: String
-  let symbol: String
+  let symbol: SFSymbol
   let action: () -> Void
   
   var body: some View {
     Button(action: action) {
       HStack {
         Text(title)
-        Image(systemName: symbol)
+        Image(systemName: symbol.name)
       }
+      .font(.system(size: 13, weight: .medium))
+      .padding(.horizontal, 3)
     }
     .buttonStyle(BlueBackgroundSmallButtonStyle())
   }

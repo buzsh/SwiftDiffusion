@@ -38,76 +38,58 @@ struct PromptControlBarView: View {
   }
 }
 
-
 struct PromptControlBar: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var currentPrompt: PromptModel
   @EnvironmentObject var sidebarModel: SidebarModel
   @ObservedObject var userSettings = UserSettings.shared
   
+  @State var showingDeleteSelectedSidebarItemConfirmationAlert: Bool = false
+  
   @State private var isWorkspaceItem: Bool = false
   @State private var isStorableSidebarItem: Bool = false
   
   private var workspaceItemBar: some View {
     HStack {
-      Button(action: {
-
-        if let sidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.deleteFromWorkspace(sidebarItem: sidebarItem, in: modelContext)
-        }
-      }) {
-        Image(systemName: "xmark")
-        Text("Close")
-      }
+      PromptBarButton(title: "Close", symbol: .close, align: .leading, action: {
+        sidebarModel.deleteSelectedWorkspaceItem()
+      })
       
       Spacer()
       
       if isStorableSidebarItem {
-        Button(action: {
-          if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-            sidebarModel.moveStorableSidebarItemToFolder(sidebarItem: selectedSidebarItem, withPrompt: currentPrompt, in: modelContext)
-          }
-        }) {
-          Text("Save Generated Prompt")
-          Image(systemName: "square.and.arrow.down")
-        }
+        PromptBarButton(title: "Save Generated Prompt", symbol: .save, align: .trailing, action: {
+          sidebarModel.saveWorkspaceItem(withPrompt: currentPrompt)
+          sidebarModel.moveWorkspaceItemToCurrentFolder()
+        })
       }
     }
-    .buttonStyle(.accessoryBar)
     .transition(.opacity)
   }
   
   private var storedItemBar: some View {
     HStack {
-      Button(action: {
-        if let selectedSidebarItem = sidebarModel.selectedSidebarItem {
-          sidebarModel.queueStoredSidebarItemForDeletion = selectedSidebarItem
-        }
-      }) {
-        Image(systemName: "trash")
-        Text("Delete")
+      PromptBarButton(title: "Delete", symbol: .trash, align: .leading, action: {
+        showingDeleteSelectedSidebarItemConfirmationAlert = true
+      })
+      .alert(isPresented: $showingDeleteSelectedSidebarItemConfirmationAlert) {
+        Alert(
+          title: Text("Are you sure you want to delete this item?"),
+          primaryButton: .destructive(Text("Delete")) {
+            sidebarModel.deleteSelectedStoredItemFromCurrentFolder()
+          },
+          secondaryButton: .cancel()
+        )
       }
       
       Spacer()
       
-      Button(action: {
-        if let selectedSidebarItem = sidebarModel.selectedSidebarItem, let clonedPrompt = selectedSidebarItem.prompt {
-          let clonedTitle = String(selectedSidebarItem.title.prefix(Constants.Sidebar.titleLength))
-          let clonedItem = SidebarItem(title: clonedTitle, imageUrls: [], isWorkspaceItem: true)
-          clonedItem.prompt = clonedPrompt
-          withAnimation {
-            sidebarModel.workspaceFolder?.add(item: clonedItem)
-            sidebarModel.saveData(in: modelContext)
-            sidebarModel.setSelectedSidebarItem(to: clonedItem)
-          }
-          sidebarModel.addToStorableSidebarItems(sidebarItem: clonedItem, withImageUrls: selectedSidebarItem.imageUrls)
+      PromptBarButton(title: "Copy to Workspace", symbol: .copyToWorkspace, align: .trailing, action: {
+        withAnimation {
+          sidebarModel.copySelectedSidebarItemToWorkspace()
         }
-      }) {
-        Text("Copy to Workspace")
-        Image(systemName: "tray.and.arrow.up")
-      }
+      })
     }
-    .buttonStyle(.accessoryBar)
     .transition(.opacity)
   }
   

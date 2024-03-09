@@ -26,7 +26,6 @@ struct PromptView: View {
   
   @State var isRightPaneVisible: Bool = false
   @State var generationDataInPasteboard: Bool = false
-  @State var disablePromptView: Bool = false
   
   private var leftPane: some View {
     VStack(spacing: 0) {
@@ -37,19 +36,6 @@ struct PromptView: View {
       
       ScrollView {
         Form {
-          if generationDataInPasteboard, let pasteboard = getPasteboardString() {
-            HStack {
-              Spacer()
-              BlueSymbolButton(title: "Paste Generation Data", symbol: "arrow.up.doc.on.clipboard") {
-                parseAndSetPromptData(from: pasteboard)
-                withAnimation {
-                  generationDataInPasteboard = false
-                }
-              }
-            }
-            .padding(.top, 14)
-          }
-          
           HStack {
             CheckpointMenu()
             SamplingMethodMenu()
@@ -57,8 +43,8 @@ struct PromptView: View {
           .padding(.vertical, 12)
           
           VStack {
-            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt, isDisabled: $disablePromptView)
-            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt, isDisabled: $disablePromptView)
+            PromptEditorView(label: "Positive Prompt", text: $currentPrompt.positivePrompt)
+            PromptEditorView(label: "Negative Prompt", text: $currentPrompt.negativePrompt)
           }
           .padding(.bottom, 6)
           
@@ -75,20 +61,11 @@ struct PromptView: View {
           VaeModelMenu()
         }
         .padding(.leading, 8).padding(.trailing, 16)
-        
-        .onAppear {
-          checkPasteboardAndUpdateFlag()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-          Task {
-            await checkPasteboardAndUpdateFlag()
-          }
-        }
         .disabled(sidebarModel.disablePromptView)
       }
+      .scrollBounceBehavior(.basedOnSize)
       
       DebugPromptActionView(scriptManager: scriptManager)
-      
     }
     .background(Color(NSColor.windowBackgroundColor))
   }
@@ -113,4 +90,5 @@ struct PromptView: View {
 
 #Preview {
   CommonPreviews.promptView
+    .frame(width: 600, height: 800)
 }

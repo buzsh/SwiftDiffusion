@@ -120,7 +120,7 @@ struct DebugApiView: View {
               NSWorkspace.shared.open(url)
             }
           }) {
-            Image(systemName: "network")
+            Image(systemName: SFSymbol.network.name)
           }
         }
       }

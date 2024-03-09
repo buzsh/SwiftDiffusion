@@ -18,7 +18,7 @@ struct FullscreenImageView: View {
         .aspectRatio(contentMode: .fit)
         .edgesIgnoringSafeArea(.all)
       Button(action: onClose) {
-        Image(systemName: "xmark.circle.fill")
+        SFSymbol.closeFullscreen.image
           .font(.largeTitle)
           .padding()
       }

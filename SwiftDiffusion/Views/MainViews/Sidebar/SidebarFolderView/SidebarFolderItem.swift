@@ -25,7 +25,7 @@ struct SidebarFolderItem: View {
   
   var body: some View {
     HStack {
-      Image(systemName: "folder")
+      SFSymbol.folder.image
         .foregroundStyle(isHovering ? .white : .blue)
         .frame(width: 20)
       Text(folder.name)
