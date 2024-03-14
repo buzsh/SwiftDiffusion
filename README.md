@@ -72,6 +72,8 @@
 
 # Overview
 
+Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffusion Wiki</a> for a look at the upcoming roadmap, documentation and more.
+
 ### SwiftUI Previews
 
 <p align="center">
