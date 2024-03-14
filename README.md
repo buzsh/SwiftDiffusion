@@ -74,6 +74,13 @@
 
 Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffusion Wiki</a> for a look at the upcoming roadmap, documentation and more.
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+## Developer
+
+Built-in interfaces for a streamlined developer experience.
+
 ### SwiftUI Previews
 
 <p align="center">
@@ -86,14 +93,9 @@ Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffus
   <p>&nbsp;</p>
 </p>
 
+### Runtime Testing & Debugging
 
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-## Developer Interfaces
-
-
-
+#### Integrated Developer View
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/d712e446-4fea-46f8-b730-6b2a640f5919">
@@ -104,11 +106,9 @@ Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffus
   <p align="center"><sup>Integrated developer modes for debugging, advanced status monitoring and plugin creation.</sup></p>
   <p>&nbsp;</p>
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
 </p>
 
-### API Debugger
-
+#### API Interface View
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/40ff0ed8-fd05-487c-9c4d-cb220aa39daa">
@@ -117,15 +117,4 @@ Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffus
   </picture>
   <p>&nbsp;</p>
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
 </p>
-
-<!--
-<img width="1728" alt="screen8 - api debug (light)" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/7439e3f9-6e2b-4693-b035-1dc1e3c186a6">
-<img width="1728" alt="screen8 - api debug (dark)" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/40ff0ed8-fd05-487c-9c4d-cb220aa39daa">
--->
-
-
-## TODO
-
-- [ ] README documentation
