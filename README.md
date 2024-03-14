@@ -77,11 +77,13 @@ Check out the <a href="https://github.com/buzsh/SwiftDiffusion/wiki">SwiftDiffus
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
-## Developer
+# Developer
 
 Built-in interfaces for a streamlined developer experience.
 
-### SwiftUI Previews
+## Pre-Compile
+
+**SwiftUI Previews**
 
 <p align="center">
   <picture>
@@ -93,9 +95,9 @@ Built-in interfaces for a streamlined developer experience.
   <p>&nbsp;</p>
 </p>
 
-### Runtime Testing & Debugging
+## Runtime Testing & Debugging
 
-#### Integrated Developer View
+**Integrated Developer Views**
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/d712e446-4fea-46f8-b730-6b2a640f5919">
@@ -108,7 +110,7 @@ Built-in interfaces for a streamlined developer experience.
   <p>&nbsp;</p>
 </p>
 
-#### API Interface View
+**API Interface Views**
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="1728" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/40ff0ed8-fd05-487c-9c4d-cb220aa39daa">
