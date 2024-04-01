@@ -1,11 +1,13 @@
 <h3><p align="center"><a href="https://github.com/buzsh/SwiftDiffusion/releases">Download the Latest Preview Release</a></p></h3>
 <hr />
 
+<p align="center"><img width="574" alt="logo" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/aa49756d-debc-439a-b78a-44a5e2587cd0"></p>
+
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" width="1400" alt="cover - dark" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/97ad70fa-ff9c-4a3d-a033-9b974496f478">
-    <source media="(prefers-color-scheme: light)" width="1400" alt="cover - light" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8863d32b-849b-4800-8577-e24fd7d79163">
-    <img width="1400" alt="cover - light" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/8863d32b-849b-4800-8577-e24fd7d79163">
+    <source media="(prefers-color-scheme: dark)" width="1380" alt="Dark Cover" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/70045718-bb01-444a-9140-58fcf4ba04ca">
+    <source media="(prefers-color-scheme: light)" width="1380" alt="Light Cover" srcset="https://github.com/buzsh/SwiftDiffusion/assets/158503966/c88f250f-41f4-42d5-b32e-79f941f7f693">
+    <img width="1380" alt="Cover" src="https://github.com/buzsh/SwiftDiffusion/assets/158503966/c88f250f-41f4-42d5-b32e-79f941f7f693">
   </picture>
   <p>&nbsp;</p>
   <p align="center">
