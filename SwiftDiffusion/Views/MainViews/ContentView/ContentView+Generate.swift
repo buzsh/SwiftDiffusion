@@ -99,6 +99,8 @@ extension ContentView {
       Debug.log("Failed to serialize payload to JSON string with selectedSidebarItem")
     }
     
+    Debug.log("API payload = \(payload)")
+    
     return payload
   }
 }
