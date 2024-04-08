@@ -43,11 +43,6 @@ struct Sidebar: View {
     .onAppear {
       onAppearSetup()
     }
-    .onChange(of: sidebarModel.currentFolder) { lastFolder, newFolder in
-      Debug.log("[SidebarModel] lastFolder: \(String(describing: lastFolder?.name))")
-      Debug.log("[SidebarModel]  newFolder: \(String(describing: newFolder?.name))")
-    }
-    
     .onChange(of: sidebarModel.selectedItemID) { currentItemID, newItemID in
       selectedSidebarItemChanged(from: currentItemID, to: newItemID)
     }
