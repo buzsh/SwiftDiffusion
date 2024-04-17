@@ -34,10 +34,14 @@ struct SwiftDiffusionApp: App {
         .environmentObject(currentPrompt)
         .environmentObject(loraModelsManager)
         .environmentObject(vaeModelsManager)
+        .onAppear {
+          NSWindow.allowsAutomaticWindowTabbing = false
+        }
     }
     .modelContainer(modelContainer)
     .windowToolbarStyle(.unified(showsTitle: false))
     .commands {
+      CommandGroup(replacing: .newItem) {}
       CommandGroup(after: .appInfo) {
         Divider()
         
