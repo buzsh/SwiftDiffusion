@@ -16,6 +16,7 @@ extension Constants.CommandLine {
     args.append("--no-half")
     args.append("--api")
     args.append("--api-log")
+    args.append("--no-download-sd-model")
     
     if UserSettings.shared.launchWebUiAlongsideScriptLaunch == false {
       args.append("--nowebui")
